@@ -5,11 +5,7 @@ output:
     toc: false
 ---
 
-The goal of this new template is to simplify the setup and maintenance of a research website.
-Specifically,
+This is the site I will use for my human 3' seq project. I will have my workflow and analysis here. The three prime seq protocol I am using is Lexogen, QuantSeq 3' mRNA-Seq library kit. The first analysis will be on the total and nucleic fractions of the LCL used in the net-seq analysis found at https://brimittleman.github.io/Net-seq/  
 
-*  Easier to build and extend the website using the new tools in the [rmarkdown][] package and [latest RStudio release][rstudio]
-*  Easier to deploy the website with Git and GitHub by only using one branch
 
-[rmarkdown]: http://rmarkdown.rstudio.com/rmarkdown_websites.htm
-[rstudio]: https://www.rstudio.com/products/rstudio/download/preview/
+
