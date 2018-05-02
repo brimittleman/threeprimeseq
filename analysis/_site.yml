@@ -3,7 +3,7 @@ output_dir: "../docs"
 include: [".nojekyll"]
 exclude: ["include"]
 navbar:
-  title: threeprimeseq
+  title: Three Prime Sequencing in Human LCLs
   left:
     - text: "Home"
       href: index.html
@@ -18,7 +18,7 @@ output:
   html_document:
     toc: true
     toc_float: true
-    theme: cosmo
+    theme: journal
     highlight: textmate
     include:
       after_body: include/footer.html
