@@ -1,0 +1,181 @@
+#Snakefile
+#
+#This file will run the threeprimeseq pipeline from fastq files including assembling reference genome
+#
+#To configure the paths to data files and other settings, edit
+#config.yaml
+#
+#to configure job submission settings for cluster, edit
+#cluster.json and submit.snakemake.sh
+
+#to run on RCC midway2 use 'bash submit-snakemake.sh'
+
+
+import glob
+import os
+from snakemake.utils import R
+
+#Configuration -------------------------------------
+
+
+configfile:  "config.yaml"
+
+#Specify Ensembl release for genome sequence and annotation
+ensembl_archive = config["ensembl_archive"]
+ensembl_rel = config["ensembl_rel"]
+ensembl_ftp = "ftp://ftp.ensembl.org/pub/release-" + \
+              str(ensembl_rel) + \
+              "/fasta/homo_sapiens/dna/"
+ensembl_exons = "exons-ensembl-release-" + str(ensembl_rel) + ".saf"
+ensembl_genome = config["ensembl_genome"]
+
+
+#picard files:
+ref_flat = config["ref_flat"]
+ribosome_int = config["ribosome_intervals"]
+
+
+#gene cov file:
+genes_cov= config["genes_bed"]
+
+
+#Paths for data (end with forward slash)
+dir_proj= config["dir_proj"]
+dir_gen=config["dir_genome"]
+dir_data= dir_proj + "data/"
+dir_genome= dir_gen + "genome/"
+output= dir_proj + "output/"
+fastq_dir= dir_data + "fastq/"
+fastqc_dir = output + "fastqc/"
+chr_genes = config["chr_genes"]
+dir_bam= dir_data + "bam/"
+dir_sort= dir_data + "sort/"
+dir_metrics= output + "metrics/"
+dir_bed = dir_data + "bed/"
+dir_bedsort= dir_data + "bed_sort/"
+dir_cov=dir_data + "gene_cov"
+
+
+
+assert os.path.exists(dir_proj), "Project directory exists"
+
+#Directory to send logi files. Needs to be created manually since it
+#is not a file created by a Snakemake rule.
+dir_log = config["dir_log"]
+if not os.path.isdir(dir_log):
+     os.mkdir(dir_log)
+
+samples = set(glob_wildcards(fastq_dir + "{samples}.fastq").samples)
+
+rule all:
+    input:
+       expand(fastqc_dir + "{samples}_fastqc.html", samples = samples),
+       dir_genome + ensembl_genome + ".reads",
+       expand(dir_bam + "{samples}.bam", samples = samples),
+       expand(dir_sort + "{samples}-sort.bam", samples= samples),
+       expand(dir_sort + "{samples}-sort.bam.bai", samples=samples),
+       expand(output + "{samples}_RNAmetrics.picard.txt", samples=samples),
+       expand(dir_bed +  "{samples}.bed", samples = samples),
+       expand(dir_bedsort +  "{samples}-sort.bed", samples = samples),
+       expand(dir_cov + "{samples}-genecov.txt", samples=samples)
+
+
+ rule download_genome:
+     output: dir_genome + "Homo_sapiens." + ensembl_genome + \
+             ".dna_sm.chromosome.{chr}.fa.gz"
+     params: chr = "{chr}", build = ensembl_genome
+     shell: "wget -O {output} {ensembl_ftp}Homo_sapiens.{params.build}.dna_sm.chromosome.{params.chr}.fa.gz"
+
+ rule unzip_chromosome_fasta:
+     input: dir_genome + "Homo_sapiens." + ensembl_genome + \
+            ".dna_sm.chromosome.{chr}.fa.gz"
+     output: temp(dir_genome + "Homo_sapiens." + ensembl_genome + \
+                  ".dna_sm.chromosome.{chr}.fa")
+     shell: "zcat {input} > {output}"
+
+ rule subread_index:
+     input: expand(dir_genome + "Homo_sapiens." + ensembl_genome + \
+                   ".dna_sm.chromosome.{chr}.fa", \
+                   chr = chr_genes)
+     output: dir_genome + ensembl_genome + ".reads"
+     params: prefix = dir_genome + ensembl_genome
+     shell: "subread-buildindex -o {params.prefix} {input}"
+
+
+ rule fastqc:
+     input:
+         fastq_dir + "{samples}.fastq"
+     output:
+         fastqc_dir + "{samples}_fastqc.html",
+         fastqc_dir + "{samples}_fastqc.zip"
+     params:
+         outdir = fastqc_dir
+     shell:
+         "fastqc -o {params.outdir} {input}"
+
+
+ rule subjunc:
+     input:
+         read = fastq_dir + "{samples}.fastq",
+         index = dir_genome + ensembl_genome + ".reads"
+     output:
+         dir_bam + "{samples}.bam"
+     params:
+         prefix = dir_genome + ensembl_genome
+     threads: 8
+     shell: "subjunc -i {params.prefix} -r {input.read} -T {threads} > {output}"
+
+ rule sort_bam:
+     input:
+         dir_bam + "{samples}.bam"
+     output:
+         dir_sort + "{samples}-sort.bam"
+     shell: "samtools sort -o {output} {input}"
+
+
+ rule index_bam:
+     input:
+         dir_sort + "{samples}-sort.bam"
+     output:
+         dir_sort + "{samples}-sort.bam.bai"
+     shell: "samtools index {input}"
+
+
+
+ rule collect_rna_metrics:
+     input:
+         bam = dir_sort + "{samples}-sort.bam",
+         ref_flat = ref_flat,
+         ribosome_int = ribosome_int
+     output:
+         rna_metrics = output + "{samples}_RNAmetrics.picard.txt"
+     params:
+         strand = "NONE",
+         memory = "-Xmx12G"
+     shell:
+         "picard CollectRnaSeqMetrics {params.memory} I={input.bam} O={output.rna_metrics} REF_FLAT={input.ref_flat} STRAND={params.strand} RIBOSOMAL_INTERVALS={input.ribosome_int}"
+
+
+rule bamtobed:
+    input:
+        bam = dir_sort + "{samples}-sort.bam"
+    output:
+        bed= dir_bed + "{samples}.bed"
+    shell: "bedtools bamtobed -i {input.bam} > {output.bed}"
+
+
+rule sort_bed:
+    input:
+        bed= dir_bed + "{samples}.bed"
+    output:
+        sortedbed= dir_bedsort + "{samples}-sort.bed"
+    shell: "sort -k1,1 -k2,2n {input.bed} > {output.sortedbed}"
+
+
+rule coding_gene_cov:
+    input:
+        sortedbed= dir_bedsort + "{samples}-sort.bed",
+        codinggenes= genes_cov
+    output:
+        cov= dir_cov + "{samples}-genecov.txt"
+    shell: "bedtools coverage -counts -sorted -a {input.codinggenes} -b {input.sortedbed} > {output.cov}"
