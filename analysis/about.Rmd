@@ -5,4 +5,4 @@ output:
     toc: false
 ---
 
-Describe your project.
+My name is Briana Mitteman. I am a graduate student at the University of Chicago in Genetics, Genomics and Systems Biology. I work in the Yoav Gilad lab studying gene regualtion in humans and non-human primates. In this project I will look for QTLS for alternative polyadenylation in human LCLs. 
