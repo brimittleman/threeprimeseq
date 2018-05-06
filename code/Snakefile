@@ -18,7 +18,7 @@ from snakemake.utils import R
 #Configuration -------------------------------------
 
 
-configfile:  "config.yaml"
+configfile: "config.yaml"
 
 #Specify Ensembl release for genome sequence and annotation
 ensembl_archive = config["ensembl_archive"]
@@ -79,21 +79,20 @@ rule all:
        expand(dir_bedsort +  "{samples}-sort.bed", samples = samples),
        expand(dir_cov + "{samples}-genecov.txt", samples=samples)
 
-
- rule download_genome:
+rule download_genome:
      output: dir_genome + "Homo_sapiens." + ensembl_genome + \
              ".dna_sm.chromosome.{chr}.fa.gz"
      params: chr = "{chr}", build = ensembl_genome
      shell: "wget -O {output} {ensembl_ftp}Homo_sapiens.{params.build}.dna_sm.chromosome.{params.chr}.fa.gz"
 
- rule unzip_chromosome_fasta:
+rule unzip_chromosome_fasta:
      input: dir_genome + "Homo_sapiens." + ensembl_genome + \
             ".dna_sm.chromosome.{chr}.fa.gz"
      output: temp(dir_genome + "Homo_sapiens." + ensembl_genome + \
                   ".dna_sm.chromosome.{chr}.fa")
      shell: "zcat {input} > {output}"
 
- rule subread_index:
+rule subread_index:
      input: expand(dir_genome + "Homo_sapiens." + ensembl_genome + \
                    ".dna_sm.chromosome.{chr}.fa", \
                    chr = chr_genes)
@@ -102,7 +101,7 @@ rule all:
      shell: "subread-buildindex -o {params.prefix} {input}"
 
 
- rule fastqc:
+rule fastqc:
      input:
          fastq_dir + "{samples}.fastq"
      output:
@@ -114,7 +113,7 @@ rule all:
          "fastqc -o {params.outdir} {input}"
 
 
- rule subjunc:
+rule subjunc:
      input:
          read = fastq_dir + "{samples}.fastq",
          index = dir_genome + ensembl_genome + ".reads"
@@ -125,7 +124,7 @@ rule all:
      threads: 8
      shell: "subjunc -i {params.prefix} -r {input.read} -T {threads} > {output}"
 
- rule sort_bam:
+rule sort_bam:
      input:
          dir_bam + "{samples}.bam"
      output:
@@ -133,7 +132,7 @@ rule all:
      shell: "samtools sort -o {output} {input}"
 
 
- rule index_bam:
+rule index_bam:
      input:
          dir_sort + "{samples}-sort.bam"
      output:
@@ -142,7 +141,7 @@ rule all:
 
 
 
- rule collect_rna_metrics:
+rule collect_rna_metrics:
      input:
          bam = dir_sort + "{samples}-sort.bam",
          ref_flat = ref_flat,
