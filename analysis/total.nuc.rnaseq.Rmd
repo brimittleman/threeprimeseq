@@ -12,9 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 I will use this analysis to look at general QC measurements for the RNA seq on the total and nuclear fraction with respect to my three-prime-seq snakemake pipeline.    
 
 
-There are 2 lines with files for chromatin, nuclear and cytoplasmic. There is a sample switch in this anaylsis chrom.1.S3 and Cyt.1.S1 are switched. We know this from a heatmap analysis.
+There are 2 lines with files for chromatin, nuclear and cytoplasmic. There is a sample switch in this anaylsis chrom.1.S3 and Cyt.1.S1 are switched. We know this from a heatmap analysis.  
 
-###Library
+###Library  
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -69,7 +69,7 @@ perc_map_cyt2=map_cyt2/read_cyt2 * 100
 
 ```
 
-Put this information in a dataframe to plot it:
+Put this information in a dataframe to plot it:  
 ```{r percmap df}
 percmap=c(perc_map_chrom1,perc_map_chrom2,perc_map_nuc1,perc_map_nuc2,perc_map_cyt1, perc_map_cyt2)
 fraction=c("chrom", "chrom", "nuc", "nuc", "cyt", "cyt")
@@ -106,7 +106,7 @@ names(cov_cyt2)=c("chr", "start", "end", "gene", "score", "strand", "count" )
 
 ```
 
-Look at the distribution of the gene counts. To do this I need to make a matrix with gene by sample to give the cpm command.
+Look at the distribution of the gene counts. To do this I need to make a matrix with gene by sample to give the cpm command.  
 ```{r logcpm}
 count_matrix=cbind(cov_chrom1$count, cov_chrom2$count, cov_nuc1$count, cov_nuc2$count, cov_cyt1$count, cov_cyt2$count)
 
