@@ -12,7 +12,7 @@
 <meta name="author" content="Briana Mittleman" />
 
 
-<title>total.nuc.rnaseq</title>
+<title>Total and Nuclear fraction RNA seq</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -303,14 +303,135 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">total.nuc.rnaseq</h1>
+<h1 class="title toc-ignore">Total and Nuclear fraction RNA seq</h1>
 <h4 class="author"><em>Briana Mittleman</em></h4>
 <h4 class="date"><em>5/8/2018</em></h4>
 
 </div>
 
 
+<p>I will use this analysis to look at general QC measurements for the RNA seq on the total and nuclear fraction with respect to my three-prime-seq snakemake pipeline.</p>
+<p>There are 2 lines with files for chromatin, nuclear and cytoplasmic. There is a sample switch in this anaylsis chrom.1.S3 and Cyt.1.S1 are switched. We know this from a heatmap analysis.</p>
+<div id="library" class="section level3">
+<h3>Library</h3>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(edgeR)</code></pre>
+<pre><code>## Warning: package &#39;edgeR&#39; was built under R version 3.4.3</code></pre>
+<pre><code>## Loading required package: limma</code></pre>
+<pre><code>## Warning: package &#39;limma&#39; was built under R version 3.4.3</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>## Loading required package: rmarkdown</code></pre>
+<pre><code>## This is workflowr version 1.0.1
+## Run ?workflowr for help getting started</code></pre>
+</div>
+<div id="mapped-reads" class="section level3">
+<h3>Mapped reads</h3>
+<p>First I want to look at the number of reads that map. I will flip the sample swap for this analysis so it it correct.</p>
+<pre class="r"><code>#wc -l file / 4
 
+read_chrom1=63641411
+read_chrom2= 61957677
+
+read_nuc1= 73481177
+read_nuc2= 60386733
+
+read_cyt1= 74784589
+read_cyt2= 56100500</code></pre>
+<p>Now look at how many reads mapped:</p>
+<pre class="r"><code>#samtools view -c -F 4 file 
+map_chrom1=53856948
+map_chrom2= 52630632
+
+map_nuc1= 65023318
+map_nuc2= 53445556
+
+map_cyt1=67829422
+map_cyt2=49619272</code></pre>
+<p>Percent mapped per line:</p>
+<pre class="r"><code>perc_map_chrom1= map_chrom1/read_chrom1 *100
+perc_map_chrom2=map_chrom2/read_chrom2 * 100
+
+perc_map_nuc1=map_nuc1/read_nuc1 * 100
+perc_map_nuc2= map_nuc2/read_nuc2 * 100
+
+perc_map_cyt1=map_cyt1/read_cyt1 * 100
+perc_map_cyt2=map_cyt2/read_cyt2 * 100</code></pre>
+<p>Put this information in a dataframe to plot it:</p>
+<pre class="r"><code>percmap=c(perc_map_chrom1,perc_map_chrom2,perc_map_nuc1,perc_map_nuc2,perc_map_cyt1, perc_map_cyt2)
+fraction=c(&quot;chrom&quot;, &quot;chrom&quot;, &quot;nuc&quot;, &quot;nuc&quot;, &quot;cyt&quot;, &quot;cyt&quot;)
+sample=c(&quot;chrom1&quot;, &quot;chrom2&quot;, &quot;nuc1&quot;, &quot;nuc2&quot;, &quot;cyt1&quot;, &quot;cyt2&quot;)
+percmap_df=as.data.frame(cbind(sample,fraction, percmap), stringsAsFactors = F)
+percmap_df$percmap= as.numeric(percmap_df$percmap)
+
+ggplot(percmap_df, aes(y=percmap, x=sample, fill=fraction)) + geom_col() + scale_y_continuous(limits=c(0,100)) + labs(y=&quot;Percent mapped&quot;, title=&quot;Percent of reads mapped&quot;)</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/percmap%20df-1.png" width="672" /> This shows that mapping is a little bit higher for the cytoplasmic and nuclear fractions than for the chromatin fraction.</p>
+</div>
+<div id="gene-count-analysis" class="section level3">
+<h3>Gene count analysis:</h3>
+<p>Import gene count data. I will fix the sample switch at this point.</p>
+<pre class="r"><code>cov_chrom1=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-1_S1_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+names(cov_chrom1)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
+cov_chrom2=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-2_S6_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+names(cov_chrom2)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
+
+cov_nuc1=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Nuc-1_S2_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+names(cov_nuc1)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
+cov_nuc2=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Nuc-2_S5_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+names(cov_nuc2)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
+
+
+cov_cyt1= read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-1_S3_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+names(cov_cyt1)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
+cov_cyt2=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-2_S4_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+names(cov_cyt2)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )</code></pre>
+<p>Look at the distribution of the gene counts. To do this I need to make a matrix with gene by sample to give the cpm command.</p>
+<pre class="r"><code>count_matrix=cbind(cov_chrom1$count, cov_chrom2$count, cov_nuc1$count, cov_nuc2$count, cov_cyt1$count, cov_cyt2$count)
+
+gene_length=cov_chrom1 %&gt;% mutate(genelength=end-start) %&gt;% select(genelength) 
+gene_length_vec=as.vector(gene_length$genelength)
+count_matrix_cpm=cpm(count_matrix, log=T, gene.length=gene_length_vec )</code></pre>
+<p>Plot the distribution of the log cpm counts.</p>
+<pre class="r"><code>plotDensities(count_matrix_cpm, legend = &quot;bottomright&quot;, main=&quot;Pre-filtering&quot;)
+abline(v = 0, lty = 3)</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/plotdensity-1.png" width="672" /></p>
+<p>I will only keep genes that have a log cpm greater than 1 in at least 3 samples.</p>
+<pre class="r"><code>keep.exprs=rowSums(count_matrix_cpm&gt;1) &gt;=3
+count_matrix_cpm_filt= count_matrix_cpm[keep.exprs,]
+
+plotDensities(count_matrix_cpm_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/filt-1.png" width="672" /></p>
+<p>Now I can look at the number of genes detected in each sample according to this filtering practice. I will use &gt;1 log cpm for “detected”.</p>
+<pre class="r"><code>detected_chrom1=sum(count_matrix_cpm_filt[,1] &gt; 1)
+detected_chrom2=sum(count_matrix_cpm_filt[,2] &gt; 1)
+
+detected_nuc1=sum(count_matrix_cpm_filt[,3] &gt; 1)
+detected_nuc2=sum(count_matrix_cpm_filt[,4] &gt; 1)
+
+detected_cyt1=sum(count_matrix_cpm_filt[,5] &gt; 1)
+detected_cyt2=sum(count_matrix_cpm_filt[,6] &gt; 1)</code></pre>
+<p>Plot these values like the percent mapped.</p>
+<pre class="r"><code>detected_vec=c(detected_chrom1, detected_chrom2, detected_nuc1, detected_nuc2, detected_cyt1, detected_cyt2)
+
+det_df=as.data.frame(cbind(sample,fraction, detected_vec), stringsAsFactors = F)
+det_df$detected_vec= as.numeric(det_df$detected_vec)
+
+ggplot(det_df, aes(y=detected_vec, x=sample, fill=fraction)) + geom_col() + labs(x=&quot;Sample&quot;, y=&quot;Number of detected genes&quot;, title=&quot;Number Detected genes &gt;1 log-cpm&quot;) + scale_y_continuous(limits=c(0,20345))</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>total_genes=20345
+det_df_prop= det_df %&gt;% mutate(prop_det=detected_vec/total_genes)
+
+ggplot(det_df_prop, aes(y=prop_det, x=sample, fill=fraction)) + geom_col() + labs(x=&quot;Sample&quot;, y=&quot;Proportion detected genes&quot;, title=&quot;Proportion Detected Genes &gt;1 log-cpm&quot;) + scale_y_continuous(limits=c(0,1))</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+</div>
 
 <hr>
 <p>
