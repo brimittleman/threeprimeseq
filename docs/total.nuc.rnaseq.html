@@ -434,8 +434,8 @@ det_df_prop= det_df %&gt;% mutate(prop_det=detected_vec/total_genes)
 ggplot(det_df_prop, aes(y=prop_det, x=sample, fill=fraction)) + geom_col() + labs(x=&quot;Sample&quot;, y=&quot;Proportion detected genes&quot;, title=&quot;Proportion Detected Genes &gt;1 log-cpm&quot;) + scale_y_continuous(limits=c(0,1))</code></pre>
 <p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
 </div>
-<div id="cluste-analysis" class="section level3">
-<h3>Cluste analysis</h3>
+<div id="cluster-analysis" class="section level3">
+<h3>Cluster analysis</h3>
 <p>Create a correlation matrix between the counts.</p>
 <pre class="r"><code>cor_function=function(data){
   corr_matrix= matrix(0,ncol(data),ncol(data))
