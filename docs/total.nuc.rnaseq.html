@@ -411,6 +411,19 @@ count_matrix_cpm_filt= count_matrix_cpm[keep.exprs,]
 
 plotDensities(count_matrix_cpm_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
 <p><img src="total.nuc.rnaseq_files/figure-html/filt-1.png" width="672" /></p>
+<p>Create boxplots:</p>
+<pre class="r"><code>#pre standardization  
+colnames(count_matrix)=sample
+boxplot(count_matrix, main=&quot;Raw Counts by library&quot;)</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>#prefilt
+colnames(count_matrix_cpm)=sample
+boxplot(count_matrix_cpm, main=&quot;Log CPM Counts by library prefilter&quot;)</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<pre class="r"><code>#filtered
+colnames(count_matrix_cpm_filt)=sample
+boxplot(count_matrix_cpm_filt, las=2,main=&quot;Log CPM Counts by library filtered&quot;)</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-3.png" width="672" /> This shows that we do not need to do any extreme normalization. I will skip it for this initial analysis.</p>
 <p>Now I can look at the number of genes detected in each sample according to this filtering practice. I will use &gt;1 log cpm for “detected”.</p>
 <pre class="r"><code>detected_chrom1=sum(count_matrix_cpm_filt[,1] &gt; 1)
 detected_chrom2=sum(count_matrix_cpm_filt[,2] &gt; 1)
@@ -427,12 +440,12 @@ det_df=as.data.frame(cbind(sample,fraction, detected_vec), stringsAsFactors = F)
 det_df$detected_vec= as.numeric(det_df$detected_vec)
 
 ggplot(det_df, aes(y=detected_vec, x=sample, fill=fraction)) + geom_col() + labs(x=&quot;Sample&quot;, y=&quot;Number of detected genes&quot;, title=&quot;Number Detected genes &gt;1 log-cpm&quot;) + scale_y_continuous(limits=c(0,20345))</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>total_genes=20345
 det_df_prop= det_df %&gt;% mutate(prop_det=detected_vec/total_genes)
 
 ggplot(det_df_prop, aes(y=prop_det, x=sample, fill=fraction)) + geom_col() + labs(x=&quot;Sample&quot;, y=&quot;Proportion detected genes&quot;, title=&quot;Proportion Detected Genes &gt;1 log-cpm&quot;) + scale_y_continuous(limits=c(0,1))</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 </div>
 <div id="cluster-analysis" class="section level3">
 <h3>Cluster analysis</h3>
@@ -461,7 +474,7 @@ ggheatmap=ggplot(data = melted_count_corr, aes(x=Var1, y=Var2, fill=value)) +
 
 
 ggheatmap</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>This is the expected plot. The data clusters by fraction and the total and nuclear are more similar than the chromatin fraction.</p>
 </div>
 
