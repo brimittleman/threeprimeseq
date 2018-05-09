@@ -332,6 +332,8 @@ library(dplyr)</code></pre>
 <pre><code>## Loading required package: rmarkdown</code></pre>
 <pre><code>## This is workflowr version 1.0.1
 ## Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>## Warning: package &#39;reshape2&#39; was built under R version 3.4.3</code></pre>
 </div>
 <div id="mapped-reads" class="section level3">
 <h3>Mapped reads</h3>
@@ -431,6 +433,36 @@ det_df_prop= det_df %&gt;% mutate(prop_det=detected_vec/total_genes)
 
 ggplot(det_df_prop, aes(y=prop_det, x=sample, fill=fraction)) + geom_col() + labs(x=&quot;Sample&quot;, y=&quot;Proportion detected genes&quot;, title=&quot;Proportion Detected Genes &gt;1 log-cpm&quot;) + scale_y_continuous(limits=c(0,1))</code></pre>
 <p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+</div>
+<div id="cluste-analysis" class="section level3">
+<h3>Cluste analysis</h3>
+<p>Create a correlation matrix between the counts.</p>
+<pre class="r"><code>cor_function=function(data){
+  corr_matrix= matrix(0,ncol(data),ncol(data))
+  for (i in seq(1,ncol(data))){
+    for (j in seq(1,ncol(data))){
+      x=cor.test(data[,i],  data[,j], method=&#39;pearson&#39;)
+      cor_ij=as.numeric(x$estimate)
+      corr_matrix[i,j]=cor_ij
+    }
+  }
+  return(corr_matrix)
+}
+
+
+count_cor=cor_function(count_matrix_cpm_filt)
+rownames(count_cor)=sample
+colnames(count_cor)=sample</code></pre>
+<p>Reshape correlation matrix and plot it.</p>
+<pre class="r"><code>melted_count_corr=melt(count_cor)
+ggheatmap=ggplot(data = melted_count_corr, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title=&quot;Correlation Heatplot&quot;)
+
+
+ggheatmap</code></pre>
+<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>This is the expected plot. The data clusters by fraction and the total and nuclear are more similar than the chromatin fraction.</p>
 </div>
 
 <hr>
