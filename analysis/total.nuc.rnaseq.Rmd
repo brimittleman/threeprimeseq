@@ -168,7 +168,7 @@ ggplot(det_df_prop, aes(y=prop_det, x=sample, fill=fraction)) + geom_col() + lab
 
 ```
 
-###Cluste analysis
+###Cluster analysis  
 
 Create a correlation matrix between the counts.   
 
