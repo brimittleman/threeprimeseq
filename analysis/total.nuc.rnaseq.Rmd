@@ -20,6 +20,8 @@ library(ggplot2)
 library(dplyr)
 library(edgeR)
 library(workflowr)
+library(reshape2)
+
 ```
 
 
@@ -166,6 +168,41 @@ ggplot(det_df_prop, aes(y=prop_det, x=sample, fill=fraction)) + geom_col() + lab
 
 ```
 
+###Cluste analysis
 
+Create a correlation matrix between the counts.   
+
+```{r}
+cor_function=function(data){
+  corr_matrix= matrix(0,ncol(data),ncol(data))
+  for (i in seq(1,ncol(data))){
+    for (j in seq(1,ncol(data))){
+      x=cor.test(data[,i],  data[,j], method='pearson')
+      cor_ij=as.numeric(x$estimate)
+      corr_matrix[i,j]=cor_ij
+    }
+  }
+  return(corr_matrix)
+}
+
+
+count_cor=cor_function(count_matrix_cpm_filt)
+rownames(count_cor)=sample
+colnames(count_cor)=sample
+```
+
+Reshape correlation matrix and plot it.  
+
+```{r}
+melted_count_corr=melt(count_cor)
+ggheatmap=ggplot(data = melted_count_corr, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title="Correlation Heatplot")
+
+
+ggheatmap
+```
+
+This is the expected plot. The data clusters by fraction and the total and nuclear are more similar than the chromatin fraction.  
 
 
