@@ -104,34 +104,34 @@ button.code-folding-btn:focus {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 61px;
+  padding-top: 51px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 
 .section h2 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 .section h3 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 .section h4 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 .section h5 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 .section h6 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 </style>
 
@@ -299,6 +299,13 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
 <div class="fluid-row" id="header">
 
 
@@ -310,30 +317,341 @@ div.tocify {
 </div>
 
 
+<p><strong>Last updated:</strong> 2018-05-09</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/5f120079aea12b536a7e6b034f39cde9b6f55070" target="_blank">5f12007</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  _workflowr.yml
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   analysis/about.Rmd
+    Deleted:    analysis/chunks.R
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/license.Rmd
+    Modified:   analysis/total.nuc.rnaseq.Rmd
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7c5705dc5fce4a7f0f59c92254256453d72d7bfa/docs/total.nuc.rnaseq.html" target="_blank">7c5705d</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-09
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7a9e443b7a894452fd4b4db43ce09c23a3674144/analysis/total.nuc.rnaseq.Rmd" target="_blank">7a9e443</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-09
+</td>
+<td style="text-align:left;">
+fix sample switch
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/ec089e50f7dfbac42616eb9e9899d97a24320a86/docs/total.nuc.rnaseq.html" target="_blank">ec089e5</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-09
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ca8eb3aaa448b4336f8a355f687e2a81c83cd5f3/analysis/total.nuc.rnaseq.Rmd" target="_blank">ca8eb3a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-09
+</td>
+<td style="text-align:left;">
+add dist. gene body plot
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/076baa0d108f22cfac6c24eafa23e47845ee0c7b/docs/total.nuc.rnaseq.html" target="_blank">076baa0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8f6c959712b542890ddf5e143a9cb22f07692ffd/analysis/total.nuc.rnaseq.Rmd" target="_blank">8f6c959</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+add count boxplots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/95a41f993eddeb728c847a147df217e1d59ad410/docs/total.nuc.rnaseq.html" target="_blank">95a41f9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1f9e243afd0155091411a276a3ca8e5b76d4e672/analysis/total.nuc.rnaseq.Rmd" target="_blank">1f9e243</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+fix typo
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/394259e0e190633005c3c395286bd3a8b78b19bf/docs/total.nuc.rnaseq.html" target="_blank">394259e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6b7d92137c81918942d73ef10435d319a51264c5/analysis/total.nuc.rnaseq.Rmd" target="_blank">6b7d921</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+correlation heatplot
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3f23e0e8a27b875de7bd967922ca961293da2f71/docs/total.nuc.rnaseq.html" target="_blank">3f23e0e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c5535649cef9bea5bd5d8bbfb85bb97dce4a801a/analysis/total.nuc.rnaseq.Rmd" target="_blank">c553564</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+low level analysis for RNA seq
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3dd80ef12a6e2e8ba83dc7987ec22d667d4b7492/docs/total.nuc.rnaseq.html" target="_blank">3dd80ef</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/519447d91969a0dc7db57d52cc61ecd71a9c53ab/analysis/total.nuc.rnaseq.Rmd" target="_blank">519447d</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-08
+</td>
+<td style="text-align:left;">
+Add total.nuc.rnaseq analysis
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
 <p>I will use this analysis to look at general QC measurements for the RNA seq on the total and nuclear fraction with respect to my three-prime-seq snakemake pipeline.</p>
 <p>There are 2 lines with files for chromatin, nuclear and cytoplasmic. There is a sample switch in this anaylsis chrom.2.S3 and Cyt.2.S1 are switched. We know this from a heatmap analysis.</p>
 <div id="library" class="section level3">
 <h3>Library</h3>
 <pre class="r"><code>library(ggplot2)
 library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(edgeR)</code></pre>
-<pre><code>## Warning: package &#39;edgeR&#39; was built under R version 3.4.3</code></pre>
-<pre><code>## Loading required package: limma</code></pre>
-<pre><code>## Warning: package &#39;limma&#39; was built under R version 3.4.3</code></pre>
+<pre><code>Warning: package &#39;edgeR&#39; was built under R version 3.4.3</code></pre>
+<pre><code>Loading required package: limma</code></pre>
+<pre><code>Warning: package &#39;limma&#39; was built under R version 3.4.3</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
-<pre><code>## Loading required package: rmarkdown</code></pre>
-<pre><code>## This is workflowr version 1.0.1
-## Run ?workflowr for help getting started</code></pre>
+<pre><code>Loading required package: rmarkdown</code></pre>
+<pre><code>This is workflowr version 1.0.1
+Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
-<pre><code>## Warning: package &#39;reshape2&#39; was built under R version 3.4.3</code></pre>
+<pre><code>Warning: package &#39;reshape2&#39; was built under R version 3.4.3</code></pre>
 </div>
 <div id="mapped-reads" class="section level3">
 <h3>Mapped reads</h3>
@@ -375,7 +693,7 @@ percmap_df=as.data.frame(cbind(sample,fraction, percmap), stringsAsFactors = F)
 percmap_df$percmap= as.numeric(percmap_df$percmap)
 
 ggplot(percmap_df, aes(y=percmap, x=sample, fill=fraction)) + geom_col() + scale_y_continuous(limits=c(0,100)) + labs(y=&quot;Percent mapped&quot;, title=&quot;Percent of reads mapped&quot;)</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/percmap%20df-1.png" width="672" /> This shows that mapping is a little bit higher for the cytoplasmic and nuclear fractions than for the chromatin fraction.</p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/percmap%20df-1.png" width="672" style="display: block; margin: auto;" /> This shows that mapping is a little bit higher for the cytoplasmic and nuclear fractions than for the chromatin fraction.</p>
 </div>
 <div id="gene-count-analysis" class="section level3">
 <h3>Gene count analysis:</h3>
@@ -404,26 +722,26 @@ count_matrix_cpm=cpm(count_matrix, log=T, gene.length=gene_length_vec )</code></
 <p>Plot the distribution of the log cpm counts.</p>
 <pre class="r"><code>plotDensities(count_matrix_cpm, legend = &quot;bottomright&quot;, main=&quot;Pre-filtering&quot;)
 abline(v = 0, lty = 3)</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/plotdensity-1.png" width="672" /></p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/plotdensity-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>I will only keep genes that have a log cpm greater than 1 in at least 3 samples.</p>
 <pre class="r"><code>keep.exprs=rowSums(count_matrix_cpm&gt;1) &gt;=3
 count_matrix_cpm_filt= count_matrix_cpm[keep.exprs,]
 
 plotDensities(count_matrix_cpm_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/filt-1.png" width="672" /></p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/filt-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Create boxplots:</p>
 <pre class="r"><code>#pre standardization  
 colnames(count_matrix)=sample
 boxplot(count_matrix, main=&quot;Raw Counts by library&quot;)</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#prefilt
 colnames(count_matrix_cpm)=sample
 boxplot(count_matrix_cpm, main=&quot;Log CPM Counts by library prefilter&quot;)</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#filtered
 colnames(count_matrix_cpm_filt)=sample
 boxplot(count_matrix_cpm_filt, las=2,main=&quot;Log CPM Counts by library filtered&quot;)</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-2-3.png" width="672" /> This shows that we do not need to do any extreme normalization. I will skip it for this initial analysis.</p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /> This shows that we do not need to do any extreme normalization. I will skip it for this initial analysis.</p>
 <p>Now I can look at the number of genes detected in each sample according to this filtering practice. I will use &gt;1 log cpm for “detected”.</p>
 <pre class="r"><code>detected_chrom1=sum(count_matrix_cpm_filt[,1] &gt; 1)
 detected_chrom2=sum(count_matrix_cpm_filt[,2] &gt; 1)
@@ -440,12 +758,12 @@ det_df=as.data.frame(cbind(sample,fraction, detected_vec), stringsAsFactors = F)
 det_df$detected_vec= as.numeric(det_df$detected_vec)
 
 ggplot(det_df, aes(y=detected_vec, x=sample, fill=fraction)) + geom_col() + labs(x=&quot;Sample&quot;, y=&quot;Number of detected genes&quot;, title=&quot;Number Detected genes &gt;1 log-cpm&quot;) + scale_y_continuous(limits=c(0,20345))</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>total_genes=20345
 det_df_prop= det_df %&gt;% mutate(prop_det=detected_vec/total_genes)
 
 ggplot(det_df_prop, aes(y=prop_det, x=sample, fill=fraction)) + geom_col() + labs(x=&quot;Sample&quot;, y=&quot;Proportion detected genes&quot;, title=&quot;Proportion Detected Genes &gt;1 log-cpm&quot;) + scale_y_continuous(limits=c(0,1))</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="cluster-analysis" class="section level3">
 <h3>Cluster analysis</h3>
@@ -474,7 +792,7 @@ ggheatmap=ggplot(data = melted_count_corr, aes(x=Var1, y=Var2, fill=value)) +
 
 
 ggheatmap</code></pre>
-<p><img src="total.nuc.rnaseq_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="figure/total.nuc.rnaseq.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>This is the expected plot. The data clusters by fraction and the total and nuclear are more similar than the chromatin fraction.</p>
 </div>
 <div id="density-across-genes" class="section level3">
@@ -486,10 +804,45 @@ ggheatmap</code></pre>
 </div>
 <p>Due to sample switch. The total is actually chromatin and the chromatin samples are actually the total samples.</p>
 </div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.2 (2017-09-28)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] bindrcpp_0.2    reshape2_1.4.3  workflowr_1.0.1 rmarkdown_1.8.5
+[5] edgeR_3.20.9    limma_3.34.9    dplyr_0.7.4     ggplot2_2.2.1  
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.15      compiler_3.4.2    pillar_1.1.0     
+ [4] git2r_0.21.0      plyr_1.8.4        bindr_0.1        
+ [7] R.methodsS3_1.7.1 R.utils_2.6.0     tools_3.4.2      
+[10] digest_0.6.14     evaluate_0.10.1   tibble_1.4.2     
+[13] gtable_0.2.0      lattice_0.20-35   pkgconfig_2.0.1  
+[16] rlang_0.1.6       yaml_2.1.16       stringr_1.2.0    
+[19] knitr_1.18        locfit_1.5-9.1    rprojroot_1.3-2  
+[22] grid_3.4.2        glue_1.2.0        R6_2.2.2         
+[25] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
+[28] scales_0.5.0      htmltools_0.3.6   assertthat_0.2.0 
+[31] colorspace_1.3-2  labeling_0.3      stringi_1.1.6    
+[34] lazyeval_0.2.1    munsell_0.4.3     R.oo_1.22.0      </code></pre>
+</div>
 
 <hr>
 <p>
-    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+    
 </p>
 <hr>
 
@@ -511,6 +864,25 @@ ggheatmap</code></pre>
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 -->
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
 
 
 </div>
