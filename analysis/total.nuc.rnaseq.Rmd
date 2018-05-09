@@ -135,6 +135,21 @@ count_matrix_cpm_filt= count_matrix_cpm[keep.exprs,]
 plotDensities(count_matrix_cpm_filt, legend = "bottomright", main="Post-filtering")
 ```
 
+
+Create boxplots: 
+```{r}
+#pre standardization  
+colnames(count_matrix)=sample
+boxplot(count_matrix, main="Raw Counts by library")
+#prefilt
+colnames(count_matrix_cpm)=sample
+boxplot(count_matrix_cpm, main="Log CPM Counts by library prefilter")
+#filtered
+colnames(count_matrix_cpm_filt)=sample
+boxplot(count_matrix_cpm_filt, las=2,main="Log CPM Counts by library filtered")
+```
+This shows that we do not need to do any extreme normalization. I will skip it for this initial analysis.  
+
 Now I can look at the number of genes detected in each sample according to this filtering practice. I will use >1 log cpm for "detected".  
 
 ```{r detected}
@@ -167,6 +182,9 @@ ggplot(det_df_prop, aes(y=prop_det, x=sample, fill=fraction)) + geom_col() + lab
 
 
 ```
+
+
+
 
 ###Cluster analysis  
 
