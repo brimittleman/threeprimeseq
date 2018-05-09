@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 I will use this analysis to look at general QC measurements for the RNA seq on the total and nuclear fraction with respect to my three-prime-seq snakemake pipeline.    
 
 
-There are 2 lines with files for chromatin, nuclear and cytoplasmic. There is a sample switch in this anaylsis chrom.1.S3 and Cyt.1.S1 are switched. We know this from a heatmap analysis.  
+There are 2 lines with files for chromatin, nuclear and cytoplasmic. There is a sample switch in this anaylsis chrom.2.S3 and Cyt.2.S1 are switched. We know this from a heatmap analysis.  
 
 ###Library  
 ```{r}
@@ -34,27 +34,27 @@ First I want to look at the number of reads that map. I will flip the sample swa
 
 #wc -l file / 4
 
-read_chrom1=63641411
-read_chrom2= 61957677
+read_chrom1=74784589
+read_chrom2= 56100500
 
 read_nuc1= 73481177
 read_nuc2= 60386733
 
-read_cyt1= 74784589
-read_cyt2= 56100500
+read_cyt1= 63641411
+read_cyt2= 61957677
 ```
 
 Now look at how many reads mapped:  
 ```{r mapped}
 #samtools view -c -F 4 file 
-map_chrom1=53856948
-map_chrom2= 52630632
+map_chrom1=67829422
+map_chrom2=49619272
 
 map_nuc1= 65023318
 map_nuc2= 53445556
 
-map_cyt1=67829422
-map_cyt2=49619272
+map_cyt1=53856948
+map_cyt2=52630632
 
 ```
 
@@ -90,9 +90,9 @@ This shows that mapping is a little bit higher for the cytoplasmic and nuclear f
 Import gene count data. I will fix the sample switch at this point.  
 
 ```{r import counts}
-cov_chrom1=read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-1_S1_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
+cov_chrom1=read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-1_S3_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
 names(cov_chrom1)=c("chr", "start", "end", "gene", "score", "strand", "count" )
-cov_chrom2=read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-2_S6_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
+cov_chrom2=read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-2_S4_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
 names(cov_chrom2)=c("chr", "start", "end", "gene", "score", "strand", "count" )
 
 cov_nuc1=read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Nuc-1_S2_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
@@ -101,9 +101,9 @@ cov_nuc2=read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Nuc-2_S5_L
 names(cov_nuc2)=c("chr", "start", "end", "gene", "score", "strand", "count" )
 
 
-cov_cyt1= read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-1_S3_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
+cov_cyt1= read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-1_S1_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
 names(cov_cyt1)=c("chr", "start", "end", "gene", "score", "strand", "count" )
-cov_cyt2=read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-2_S4_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
+cov_cyt2=read.table("../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-2_S6_L005_R1_001-genecov.txt", stringsAsFactors = FALSE)
 names(cov_cyt2)=c("chr", "start", "end", "gene", "score", "strand", "count" )
 
 ```
@@ -227,7 +227,9 @@ This is the expected plot. The data clusters by fraction and the total and nucle
 
 My snakefile has a rule collecting metrics with the picard tool. I used the data to make a plot of the normalized read density accross gene bodies.  
 
-![Normalized reads accross gene bodies](../data/read.dist.across.gene.rnaseq.png)
+![Normalized reads accross gene bodies](../data/read.dist.across.gene.rnaseq.png)  
+
+Due to sample switch. The total is actually chromatin and the chromatin samples are actually the total samples.  
 
 
 
