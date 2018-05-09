@@ -311,7 +311,7 @@ div.tocify {
 
 
 <p>I will use this analysis to look at general QC measurements for the RNA seq on the total and nuclear fraction with respect to my three-prime-seq snakemake pipeline.</p>
-<p>There are 2 lines with files for chromatin, nuclear and cytoplasmic. There is a sample switch in this anaylsis chrom.1.S3 and Cyt.1.S1 are switched. We know this from a heatmap analysis.</p>
+<p>There are 2 lines with files for chromatin, nuclear and cytoplasmic. There is a sample switch in this anaylsis chrom.2.S3 and Cyt.2.S1 are switched. We know this from a heatmap analysis.</p>
 <div id="library" class="section level3">
 <h3>Library</h3>
 <pre class="r"><code>library(ggplot2)
@@ -340,24 +340,24 @@ library(dplyr)</code></pre>
 <p>First I want to look at the number of reads that map. I will flip the sample swap for this analysis so it it correct.</p>
 <pre class="r"><code>#wc -l file / 4
 
-read_chrom1=63641411
-read_chrom2= 61957677
+read_chrom1=74784589
+read_chrom2= 56100500
 
 read_nuc1= 73481177
 read_nuc2= 60386733
 
-read_cyt1= 74784589
-read_cyt2= 56100500</code></pre>
+read_cyt1= 63641411
+read_cyt2= 61957677</code></pre>
 <p>Now look at how many reads mapped:</p>
 <pre class="r"><code>#samtools view -c -F 4 file 
-map_chrom1=53856948
-map_chrom2= 52630632
+map_chrom1=67829422
+map_chrom2=49619272
 
 map_nuc1= 65023318
 map_nuc2= 53445556
 
-map_cyt1=67829422
-map_cyt2=49619272</code></pre>
+map_cyt1=53856948
+map_cyt2=52630632</code></pre>
 <p>Percent mapped per line:</p>
 <pre class="r"><code>perc_map_chrom1= map_chrom1/read_chrom1 *100
 perc_map_chrom2=map_chrom2/read_chrom2 * 100
@@ -380,9 +380,9 @@ ggplot(percmap_df, aes(y=percmap, x=sample, fill=fraction)) + geom_col() + scale
 <div id="gene-count-analysis" class="section level3">
 <h3>Gene count analysis:</h3>
 <p>Import gene count data. I will fix the sample switch at this point.</p>
-<pre class="r"><code>cov_chrom1=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-1_S1_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+<pre class="r"><code>cov_chrom1=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-1_S3_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
 names(cov_chrom1)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
-cov_chrom2=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-2_S6_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+cov_chrom2=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-2_S4_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
 names(cov_chrom2)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
 
 cov_nuc1=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Nuc-1_S2_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
@@ -391,9 +391,9 @@ cov_nuc2=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Nuc-2
 names(cov_nuc2)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
 
 
-cov_cyt1= read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-1_S3_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+cov_cyt1= read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-1_S1_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
 names(cov_cyt1)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )
-cov_cyt2=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Cyt-2_S4_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
+cov_cyt2=read.table(&quot;../data/total.nuc.cyt.genecounts/gene_covYG-SP20-Chrom-2_S6_L005_R1_001-genecov.txt&quot;, stringsAsFactors = FALSE)
 names(cov_cyt2)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot; )</code></pre>
 <p>Look at the distribution of the gene counts. To do this I need to make a matrix with gene by sample to give the cpm command.</p>
 <pre class="r"><code>count_matrix=cbind(cov_chrom1$count, cov_chrom2$count, cov_nuc1$count, cov_nuc2$count, cov_cyt1$count, cov_cyt2$count)
@@ -484,6 +484,7 @@ ggheatmap</code></pre>
 <img src="../data/read.dist.across.gene.rnaseq.png" alt="Normalized reads accross gene bodies" />
 <p class="caption">Normalized reads accross gene bodies</p>
 </div>
+<p>Due to sample switch. The total is actually chromatin and the chromatin samples are actually the total samples.</p>
 </div>
 
 <hr>
