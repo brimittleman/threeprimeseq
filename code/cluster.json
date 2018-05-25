@@ -12,6 +12,15 @@
     {
             "mem" : 8000
     },
+"star_index" :
+    {
+            "mem" : 8000
+    },
+"subread_index_align" :
+    {
+            "mem" : 20000,
+            "tasks" : 4
+    },
 "fastqc" :
     {
             "mem" : 8000

@@ -54,7 +54,7 @@ dir_metrics= output + "metrics/"
 dir_bed = dir_data + "bed/"
 dir_bedsort= dir_data + "bed_sort/"
 dir_cov= dir_data + "gene_cov"
-
+dir_star_bam= dir_data + "star_bam/"
 
 
 assert os.path.exists(dir_proj), "Project directory exists"
@@ -72,6 +72,7 @@ rule all:
        expand(fastqc_dir + "{samples}_fastqc.html", samples = samples),
        dir_genome + ensembl_genome + ".reads",
        expand(dir_bam + "{samples}.bam", samples = samples),
+       expand(dir_star_bam + "{samples}.star.bam", samples = samples),
        expand(dir_sort + "{samples}-sort.bam", samples= samples),
        expand(dir_sort + "{samples}-sort.bam.bai", samples=samples),
        expand(output + "{samples}_RNAmetrics.picard.txt", samples=samples),
@@ -99,6 +100,21 @@ rule subread_index:
      output: dir_genome + ensembl_genome + ".reads"
      params: prefix = dir_genome + ensembl_genome
      shell: "subread-buildindex -o {params.prefix} {input}"
+
+rule star_index:
+    input:
+        fa=expand(dir_genome + "Homo_sapiens." + ensembl_genome + \ ".dna_sm.chromosome.{chr}.fa", \chr = chr_genes),
+        gtf=dir_data + "gencode.v19.annotation.noCHR.gtf""
+    output: dir_genome + "Star_genome"
+    shell: "STAR --runMode genomeGenerate --genomeDir {input.loc} --genomeFastaFiles {input.fa} --sjdbGTFfile {input.gtf} --runThreadN 10"
+
+rule star_align:
+    input:
+        ind: dir_genome + "Star_genome"
+        read: fastq_dir + "{samples}.fastq"
+    output: dir_star_bam + "{samples}.star.bam"
+    shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate > {output}
+
 
 
 rule fastqc:
@@ -178,3 +194,5 @@ rule coding_gene_cov:
     output:
         cov= dir_cov + "{samples}-genecov.txt"
     shell: "bedtools coverage -counts -sorted -a {input.codinggenes} -b {input.sortedbed} > {output.cov}"
+
+
