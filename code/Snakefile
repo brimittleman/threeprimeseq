@@ -103,7 +103,9 @@ rule subread_index:
 
 rule star_index:
     input:
-        fa=expand(dir_genome + "Homo_sapiens." + ensembl_genome + \ ".dna_sm.chromosome.{chr}.fa", \chr = chr_genes),
+        fa=expand(dir_genome + "Homo_sapiens." + ensembl_genome + \
+        ".dna_sm.chromosome.{chr}.fa", \
+        chr = chr_genes),
         gtf=dir_data + "gencode.v19.annotation.noCHR.gtf"
     output: dir_genome + "Star_genome"
     shell: "STAR --runMode genomeGenerate --genomeDir {input.loc} --genomeFastaFiles {input.fa} --sjdbGTFfile {input.gtf} --runThreadN 10"
@@ -114,8 +116,6 @@ rule star_align:
         read: fastq_dir + "{samples}.fastq"
     output: dir_star_bam + "{samples}.star.bam"
     shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate > {output}"
-
-
 
 rule fastqc:
      input:
