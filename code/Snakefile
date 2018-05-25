@@ -55,6 +55,7 @@ dir_bed = dir_data + "bed/"
 dir_bedsort= dir_data + "bed_sort/"
 dir_cov= dir_data + "gene_cov"
 dir_star_bam= dir_data + "star_bam/"
+dir_star_sort= dir_data + "star_sort/"
 
 
 assert os.path.exists(dir_proj), "Project directory exists"
@@ -73,12 +74,15 @@ rule all:
        dir_genome + ensembl_genome + ".reads",
        expand(dir_bam + "{samples}.bam", samples = samples),
        expand(dir_star_bam + "{samples}.star.bam", samples = samples),
+       expand(dir_star_sort + "{samples}-sort.star.bam", samples= samples),
+       expand(dir_star_sort + "{samples}-sort.star.bam.bai", samples=samples),
        expand(dir_sort + "{samples}-sort.bam", samples= samples),
        expand(dir_sort + "{samples}-sort.bam.bai", samples=samples),
        expand(output + "{samples}_RNAmetrics.picard.txt", samples=samples),
        expand(dir_bed +  "{samples}.bed", samples = samples),
        expand(dir_bedsort +  "{samples}-sort.bed", samples = samples),
        expand(dir_cov + "{samples}-genecov.txt", samples=samples)
+       expand(dir_star_sort + "{samples}-sort.star.bam", samples= samples)
 
 rule download_genome:
      output: dir_genome + "Homo_sapiens." + ensembl_genome + \
@@ -148,6 +152,13 @@ rule sort_bam:
          dir_sort + "{samples}-sort.bam"
      shell: "samtools sort -o {output} {input}"
 
+rule sort_star_bam:
+     input:
+        dir_star_bam + "{samples}.star.bam"
+     output:
+         dir_star_sort + "{samples}-sort.star.bam"
+     shell: "samtools sort -o {output} {input}"
+
 
 rule index_bam:
      input:
@@ -156,6 +167,12 @@ rule index_bam:
          dir_sort + "{samples}-sort.bam.bai"
      shell: "samtools index {input}"
 
+rule index_star_bam:
+     input:
+         dir_star_sort + "{samples}-sort.star.bam"
+     output:
+         dir_star_sort + "{samples}-sort.star.bam.bai"
+     shell: "samtools index {input}"
 
 
 rule collect_rna_metrics:
