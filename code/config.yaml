@@ -4,8 +4,8 @@
 
 #Paths must end with forward slash
 
-#project directory 
-dir_proj: /project2/gilad/briana/Total_Nuc_RNA_seq_data/170428_K00242_0214_AHK2GMBBXX-YG-SP20/
+#project directory
+dir_proj: /project2/gilad/briana/threeprimeseq/
 
 #ref genome directory
 dir_genome: /project2/gilad/briana/genome_anotation_data/
@@ -15,7 +15,7 @@ dir_genome: /project2/gilad/briana/genome_anotation_data/
 ref_flat: /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation2.nochr.refFlat
 ribosome_intervals: /project2/gilad/briana/genome_anotation_data/hg19.rRNA.intervals
 
-#files for protien coding gene coverage (created for https://brimittleman.github.io/Net-seq/strand_spec.html)  
+#files for protien coding gene coverage (created for https://brimittleman.github.io/Net-seq/strand_spec.html)
 genes_bed: /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.sort.bed
 
 #directory with aditional scripts:
