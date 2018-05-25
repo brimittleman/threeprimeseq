@@ -107,9 +107,7 @@ rule subread_index:
 
 rule star_index:
     input:
-        fa=expand(dir_genome + "Homo_sapiens." + ensembl_genome + \
-        ".dna_sm.chromosome.{chr}.fa", \
-        chr = chr_genes),
+        fa=dir_genome + "Homo_sapiens.GRCh37.75.dna_sm.all.fa",
         gtf=dir_genome + "gencode.v19.annotation.noCHR.gtf",
         loc=dir_genome
     output: dir_genome + "Star_genome"
