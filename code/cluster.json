@@ -33,5 +33,9 @@
 "sort_bam" :
     {
             "mem": 8000
+    },
+"sort_star_bam" :
+    {
+            "mem": 8000
     }
 }
