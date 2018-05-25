@@ -113,7 +113,7 @@ rule star_align:
         ind: dir_genome + "Star_genome",
         read: fastq_dir + "{samples}.fastq"
     output: dir_star_bam + "{samples}.star.bam"
-    shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate > {output}
+    shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate > {output}"
 
 
 
