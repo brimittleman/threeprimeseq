@@ -53,7 +53,7 @@ dir_sort= dir_data + "sort/"
 dir_metrics= output + "metrics/"
 dir_bed = dir_data + "bed/"
 dir_bedsort= dir_data + "bed_sort/"
-dir_cov= dir_data + "gene_cov"
+dir_cov= dir_data + "gene_cov/"
 dir_star_bam= dir_data + "star_bam/"
 dir_star_sort= dir_data + "star_sort/"
 
