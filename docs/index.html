@@ -225,7 +225,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9a49459368772f030622712864c469ecee83a53a" target="_blank">9a49459</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2076ce905888ca32e1fc086f15e954c7dde05450" target="_blank">2076ce9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -233,7 +233,9 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
+    Untracked:  data/gene_cov/
     Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  docs/figure/initial_gene_qc.Rmd/
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -262,6 +264,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2076ce905888ca32e1fc086f15e954c7dde05450/analysis/index.Rmd" target="_blank">2076ce9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-26
+</td>
+<td style="text-align:left;">
+initial commit, gene level analysis
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b5cdd59432005e3c407edeab96984f4d90c65b45/docs/index.html" target="_blank">b5cdd59</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -514,6 +550,7 @@ Start workflowr project.
 <p>Initial analysis on first 32 3’ seq libraries:</p>
 <ul>
 <li><a href="initial_map_qc.html">Initial mapping QC</a></li>
+<li><a href="initial_gene_qc.html">Initial gene leve QC</a></li>
 </ul>
 
 <hr>
