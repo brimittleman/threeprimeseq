@@ -109,7 +109,7 @@ rule subread_index:
 
 rule star_align:
     input:
-        ind=dir_genome
+        ind=dir_genome,
         read=fastq_dir + "{samples}.fastq"
     output: dir_star_bam + "{samples}.star.bam"
     shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate > {output}"
