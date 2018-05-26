@@ -36,7 +36,7 @@ ribosome_int = config["ribosome_intervals"]
 
 
 #gene cov file:
-genes_cov= config["genes_bed"]
+genes_bed= config["genes_bed"]
 
 
 #Paths for data (end with forward slash)
@@ -200,7 +200,7 @@ rule sort_bed:
 rule coding_gene_cov:
     input:
         sortedbed= dir_bedsort + "{samples}-sort.bed",
-        codinggenes= genes_cov
+        codinggenes= genes_bed
     output:
         cov= dir_cov + "{samples}-genecov.txt"
     shell: "bedtools coverage -counts -sorted -a {input.codinggenes} -b {input.sortedbed} > {output.cov}"
