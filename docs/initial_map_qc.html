@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9a49459368772f030622712864c469ecee83a53a" target="_blank">9a49459</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/252c54861025e29d382b8d7701f355b75ddba66a" target="_blank">252c548</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -383,6 +383,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/252c54861025e29d382b8d7701f355b75ddba66a/analysis/initial_map_qc.Rmd" target="_blank">252c548</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-26
+</td>
+<td style="text-align:left;">
+plot prop mapping with subjunc
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b5cdd59432005e3c407edeab96984f4d90c65b45/docs/initial_map_qc.html" target="_blank">b5cdd59</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/9a49459368772f030622712864c469ecee83a53a/analysis/initial_map_qc.Rmd" target="_blank">9a49459</a>
 </td>
 <td style="text-align:left;">
@@ -405,6 +439,44 @@ start map qc analysis
 <pre><code>Loading required package: rmarkdown</code></pre>
 <pre><code>This is workflowr version 1.0.1
 Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(tidyr)
+library(reshape2)</code></pre>
+<pre><code>Warning: package &#39;reshape2&#39; was built under R version 3.4.3</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<p>I created a csv with the number of reads, mapped reads, and proportion of reads mapped per library.</p>
+<pre class="r"><code>subj_map= read.csv(&quot;../data/reads_mapped_three_prime_seq.csv&quot;, header=TRUE, stringsAsFactors = FALSE)
+subj_map$line=as.factor(subj_map$line)
+subj_map$fraction=as.factor(subj_map$fraction)</code></pre>
+<p>Summaries for each number:</p>
+<pre class="r"><code>summary(subj_map$reads)</code></pre>
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+ 5103350  8030068  8776602  8670328  9341566 10931074 </code></pre>
+<pre class="r"><code>summary(subj_map$mapped)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+3575191 5688940 6268228 6091626 6394260 7788593 </code></pre>
+<pre class="r"><code>summary(subj_map$prop_mapped)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.6658  0.6932  0.7034  0.7025  0.7135  0.7343 </code></pre>
+<p>Look at this graphically:</p>
+<pre class="r"><code>subj_melt=melt(subj_map, id.vars=c(&quot;line&quot;, &quot;fraction&quot;), measure.vars = c(&quot;reads&quot;, &quot;mapped&quot;, &quot;prop_mapped&quot;))</code></pre>
+<pre class="r"><code>subj_prop_mapped= subj_melt %&gt;% filter(variable==&quot;prop_mapped&quot;)
+
+ggplot(subj_prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs( title=&quot;Proportion of reads mapped with Subjunc&quot;) + ylab(&quot;Proportion mapped&quot;) +  geom_hline(yintercept = mean(subj_prop_mapped$value)) + annotate(&quot;text&quot;,4, mean(subj_prop_mapped$value)- .1, vjust = -1, label = &quot;Mean mapping proportion= .702&quot;)</code></pre>
+<p><img src="figure/initial_map_qc.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -423,15 +495,22 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] workflowr_1.0.1 rmarkdown_1.8.5
+[1] bindrcpp_0.2    dplyr_0.7.4     reshape2_1.4.3  tidyr_0.7.2    
+[5] ggplot2_2.2.1   workflowr_1.0.1 rmarkdown_1.8.5
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.15      digest_0.6.14     rprojroot_1.3-2  
- [4] R.methodsS3_1.7.1 backports_1.1.2   git2r_0.21.0     
- [7] magrittr_1.5      evaluate_0.10.1   stringi_1.1.6    
-[10] whisker_0.3-2     R.oo_1.22.0       R.utils_2.6.0    
-[13] tools_3.4.2       stringr_1.2.0     yaml_2.1.16      
-[16] compiler_3.4.2    htmltools_0.3.6   knitr_1.18       </code></pre>
+ [1] Rcpp_0.12.15      compiler_3.4.2    pillar_1.1.0     
+ [4] git2r_0.21.0      plyr_1.8.4        bindr_0.1        
+ [7] R.methodsS3_1.7.1 R.utils_2.6.0     tools_3.4.2      
+[10] digest_0.6.14     evaluate_0.10.1   tibble_1.4.2     
+[13] gtable_0.2.0      pkgconfig_2.0.1   rlang_0.1.6      
+[16] yaml_2.1.16       stringr_1.2.0     knitr_1.18       
+[19] rprojroot_1.3-2   grid_3.4.2        glue_1.2.0       
+[22] R6_2.2.2          purrr_0.2.4       magrittr_1.5     
+[25] whisker_0.3-2     backports_1.1.2   scales_0.5.0     
+[28] htmltools_0.3.6   assertthat_0.2.0  colorspace_1.3-2 
+[31] labeling_0.3      stringi_1.1.6     lazyeval_0.2.1   
+[34] munsell_0.4.3     R.oo_1.22.0      </code></pre>
 </div>
 
 <hr>
