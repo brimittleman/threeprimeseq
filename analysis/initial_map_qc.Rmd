@@ -1,0 +1,17 @@
+---
+title: "initial_map_qc"
+author: "Briana Mittleman"
+date: "5/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this analysis to look at initial mapping QC for the two mappers I am using.  
+
+```{r}
+library(workflowr)
+```
+
