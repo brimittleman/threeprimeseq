@@ -13,5 +13,41 @@ I will use this analysis to look at initial mapping QC for the two mappers I am 
 
 ```{r}
 library(workflowr)
+library(ggplot2)
+library(tidyr)
+library(reshape2)
+library(dplyr)
 ```
+
+
+I created a csv with the number of reads, mapped reads, and proportion of reads mapped per library.  
+
+```{r}
+subj_map= read.csv("../data/reads_mapped_three_prime_seq.csv", header=TRUE, stringsAsFactors = FALSE)
+subj_map$line=as.factor(subj_map$line)
+subj_map$fraction=as.factor(subj_map$fraction)
+```
+
+Summaries for each number:  
+
+```{r}
+summary(subj_map$reads)
+summary(subj_map$mapped)
+summary(subj_map$prop_mapped)
+
+```
+
+Look at this graphically: 
+
+```{r}
+subj_melt=melt(subj_map, id.vars=c("line", "fraction"), measure.vars = c("reads", "mapped", "prop_mapped"))
+```
+
+
+```{r}
+subj_prop_mapped= subj_melt %>% filter(variable=="prop_mapped")
+
+ggplot(subj_prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat="identity",position="dodge") + labs( title="Proportion of reads mapped with Subjunc") + ylab("Proportion mapped") +  geom_hline(yintercept = mean(subj_prop_mapped$value)) + annotate("text",4, mean(subj_prop_mapped$value)- .1, vjust = -1, label = "Mean mapping proportion= .702")
+```
+
 
