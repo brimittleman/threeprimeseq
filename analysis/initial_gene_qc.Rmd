@@ -1,0 +1,119 @@
+---
+title: "Initial_gene_level"
+author: "Briana Mittleman"
+date: "5/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+I will use this analysis to take a look at the initial protein conding gene counts.
+
+```{r}
+library(workflowr)
+library(ggplot2)
+library(dplyr)
+library(edgeR)
+```
+
+
+Imput the data that was created from my coding gene rule in the snakefile.  
+
+```{r}
+N_18486_cov= read.table("../data/gene_cov/YL-SP-18486-N_S10_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+
+T_18486_cov= read.table("../data/gene_cov/YL-SP-18486-T_S9_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_18497_cov= read.table("../data/gene_cov/YL-SP-18497-N_S12_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_18497_cov= read.table("../data/gene_cov/YL-SP-18497-T_S11_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_18500_cov= read.table("../data/gene_cov/YL-SP-18500-N_S20_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_18500_cov= read.table("../data/gene_cov/YL-SP-18500-T_S19_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_18505_cov= read.table("../data/gene_cov/YL-SP-18505-N_S2_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_18505_cov= read.table("../data/gene_cov/YL-SP-18505-T_S1_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_18508_cov= read.table("../data/gene_cov/YL-SP-18508-N_S6_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_18508_cov= read.table("../data/gene_cov/YL-SP-18508-T_S5_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_18853_cov= read.table("../data/gene_cov/YL-SP-18853-N_S32_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_18853_cov= read.table("../data/gene_cov/YL-SP-18853-T_S31_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_18870_cov= read.table("../data/gene_cov/YL-SP-18870-N_S24_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_18870_cov= read.table("../data/gene_cov/YL-SP-18870-T_S23_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19128_cov= read.table("../data/gene_cov/YL-SP-19128-N_S30_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19128_cov= read.table("../data/gene_cov/YL-SP-19128-T_S29_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19141_cov= read.table("../data/gene_cov/YL-SP-19141-N_S18_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19141_cov= read.table("../data/gene_cov/YL-SP-19141-T_S17_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19193_cov= read.table("../data/gene_cov/YL-SP-19193-N_S22_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19193_cov= read.table("../data/gene_cov/YL-SP-19193-T_S21_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19209_cov= read.table("../data/gene_cov/YL-SP-19209-N_S16_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19209_cov= read.table("../data/gene_cov/YL-SP-19209-T_S15_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19223_cov= read.table("../data/gene_cov/YL-SP-19223-N_S8_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19223_cov= read.table("../data/gene_cov/YL-SP-19233-T_S7_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19225_cov= read.table("../data/gene_cov/YL-SP-19225-N_S28_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19225_cov= read.table("../data/gene_cov/YL-SP-19225-T_S27_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19238_cov= read.table("../data/gene_cov/YL-SP-19238-N_S4_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19238_cov= read.table("../data/gene_cov/YL-SP-19238-T_S3_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19239_cov= read.table("../data/gene_cov/YL-SP-19239-N_S14_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19239_cov= read.table("../data/gene_cov/YL-SP-19239-T_S13_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+N_19257_cov= read.table("../data/gene_cov/YL-SP-19257-N_S26_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+T_19257_cov= read.table("../data/gene_cov/YL-SP-19257-T_S25_R1_001-genecov.txt", stringsAsFactors = FALSE, header = F, col.names = c("chr", "start", "end", "gene", "score", "strand", "count" ))
+
+
+```
+Look at the total libraries first:  
+
+```{r}
+total_count_matrix=cbind(T_18486_cov$count, T_18497_cov$count, T_18500_cov$count, T_18505_cov$count, T_18508_cov$count, T_18853_cov$count, T_18870_cov$count, T_19128_cov$count, T_19141_cov$count, T_19193_cov$count, T_19209_cov$count, T_19223_cov$count, T_19225_cov$count, T_19238_cov$count,T_19239_cov$count, T_19257_cov$count)
+
+#gene length vector
+gene_length=T_18497_cov %>% mutate(genelength=end-start) %>% select(genelength) 
+gene_length_vec=as.vector(gene_length$genelength)
+total_count_matrix_cpm=cpm(total_count_matrix, log=T, gene.length=gene_length_vec )
+```
+
+Plot distribution of log2 cpm for total libraries.  
+
+```{r}
+plotDensities(total_count_matrix_cpm, legend = "bottomright", main="Pre-filtering total fraction")
+```
+
+Look at gene distributions for the nuclear fractions. 
+
+```{r}
+nuclear_count_matrix=cbind(N_18486_cov$count, N_18497_cov$count, N_18500_cov$count, N_18505_cov$count, N_18508_cov$count, N_18853_cov$count, N_18870_cov$count, N_19128_cov$count, N_19141_cov$count, N_19193_cov$count, N_19209_cov$count, N_19223_cov$count, N_19225_cov$count, N_19238_cov$count,N_19239_cov$count, N_19257_cov$count)
+
+#cpm  
+
+nuclear_count_matrix_cpm=cpm(nuclear_count_matrix, log=T, gene.length=gene_length_vec )
+
+```
+
+
+Plot distribution of log2 cpm for nuclear libraries.  
+
+```{r}
+plotDensities(nuclear_count_matrix_cpm, legend = "bottomright", main="Pre-filtering nuclear fraction")
+```
+
+
+The distributions look similar. I can filter based on alll of the libraries. I will filter for 1cpm in more than half of the libraries. After this I can ask how many genes are detected in each library.  
+
+```{r}
+all_count_matrix=cbind(T_18486_cov$count, T_18497_cov$count, T_18500_cov$count, T_18505_cov$count, T_18508_cov$count, T_18853_cov$count, T_18870_cov$count, T_19128_cov$count, T_19141_cov$count, T_19193_cov$count, T_19209_cov$count, T_19223_cov$count, T_19225_cov$count, T_19238_cov$count,T_19239_cov$count, T_19257_cov$count,N_18486_cov$count, N_18497_cov$count, N_18500_cov$count, N_18505_cov$count, N_18508_cov$count, N_18853_cov$count, N_18870_cov$count, N_19128_cov$count, N_19141_cov$count, N_19193_cov$count, N_19209_cov$count, N_19223_cov$count, N_19225_cov$count, N_19238_cov$count,N_19239_cov$count, N_19257_cov$count )
+
+
+#cpm  
+
+all_count_matrix_cpm=cpm(all_count_matrix, log=T, gene.length=gene_length_vec )
+plotDensities(all_count_matrix_cpm, legend = "bottomright", main="Pre-filtering all libraries")
+```
+
+Filter:  
+
+```{r}
+keep.exprs=rowSums(all_count_matrix_cpm>1) >= 16
+all_count_matrix_cpm_filt= all_count_matrix_cpm[keep.exprs,]
+
+plotDensities(all_count_matrix_cpm_filt, legend = "bottomright", main="Post-filtering all libraries")
+```
+
+Post filtering we are left with 12461 protein coding genes.  

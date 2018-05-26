@@ -18,4 +18,5 @@ Initial analysis on RNA seq of nuclear and total fractions:
 Initial analysis on first 32 3' seq libraries:  
 
 * [Initial mapping QC](initial_map_qc.html) 
+* [Initial gene leve QC](initial_gene_qc.html)
 
