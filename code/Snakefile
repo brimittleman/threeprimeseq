@@ -79,7 +79,7 @@ rule all:
        expand(dir_star_sort + "{samples}-sort.star.bam.bai", samples=samples),
        expand(dir_sort + "{samples}-sort.bam", samples= samples),
        expand(dir_sort + "{samples}-sort.bam.bai", samples=samples),
-       expand(output + "{samples}_RNAmetrics.picard.txt", samples=samples),
+       expand(picard + "{samples}_RNAmetrics.picard.txt", samples=samples),
        expand(dir_bed +  "{samples}.bed", samples = samples),
        expand(dir_bedsort +  "{samples}-sort.bed", samples = samples),
        expand(dir_cov + "{samples}-genecov.txt", samples=samples),
