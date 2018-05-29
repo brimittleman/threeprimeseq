@@ -45,6 +45,7 @@ dir_gen=config["dir_genome"]
 dir_data= dir_proj + "data/"
 dir_genome= dir_gen + "genome/"
 output= dir_proj + "output/"
+picard= output + "picard/"
 fastq_dir= dir_data + "fastq/"
 fastqc_dir = output + "fastqc/"
 chr_genes = config["chr_genes"]
@@ -175,7 +176,7 @@ rule collect_rna_metrics:
          ref_flat = ref_flat,
          ribosome_int = ribosome_int
      output:
-         rna_metrics = output + "{samples}_RNAmetrics.picard.txt"
+         rna_metrics = picard + "{samples}_RNAmetrics.picard.txt"
      params:
          strand = "SECOND_READ_TRANSCRIPTION_STRAND",
          memory = "-Xmx12G"
