@@ -1,0 +1,67 @@
+---
+title: "cov.200bp.wind"
+author: "Briana Mittleman"
+date: "5/29/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+I will use this analysis to bin the genome into 200bp windows and look at coverage for the 3' seq libraries for each of these windows. I will use this data then in the leafcutter pipeline to look at differences between data from the total and nuclear fractions.  
+
+I performed a similar analysis for the net-seq data so some of the code will come from that.  https://brimittleman.github.io/Net-seq/create_blacklist.html  
+
+
+The binned genome file is called: genome_200_wind_fix2.saf, it is in my genome annotation directory.  
+
+```{bash, eval=FALSE}
+#!/bin/bash
+
+#SBATCH --job-name=cov200
+#SBATCH --time=8:00:00
+#SBATCH --output=cov200.out
+#SBATCH --error=cov200.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+#input is a bed file 
+sample=$1
+
+
+describer=$(echo ${sample} | sed -e 's/.*\YL-SP-//' | sed -e "s/-sort.bed$//")
+
+
+
+featureCounts -T 5 -a /project2/gilad/briana/genome_anotation_data/genome_200_wind_fix2.saf -F 'SAF' -o /project2/gilad/briana/threeprimeseq/data/cov_200/${describer}_FC200.cov.bed $1
+```
+
+**ERROR: invalid parameter:**
+
+
+
+I will need to create a wrapper to run this for all of the files. 
+
+
+```{bash, eval=FALSE}
+#!/bin/bash
+
+#SBATCH --job-name=w_cov200
+#SBATCH --time=8:00:00
+#SBATCH --output=w_cov200.out
+#SBATCH --error=w_cov2--.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/); do
+            sbatch cov200.sh /project2/gilad/briana/threeprimeseq/data/bed_sort/$i 
+        done
+```
+
