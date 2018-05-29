@@ -26,6 +26,11 @@
             "mem": 16000,
             "tasks" : 8
     },
+"star_align" :
+    {
+            "mem": 16000,
+            "tasks" : 8
+    },
 "sort_bam" :
     {
             "mem": 8000
