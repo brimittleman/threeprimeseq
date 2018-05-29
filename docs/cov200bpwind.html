@@ -9,9 +9,10 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Briana Mittleman" />
 
 
-<title>Home</title>
+<title>cov.200bp.wind</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +20,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -164,6 +168,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -211,7 +310,9 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">cov.200bp.wind</h1>
+<h4 class="author"><em>Briana Mittleman</em></h4>
+<h4 class="date"><em>5/29/2018</em></h4>
 
 </div>
 
@@ -222,6 +323,21 @@ div.section {
 <li>
 <p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
 </details>
 </li>
 <li>
@@ -268,7 +384,7 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/d58bc138fd71227816b58cffda2ccf2df7199808/analysis/index.Rmd" target="_blank">d58bc13</a>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d58bc138fd71227816b58cffda2ccf2df7199808/analysis/cov200bpwind.Rmd" target="_blank">d58bc13</a>
 </td>
 <td style="text-align:left;">
 Briana Mittleman
@@ -280,313 +396,79 @@ Briana Mittleman
 start 200 bp analysis
 </td>
 </tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/96ecbb125b7504e34275073c4369760db2ef8c3a/docs/index.html" target="_blank">96ecbb1</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-26
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/2076ce905888ca32e1fc086f15e954c7dde05450/analysis/index.Rmd" target="_blank">2076ce9</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-26
-</td>
-<td style="text-align:left;">
-initial commit, gene level analysis
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b5cdd59432005e3c407edeab96984f4d90c65b45/docs/index.html" target="_blank">b5cdd59</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-26
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/9a49459368772f030622712864c469ecee83a53a/analysis/index.Rmd" target="_blank">9a49459</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-26
-</td>
-<td style="text-align:left;">
-start map qc analysis
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/924952b3c14f5a58131b1b99ae8be276d3b2d37f/docs/index.html" target="_blank">924952b</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-09
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/f8ce0fcfc549967f30ad08e19962c8135bb5dc27/analysis/index.Rmd" target="_blank">f8ce0fc</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-09
-</td>
-<td style="text-align:left;">
-Update to 1.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f8ce0fcfc549967f30ad08e19962c8135bb5dc27/docs/index.html" target="_blank">f8ce0fc</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-09
-</td>
-<td style="text-align:left;">
-Update to 1.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3dd80ef12a6e2e8ba83dc7987ec22d667d4b7492/docs/index.html" target="_blank">3dd80ef</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-08
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/519447d91969a0dc7db57d52cc61ecd71a9c53ab/analysis/index.Rmd" target="_blank">519447d</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-08
-</td>
-<td style="text-align:left;">
-Add total.nuc.rnaseq analysis
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/889c9c6fa9085578dbb6d3e233c1ee787daef080/docs/index.html" target="_blank">889c9c6</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-02
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/9d196cf4b24ebee34e9624c46536a9c5aeca4f44/docs/index.html" target="_blank">9d196cf</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-02
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/972ef3effabfa330e5e75404d603f5ed2fb2f5df/docs/index.html" target="_blank">972ef3e</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-02
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/6cc5321541eca63223ad1bd790071d38ebb5bd7d/analysis/index.Rmd" target="_blank">6cc5321</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-02
-</td>
-<td style="text-align:left;">
-add home page information
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e12dd6cde00d646f994e07a4b5bd67138ad08494/docs/index.html" target="_blank">e12dd6c</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-01
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/0e95115337380d333adf3ee43adceea878e04ff8/analysis/index.Rmd" target="_blank">0e95115</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-01
-</td>
-<td style="text-align:left;">
-add home page information
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4c26d4c1641e60f953fe953c04c7e6151ec4511e/docs/index.html" target="_blank">4c26d4c</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-01
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/539892a301ff49ee88909de2718bf6abac3f4155/analysis/index.Rmd" target="_blank">539892a</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-05-01
-</td>
-<td style="text-align:left;">
-Start workflowr project.
-</td>
-</tr>
 </tbody>
 </table>
 </ul>
 <p></details></p>
 <hr />
-<p>Briana Mittleman</p>
-<p>This is the site I will use for my human 3’ seq project. I will have my workflow and analysis here. The three prime seq protocol I am using is Lexogen, QuantSeq 3’ mRNA-Seq library kit. The first analysis will be on the total and nucleic fractions of the LCL used in the net-seq analysis found at <a href="https://brimittleman.github.io/Net-seq/" class="uri">https://brimittleman.github.io/Net-seq/</a></p>
-<p>Initial analysis on RNA seq of nuclear and total fractions:</p>
-<ul>
-<li><a href="total.nuc.rnaseq.html">Initial data QC</a></li>
-</ul>
-<p>Initial analysis on first 32 3’ seq libraries:</p>
-<ul>
-<li><a href="initial_map_qc.html">Initial mapping QC</a></li>
-<li><a href="initial_gene_qc.html">Initial gene leve QC</a><br />
-</li>
-<li><a href="cov200bpwind.html">Coverage in 200bp bins</a></li>
-</ul>
+<p>I will use this analysis to bin the genome into 200bp windows and look at coverage for the 3’ seq libraries for each of these windows. I will use this data then in the leafcutter pipeline to look at differences between data from the total and nuclear fractions.</p>
+<p>I performed a similar analysis for the net-seq data so some of the code will come from that. <a href="https://brimittleman.github.io/Net-seq/create_blacklist.html" class="uri">https://brimittleman.github.io/Net-seq/create_blacklist.html</a></p>
+<p>The binned genome file is called: genome_200_wind_fix2.saf, it is in my genome annotation directory.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=cov200
+#SBATCH --time=8:00:00
+#SBATCH --output=cov200.out
+#SBATCH --error=cov200.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+#input is a bed file 
+sample=$1
+
+
+describer=$(echo ${sample} | sed -e &#39;s/.*\YL-SP-//&#39; | sed -e &quot;s/-sort.bed$//&quot;)
+
+
+
+featureCounts -T 5 -a /project2/gilad/briana/genome_anotation_data/genome_200_wind_fix2.saf -F &#39;SAF&#39; -o /project2/gilad/briana/threeprimeseq/data/cov_200/${describer}_FC200.cov.bed $1</code></pre>
+<p><strong>ERROR: invalid parameter:</strong></p>
+<p>I will need to create a wrapper to run this for all of the files.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=w_cov200
+#SBATCH --time=8:00:00
+#SBATCH --output=w_cov200.out
+#SBATCH --error=w_cov2--.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/); do
+            sbatch cov200.sh /project2/gilad/briana/threeprimeseq/data/bed_sort/$i 
+        done</code></pre>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.2 (2017-09-28)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.0.1   Rcpp_0.12.15      digest_0.6.14    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
+[10] stringi_1.1.6     whisker_0.3-2     R.oo_1.22.0      
+[13] R.utils_2.6.0     rmarkdown_1.8.5   tools_3.4.2      
+[16] stringr_1.2.0     yaml_2.1.16       compiler_3.4.2   
+[19] htmltools_0.3.6   knitr_1.18       </code></pre>
+</div>
 
 <hr>
 <p>
@@ -633,6 +515,8 @@ footer is added to webpages before the MathJax javascript. -->
 <hr>
 
 
+</div>
+</div>
 
 </div>
 
