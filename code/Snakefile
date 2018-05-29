@@ -111,8 +111,9 @@ rule star_align:
     input:
         ind=dir_genome,
         read=fastq_dir + "{samples}.fastq"
+        pref="{samples}"
     output: dir_star_bam + "{samples}.star.bam"
-    shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate > {output}"
+    shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate --outFileNamePrefix {input.pref} > {output}"
 
 rule fastqc:
      input:
