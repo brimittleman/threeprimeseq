@@ -177,7 +177,7 @@ rule collect_rna_metrics:
      output:
          rna_metrics = output + "{samples}_RNAmetrics.picard.txt"
      params:
-         strand = "NONE",
+         strand = "SECOND_READ_TRANSCRIPTION_STRAND",
          memory = "-Xmx12G"
      shell:
          "picard CollectRnaSeqMetrics {params.memory} I={input.bam} O={output.rna_metrics} REF_FLAT={input.ref_flat} STRAND={params.strand} RIBOSOMAL_INTERVALS={input.ribosome_int}"
