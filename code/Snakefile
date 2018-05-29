@@ -110,10 +110,11 @@ rule subread_index:
 rule star_align:
     input:
         ind=dir_genome,
-        read=fastq_dir + "{samples}.fastq",
+        read=fastq_dir + "{samples}.fastq"
+    output:
+        out=dir_star_bam + "{samples}.star.bam",
         pref= dir_star_bam + "{samples}"
-    output: dir_star_bam + "{samples}.star.bam"
-    shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate --outFileNamePrefix {input.pref} > {output}"
+    shell: "STAR --runThreadN 4 --genomeDir {input.ind} --readFilesIn {input.read} --outFilterMultimapNmax 1 -outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate --outFileNamePrefix {output.pref} > {output.out}"
 
 rule fastqc:
      input:
