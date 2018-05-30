@@ -38,10 +38,8 @@ describer=$(echo ${sample} | sed -e 's/.*\YL-SP-//' | sed -e "s/-sort.bam$//")
 
 
 
-featureCounts -T 5 -a /project2/gilad/briana/genome_anotation_data/genome_200_wind_fix2.saf -F 'SAF' -o /project2/gilad/briana/threeprimeseq/data/cov_200/${describer}_FC200.cov.bed $1
+featureCounts -T 5 -s 1 -a /project2/gilad/briana/genome_anotation_data/genome_200_wind_fix2.saf -F 'SAF' -o /project2/gilad/briana/threeprimeseq/data/cov_200/${describer}_FC200.cov.bed $1
 ```
-
-
 
 
 I will need to create a wrapper to run this for all of the files. 
@@ -64,3 +62,4 @@ for i in $(ls /project2/gilad/briana/threeprimeseq/data/sort/*.bam); do
         done
 ```
 
+Current analysis is not stand specific. I need to make windows for the negative strand. 
