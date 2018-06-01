@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 I will use this analysis to look at initial mapping QC for the two mappers I am using.  
 
 ```{r}
@@ -17,8 +18,9 @@ library(ggplot2)
 library(tidyr)
 library(reshape2)
 library(dplyr)
+library(cowplot)
 ```
-
+###Subjunc
 
 I created a csv with the number of reads, mapped reads, and proportion of reads mapped per library.  
 
@@ -47,7 +49,47 @@ subj_melt=melt(subj_map, id.vars=c("line", "fraction"), measure.vars = c("reads"
 ```{r}
 subj_prop_mapped= subj_melt %>% filter(variable=="prop_mapped")
 
-ggplot(subj_prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat="identity",position="dodge") + labs( title="Proportion of reads mapped with Subjunc") + ylab("Proportion mapped") +  geom_hline(yintercept = mean(subj_prop_mapped$value)) + annotate("text",4, mean(subj_prop_mapped$value)- .1, vjust = -1, label = "Mean mapping proportion= .702")
+subjplot=ggplot(subj_prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat="identity",position="dodge") + labs( title="Proportion of reads mapped with Subjunc") + ylab("Proportion mapped") +  geom_hline(yintercept = mean(subj_prop_mapped$value)) + annotate("text",4, mean(subj_prop_mapped$value)- .1, vjust = -1, label = "Mean mapping proportion= .702")
 ```
 
+###Star mapping  
+
+I added two lines to the csv file with the star map stats for each line.  
+
+
+```{r}
+star_map= read.csv("../data/reads_mapped_three_prime_seq.csv", header=TRUE, stringsAsFactors = FALSE)
+star_map$line=as.factor(star_map$line)
+star_map$fraction=as.factor(star_map$fraction)
+```
+
+
+Summaries for each number:  
+
+```{r}
+summary(star_map$star_mapped)
+summary(star_map$star_prop_mapped)
+
+```
+
+
+Look at this graphically: 
+
+```{r}
+star_melt=melt(star_map, id.vars=c("line", "fraction"), measure.vars = c("reads", "star_mapped", "star_prop_mapped"))
+```
+
+
+```{r}
+star_prop_mapped= star_melt %>% filter(variable=="star_prop_mapped")
+
+starplot=ggplot(star_prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat="identity",position="dodge") + labs( title="Proportion of reads mapped with Star") + ylab("Proportion mapped") +  geom_hline(yintercept = mean(star_prop_mapped$value)) + annotate("text",4, mean(star_prop_mapped$value)- .1, vjust = -1, label = "Mean mapping proportion= .672")
+```
+
+
+Compare the plots: 
+
+```{r}
+plot_grid(subjplot,starplot)
+```
 
