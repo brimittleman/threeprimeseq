@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-05-26</p>
+<p><strong>Last updated:</strong> 2018-06-01</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/252c54861025e29d382b8d7701f355b75ddba66a" target="_blank">252c548</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e4baa3b565652b105f51f7203cdbcd4c97178ee6" target="_blank">e4baa3b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -349,7 +349,12 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
+    Untracked:  data/gene_cov/
     Untracked:  data/reads_mapped_three_prime_seq.csv
+
+Unstaged changes:
+    Modified:   analysis/cov200bpwind.Rmd
+    Modified:   code/Snakefile
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -378,6 +383,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e4baa3b565652b105f51f7203cdbcd4c97178ee6/analysis/initial_map_qc.Rmd" target="_blank">e4baa3b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-01
+</td>
+<td style="text-align:left;">
+compare star and subj
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7126988c179396887a0f6bfb17353fbb309c5217/docs/initial_map_qc.html" target="_blank">7126988</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -457,6 +496,15 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>The following objects are masked from &#39;package:base&#39;:
 
     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>Warning: package &#39;cowplot&#39; was built under R version 3.4.3</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<div id="subjunc" class="section level3">
+<h3>Subjunc</h3>
 <p>I created a csv with the number of reads, mapped reads, and proportion of reads mapped per library.</p>
 <pre class="r"><code>subj_map= read.csv(&quot;../data/reads_mapped_three_prime_seq.csv&quot;, header=TRUE, stringsAsFactors = FALSE)
 subj_map$line=as.factor(subj_map$line)
@@ -475,8 +523,30 @@ subj_map$fraction=as.factor(subj_map$fraction)</code></pre>
 <pre class="r"><code>subj_melt=melt(subj_map, id.vars=c(&quot;line&quot;, &quot;fraction&quot;), measure.vars = c(&quot;reads&quot;, &quot;mapped&quot;, &quot;prop_mapped&quot;))</code></pre>
 <pre class="r"><code>subj_prop_mapped= subj_melt %&gt;% filter(variable==&quot;prop_mapped&quot;)
 
-ggplot(subj_prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs( title=&quot;Proportion of reads mapped with Subjunc&quot;) + ylab(&quot;Proportion mapped&quot;) +  geom_hline(yintercept = mean(subj_prop_mapped$value)) + annotate(&quot;text&quot;,4, mean(subj_prop_mapped$value)- .1, vjust = -1, label = &quot;Mean mapping proportion= .702&quot;)</code></pre>
-<p><img src="figure/initial_map_qc.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+subjplot=ggplot(subj_prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs( title=&quot;Proportion of reads mapped with Subjunc&quot;) + ylab(&quot;Proportion mapped&quot;) +  geom_hline(yintercept = mean(subj_prop_mapped$value)) + annotate(&quot;text&quot;,4, mean(subj_prop_mapped$value)- .1, vjust = -1, label = &quot;Mean mapping proportion= .702&quot;)</code></pre>
+</div>
+<div id="star-mapping" class="section level3">
+<h3>Star mapping</h3>
+<p>I added two lines to the csv file with the star map stats for each line.</p>
+<pre class="r"><code>star_map= read.csv(&quot;../data/reads_mapped_three_prime_seq.csv&quot;, header=TRUE, stringsAsFactors = FALSE)
+star_map$line=as.factor(star_map$line)
+star_map$fraction=as.factor(star_map$fraction)</code></pre>
+<p>Summaries for each number:</p>
+<pre class="r"><code>summary(star_map$star_mapped)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+3326506 5426888 5868012 5834521 6314488 7814874 </code></pre>
+<pre class="r"><code>summary(star_map$star_prop_mapped)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.5648  0.6452  0.6558  0.6719  0.7144  0.7827 </code></pre>
+<p>Look at this graphically:</p>
+<pre class="r"><code>star_melt=melt(star_map, id.vars=c(&quot;line&quot;, &quot;fraction&quot;), measure.vars = c(&quot;reads&quot;, &quot;star_mapped&quot;, &quot;star_prop_mapped&quot;))</code></pre>
+<pre class="r"><code>star_prop_mapped= star_melt %&gt;% filter(variable==&quot;star_prop_mapped&quot;)
+
+starplot=ggplot(star_prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs( title=&quot;Proportion of reads mapped with Star&quot;) + ylab(&quot;Proportion mapped&quot;) +  geom_hline(yintercept = mean(star_prop_mapped$value)) + annotate(&quot;text&quot;,4, mean(star_prop_mapped$value)- .1, vjust = -1, label = &quot;Mean mapping proportion= .672&quot;)</code></pre>
+<p>Compare the plots:</p>
+<pre class="r"><code>plot_grid(subjplot,starplot)</code></pre>
+<p><img src="figure/initial_map_qc.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -495,8 +565,8 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] bindrcpp_0.2    dplyr_0.7.4     reshape2_1.4.3  tidyr_0.7.2    
-[5] ggplot2_2.2.1   workflowr_1.0.1 rmarkdown_1.8.5
+[1] bindrcpp_0.2    cowplot_0.9.2   dplyr_0.7.4     reshape2_1.4.3 
+[5] tidyr_0.7.2     ggplot2_2.2.1   workflowr_1.0.1 rmarkdown_1.8.5
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.15      compiler_3.4.2    pillar_1.1.0     
