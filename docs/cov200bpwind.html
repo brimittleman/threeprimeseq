@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-05-30</p>
+<p><strong>Last updated:</strong> 2018-05-31</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/87e5145783e438edc43e8a0131dfb80d009c6017" target="_blank">87e5145</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/827c3d1dd7e16da05e95c0180845fb1fff284dad" target="_blank">827c3d1</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -351,6 +351,9 @@ Ignored files:
 Untracked files:
     Untracked:  data/gene_cov/
     Untracked:  data/reads_mapped_three_prime_seq.csv
+
+Unstaged changes:
+    Modified:   code/Snakefile
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -379,6 +382,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/827c3d1dd7e16da05e95c0180845fb1fff284dad/analysis/cov200bpwind.Rmd" target="_blank">827c3d1</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-31
+</td>
+<td style="text-align:left;">
+create pos and neg window file and do cov analysis
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/5de4753b6a4f37b93fd4f46f70492e60779f6649/docs/cov200bpwind.html" target="_blank">5de4753</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-05-30
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -494,7 +531,7 @@ describer=$(echo ${sample} | sed -e &#39;s/.*\YL-SP-//&#39; | sed -e &quot;s/-so
 
 
 
-featureCounts -T 5 -s 1 -a /project2/gilad/briana/genome_anotation_data/genome_200_wind_fix2.saf -F &#39;SAF&#39; -o /project2/gilad/briana/threeprimeseq/data/cov_200/${describer}_FC200.cov.bed $1</code></pre>
+featureCounts -T 5 -a /project2/gilad/briana/genome_anotation_data/genome_200_wind_fix2.saf -F &#39;SAF&#39; -o /project2/gilad/briana/threeprimeseq/data/cov_200/${describer}_FC200.cov.bed $1</code></pre>
 <p>I will need to create a wrapper to run this for all of the files.</p>
 <pre class="bash"><code>#!/bin/bash
 
@@ -510,7 +547,43 @@ featureCounts -T 5 -s 1 -a /project2/gilad/briana/genome_anotation_data/genome_2
 for i in $(ls /project2/gilad/briana/threeprimeseq/data/sort/*.bam); do
             sbatch cov200.sh $i 
         done</code></pre>
-<p>Current analysis is not stand specific. I need to make windows for the negative strand.</p>
+<p>Current analysis is not stand specific. I need to make windows for the negative strand. To do this I need to copy the genome_200_wind_fix2.saf file but with geneIDs starting with the last number of the file and with a - for the strand. The last window number is 15685849. I will have to start from 15685850.</p>
+<p>In general I will use awk to create the file. The last number is 31371698 because that is 2 * the number of bins in the genome. I w</p>
+<pre class="bash"><code>#i will delete the top line at the end
+seq 15685849 31371698 &gt; neg.bin.num.txt
+
+ cut -f1 neg.bin.num.txt | paste - genome_200_wind_fix2.saf | awk  &#39;{ if (NR&gt;1) print $1 &quot;\t&quot; $3 &quot;\t&quot; $4 &quot;\t&quot; $5 &quot;\t&quot; &quot;-&quot;}&#39; &gt;  genome_200_wind_fix2.negstrand.saf 
+
+#cat files together  
+
+cat genome_200_wind_fix2.saf  genome_200_wind_fix2.negstrand.saf  &gt; genome_200_strandsspec_wind.saf
+ </code></pre>
+<p>I can use this to get coverage in all of the windows with strand specificity. I will call this script ss_cov200.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=sscov200
+#SBATCH --time=8:00:00
+#SBATCH --output=sscov200.out
+#SBATCH --error=sscov200.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+#input is a bam 
+sample=$1
+
+
+describer=$(echo ${sample} | sed -e &#39;s/.*\YL-SP-//&#39; | sed -e &quot;s/-sort.bam$//&quot;)
+
+
+
+featureCounts -T 5 -s 1 -a /project2/gilad/briana/genome_anotation_data/genome_200_strandsspec_wind.saf -F &#39;SAF&#39; -o /project2/gilad/briana/threeprimeseq/data/ss_cov200/${describer}_ssFC200.cov.bed $1</code></pre>
+<p>Try this with. /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-18486-N_S10_R1_001-sort.bam</p>
+<p>I will update my wrapper to use this script.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
