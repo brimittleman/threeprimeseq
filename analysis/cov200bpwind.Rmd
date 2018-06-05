@@ -441,3 +441,42 @@ Write both of these tables out:
 #write.csv(total_leaf, file="../data/leafcutter/tot_apa_200wind.csv",row.names = FALSE, quote = FALSE)
 ```
 
+
+I actually want both of the samples together and I want the name of the site to be representative of the bin. To do this I can just use the start and end from the bed file. I also will create one table then filter at the end.  
+
+```{r}
+cov_all_anno=cov_all %>% separate(col=Geneid, into=c("bin","gene"), sep=".E") 
+cov_all_anno$gene=  paste( "E",  cov_all_anno$gene, sep="" )
+bin_loc=paste(cov_all_anno$Start, cov_all_anno$End, cov_all_anno$Strand,sep=".")
+
+leaf_all_anno=paste(cov_all_anno$Chr,bin_loc, cov_all_anno$gene, sep=":")
+
+leaf_all=cbind(leaf_all_anno,cov_all_anno[,8:39])
+
+```
+
+Filter this with an or statement. 
+
+```{r}
+leaf_all_nuc= leaf_all %>% select(contains("N_"))
+keep.nuc.leaf=rowSums(leaf_all_nuc>=5) >= 5
+leaf_nuc_filt=leaf_all[keep.nuc.leaf,]
+
+
+leaf_all_tot= leaf_all %>% select(contains("T_"))
+keep.tot.leaf=rowSums(leaf_all_tot>=5) >= 5
+leaf_tot_filt=leaf_all[keep.tot.leaf,]
+
+leaf_all_filt=union(leaf_nuc_filt,leaf_tot_filt)
+
+```
+
+
+Write this out:  
+
+```{r}
+#write.table(leaf_all_filt, file="../data/leafcutter/all_leaf_200wind.csv", row.names = FALSE, quote = FALSE, sep=" ")
+
+```
+
+I need to get rid of the first col name. I can do this in vim on the command line.  
