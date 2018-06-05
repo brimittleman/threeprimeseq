@@ -341,12 +341,13 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1728093aa6691b5a630a812a40b067c52cfcf243" target="_blank">1728093</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/0619d81e1deec84f0cb98af691caf076f936925d" target="_blank">0619d81</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
 
 Untracked files:
     Untracked:  data/gene_cov/
@@ -384,6 +385,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0619d81e1deec84f0cb98af691caf076f936925d/analysis/cov200bpwind.Rmd" target="_blank">0619d81</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+<td style="text-align:left;">
+nonzero bins analysis
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7ea0888a9fb5edb268ff7448bc545742d531b18e/docs/cov200bpwind.html" target="_blank">7ea0888</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -544,6 +579,8 @@ start 200 bp analysis
 <hr />
 <p>I will use this analysis to bin the genome into 200bp windows and look at coverage for the 3’ seq libraries for each of these windows. I will use this data then in the leafcutter pipeline to look at differences between data from the total and nuclear fractions.</p>
 <p>I performed a similar analysis for the net-seq data so some of the code will come from that. <a href="https://brimittleman.github.io/Net-seq/create_blacklist.html" class="uri">https://brimittleman.github.io/Net-seq/create_blacklist.html</a></p>
+<div id="map-reads-to-bins" class="section level3">
+<h3>Map reads to bins</h3>
 <p>The binned genome file is called: genome_200_wind_fix2.saf, it is in my genome annotation directory.</p>
 <pre class="bash"><code>#!/bin/bash
 
@@ -684,8 +721,10 @@ less ${i} | cut -f7 &gt;col
 paste tmp col&gt; tmp2; mv tmp2 tmp; rm col; done
 
 mv tmp ssFC200.cov.bed</code></pre>
-<p>This in now ready to move to R an work with it here.<br />
-rememeber!!! 223 order problem</p>
+<p>This in now ready to move to R an work with it here.</p>
+</div>
+<div id="assess-bin-coverage" class="section level3">
+<h3>Assess bin coverage</h3>
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>Loading required package: rmarkdown</code></pre>
 <pre><code>This is workflowr version 1.0.1
@@ -722,7 +761,38 @@ colnames(cov_all)= names</code></pre>
 <pre class="r"><code>cov_nums_only=cov_all[,7:38]
 cov_nums_only_log=log10(cov_nums_only)
 plotDensities(cov_nums_only_log,legend = &quot;bottomright&quot;, main=&quot;bin log 10 counts&quot;)</code></pre>
-<p><img src="figure/cov200bpwind.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /> Now I want to filter for bins that have 0 reads in &gt;16 samples.</p>
+<p><img src="figure/cov200bpwind.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7ea0888a9fb5edb268ff7448bc545742d531b18e/docs/figure/cov200bpwind.Rmd/unnamed-chunk-15-1.png" target="_blank">7ea0888</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Now I want to filter for bins that have 0 reads in &gt;16 samples.</p>
 <pre class="r"><code>keep.exprs=rowSums(cov_nums_only&gt;0) &gt;= 16
 
 cov_all_filt=cov_all[keep.exprs,]
@@ -732,6 +802,36 @@ bin.genes=cov_all_filt[,1]</code></pre>
 
 plotDensities(cov_all_filt_log,legend = &quot;bottomright&quot;, main=&quot;Filtered bin log10 +1 counts&quot;)</code></pre>
 <p><img src="figure/cov200bpwind.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7ea0888a9fb5edb268ff7448bc545742d531b18e/docs/figure/cov200bpwind.Rmd/unnamed-chunk-17-1.png" target="_blank">7ea0888</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I want to make boxplots for each of these lines. I should tidy the data with a column for total or nuclear.</p>
 <pre class="r"><code>sample=c(&quot;N_18486&quot;,&quot;T_18486&quot;,&quot;N_18497&quot;,&quot;T_18497&quot;,&quot;N_18500&quot;,&quot;T_18500&quot;,&quot;N_18505&quot;,&#39;T_18505&#39;,&quot;N_18508&quot;,&quot;T_18508&quot;,&quot;N_18853&quot;,&quot;T_18853&quot;,&quot;N_18870&quot;,&quot;T_18870&quot;,&quot;N_19128&quot;,&quot;T_19128&quot;,&quot;N_19141&quot;,&quot;T_19141&quot;,&quot;N_19193&quot;,&quot;T_19193&quot;,&quot;N_19209&quot;,&quot;T_19209&quot;,&quot;N_19223&quot;,&quot;N_19225&quot;,&quot;T_19225&quot;,&quot;T_19223&quot;,&quot;N_19238&quot;,&quot;T_19238&quot;,&quot;N_19239&quot;,&quot;T_19239&quot;,&quot;N_19257&quot;,&quot;T_19257&quot;)
 fraction=c(&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&#39;T&#39;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;N&quot;,&quot;T&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;,&quot;N&quot;,&quot;T&quot;)
@@ -748,7 +848,65 @@ cov_all_tidy_frac=cov_all_tidy %&gt;% mutate(fraction=ifelse(grepl(&quot;T&quot;
 <pre class="r"><code>bin_count=ggplot(cov_all_tidy_frac, aes(x = line, y=value,fill=fraction )) + geom_boxplot(position=&quot;dodge&quot;) + labs(y=&quot;log10 count + 1&quot;, title=&quot;Bins in nuclear fractions have larger counts &quot; )
 bin_count</code></pre>
 <p><img src="figure/cov200bpwind.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7ea0888a9fb5edb268ff7448bc545742d531b18e/docs/figure/cov200bpwind.Rmd/unnamed-chunk-19-1.png" target="_blank">7ea0888</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>#ggsave(&quot;../output/plots/bin_counts_by_line.png&quot;, bin_count)</code></pre>
+</div>
+<div id="non-zero-bins" class="section level3">
+<h3>Non-zero bins</h3>
+<p>For the next section of this analysis I want to look at how many of the bins have non zero counts. I will do this over all then I will gather per gene and look at this. I will use the filtered non transformed data.</p>
+<pre class="r"><code>cov_all_filt_genes=separate(data = cov_all_filt, col = Geneid, into = c(&quot;bin&quot;, &quot;gene&quot;), sep = &quot;.E&quot;) 
+cov_all_filt_genes$gene= paste( &quot;E&quot;,  cov_all_filt_genes$gene, sep=&quot;&quot; )
+cov_all_filt_num=cov_all_filt_genes[,8:39]
+non_zero=colSums(cov_all_filt_num != 0)
+
+#make a data frame to plot this
+
+non_zero_df=data.frame(non_zero)
+non_zero_df= non_zero_df %&gt;% mutate(fraction=ifelse(grepl(&quot;T&quot;,rownames(non_zero_df)), &quot;total&quot;, &quot;nuclear&quot;)) %&gt;% mutate(line=substr(rownames(non_zero_df),3,7))
+
+
+non_zero_plot=ggplot(non_zero_df, aes(x = line, y=non_zero, fill=fraction )) + geom_bar(position=&quot;dodge&quot;,stat=&quot;identity&quot;) + labs(y=&quot;Non zero bins&quot;, title=&quot;Number of bins with reads after filtering&quot;)
+non_zero_plot</code></pre>
+<p><img src="figure/cov200bpwind.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#ggsave(&quot;../output/plots/non_zero_bins.png&quot;, non_zero_plot)</code></pre>
+<p>This analysis is bins over all. I want to look at this by gene. I want to get a number of nonzero bins per gene/ number of bins for that gene. I will use the gather function.</p>
+<pre class="r"><code>cov_all_filt_small=cbind(cov_all_filt_genes[,1:2],cov_all_filt_genes[,8:39])
+cov_all_filt_pergene=cov_all_filt_small %&gt;% gather(sample, value, -gene, -bin)  %&gt;% group_by(gene, sample) %&gt;% summarise(non_zero=sum(value!=0)/n())%&gt;% mutate(fraction=ifelse(grepl(&quot;T&quot;,sample), &quot;total&quot;, &quot;nuclear&quot;)) %&gt;% mutate(line=substr(sample,3,7))</code></pre>
+<p>Now I have the number of non zero bins in that gene/ number of bins in that gene. I need to think about the way to plot this.</p>
+</div>
+<div id="prepare-data-for-leafcutter" class="section level3">
+<h3>Prepare data for leafcutter:</h3>
+<p>For leafcutter I need the data to be reads in one bin compared to other bins in that gene.</p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
