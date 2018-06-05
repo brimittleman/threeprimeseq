@@ -12,7 +12,7 @@ I will use this analysis to bin the genome into 200bp windows and look at covera
 
 I performed a similar analysis for the net-seq data so some of the code will come from that.  https://brimittleman.github.io/Net-seq/create_blacklist.html  
 
-
+###Map reads to bins  
 The binned genome file is called: genome_200_wind_fix2.saf, it is in my genome annotation directory.  
 
 ```{bash, eval=FALSE}
@@ -213,8 +213,9 @@ mv tmp ssFC200.cov.bed
 ```
 
 This in now ready to move to R an work with it here.  
-rememeber!!! 223 order problem
 
+
+###Assess bin coverage
 
 ```{r}
 library(workflowr)
@@ -291,3 +292,38 @@ bin_count
 ```
 
 
+###Non-zero bins  
+
+For the next section of this analysis I want to look at how many of the bins have non zero counts. I will do this over all then I will gather per gene and look at this. I will use the filtered non transformed data.  
+
+```{r}
+cov_all_filt_genes=separate(data = cov_all_filt, col = Geneid, into = c("bin", "gene"), sep = ".E") 
+cov_all_filt_genes$gene= paste( "E",  cov_all_filt_genes$gene, sep="" )
+cov_all_filt_num=cov_all_filt_genes[,8:39]
+non_zero=colSums(cov_all_filt_num != 0)
+
+#make a data frame to plot this
+
+non_zero_df=data.frame(non_zero)
+non_zero_df= non_zero_df %>% mutate(fraction=ifelse(grepl("T",rownames(non_zero_df)), "total", "nuclear")) %>% mutate(line=substr(rownames(non_zero_df),3,7))
+
+
+non_zero_plot=ggplot(non_zero_df, aes(x = line, y=non_zero, fill=fraction )) + geom_bar(position="dodge",stat="identity") + labs(y="Non zero bins", title="Number of bins with reads after filtering")
+non_zero_plot
+#ggsave("../output/plots/non_zero_bins.png", non_zero_plot)
+```
+
+This analysis is bins over all. I want to look at this by gene. I want to get a number of nonzero bins per gene/ number of bins for that gene. I will use the gather function.  
+
+```{r}
+cov_all_filt_small=cbind(cov_all_filt_genes[,1:2],cov_all_filt_genes[,8:39])
+cov_all_filt_pergene=cov_all_filt_small %>% gather(sample, value, -gene, -bin)  %>% group_by(gene, sample) %>% summarise(non_zero=sum(value!=0)/n())%>% mutate(fraction=ifelse(grepl("T",sample), "total", "nuclear")) %>% mutate(line=substr(sample,3,7))
+
+```
+
+Now I have the number of non zero bins in that gene/ number of bins in that gene. I need to think about the way to plot this.  
+
+
+###Prepare data for leafcutter: 
+
+For leafcutter I need the data to be reads in one bin compared to other bins in that gene.
