@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-04</p>
+<p><strong>Last updated:</strong> 2018-06-05</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,16 +341,16 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/0619d81e1deec84f0cb98af691caf076f936925d" target="_blank">0619d81</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f3199e2264c0762775bc0b22120dd6f0506fa918" target="_blank">f3199e2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
 
 Untracked files:
     Untracked:  data/gene_cov/
+    Untracked:  data/leafcutter/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/ssFC200.cov.bed
     Untracked:  output/plots/
@@ -385,6 +385,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f3199e2264c0762775bc0b22120dd6f0506fa918/analysis/cov200bpwind.Rmd" target="_blank">f3199e2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-05
+</td>
+<td style="text-align:left;">
+prepare leaf cutter table
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4a45d81a3a87bb33a5461c186ca4d8007ba2fb43/docs/cov200bpwind.html" target="_blank">4a45d81</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -579,8 +613,8 @@ start 200 bp analysis
 <hr />
 <p>I will use this analysis to bin the genome into 200bp windows and look at coverage for the 3’ seq libraries for each of these windows. I will use this data then in the leafcutter pipeline to look at differences between data from the total and nuclear fractions.</p>
 <p>I performed a similar analysis for the net-seq data so some of the code will come from that. <a href="https://brimittleman.github.io/Net-seq/create_blacklist.html" class="uri">https://brimittleman.github.io/Net-seq/create_blacklist.html</a></p>
-<div id="map-reads-to-bins" class="section level3">
-<h3>Map reads to bins</h3>
+<div id="map-reads-to-bins" class="section level2">
+<h2>Map reads to bins</h2>
 <p>The binned genome file is called: genome_200_wind_fix2.saf, it is in my genome annotation directory.</p>
 <pre class="bash"><code>#!/bin/bash
 
@@ -723,8 +757,8 @@ paste tmp col&gt; tmp2; mv tmp2 tmp; rm col; done
 mv tmp ssFC200.cov.bed</code></pre>
 <p>This in now ready to move to R an work with it here.</p>
 </div>
-<div id="assess-bin-coverage" class="section level3">
-<h3>Assess bin coverage</h3>
+<div id="assess-bin-coverage" class="section level2">
+<h2>Assess bin coverage</h2>
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>Loading required package: rmarkdown</code></pre>
 <pre><code>This is workflowr version 1.0.1
@@ -879,7 +913,6 @@ Briana Mittleman
 </table>
 <p></details></p>
 <pre class="r"><code>#ggsave(&quot;../output/plots/bin_counts_by_line.png&quot;, bin_count)</code></pre>
-</div>
 <div id="non-zero-bins" class="section level3">
 <h3>Non-zero bins</h3>
 <p>For the next section of this analysis I want to look at how many of the bins have non zero counts. I will do this over all then I will gather per gene and look at this. I will use the filtered non transformed data.</p>
@@ -897,15 +930,120 @@ non_zero_df= non_zero_df %&gt;% mutate(fraction=ifelse(grepl(&quot;T&quot;,rowna
 non_zero_plot=ggplot(non_zero_df, aes(x = line, y=non_zero, fill=fraction )) + geom_bar(position=&quot;dodge&quot;,stat=&quot;identity&quot;) + labs(y=&quot;Non zero bins&quot;, title=&quot;Number of bins with reads after filtering&quot;)
 non_zero_plot</code></pre>
 <p><img src="figure/cov200bpwind.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4a45d81a3a87bb33a5461c186ca4d8007ba2fb43/docs/figure/cov200bpwind.Rmd/unnamed-chunk-20-1.png" target="_blank">4a45d81</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>#ggsave(&quot;../output/plots/non_zero_bins.png&quot;, non_zero_plot)</code></pre>
 <p>This analysis is bins over all. I want to look at this by gene. I want to get a number of nonzero bins per gene/ number of bins for that gene. I will use the gather function.</p>
 <pre class="r"><code>cov_all_filt_small=cbind(cov_all_filt_genes[,1:2],cov_all_filt_genes[,8:39])
 cov_all_filt_pergene=cov_all_filt_small %&gt;% gather(sample, value, -gene, -bin)  %&gt;% group_by(gene, sample) %&gt;% summarise(non_zero=sum(value!=0)/n())%&gt;% mutate(fraction=ifelse(grepl(&quot;T&quot;,sample), &quot;total&quot;, &quot;nuclear&quot;)) %&gt;% mutate(line=substr(sample,3,7))</code></pre>
 <p>Now I have the number of non zero bins in that gene/ number of bins in that gene. I need to think about the way to plot this.</p>
 </div>
-<div id="prepare-data-for-leafcutter" class="section level3">
-<h3>Prepare data for leafcutter:</h3>
-<p>For leafcutter I need the data to be reads in one bin compared to other bins in that gene.</p>
+</div>
+<div id="prepare-data-for-leafcutter" class="section level2">
+<h2>Prepare data for leafcutter:</h2>
+<p>For leafcutter I need the data to look like:</p>
+<p>chr1:APA1:gene_name count.ind1 count.ind2</p>
+<p>chr1:APA2:gene_name ind1 count.ind2</p>
+<p>I will separate the fractions into 2 data frames them filter each by bins with at least 5 counts in 1/3 of the individuals.</p>
+<pre class="r"><code>#counts only
+cov_nuc=cov_all %&gt;% select(contains(&quot;N_&quot;))
+#with annotations
+cov_nuc_anno=cbind(cov_all[,1:6], cov_nuc)
+
+keep.nuc= rowSums(cov_nuc&gt;=5) &gt;= 5
+
+#annotated and filtered nuclear
+cov_nuc_anno_filt=cov_nuc_anno[keep.nuc,]</code></pre>
+<p>Run the same filter for the total fraction.</p>
+<pre class="r"><code>#counts total only  
+cov_tot=cov_all %&gt;% select(contains(&quot;T_&quot;))
+#with annotaiton
+cov_tot_anno=cbind(cov_all[,1:6], cov_tot)
+
+keep_tot=rowSums(cov_tot&gt;=5)&gt;=5
+
+#annotated and filtered total
+
+cov_tot_anno_filt=cov_tot_anno[keep_tot,]</code></pre>
+<p>Now I need to change the annoation to be chrom:apa#:gene. To do this I need to know how many bins for each bin are in the file. I can use groupby and summarize to do this.</p>
+<pre class="r"><code>#nuclear genes
+
+genes_nuc= cov_nuc_anno_filt %&gt;% separate(col = Geneid, into = c(&quot;bin&quot;, &quot;gene&quot;), sep = &quot;.E&quot;) %&gt;% group_by(gene) %&gt;% select(gene) %&gt;% tally()
+genes_nuc$gene= paste( &quot;E&quot;,  genes_nuc$gene, sep=&quot;&quot; )
+
+
+
+#total genes
+
+
+genes_tot=cov_tot_anno_filt %&gt;% separate(col=Geneid, into=c(&quot;bin&quot;,&quot;gene&quot;), sep=&quot;.E&quot;) %&gt;% group_by(gene) %&gt;% select(gene) %&gt;% tally()
+
+
+genes_tot$gene=paste(&quot;E&quot;, genes_tot$gene, sep=&quot;&quot;)</code></pre>
+<p>Now I need a way to make a vector with APA# counting up for the number of bins in each gene.</p>
+<pre class="r"><code>#nuclear APA
+apa_nuc=c()
+for (row in 1:nrow(genes_nuc)){
+  x=1
+  i=1
+  while(i &lt;= as.numeric(genes_nuc[row,2])){
+    apa_nuc= c(apa_nuc, paste(&quot;APA&quot;, x, sep = &quot;&quot;))
+    x= x + 1
+    i= i + 1
+  }
+}</code></pre>
+<pre class="r"><code>#total APA
+apa_tot=c()
+for(row in 1:nrow(genes_tot)){
+  x=1
+  i=1
+  while(i&lt;= as.numeric(genes_tot[row,2])){
+    apa_tot=c(apa_tot, paste(&quot;APA&quot;, x, sep=&quot;&quot;))
+    x= x + 1
+    i= i + 1
+  }
+}</code></pre>
+<p>The apa_tot and apa_nuc vector now number the bins with reads for each gene. I can use this to make the table.</p>
+<pre class="r"><code>cov_tot_anno_filt_group= cov_tot_anno_filt %&gt;%separate(col=Geneid, into=c(&quot;bin&quot;,&quot;gene&quot;), sep=&quot;.E&quot;) %&gt;% group_by(gene) %&gt;% arrange(gene)
+cov_tot_anno_filt_group$gene=  paste( &quot;E&quot;,  cov_tot_anno_filt_group$gene, sep=&quot;&quot; )
+total_anno=paste(cov_tot_anno_filt_group$Chr, apa_tot, cov_tot_anno_filt_group$gene, sep=&quot;:&quot;)
+total_leaf=cbind(total_anno, cov_tot_anno_filt_group[,8:22]) </code></pre>
+<p>To this for nuclear:</p>
+<pre class="r"><code>cov_nuc_anno_filt_group = cov_nuc_anno_filt %&gt;% separate(col=Geneid, into=c(&quot;bin&quot;,&quot;gene&quot;), sep=&quot;.E&quot;) %&gt;% group_by(gene) %&gt;% arrange(gene)
+cov_nuc_anno_filt_group$gene=paste(&quot;E&quot;,cov_nuc_anno_filt_group$gene, sep=&quot;&quot;)
+nuc_anno=paste(cov_nuc_anno_filt_group$Chr,apa_nuc,cov_nuc_anno_filt_group$gene, sep=&quot;:&quot;)
+nuc_leaf=cbind(nuc_anno,cov_nuc_anno_filt_group[,8:22])</code></pre>
+<p>Write both of these tables out:</p>
+<pre class="r"><code>#write.csv(nuc_leaf, file=&quot;../data/leafcutter/nuc_apa_200wind.csv&quot;,row.names = FALSE, quote = FALSE)
+#write.csv(total_leaf, file=&quot;../data/leafcutter/tot_apa_200wind.csv&quot;,row.names = FALSE, quote = FALSE)</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
