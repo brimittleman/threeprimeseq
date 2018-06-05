@@ -38,7 +38,7 @@ describer=$(echo ${sample} | sed -e 's/.*\YL-SP-//' | sed -e "s/-sort.bam$//")
 
 
 
-featureCounts -T 5 -a /project2/gilad/briana/genome_anotation_data/genome_200_wind_fix2.saf -F 'SAF' -o /project2/gilad/briana/threeprimeseq/data/cov_200/${describer}_FC200.cov.bed $1
+featureCounts -T 5 -a /project2/gilad/briana/genome_anotation_data/an.int.genome_200_strandspec.saf -F 'SAF' -o /project2/gilad/briana/threeprimeseq/data/cov_200/${describer}_FC200.cov.bed $1
 ```
 
 
@@ -104,9 +104,190 @@ describer=$(echo ${sample} | sed -e 's/.*\YL-SP-//' | sed -e "s/-sort.bam$//")
 
 
 
-featureCounts -T 5 -s 1 -a /project2/gilad/briana/genome_anotation_data/genome_200_strandsspec_wind.saf -F 'SAF' -o /project2/gilad/briana/threeprimeseq/data/ss_cov200/${describer}_ssFC200.cov.bed $1
+featureCounts -T 5 -s 1 -O --fraction -a /project2/gilad/briana/genome_anotation_data/genome_200_strandsspec_wind.saf -F 'SAF' -o /project2/gilad/briana/threeprimeseq/data/ss_cov200/${describer}_ssFC200.cov.bed $1
 ```
 
 Try this with. /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-18486-N_S10_R1_001-sort.bam 
 
 I will update my wrapper to use this script.  
+
+
+The current script does not allow reads that map to multiple bins. We expect then so I will update the featureCounts code to account for this. 
+
+-O allows multi mapping
+-fraction will put a fraction of the read in each bin
+
+The next step is to add genes annotations to each bin. I will do this with bedtools closest on my window file.  
+
+gene file: /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.sort.bed
+
+I want to keep the windows with gene and add the name of the gene they are in.  
+
+a= windows
+b= genes 
+
+force stranded= -s
+
+I need to make the window file a sorted bed file. It should be the chr number without the 'chr' tag, start, end, bin number, ".", strand.  
+
+```{bash, eval=F}
+awk '{if (NR>1) print $2 "\t" $3 "\t" $4 "\t" $1 "\t" "." "\t" $5}' genome_200_strandsspec_wind.saf  | sed 's/^chr//' | sort -k1,1 -k2,2n > genome_200_strandspec.bed
+
+```
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=annotate_wind
+#SBATCH --time=8:00:00
+#SBATCH --output=an_wind.out
+#SBATCH --error=an_wind.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+
+source activate three-prime-env
+
+
+bedtools closest -s -a genome_200_strandspec.bed -b gencode.v19.annotation.proteincodinggene.sort.bed > annotated.genome_200_strandspec.bed
+```
+
+Now i can use intersect to only keep the windows that interdect that protien coding genes.  
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=int_wind
+#SBATCH --time=8:00:00
+#SBATCH --output=int_wind.out
+#SBATCH --error=int_wind.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+
+source activate three-prime-env
+
+
+bedtools intersect -wa -sorted -s -a annotated.genome_200_strandspec.bed -b gencode.v19.annotation.proteincodinggene.sort.bed > annotated.int.genome_200_strandspec.bed
+```
+
+
+```{bash, eval=F}
+awk '{print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $10}'  annotated.int.genome_200_strandspec.bed >  an.int.genome_200_strandspec.bed
+```
+
+I went from 31590487 to 7371747 windows. I need to make this into a saf file and the name of the window will be the number.gene
+
+```{bash, eval=F}
+awk '{print $4"."$7 "\t" $1 "\t" $2 "\t" $3 "\t" $6}'  an.int.genome_200_strandspec.bed > an.int.genome_200_strandspec.saf
+
+#go into the file with vi and add header
+```
+Now I can change my feature counts script to use this file instead.  
+
+
+I need to get rid of the lines with 2 genes overlapping in the bin. I will do this by removing the lines with a :.  
+```{bash, eval=F}
+
+for i in $(ls *.bed); do
+      cat $i | grep -v -e ";" > ../ss_cov200_no_overlap/$i
+  done
+
+```
+
+The  next step is to bind all of these files.  This file will have all 6323877 windows as the rows and columns for each of the 32 files  
+
+```{bash, eval=F}
+
+less 18486-N_S10_R1_001_ssFC200.cov.bed  | cut -f1-6 > tmp 
+for i in ./*cov.bed; do
+echo "$i"
+less ${i} | cut -f7 >col
+paste tmp col> tmp2; mv tmp2 tmp; rm col; done
+
+mv tmp ssFC200.cov.bed
+```
+
+This in now ready to move to R an work with it here.  
+rememeber!!! 223 order problem
+
+
+```{r}
+library(workflowr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(edgeR)
+library(reshape2)
+```
+
+
+
+
+```{r}
+names=c("N_18486","T_18486","N_18497","T_18497","N_18500","T_18500","N_18505",'T_18505',"N_18508","T_18508","N_18853","T_18853","N_18870","T_18870","N_19128","T_19128","N_19141","T_19141","N_19193","T_19193","N_19209","T_19209","N_19223","N_19225","T_19225","T_19223","N_19238","T_19238","N_19239","T_19239","N_19257","T_19257")
+```
+
+```{r}
+cov_all=read.table("../data/ssFC200.cov.bed", header = T, stringsAsFactors = FALSE)
+#remember name switch!
+names=c("Geneid","Chr", "Start", "End", "Strand", "Length", "N_18486","T_18486","N_18497","T_18497","N_18500","T_18500","N_18505",'T_18505',"N_18508","T_18508","N_18853","T_18853","N_18870","T_18870","N_19128","T_19128","N_19141","T_19141","N_19193","T_19193","N_19209","T_19209","N_19223","N_19225","T_19225","T_19223","N_19238","T_19238","N_19239","T_19239","N_19257","T_19257")
+
+colnames(cov_all)= names
+```
+
+Plot the density of the log of the counts.  
+
+```{r}
+cov_nums_only=cov_all[,7:38]
+cov_nums_only_log=log10(cov_nums_only)
+plotDensities(cov_nums_only_log,legend = "bottomright", main="bin log 10 counts")
+```
+Now I want to filter for bins that have 0 reads in >16 samples.  
+
+
+```{r}
+keep.exprs=rowSums(cov_nums_only>0) >= 16
+
+cov_all_filt=cov_all[keep.exprs,]
+bin.genes=cov_all_filt[,1]
+```
+
+I will now look at the densities.
+
+```{r}
+cov_all_filt_log=log10(cov_all_filt[,7:38] + 1) 
+
+plotDensities(cov_all_filt_log,legend = "bottomright", main="Filtered bin log10 +1 counts")
+```
+
+I want to make boxplots for each of these lines. I should tidy the data with a column for total or nuclear.  
+
+```{r}
+sample=c("N_18486","T_18486","N_18497","T_18497","N_18500","T_18500","N_18505",'T_18505',"N_18508","T_18508","N_18853","T_18853","N_18870","T_18870","N_19128","T_19128","N_19141","T_19141","N_19193","T_19193","N_19209","T_19209","N_19223","N_19225","T_19225","T_19223","N_19238","T_19238","N_19239","T_19239","N_19257","T_19257")
+fraction=c("N","T","N","T","N","T","N",'T',"N","T","N","T","N","T","N","T","N","T","N","T","N","T","N","N","T","T","N","T","N","T","N","T")
+
+cov_all_filt_log_gen=cbind(bin.genes,cov_all_filt_log)
+
+cov_all_tidy= cov_all_filt_log_gen%>% gather(sample, value, -bin.genes)
+
+
+#add fraction column
+
+cov_all_tidy_frac=cov_all_tidy %>% mutate(fraction=ifelse(grepl("T",sample), "total", "nuclear")) %>% mutate(line=substr(sample,3,7))
+
+```
+Make a heatmap: 
+
+```{r}
+bin_count=ggplot(cov_all_tidy_frac, aes(x = line, y=value,fill=fraction )) + geom_boxplot(position="dodge") + labs(y="log10 count + 1", title="Bins in nuclear fractions have larger counts " )
+bin_count
+
+#ggsave("../output/plots/bin_counts_by_line.png", bin_count)
+```
+
+
