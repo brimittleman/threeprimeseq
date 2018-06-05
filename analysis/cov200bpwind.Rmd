@@ -12,7 +12,7 @@ I will use this analysis to bin the genome into 200bp windows and look at covera
 
 I performed a similar analysis for the net-seq data so some of the code will come from that.  https://brimittleman.github.io/Net-seq/create_blacklist.html  
 
-###Map reads to bins  
+##Map reads to bins  
 The binned genome file is called: genome_200_wind_fix2.saf, it is in my genome annotation directory.  
 
 ```{bash, eval=FALSE}
@@ -215,7 +215,7 @@ mv tmp ssFC200.cov.bed
 This in now ready to move to R an work with it here.  
 
 
-###Assess bin coverage
+##Assess bin coverage
 
 ```{r}
 library(workflowr)
@@ -324,6 +324,120 @@ cov_all_filt_pergene=cov_all_filt_small %>% gather(sample, value, -gene, -bin)  
 Now I have the number of non zero bins in that gene/ number of bins in that gene. I need to think about the way to plot this.  
 
 
-###Prepare data for leafcutter: 
+##Prepare data for leafcutter: 
 
-For leafcutter I need the data to be reads in one bin compared to other bins in that gene.
+For leafcutter I need the data to look like:
+
+chr1:APA1:gene_name count.ind1 count.ind2
+
+chr1:APA2:gene_name ind1 count.ind2
+
+I will separate the fractions into 2 data frames them filter each by bins with at least 5 counts in 1/3 of the individuals.  
+
+```{r}
+#counts only
+cov_nuc=cov_all %>% select(contains("N_"))
+#with annotations
+cov_nuc_anno=cbind(cov_all[,1:6], cov_nuc)
+
+keep.nuc= rowSums(cov_nuc>=5) >= 5
+
+#annotated and filtered nuclear
+cov_nuc_anno_filt=cov_nuc_anno[keep.nuc,]
+```
+
+Run the same filter for the total fraction.  
+
+```{r}
+#counts total only  
+cov_tot=cov_all %>% select(contains("T_"))
+#with annotaiton
+cov_tot_anno=cbind(cov_all[,1:6], cov_tot)
+
+keep_tot=rowSums(cov_tot>=5)>=5
+
+#annotated and filtered total
+
+cov_tot_anno_filt=cov_tot_anno[keep_tot,]
+
+```
+
+Now I need to change the annoation to be chrom:apa#:gene. To do this I need to know how many bins for each bin are in the file. I can use groupby and summarize to do this.  
+
+```{r}
+#nuclear genes
+
+genes_nuc= cov_nuc_anno_filt %>% separate(col = Geneid, into = c("bin", "gene"), sep = ".E") %>% group_by(gene) %>% select(gene) %>% tally()
+genes_nuc$gene= paste( "E",  genes_nuc$gene, sep="" )
+
+
+
+#total genes
+
+
+genes_tot=cov_tot_anno_filt %>% separate(col=Geneid, into=c("bin","gene"), sep=".E") %>% group_by(gene) %>% select(gene) %>% tally()
+
+
+genes_tot$gene=paste("E", genes_tot$gene, sep="")
+```
+
+
+Now I need a way to make a vector with APA# counting up for the number of bins in each gene. 
+
+```{r}
+#nuclear APA
+apa_nuc=c()
+for (row in 1:nrow(genes_nuc)){
+  x=1
+  i=1
+  while(i <= as.numeric(genes_nuc[row,2])){
+    apa_nuc= c(apa_nuc, paste("APA", x, sep = ""))
+    x= x + 1
+    i= i + 1
+  }
+}
+```
+
+```{r}
+#total APA
+apa_tot=c()
+for(row in 1:nrow(genes_tot)){
+  x=1
+  i=1
+  while(i<= as.numeric(genes_tot[row,2])){
+    apa_tot=c(apa_tot, paste("APA", x, sep=""))
+    x= x + 1
+    i= i + 1
+  }
+}
+```
+
+The apa_tot and apa_nuc vector now number the bins with reads for each gene. I can use this to make the table.   
+
+
+```{r}
+cov_tot_anno_filt_group= cov_tot_anno_filt %>%separate(col=Geneid, into=c("bin","gene"), sep=".E") %>% group_by(gene) %>% arrange(gene)
+cov_tot_anno_filt_group$gene=  paste( "E",  cov_tot_anno_filt_group$gene, sep="" )
+total_anno=paste(cov_tot_anno_filt_group$Chr, apa_tot, cov_tot_anno_filt_group$gene, sep=":")
+total_leaf=cbind(total_anno, cov_tot_anno_filt_group[,8:22]) 
+
+```
+
+
+To this for nuclear:
+
+```{r}
+cov_nuc_anno_filt_group = cov_nuc_anno_filt %>% separate(col=Geneid, into=c("bin","gene"), sep=".E") %>% group_by(gene) %>% arrange(gene)
+cov_nuc_anno_filt_group$gene=paste("E",cov_nuc_anno_filt_group$gene, sep="")
+nuc_anno=paste(cov_nuc_anno_filt_group$Chr,apa_nuc,cov_nuc_anno_filt_group$gene, sep=":")
+nuc_leaf=cbind(nuc_anno,cov_nuc_anno_filt_group[,8:22])
+```
+
+
+Write both of these tables out:  
+
+```{r}
+#write.csv(nuc_leaf, file="../data/leafcutter/nuc_apa_200wind.csv",row.names = FALSE, quote = FALSE)
+#write.csv(total_leaf, file="../data/leafcutter/tot_apa_200wind.csv",row.names = FALSE, quote = FALSE)
+```
+
