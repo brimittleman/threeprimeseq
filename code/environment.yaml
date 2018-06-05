@@ -28,6 +28,7 @@ channels:
     - jdblischak
     - defaults
     - r
+    - davidaknowles
 
 
 
@@ -57,3 +58,4 @@ dependencies:
     - bwa
     - picard >= 2.9.2
     - verifybamid
+    - r-leafcutter
