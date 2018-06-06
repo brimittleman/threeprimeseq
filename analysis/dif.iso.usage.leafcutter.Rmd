@@ -1,0 +1,113 @@
+---
+title: "Differential isoform usage netween total and nuclear fractions"
+author: "Briana Mittleman"
+date: "6/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this analysis I will use the file I created in the previous analysis along with the leafcutter software to run a differential isoform usage analysis between my total and nucelar fractions.  
+
+```{r}
+library(workflowr)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(edgeR)
+library(reshape2)
+```
+##Final data preparation:  
+
+Create the differential sample file. It will have the names of the samples in column 1 and the fraction they belong to in column two.  
+
+
+```{r}
+isoform_data=read.table("../data/leafcutter/all_leaf_200wind.csv")
+
+samples=colnames(isoform_data)
+
+fraction=c()
+for (i in samples){
+  if(grepl("N", i)){
+    fraction=c(fraction, "Nuclear")
+  }
+  else{
+    fraction=c(fraction, "Total")
+  }
+}
+
+
+sample_anno=cbind(samples,fraction)
+```
+
+I will write this to the leafcutter directory without the header.   
+
+```{r}
+#write.table(sample_anno, file="../data/leafcutter/sample_ano.txt", row.names = FALSE, quote = FALSE, sep=" ", col.names = F)
+```
+
+##Leafcutter results  
+
+
+Confirm we only have 2188 genes with APA here.  
+
+```{r}
+genes.anno=data.frame(x=rownames(isoform_data)) %>%  separate(col=x, into=c("chr","bin","gene"), sep=":")
+n_genes= n_distinct(genes.anno$gene) 
+num_gene=genes.anno %>% group_by(gene) %>% select(gene) %>% tally() %>% filter(n>1)
+
+dim(num_gene)
+```
+
+We have 3797 unique genes in this file and only 2188 have multiple bins passing the filter.  
+
+I ran leafcutter on the cluster with the following command.  
+```{bash, eval=F}
+Rscript /project2/gilad/briana/leafcutter/scripts/leafcutter_ds.R all_apa_perind.csv.gz sample_ano.txt -o APA
+```
+
+The resutls for significant bins are in the effet size file.  
+
+```{r}
+effect_size=read.table("../data/leafcutter/APA_effect_sizes.txt", header=T)
+effect_size= effect_size %>%  separate(col=intron, into=c("chr","start","end", "gene"), sep=":")
+effect_size= effect_size %>%  separate(col=gene, into=c("clu", "gene", "strand"), sep="_")
+```
+```{r}
+counts=read.table("../data/leafcutter/all_leaf_200wind.csv")
+genes=rownames(counts)
+
+
+counts_anno=cbind(genes,counts) 
+
+```
+
+I need a way to plot the counts for the bins called as significant in leafcutter. To do this I should tidy the counts data and have line and sample coulmns. Then I can create boxplots.  
+
+
+```{r}
+counts_melt =melt(counts_anno, id.vars="genes") %>% mutate(fraction=ifelse(grepl("T", variable), "total", "nuclear")) %>% mutate(line=substr(variable,3,7)) %>% separate(col=genes, into=c("chr","bin", "gene"), sep=":")
+```
+
+I can filter this for specific genes and examples. I am going to first look at the gene with the top effect size.  ENSG00000066135.8
+
+```{r}
+counts_melt_ENSG00000066135.8= counts_melt %>% filter(gene=="ENSG00000066135.8") %>% arrange(bin) 
+```
+
+Try to plot this.  
+
+```{r}
+ggplot(counts_melt_ENSG00000066135.8, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in KDM4A by fraction", y="Read Counts")
+```
+Look at one more gene.  ENSG00000182578.9
+
+```{r}
+counts_melt_ENSG00000182578.9= counts_melt %>% filter(gene=="ENSG00000182578.9") %>% arrange(bin) 
+ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in ENSG00000182578.9 by fraction", y="Read Counts")
+```
+
+
