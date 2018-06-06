@@ -119,6 +119,24 @@ ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=value, fill=fraction)) + geom
 
 I want to change the y axis to a ratio of reads in the bin/reads in all bins for that individual.  To do this I will group by ind and fraction then get a sum for the gene. this will allow me to make the ratio.  
 
+Try this on the most recent example.  
 
+```{r}
+counts_melt_ENSG00000163632.8_r= counts_melt_ENSG00000163632.8 %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
 
+```
+
+Plot this instead. 
+
+```{r}
+ggplot(counts_melt_ENSG00000163632.8_r, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in ENSG00000163632.8 by fraction", y="Count ratio")
+```
+
+Do this for the counts_melt_ENSG00000182578.9
+
+```{r}
+counts_melt_ENSG00000182578.9.r= counts_melt_ENSG00000182578.9 %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
+
+ggplot(counts_melt_ENSG00000182578.9.r, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in ENSG00000182578.9 by fraction", y="Count ratio") +  geom_jitter( aes(col=fraction))
+```
 
