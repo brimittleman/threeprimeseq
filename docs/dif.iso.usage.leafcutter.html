@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a19683c3a42318377499f44fdd98f7af8ce4d2fd" target="_blank">a19683c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1c91f2b5d0a760d71776d96556ed75b80a4b91e1" target="_blank">1c91f2b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -385,6 +385,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1c91f2b5d0a760d71776d96556ed75b80a4b91e1/analysis/dif.iso.usage.leafcutter.Rmd" target="_blank">1c91f2b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+<td style="text-align:left;">
+plotting diff isoform hits
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/86cfd9ff2fdd20c9bcc0f2872ca016b383d81700/docs/dif.iso.usage.leafcutter.html" target="_blank">86cfd9f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -484,10 +518,76 @@ counts_anno=cbind(genes,counts) </code></pre>
 <pre class="r"><code>counts_melt_ENSG00000066135.8= counts_melt %&gt;% filter(gene==&quot;ENSG00000066135.8&quot;) %&gt;% arrange(bin) </code></pre>
 <p>Try to plot this.</p>
 <pre class="r"><code>ggplot(counts_melt_ENSG00000066135.8, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title=&quot;Used polyA sites in KDM4A by fraction&quot;, y=&quot;Read Counts&quot;)</code></pre>
-<p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /> Look at one more gene. ENSG00000182578.9</p>
+<p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/86cfd9ff2fdd20c9bcc0f2872ca016b383d81700/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-10-1.png" target="_blank">86cfd9f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Look at one more gene. ENSG00000182578.9</p>
 <pre class="r"><code>counts_melt_ENSG00000182578.9= counts_melt %&gt;% filter(gene==&quot;ENSG00000182578.9&quot;) %&gt;% arrange(bin) 
-ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title=&quot;Used polyA sites in ENSG00000182578.9 by fraction&quot;, y=&quot;Read Counts&quot;)</code></pre>
+ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + geom_jitter( aes(col=fraction)) +labs(title=&quot;Used polyA sites in ENSG00000182578.9 by fraction&quot;, y=&quot;Read Counts&quot;) </code></pre>
 <p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/86cfd9ff2fdd20c9bcc0f2872ca016b383d81700/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-11-1.png" target="_blank">86cfd9f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>One more. ENSG00000163632.8</p>
+<pre class="r"><code>counts_melt_ENSG00000163632.8= counts_melt %&gt;% filter(gene==&quot;ENSG00000163632.8&quot;) %&gt;% arrange(bin) 
+ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title=&quot;Used polyA sites in ENSG00000163632.8 by fraction&quot;, y=&quot;Read Counts&quot;)</code></pre>
+<p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I want to change the y axis to a ratio of reads in the bin/reads in all bins for that individual. To do this I will group by ind and fraction then get a sum for the gene. this will allow me to make the ratio.</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
