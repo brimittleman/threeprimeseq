@@ -107,7 +107,18 @@ Look at one more gene.  ENSG00000182578.9
 
 ```{r}
 counts_melt_ENSG00000182578.9= counts_melt %>% filter(gene=="ENSG00000182578.9") %>% arrange(bin) 
-ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in ENSG00000182578.9 by fraction", y="Read Counts")
+ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + geom_jitter( aes(col=fraction)) +labs(title="Used polyA sites in ENSG00000182578.9 by fraction", y="Read Counts") 
 ```
+One more. ENSG00000163632.8
+
+```{r}
+counts_melt_ENSG00000163632.8= counts_melt %>% filter(gene=="ENSG00000163632.8") %>% arrange(bin) 
+ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in ENSG00000163632.8 by fraction", y="Read Counts")
+```
+
+
+I want to change the y axis to a ratio of reads in the bin/reads in all bins for that individual.  To do this I will group by ind and fraction then get a sum for the gene. this will allow me to make the ratio.  
+
+
 
 
