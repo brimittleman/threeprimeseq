@@ -1,0 +1,174 @@
+---
+title: "coverage.analysis"
+author: "Briana Mittleman"
+date: "6/7/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+ 
+ 
+I am going to change the filters and see if we get more genes with polA than we did in the first differential isoform usage anaylsis.  
+ 
+ 
+First, I will change it to 1 read in 5 individuals rather than 5 reads in 5 individuals.  
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+library(workflowr)
+library(tidyr)
+```
+
+##Change bin flters
+
+```{r}
+#import data and correct row names 
+cov_all=read.table("../data/ssFC200.cov.bed", header = T, stringsAsFactors = FALSE)
+names=c("Geneid","Chr", "Start", "End", "Strand", "Length", "N_18486","T_18486","N_18497","T_18497","N_18500","T_18500","N_18505",'T_18505',"N_18508","T_18508","N_18853","T_18853","N_18870","T_18870","N_19128","T_19128","N_19141","T_19141","N_19193","T_19193","N_19209","T_19209","N_19223","N_19225","T_19225","T_19223","N_19238","T_19238","N_19239","T_19239","N_19257","T_19257")
+colnames(cov_all)= names
+```
+
+
+
+```{r}
+#convert to leaf format
+cov_all_anno=cov_all %>% separate(col=Geneid, into=c("bin","gene"), sep=".E") 
+cov_all_anno$gene=  paste( "E",  cov_all_anno$gene, sep="" )
+bin_loc=paste(cov_all_anno$Start, cov_all_anno$End, cov_all_anno$Strand,sep=".")
+
+leaf_all_anno=paste(cov_all_anno$Chr,bin_loc, cov_all_anno$gene, sep=":")
+
+leaf_all=cbind(leaf_all_anno,cov_all_anno[,8:39])
+```
+
+Create a function where I can filter the number of reads and individuals for the filtering.  
+
+
+```{r}
+
+
+apa_genes=function(reads, ind) {
+  leaf_all_nuc= leaf_all %>% select(contains("N_"))
+  keep.nuc.leaf=rowSums(leaf_all_nuc>=reads) >= ind
+  leaf_nuc_filt=leaf_all[keep.nuc.leaf,]
+
+
+  leaf_all_tot= leaf_all %>% select(contains("T_"))
+  keep.tot.leaf=rowSums(leaf_all_tot>=reads) >= ind
+  leaf_tot_filt=leaf_all[keep.tot.leaf,]
+
+  leaf_all_filt=union(leaf_nuc_filt,leaf_tot_filt)
+  
+  genes.anno=data.frame(x=leaf_all_filt$leaf_all_anno) %>%  separate(col=x, into=c("chr","bin","gene"), sep=":")
+  n_genes= n_distinct(genes.anno$gene) 
+  num_gene=genes.anno %>% group_by(gene) %>% select(gene) %>% tally() %>% filter(n>1) 
+  return(nrow(num_gene))
+}
+```
+
+
+```{r}
+current_filter=apa_genes(5,5)
+one_read=apa_genes(1,5)
+one_read_oneind=apa_genes(1,1)
+```
+
+
+##Compare with RNA seq coverage  
+
+I need to compare gene counts for RNA seq and 3' seq. I can use the protein coding coverage files that were created using snakemake.  (/project2/gilad/briana/threeprimeseq/data/gene_cov)  
+
+
+For RNA seq I need to run the snakemake rule for this file:  
+/project2/gilad/yangili/LCLs/bams/RNAseqGeuvadis_STAR_18486.final.sort.bam 
+
+I will need to run, bamtobed, sortbed, and bedtools coverage. This script is rnaseq_cov.sh
+
+```{bash, eval=FALSE}
+
+#!/bin/bash
+
+#SBATCH --job-name=rna_cov
+#SBATCH --time=8:00:00
+#SBATCH --output=rna_cov.out
+#SBATCH --error=rna_cov.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+#input is a bam 
+sample=$1
+
+describer=$(echo ${sample} | sed -e 's/.*\RNAseqGeuvadis_STAR_//' | sed -e "s/.final.sort.bam$//")
+
+bedtools bamtobed -i $1 > /project2/gilad/briana/threeprimeseq/data/rnaseq_bed/${describer}.bed
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/rnaseq_bed/${describer}.bed > /project2/gilad/briana/threeprimeseq/data/rnaseq_sorted_bed/${describer}.sort.bed
+
+
+bedtools coverage -counts -sorted -a /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.sort.chr.bed -b /project2/gilad/briana/threeprimeseq/data/rnaseq_sorted_bed/${describer}.sort.bed > /project2/gilad/briana/threeprimeseq/data/rnaseq_cov/${describer}.genecov.txt
+
+
+
+```
+
+Import the data:  
+
+```{r}
+rnaseq=read.table("../data/18486.genecov.txt")
+names(rnaseq)=c("Chr", "start", "end", "gene", "score", "strand", "count")
+threeprime=read.table("../data/YL-SP-18486-T_S9_R1_001-genecov.txt")
+names(threeprime)=c("Chr", "start", "end", "gene", "score", "strand", "count")
+```
+
+Join the data on the gene names.  
+
+```{r}
+rnaseq_sm=rnaseq %>% select("gene", "count")
+threeprime_sm=threeprime %>% select("gene", "count")
+
+gene_cov=rnaseq_sm %>% left_join(threeprime_sm, by= "gene") 
+names(gene_cov)= c("gene", "rnaseq", "threeprime")
+
+
+
+lm(gene_cov$rnaseq ~gene_cov$threeprime)
+
+```
+
+
+
+
+```{r}
+
+
+ggplot(gene_cov,aes(x=log10(rnaseq), y=log10(threeprime)))+ geom_point(na.rm=TRUE, size=.1) + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + labs(y='Log(three prime seq gene Count)', x='Log(RNA seq gene Count)', title="Correlation between three prime seq and rna seq read counts") + xlab('Log(RNA seq gene Count)') + geom_smooth(method="lm")
+
+
+
+```
+
+```{r}
+summary(gene_cov$rnaseq)
+summary(gene_cov$threeprime)
+```
+
+
+Look at home many genes have values in RNA seq and not in three prime seq.
+
+```{r}
+rnaseq.great.0= gene_cov %>%filter(threeprime==0) %>% filter(rnaseq>0) %>% select(gene)
+rnaseq_det=rnaseq %>% mutate(det_in_three=ifelse(gene %in% rnaseq.great.0$gene, "Not", "Det" )) %>% mutate(count_cor=count/(end-start))
+
+
+ggplot(rnaseq_det, aes(y=log10(count_cor), x=det_in_three)) + geom_violin() + labs(y="log10 standardized RNA seq count", x="Detected in Three prime seq", title="Comparing RNA seq counts for genes where detected and not detected in three prime seq")
+```
+
