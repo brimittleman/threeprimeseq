@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/ea1e3307762efedf887325ef52a567fda2047304" target="_blank">ea1e330</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/5e5ce47a9abf146a5fad5d3626e8411da5178fec" target="_blank">5e5ce47</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -385,6 +385,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5e5ce47a9abf146a5fad5d3626e8411da5178fec/analysis/dif.iso.usage.leafcutter.Rmd" target="_blank">5e5ce47</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+<td style="text-align:left;">
+add plots for pos effect size
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/1de066f7dccea7984ccb9b4602be1c0db4e4d325/docs/dif.iso.usage.leafcutter.html" target="_blank">1de066f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -585,7 +619,7 @@ counts_anno=cbind(genes,counts) </code></pre>
 <p>I can filter this for specific genes and examples. I am going to first look at the gene with the top effect size. ENSG00000066135.8</p>
 <pre class="r"><code>counts_melt_ENSG00000066135.8= counts_melt %&gt;% filter(gene==&quot;ENSG00000066135.8&quot;) %&gt;% arrange(bin) %&gt;% group_by(variable) %&gt;% mutate(sum=sum(value)) %&gt;% ungroup(variable) %&gt;%  mutate(ratio=value/sum)</code></pre>
 <p>Try to plot this.</p>
-<pre class="r"><code>ggplot(counts_melt_ENSG00000066135.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title=&quot;Used polyA sites in KDM4A by fraction&quot;, y=&quot;Read ratio&quot;)+ geom_jitter( aes(col=fraction), width=.5) </code></pre>
+<pre class="r"><code>ggplot(counts_melt_ENSG00000066135.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title=&quot;Used polyA sites in KDM4A by fraction&quot;, y=&quot;Read ratio&quot;)+ geom_jitter(aes(col=fraction), width=.5) </code></pre>
 <p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -605,6 +639,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1de066f7dccea7984ccb9b4602be1c0db4e4d325/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-10-1.png" target="_blank">1de066f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/86cfd9ff2fdd20c9bcc0f2872ca016b383d81700/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-10-1.png" target="_blank">86cfd9f</a>
 </td>
 <td style="text-align:left;">
@@ -619,7 +664,7 @@ Briana Mittleman
 <p></details></p>
 <p>Look at one more gene. ENSG00000182578.9</p>
 <pre class="r"><code>counts_melt_ENSG00000182578.9= counts_melt %&gt;% filter(gene==&quot;ENSG00000182578.9&quot;) %&gt;% arrange(bin)  %&gt;% group_by(variable) %&gt;% mutate(sum=sum(value)) %&gt;% ungroup(variable) %&gt;%  mutate(ratio=value/sum)
-ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + geom_jitter( aes(col=fraction),width=.5) +labs(title=&quot;Used polyA sites in CSF1R by fraction&quot;, y=&quot;Read ratio&quot;) </code></pre>
+ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + geom_jitter(aes(col=fraction),width=.5) +labs(title=&quot;Used polyA sites in CSF1R by fraction&quot;, y=&quot;Read ratio&quot;) </code></pre>
 <p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -637,6 +682,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1de066f7dccea7984ccb9b4602be1c0db4e4d325/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-11-1.png" target="_blank">1de066f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/3ab25efa4acfa013dc1e4f08224e07fcbbd2e5bb/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-11-1.png" target="_blank">3ab25ef</a>
@@ -664,7 +720,7 @@ Briana Mittleman
 <p></details></p>
 <p>One more. ENSG00000163632.8</p>
 <pre class="r"><code>counts_melt_ENSG00000163632.8= counts_melt %&gt;% filter(gene==&quot;ENSG00000163632.8&quot;) %&gt;% arrange(bin)  %&gt;% group_by(variable) %&gt;% mutate(sum=sum(value)) %&gt;% ungroup(variable) %&gt;%  mutate(ratio=value/sum)
-ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title=&quot;Used polyA sites in C3orf49 by fraction&quot;, y=&quot;Read ratio&quot;)+ geom_jitter( aes(col=fraction), width=.5) </code></pre>
+ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title=&quot;Used polyA sites in C3orf49 by fraction&quot;, y=&quot;Read ratio&quot;)+ geom_jitter(aes(col=fraction), width=.5) </code></pre>
 <p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -684,7 +740,59 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1de066f7dccea7984ccb9b4602be1c0db4e4d325/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-12-1.png" target="_blank">1de066f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/3ab25efa4acfa013dc1e4f08224e07fcbbd2e5bb/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-12-1.png" target="_blank">3ab25ef</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Top effect size in the positive direction.<br />
+ENSG00000113068.5</p>
+<pre class="r"><code>counts_melt_ENSG00000113068.5= counts_melt %&gt;% filter(gene==&quot;ENSG00000113068.5&quot;) %&gt;% arrange(bin)  %&gt;% group_by(variable) %&gt;% mutate(sum=sum(value)) %&gt;% ungroup(variable) %&gt;%  mutate(ratio=value/sum)
+ggplot(counts_melt_ENSG00000113068.5, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title=&quot;Used polyA sites in ENSG00000113068.5 by fraction&quot;, y=&quot;Read ratio&quot;)+ geom_jitter(aes(col=fraction), width=.5) </code></pre>
+<pre><code>Warning: Removed 10 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 10 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>ENSG00000138785.10</p>
+<pre class="r"><code>counts_melt_ENSG00000138785.10= counts_melt %&gt;% filter(gene==&quot;ENSG00000138785.10&quot;) %&gt;% arrange(bin)  %&gt;% group_by(variable) %&gt;% mutate(sum=sum(value)) %&gt;% ungroup(variable) %&gt;%  mutate(ratio=value/sum)
+ggplot(counts_melt_ENSG00000138785.10, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title=&quot;Used polyA sites in ENSG00000138785.10 by fraction&quot;, y=&quot;Read ratio&quot;)+ geom_jitter(aes(col=fraction), width=.5) </code></pre>
+<p><img src="figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7442f068fefc39d32a79710c35ecaffc885d0563/docs/figure/dif.iso.usage.leafcutter.Rmd/unnamed-chunk-14-1.png" target="_blank">7442f06</a>
 </td>
 <td style="text-align:left;">
 Briana Mittleman
