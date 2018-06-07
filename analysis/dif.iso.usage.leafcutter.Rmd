@@ -95,48 +95,25 @@ counts_melt =melt(counts_anno, id.vars="genes") %>% mutate(fraction=ifelse(grepl
 I can filter this for specific genes and examples. I am going to first look at the gene with the top effect size.  ENSG00000066135.8
 
 ```{r}
-counts_melt_ENSG00000066135.8= counts_melt %>% filter(gene=="ENSG00000066135.8") %>% arrange(bin) 
+counts_melt_ENSG00000066135.8= counts_melt %>% filter(gene=="ENSG00000066135.8") %>% arrange(bin) %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
 ```
 
 Try to plot this.  
 
 ```{r}
-ggplot(counts_melt_ENSG00000066135.8, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in KDM4A by fraction", y="Read Counts")
+ggplot(counts_melt_ENSG00000066135.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title="Used polyA sites in KDM4A by fraction", y="Read ratio")+ geom_jitter( aes(col=fraction), width=.5) 
 ```
 Look at one more gene.  ENSG00000182578.9
 
 ```{r}
-counts_melt_ENSG00000182578.9= counts_melt %>% filter(gene=="ENSG00000182578.9") %>% arrange(bin) 
-ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + geom_jitter( aes(col=fraction)) +labs(title="Used polyA sites in ENSG00000182578.9 by fraction", y="Read Counts") 
+counts_melt_ENSG00000182578.9= counts_melt %>% filter(gene=="ENSG00000182578.9") %>% arrange(bin)  %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
+ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + geom_jitter( aes(col=fraction),width=.5) +labs(title="Used polyA sites in CSF1R by fraction", y="Read ratio") 
 ```
 One more. ENSG00000163632.8
 
 ```{r}
-counts_melt_ENSG00000163632.8= counts_melt %>% filter(gene=="ENSG00000163632.8") %>% arrange(bin) 
-ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=value, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in ENSG00000163632.8 by fraction", y="Read Counts")
+counts_melt_ENSG00000163632.8= counts_melt %>% filter(gene=="ENSG00000163632.8") %>% arrange(bin)  %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
+ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title="Used polyA sites in C3orf49 by fraction", y="Read ratio")+ geom_jitter( aes(col=fraction), width=.5) 
 ```
 
-
-I want to change the y axis to a ratio of reads in the bin/reads in all bins for that individual.  To do this I will group by ind and fraction then get a sum for the gene. this will allow me to make the ratio.  
-
-Try this on the most recent example.  
-
-```{r}
-counts_melt_ENSG00000163632.8_r= counts_melt_ENSG00000163632.8 %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
-
-```
-
-Plot this instead. 
-
-```{r}
-ggplot(counts_melt_ENSG00000163632.8_r, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in ENSG00000163632.8 by fraction", y="Count ratio")
-```
-
-Do this for the counts_melt_ENSG00000182578.9
-
-```{r}
-counts_melt_ENSG00000182578.9.r= counts_melt_ENSG00000182578.9 %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
-
-ggplot(counts_melt_ENSG00000182578.9.r, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot() + labs(title="Used polyA sites in ENSG00000182578.9 by fraction", y="Count ratio") +  geom_jitter( aes(col=fraction))
-```
 
