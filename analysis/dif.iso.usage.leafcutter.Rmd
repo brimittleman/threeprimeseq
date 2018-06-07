@@ -101,19 +101,35 @@ counts_melt_ENSG00000066135.8= counts_melt %>% filter(gene=="ENSG00000066135.8")
 Try to plot this.  
 
 ```{r}
-ggplot(counts_melt_ENSG00000066135.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title="Used polyA sites in KDM4A by fraction", y="Read ratio")+ geom_jitter( aes(col=fraction), width=.5) 
+ggplot(counts_melt_ENSG00000066135.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title="Used polyA sites in KDM4A by fraction", y="Read ratio")+ geom_jitter(aes(col=fraction), width=.5) 
 ```
 Look at one more gene.  ENSG00000182578.9
 
 ```{r}
 counts_melt_ENSG00000182578.9= counts_melt %>% filter(gene=="ENSG00000182578.9") %>% arrange(bin)  %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
-ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + geom_jitter( aes(col=fraction),width=.5) +labs(title="Used polyA sites in CSF1R by fraction", y="Read ratio") 
+ggplot(counts_melt_ENSG00000182578.9, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + geom_jitter(aes(col=fraction),width=.5) +labs(title="Used polyA sites in CSF1R by fraction", y="Read ratio") 
 ```
 One more. ENSG00000163632.8
 
 ```{r}
 counts_melt_ENSG00000163632.8= counts_melt %>% filter(gene=="ENSG00000163632.8") %>% arrange(bin)  %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
-ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title="Used polyA sites in C3orf49 by fraction", y="Read ratio")+ geom_jitter( aes(col=fraction), width=.5) 
+ggplot(counts_melt_ENSG00000163632.8, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title="Used polyA sites in C3orf49 by fraction", y="Read ratio")+ geom_jitter(aes(col=fraction), width=.5) 
+```
+
+Top effect size in the positive direction.  
+ENSG00000113068.5
+
+
+```{r}
+counts_melt_ENSG00000113068.5= counts_melt %>% filter(gene=="ENSG00000113068.5") %>% arrange(bin)  %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
+ggplot(counts_melt_ENSG00000113068.5, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title="Used polyA sites in ENSG00000113068.5 by fraction", y="Read ratio")+ geom_jitter(aes(col=fraction), width=.5) 
 ```
 
 
+ENSG00000138785.10
+
+
+```{r}
+counts_melt_ENSG00000138785.10= counts_melt %>% filter(gene=="ENSG00000138785.10") %>% arrange(bin)  %>% group_by(variable) %>% mutate(sum=sum(value)) %>% ungroup(variable) %>%  mutate(ratio=value/sum)
+ggplot(counts_melt_ENSG00000138785.10, aes(x=bin, y=ratio, fill=fraction)) + geom_boxplot(width=.5) + labs(title="Used polyA sites in ENSG00000138785.10 by fraction", y="Read ratio")+ geom_jitter(aes(col=fraction), width=.5) 
+```
