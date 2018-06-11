@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/03c7b1448ea0c93a1d7a0b2d589e8ef964bf7bba" target="_blank">03c7b14</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/3f145aef444d0beac696febf329fedbc3fb19c79" target="_blank">3f145ae</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -351,6 +351,8 @@ Ignored files:
 Untracked files:
     Untracked:  data/18486.genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/bin200.5.T.nuccov.bed
+    Untracked:  data/bin200.Anuccov.bed
     Untracked:  data/bin200.nuccov.bed
     Untracked:  data/gene_cov/
     Untracked:  data/leafcutter/
@@ -396,6 +398,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3f145aef444d0beac696febf329fedbc3fb19c79/analysis/a.content.Rmd" target="_blank">3f145ae</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+<td style="text-align:left;">
+signature of mult nucleotide analysus
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4ef7d85554ed0db97548af29c6d994675af4837e/docs/a.content.html" target="_blank">4ef7d85</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/03c7b1448ea0c93a1d7a0b2d589e8ef964bf7bba/analysis/a.content.Rmd" target="_blank">03c7b14</a>
 </td>
 <td style="text-align:left;">
@@ -414,6 +450,8 @@ start A analysis
 <p></details></p>
 <hr />
 <p>The goal of this analysis is to start to understand the sequence composition of the three prime seq reads. This may help me detect misspriming at AAAAA rich regions rather than true site usage. The genomic sequence does not carry the polyadenylation signal, this means reads mapping to a genomic AAAAAA region may be false positives. Gruber et al. removed reads that consisted of more than 80% AAAA.</p>
+<div id="percent-nucleotide-in-bins" class="section level2">
+<h2>Percent nucleotide in bins</h2>
 <p>One method is to measure the number of AAAAAs in my bins with bedtools nuc. I willl need a fasta file and a bed file with the bin.</p>
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>Loading required package: rmarkdown</code></pre>
@@ -462,6 +500,36 @@ perc_A_bin=bin_nuccov %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;en
 <pre><code>Warning: package &#39;bindrcpp&#39; was built under R version 3.4.4</code></pre>
 <pre class="r"><code>ggplot(perc_A_bin, aes(percA)) + geom_histogram(bins=30) + labs(title=&quot;Percent of As in the bins&quot;)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-4-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4ef7d85554ed0db97548af29c6d994675af4837e/docs/figure/a.content.Rmd/unnamed-chunk-4-1.png" target="_blank">4ef7d85</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I will apply the same filter as I did in the cov.200bp.wind file. I will keep bins with greater than 0 reads in half of the libraries.</p>
 <pre class="r"><code>cov_all=read.table(&quot;../data/ssFC200.cov.bed&quot;, header = T, stringsAsFactors = FALSE)
 #remember name switch!
@@ -483,6 +551,139 @@ cov_all_filt_bins$bin=as.integer(cov_all_filt_bins$bin)</code></pre>
 <p>I can no plot the distribution of percA in this.</p>
 <pre class="r"><code>ggplot(perc_A_bin_filt, aes(percA)) + geom_histogram(bins = 30) + labs(title=&quot;Percent of As in the bins after filtering&quot;)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4ef7d85554ed0db97548af29c6d994675af4837e/docs/figure/a.content.Rmd/unnamed-chunk-7-1.png" target="_blank">4ef7d85</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>I will compare this distribution to those for other nucleotides. (C)</p>
+<pre class="r"><code>perc_C_bin=bin_nuccov %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;,&quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;numC&quot;) %&gt;% mutate(percC=numC/200)
+
+ggplot(perc_C_bin, aes(percC)) + geom_histogram(bins=30) + labs(title=&quot;Percent of Cs in the bins&quot;)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>perc_C_bin_filt= perc_C_bin %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;)
+ggplot(perc_C_bin_filt, aes(percC)) + geom_histogram(bins = 30) + labs(title=&quot;Percent of Cs in the bins after filtering&quot;)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /> ’ For G</p>
+<pre class="r"><code>perc_G_bin=bin_nuccov %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;,&quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;numG&quot;) %&gt;% mutate(percG=numG/200)
+
+ggplot(perc_G_bin, aes(percG)) + geom_histogram(bins=30) + labs(title=&quot;Percent of Gs in the bins&quot;)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>perc_G_bin_filt= perc_G_bin %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;)
+ggplot(perc_G_bin_filt, aes(percG)) + geom_histogram(bins = 30) + labs(title=&quot;Percent of Gs in the bins after filtering&quot;)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>for T</p>
+<pre class="r"><code>perc_T_bin=bin_nuccov %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;,&quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;numT&quot;) %&gt;% mutate(percT=numT/200)
+
+ggplot(perc_T_bin, aes(percT)) + geom_histogram(bins=30) + labs(title=&quot;Percent of Ts in the bins&quot;)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>perc_T_bin_filt= perc_T_bin %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;)
+ggplot(perc_T_bin_filt, aes(percT)) + geom_histogram(bins = 30) + labs(title=&quot;Percent of Ts in the bins after filtering&quot;)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Now I will join all of the percent usage of each nucleotide in the filtered bins so I can plot them on one plot.</p>
+<pre class="r"><code>percNuc= perc_A_bin_filt %&gt;% left_join(perc_T_bin_filt, by=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;)) %&gt;% left_join(perc_G_bin_filt, by=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;)) %&gt;% left_join(perc_C_bin_filt, by=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;)) %&gt;% select(&quot;bin&quot;, &quot;percA&quot;, &quot;percT&quot;, &quot;percG&quot;, &quot;percC&quot;)
+
+percNuc_melt=melt(percNuc, id.vars = &quot;bin&quot;)
+
+ggplot(percNuc_melt, aes(value)) + geom_histogram(bins = 30) + facet_wrap(~variable) + labs(title=&quot;Percent each nucleotide in filtered bins&quot;)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="strech-of-nucleotides" class="section level2">
+<h2>Strech of Nucleotides</h2>
+<p>Next check is if the bins have 5 As in a row. I can do this using bedtools nuc as well.<br />
+###Five A’s</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nucA
+#SBATCH --time=8:00:00
+#SBATCH --output=nucA.out
+#SBATCH --error=nucA.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/genome_anotation_data/an.int.genome_200_strandspec.bed -pattern &quot;AAAAA&quot; &gt; /project2/gilad/briana/threeprimeseq/data/bin200.5.A.nuccov.bed  </code></pre>
+<pre class="r"><code>bin_Anuccov=read.table(&quot;../data/bin200.Anuccov.bed&quot;)
+names(bin_Anuccov)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;bin&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;pct_at&quot;, &quot;pct_gc&quot;, &quot;numA&quot;, &quot;numC&quot;, &quot;numG&quot;, &quot;numT&quot;, &quot;numN&quot;, &quot;numOther&quot;, &quot;seqlen&quot;, &quot;fiveA&quot;)
+
+hist(bin_Anuccov$fiveA)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I will filter this the same way I filtered the other file.</p>
+<pre class="r"><code> bin_Anuccov_filt = bin_Anuccov %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;) %&gt;% select( bin,  gene,  fiveA)
+
+hist(bin_Anuccov_filt$fiveA)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(bin_Anuccov_filt$fiveA)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.0000  0.0000  0.4404  0.0000 13.0000 </code></pre>
+<p>Count the number of bins with each value for number of 5 AAAAA</p>
+<pre class="r"><code>countA_regions= bin_Anuccov_filt %&gt;% group_by(fiveA) %&gt;% count(fiveA)</code></pre>
+<div id="five-ts" class="section level3">
+<h3>Five T’s</h3>
+<p>I will compare this to regions with 5 T’s<br />
+(This isnt the best comparison because the probability of each of these stretches genome wide may be different)</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nucT
+#SBATCH --time=8:00:00
+#SBATCH --output=nucT.out
+#SBATCH --error=nucT.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/genome_anotation_data/an.int.genome_200_strandspec.bed -pattern &quot;TTTTT&quot; &gt; /project2/gilad/briana/threeprimeseq/data/bin200.5.T.nuccov.bed  </code></pre>
+<pre class="r"><code>bin_Tnuccov=read.table(&quot;../data/bin200.5.T.nuccov.bed&quot;)
+names(bin_Tnuccov)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;bin&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;pct_at&quot;, &quot;pct_gc&quot;, &quot;numA&quot;, &quot;numC&quot;, &quot;numG&quot;, &quot;numT&quot;, &quot;numN&quot;, &quot;numOther&quot;, &quot;seqlen&quot;, &quot;fiveT&quot;)
+
+summary(bin_Tnuccov$fiveT)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.0000  0.0000  0.4191  0.0000 14.0000 </code></pre>
+<pre class="r"><code>bin_Tnuccov_filt = bin_Tnuccov %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;) %&gt;% select( bin,  gene,  fiveT)
+
+hist(bin_Tnuccov_filt$fiveT)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(bin_Tnuccov_filt$fiveT)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.0000  0.0000  0.5163  1.0000  9.0000 </code></pre>
+<pre class="r"><code>countT_regions= bin_Tnuccov_filt %&gt;% group_by(fiveT) %&gt;% count(fiveT)</code></pre>
+<p>The numbers are not super different.</p>
+</div>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
