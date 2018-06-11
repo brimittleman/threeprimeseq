@@ -1,0 +1,93 @@
+---
+title: "“A” content in each mapped read"
+author: "Briana Mittleman"
+date: "6/11/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The goal of this analysis is to start to understand the sequence composition of the three prime seq reads. This may help me detect misspriming at AAAAA rich regions rather than true site usage. The genomic sequence does not carry the polyadenylation signal, this means reads mapping to a genomic AAAAAA region may be false positives.  Gruber et al. removed reads that consisted of more than 80% AAAA. 
+
+One method is to measure the number of AAAAAs in my bins with bedtools nuc. I willl need a fasta file and a bed file with the bin.  
+
+```{r}
+library(workflowr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(reshape2)
+```
+
+
+
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nuc.bin
+#SBATCH --time=8:00:00
+#SBATCH --output=nuc.bin.out
+#SBATCH --error=nuc.bin.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/genome_anotation_data/an.int.genome_200_strandspec.bed > /project2/gilad/briana/threeprimeseq/data/bin200.nuccov.bed  
+```
+
+I can now pull this file into R.  
+```{r}
+bin_nuccov=read.table("../data/bin200.nuccov.bed")
+names(bin_nuccov)=c("chr", "start", "end", "bin", "score", "strand", "gene", "pct_at", "pct_gc", "numA", "numC", "numG", "numT", "numN", "numOther", "seqlen")
+
+perc_A_bin=bin_nuccov %>% select("chr", "start", "end","bin", "strand", "gene", "numA") %>% mutate(percA=numA/200)
+```
+
+
+
+```{r}
+ggplot(perc_A_bin, aes(percA)) + geom_histogram(bins=30) + labs(title="Percent of As in the bins")
+```
+
+
+I will apply the same filter as I did in the cov.200bp.wind file. I will keep bins with greater than 0 reads in half of the libraries.  
+
+```{r}
+cov_all=read.table("../data/ssFC200.cov.bed", header = T, stringsAsFactors = FALSE)
+#remember name switch!
+names=c("Geneid","Chr", "Start", "End", "Strand", "Length", "N_18486","T_18486","N_18497","T_18497","N_18500","T_18500","N_18505",'T_18505',"N_18508","T_18508","N_18853","T_18853","N_18870","T_18870","N_19128","T_19128","N_19141","T_19141","N_19193","T_19193","N_19209","T_19209","N_19223","N_19225","T_19225","T_19223","N_19238","T_19238","N_19239","T_19239","N_19257","T_19257")
+
+colnames(cov_all)= names
+
+cov_nums_only=cov_all[,7:38]
+
+keep.exprs=rowSums(cov_nums_only>0) >= 16
+
+cov_all_filt=cov_all[keep.exprs,] 
+
+cov_all_filt_bins= cov_all_filt %>% separate(col=Geneid, into=c("bin","gene"), sep=".E") %>% select(bin)
+
+cov_all_filt_bins$bin=as.integer(cov_all_filt_bins$bin)
+```
+
+
+I will intersect the percA file with the bins in the filtered file.  
+
+```{r}
+perc_A_bin_filt= perc_A_bin %>% semi_join(cov_all_filt_bins, by="bin")
+```
+I can no plot the distribution of percA in this.  
+
+```{r}
+ggplot(perc_A_bin_filt, aes(percA)) + geom_histogram(bins = 30) + labs(title="Percent of As in the bins after filtering")
+```
+

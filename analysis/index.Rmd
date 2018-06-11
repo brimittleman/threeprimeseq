@@ -21,5 +21,6 @@ Initial analysis on first 32 3' seq libraries:
 * [Initial gene leve QC](initial_gene_qc.html)  
 * [Coverage in 200bp bins](cov200bpwind.html)  
 * [Differential isoform usage between fractions](dif.iso.usage.leafcutter.html)  
-* [explore filter cuttoffs](explore.filters.html)  
+* [Explore filter cuttoffs](explore.filters.html)  
+* [Look at number of As in bins](a.content.html)  
 
