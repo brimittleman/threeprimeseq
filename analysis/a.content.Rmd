@@ -11,6 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The goal of this analysis is to start to understand the sequence composition of the three prime seq reads. This may help me detect misspriming at AAAAA rich regions rather than true site usage. The genomic sequence does not carry the polyadenylation signal, this means reads mapping to a genomic AAAAAA region may be false positives.  Gruber et al. removed reads that consisted of more than 80% AAAA. 
 
+
+##Percent nucleotide in bins  
+
 One method is to measure the number of AAAAAs in my bins with bedtools nuc. I willl need a fasta file and a bed file with the bin.  
 
 ```{r}
@@ -90,4 +93,143 @@ I can no plot the distribution of percA in this.
 ```{r}
 ggplot(perc_A_bin_filt, aes(percA)) + geom_histogram(bins = 30) + labs(title="Percent of As in the bins after filtering")
 ```
+
+I will compare this distribution to those for other nucleotides.  (C)  
+
+
+```{r}
+
+perc_C_bin=bin_nuccov %>% select("chr", "start", "end","bin", "strand", "gene", "numC") %>% mutate(percC=numC/200)
+
+ggplot(perc_C_bin, aes(percC)) + geom_histogram(bins=30) + labs(title="Percent of Cs in the bins")
+
+perc_C_bin_filt= perc_C_bin %>% semi_join(cov_all_filt_bins, by="bin")
+ggplot(perc_C_bin_filt, aes(percC)) + geom_histogram(bins = 30) + labs(title="Percent of Cs in the bins after filtering")
+```
+'
+For G  
+
+
+```{r}
+
+perc_G_bin=bin_nuccov %>% select("chr", "start", "end","bin", "strand", "gene", "numG") %>% mutate(percG=numG/200)
+
+ggplot(perc_G_bin, aes(percG)) + geom_histogram(bins=30) + labs(title="Percent of Gs in the bins")
+
+perc_G_bin_filt= perc_G_bin %>% semi_join(cov_all_filt_bins, by="bin")
+ggplot(perc_G_bin_filt, aes(percG)) + geom_histogram(bins = 30) + labs(title="Percent of Gs in the bins after filtering")
+```
+
+for T  
+
+
+```{r}
+
+perc_T_bin=bin_nuccov %>% select("chr", "start", "end","bin", "strand", "gene", "numT") %>% mutate(percT=numT/200)
+
+ggplot(perc_T_bin, aes(percT)) + geom_histogram(bins=30) + labs(title="Percent of Ts in the bins")
+
+perc_T_bin_filt= perc_T_bin %>% semi_join(cov_all_filt_bins, by="bin")
+ggplot(perc_T_bin_filt, aes(percT)) + geom_histogram(bins = 30) + labs(title="Percent of Ts in the bins after filtering")
+```
+
+Now I will join all of the percent usage of each nucleotide in the filtered bins so I can plot them on one plot.  
+
+```{r}
+percNuc= perc_A_bin_filt %>% left_join(perc_T_bin_filt, by=c("chr", "start", "end", "bin", "strand", "gene")) %>% left_join(perc_G_bin_filt, by=c("chr", "start", "end", "bin", "strand", "gene")) %>% left_join(perc_C_bin_filt, by=c("chr", "start", "end", "bin", "strand", "gene")) %>% select("bin", "percA", "percT", "percG", "percC")
+
+percNuc_melt=melt(percNuc, id.vars = "bin")
+
+ggplot(percNuc_melt, aes(value)) + geom_histogram(bins = 30) + facet_wrap(~variable) + labs(title="Percent each nucleotide in filtered bins")
+```
+
+
+##Strech of Nucleotides   
+Next check is if the bins have 5 As in a row. I can do this using bedtools nuc as well.  
+###Five A's  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nucA
+#SBATCH --time=8:00:00
+#SBATCH --output=nucA.out
+#SBATCH --error=nucA.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/genome_anotation_data/an.int.genome_200_strandspec.bed -pattern "AAAAA" > /project2/gilad/briana/threeprimeseq/data/bin200.5.A.nuccov.bed  
+```
+
+
+```{r}
+bin_Anuccov=read.table("../data/bin200.Anuccov.bed")
+names(bin_Anuccov)=c("chr", "start", "end", "bin", "score", "strand", "gene", "pct_at", "pct_gc", "numA", "numC", "numG", "numT", "numN", "numOther", "seqlen", "fiveA")
+
+hist(bin_Anuccov$fiveA)
+```
+
+
+I will filter this the same way I filtered the other file.  
+
+```{r}
+ bin_Anuccov_filt = bin_Anuccov %>% semi_join(cov_all_filt_bins, by="bin") %>% select( bin,  gene,  fiveA)
+
+hist(bin_Anuccov_filt$fiveA)
+summary(bin_Anuccov_filt$fiveA)
+```
+Count the number of bins with each value for number of 5 AAAAA  
+
+```{r}
+countA_regions= bin_Anuccov_filt %>% group_by(fiveA) %>% count(fiveA)
+```
+
+###Five T's  
+
+I will compare this to regions with 5 T's  
+(This isnt the best comparison because the probability of each of these stretches genome wide may be different)  
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nucT
+#SBATCH --time=8:00:00
+#SBATCH --output=nucT.out
+#SBATCH --error=nucT.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/genome_anotation_data/an.int.genome_200_strandspec.bed -pattern "TTTTT" > /project2/gilad/briana/threeprimeseq/data/bin200.5.T.nuccov.bed  
+```
+
+
+```{r}
+bin_Tnuccov=read.table("../data/bin200.5.T.nuccov.bed")
+names(bin_Tnuccov)=c("chr", "start", "end", "bin", "score", "strand", "gene", "pct_at", "pct_gc", "numA", "numC", "numG", "numT", "numN", "numOther", "seqlen", "fiveT")
+
+summary(bin_Tnuccov$fiveT)
+
+bin_Tnuccov_filt = bin_Tnuccov %>% semi_join(cov_all_filt_bins, by="bin") %>% select( bin,  gene,  fiveT)
+
+hist(bin_Tnuccov_filt$fiveT)
+summary(bin_Tnuccov_filt$fiveT)
+
+
+countT_regions= bin_Tnuccov_filt %>% group_by(fiveT) %>% count(fiveT)
+
+```
+The numbers are not super different.  
 
