@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-11</p>
+<p><strong>Last updated:</strong> 2018-06-12</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/3f145aef444d0beac696febf329fedbc3fb19c79" target="_blank">3f145ae</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/8e585ce583320466cb0fbdb85f743e1031b8c7db" target="_blank">8e585ce</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -393,6 +393,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8e585ce583320466cb0fbdb85f743e1031b8c7db/analysis/a.content.Rmd" target="_blank">8e585ce</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-12
+</td>
+<td style="text-align:left;">
+cov. vs A factors
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/a.content.html" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -586,24 +620,205 @@ Briana Mittleman
 
 ggplot(perc_C_bin, aes(percC)) + geom_histogram(bins=30) + labs(title=&quot;Percent of Cs in the bins&quot;)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-8-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-8-1.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>perc_C_bin_filt= perc_C_bin %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;)
 ggplot(perc_C_bin_filt, aes(percC)) + geom_histogram(bins = 30) + labs(title=&quot;Percent of Cs in the bins after filtering&quot;)</code></pre>
-<p><img src="figure/a.content.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /> ’ For G</p>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-8-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-8-2.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>’ For G</p>
 <pre class="r"><code>perc_G_bin=bin_nuccov %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;,&quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;numG&quot;) %&gt;% mutate(percG=numG/200)
 
 ggplot(perc_G_bin, aes(percG)) + geom_histogram(bins=30) + labs(title=&quot;Percent of Gs in the bins&quot;)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-9-1.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>perc_G_bin_filt= perc_G_bin %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;)
 ggplot(perc_G_bin_filt, aes(percG)) + geom_histogram(bins = 30) + labs(title=&quot;Percent of Gs in the bins after filtering&quot;)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-9-2.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>for T</p>
 <pre class="r"><code>perc_T_bin=bin_nuccov %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;,&quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;numT&quot;) %&gt;% mutate(percT=numT/200)
 
 ggplot(perc_T_bin, aes(percT)) + geom_histogram(bins=30) + labs(title=&quot;Percent of Ts in the bins&quot;)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-10-1.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>perc_T_bin_filt= perc_T_bin %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;)
 ggplot(perc_T_bin_filt, aes(percT)) + geom_histogram(bins = 30) + labs(title=&quot;Percent of Ts in the bins after filtering&quot;)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-10-2.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Now I will join all of the percent usage of each nucleotide in the filtered bins so I can plot them on one plot.</p>
 <pre class="r"><code>percNuc= perc_A_bin_filt %&gt;% left_join(perc_T_bin_filt, by=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;)) %&gt;% left_join(perc_G_bin_filt, by=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;)) %&gt;% left_join(perc_C_bin_filt, by=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;bin&quot;, &quot;strand&quot;, &quot;gene&quot;)) %&gt;% select(&quot;bin&quot;, &quot;percA&quot;, &quot;percT&quot;, &quot;percG&quot;, &quot;percC&quot;)
 
@@ -611,6 +826,36 @@ percNuc_melt=melt(percNuc, id.vars = &quot;bin&quot;)
 
 ggplot(percNuc_melt, aes(value)) + geom_histogram(bins = 30) + facet_wrap(~variable) + labs(title=&quot;Percent each nucleotide in filtered bins&quot;)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-11-1.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="strech-of-nucleotides" class="section level2">
 <h2>Strech of Nucleotides</h2>
@@ -637,11 +882,71 @@ names(bin_Anuccov)=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;
 
 hist(bin_Anuccov$fiveA)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-13-1.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I will filter this the same way I filtered the other file.</p>
 <pre class="r"><code> bin_Anuccov_filt = bin_Anuccov %&gt;% semi_join(cov_all_filt_bins, by=&quot;bin&quot;) %&gt;% select( bin,  gene,  fiveA)
 
 hist(bin_Anuccov_filt$fiveA)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-14-1.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(bin_Anuccov_filt$fiveA)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.0000  0.0000  0.0000  0.4404  0.0000 13.0000 </code></pre>
@@ -677,11 +982,86 @@ summary(bin_Tnuccov$fiveT)</code></pre>
 
 hist(bin_Tnuccov_filt$fiveT)</code></pre>
 <p><img src="figure/a.content.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ee80ba6da8265e20b2e27505f86c954b5e2c9bac/docs/figure/a.content.Rmd/unnamed-chunk-17-1.png" target="_blank">ee80ba6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(bin_Tnuccov_filt$fiveT)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.0000  0.0000  0.0000  0.5163  1.0000  9.0000 </code></pre>
 <pre class="r"><code>countT_regions= bin_Tnuccov_filt %&gt;% group_by(fiveT) %&gt;% count(fiveT)</code></pre>
 <p>The numbers are not super different.</p>
+</div>
+</div>
+<div id="correlation-between-count-and-a-statistics" class="section level2">
+<h2>Correlation between count and A statistics</h2>
+<div id="percent-nucleotide" class="section level4">
+<h4>Percent nucleotide</h4>
+<p>cov_all_filt</p>
+<pre class="r"><code>#select bin coverage fore 18486
+cov_all_filt_18486=cov_all_filt %&gt;%separate(col=Geneid, into=c(&quot;bin&quot;,&quot;gene&quot;), sep=&quot;.E&quot;) %&gt;% select(bin, T_18486)
+cov_all_filt_18486$bin=as.integer(cov_all_filt_18486$bin)
+#join with percA
+perc_A_bin_filt_cov= perc_A_bin_filt %&gt;% select(bin, percA) %&gt;% right_join(cov_all_filt_18486,by=&quot;bin&quot;) 
+#melt it 
+perc_A_bin_filt_cov_melt=melt(perc_A_bin_filt_cov, id.vars=&quot;bin&quot;) 
+
+#plot it 
+
+ggplot(perc_A_bin_filt_cov, aes(y=T_18486, x=percA)) + geom_point()</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /> I will remove bins we did not have coverage in.</p>
+<pre class="r"><code>perc_A_bin_filt_cov_no0= perc_A_bin_filt %&gt;% select(bin, percA) %&gt;% right_join(cov_all_filt_18486,by=&quot;bin&quot;) %&gt;% filter(T_18486 &gt;0 )
+
+ggplot(perc_A_bin_filt_cov_no0, aes(y=T_18486, x=percA)) + geom_point()</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Check for T</p>
+<pre class="r"><code>#join with percA
+perc_T_bin_filt_cov= perc_T_bin_filt %&gt;% select(bin, percT) %&gt;% right_join(cov_all_filt_18486,by=&quot;bin&quot;) 
+#melt it 
+perc_T_bin_filt_cov_melt=melt(perc_T_bin_filt_cov, id.vars=&quot;bin&quot;) 
+
+#plot it 
+
+ggplot(perc_T_bin_filt_cov, aes(y=T_18486, x=percT)) + geom_point()</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="number-of-times-we-see-5-of-a-nucleotide" class="section level4">
+<h4>Number of times we see 5 of a nucleotide</h4>
+<pre class="r"><code>#join with fiveA
+bin_Anuccov_filt_cov= bin_Anuccov_filt %&gt;% select(bin, fiveA) %&gt;% right_join(cov_all_filt_18486,by=&quot;bin&quot;) 
+
+
+#plot it 
+
+ggplot(bin_Anuccov_filt_cov, aes(y=T_18486, x=fiveA)) + geom_point()</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>It does not look like these are drivers of the variation we see in counts.</p>
 </div>
 </div>
 <div id="session-information" class="section level2">
