@@ -233,3 +233,63 @@ countT_regions= bin_Tnuccov_filt %>% group_by(fiveT) %>% count(fiveT)
 ```
 The numbers are not super different.  
 
+##Correlation between count and A statistics  
+
+####Percent nucleotide  
+cov_all_filt
+
+```{r}
+#select bin coverage fore 18486
+cov_all_filt_18486=cov_all_filt %>%separate(col=Geneid, into=c("bin","gene"), sep=".E") %>% select(bin, T_18486)
+cov_all_filt_18486$bin=as.integer(cov_all_filt_18486$bin)
+#join with percA
+perc_A_bin_filt_cov= perc_A_bin_filt %>% select(bin, percA) %>% right_join(cov_all_filt_18486,by="bin") 
+#melt it 
+perc_A_bin_filt_cov_melt=melt(perc_A_bin_filt_cov, id.vars="bin") 
+
+#plot it 
+
+ggplot(perc_A_bin_filt_cov, aes(y=T_18486, x=percA)) + geom_point()
+
+```
+I will remove bins we did not have coverage in.  
+
+```{r}
+perc_A_bin_filt_cov_no0= perc_A_bin_filt %>% select(bin, percA) %>% right_join(cov_all_filt_18486,by="bin") %>% filter(T_18486 >0 )
+
+ggplot(perc_A_bin_filt_cov_no0, aes(y=T_18486, x=percA)) + geom_point()
+```
+
+Check for T  
+
+```{r}
+
+
+#join with percA
+perc_T_bin_filt_cov= perc_T_bin_filt %>% select(bin, percT) %>% right_join(cov_all_filt_18486,by="bin") 
+#melt it 
+perc_T_bin_filt_cov_melt=melt(perc_T_bin_filt_cov, id.vars="bin") 
+
+#plot it 
+
+ggplot(perc_T_bin_filt_cov, aes(y=T_18486, x=percT)) + geom_point()
+
+```
+
+
+####Number of times we see 5 of a nucleotide  
+
+```{r}
+
+#join with fiveA
+bin_Anuccov_filt_cov= bin_Anuccov_filt %>% select(bin, fiveA) %>% right_join(cov_all_filt_18486,by="bin") 
+
+
+#plot it 
+
+ggplot(bin_Anuccov_filt_cov, aes(y=T_18486, x=fiveA)) + geom_point()
+
+```
+
+It does not look like these are drivers of the variation we see in counts.  
+
