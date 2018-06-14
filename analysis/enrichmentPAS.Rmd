@@ -1,0 +1,69 @@
+---
+title: "Enrichment at annotated PAS"
+author: "Briana Mittleman"
+date: "6/13/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I am going to use this analysis to look for enrichment of my 3' seq reads at annoated PAS sites.  This is similar to the analysis I ran for the net-seq https://brimittleman.github.io/Net-seq/use_deeptools.html.
+
+##Running Deep Tools:
+
+Step 1: Create bigwig coverage files with bamcoverage
+
+* bamCoverage -b reads.bam -o coverage.bw
+
+Step 2: computeMatrix
+
+I will need my normalized bigwig reads and the bed interval file (in my case PAS clusters)
+
+ex: computeMatrix scale-regions -S <biwig file(s)> -R -b 1000 -a 1000 -out
+
+--skipZeros (option- not included in first try)
+
+Step 3: Plot heatmap
+
+required –matrixFile, -m (from the compute matrix), -out (file name to save image.png)
+
+–sortRegions descending
+
+–plotTitle, -T
+
+
+```{bash, eval=FALSE}
+#!/bin/bash
+
+
+#SBATCH --job-name=deeptools_pas
+#SBATCH --time=8:00:00
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --tasks-per-node=4 
+#SBATCH --mail-type=END
+#SBATCH --output=deeptool_pas_sbatch.out
+#SBATCH --error=deeptools_pas_sbatch.err
+
+module load Anaconda3
+
+source activate three-prime-env
+
+sample=$1
+describer=$(echo ${sample} | sed -e 's/.*\YL-SP-//' | sed -e "s/-sort.bam$//")
+
+
+bamCoverage -b $1
+ -o /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.bw
+
+computeMatrix reference-point -S project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.bw  -R /project2/gilad/briana/apa_sites/rnaseq_LCL/clusters_fullAnno.bed  -b 500 -a 500 -out /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.PAS.gz
+
+plotHeatmap --sortRegions descend --refPointLabel "PAS"  -m /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.PAS.gz  -out /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.PAS.gz.png
+```
+
+
+I am running this on YL-SP-18486-N_S10_R1_001-sort.bam  to try it first.  
+
+
