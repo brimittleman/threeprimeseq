@@ -11,6 +11,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 I am going to use this analysis to look for enrichment of my 3' seq reads at annoated PAS sites.  This is similar to the analysis I ran for the net-seq https://brimittleman.github.io/Net-seq/use_deeptools.html.
 
+##Load libraries
+```{r}
+library(workflowr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(reshape2)
+```
+
+
+
 ##Running Deep Tools:
 
 Step 1: Create bigwig coverage files with bamcoverage
@@ -55,8 +66,7 @@ sample=$1
 describer=$(echo ${sample} | sed -e 's/.*\YL-SP-//' | sed -e "s/-sort.bam$//")
 
 
-bamCoverage -b $1
- -o /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.bw
+bamCoverage -b $1 -o /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.bw
 
 computeMatrix reference-point -S project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.bw  -R /project2/gilad/briana/apa_sites/rnaseq_LCL/clusters_fullAnno.bed  -b 500 -a 500 -out /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.PAS.gz
 
@@ -66,4 +76,33 @@ plotHeatmap --sortRegions descend --refPointLabel "PAS"  -m /project2/gilad/bria
 
 I am running this on YL-SP-18486-N_S10_R1_001-sort.bam  to try it first.  
 
+
+
+##Picard statistics  
+
+```{r}
+pic.enrich=read.csv("../output/picard/picard.all.enrichment.csv")
+
+pic.enrich.melt=melt(pic.enrich, id.vars="normalized_position") %>% mutate(fraction=ifelse(grepl("T",variable), "total", "nuclear"))%>% mutate(line=substr(variable,3,7))
+```
+
+Plot this as line plot:  
+
+```{r}
+enrichment.by.line=ggplot(pic.enrich.melt, aes(x=normalized_position, y=value, col=fraction)) + geom_line() + facet_wrap(~line) + labs(y="Normalized Coverage", title="3' Seq enrichment at 3' end of genes", x="Normalized Position") +scale_color_manual(values=c("red", "blue"))
+ggsave("../output/plots/enrich.by.line.png", enrichment.by.line)
+
+```
+
+```{r}
+enrichment_byfrac=ggplot(pic.enrich.melt, aes(x=normalized_position, y=value, by=line, col=fraction)) + geom_line() + labs(y="Normalized Coverage", title="3' Seq enrichment at 3' end of genes", x="Normalized Position")+ scale_color_manual(values=c("red", "blue"))
+ggsave("../output/plots/enrich.by.fraction.png", enrichment_byfrac)
+```
+
+```{r}
+enrich.by.line.fraction=ggplot(pic.enrich.melt, aes(x=normalized_position, y=value, col=line)) + geom_line() + facet_wrap(~fraction) + labs(y="Normalized Coverage", title="3' Seq enrichment at 3' end of genes", x="Normalized Position") 
+
+
+ggsave("../output/plots/enrich.by.line.fraction.png",enrich.by.line.fraction)
+```
 
