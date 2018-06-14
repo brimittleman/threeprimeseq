@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/642faf0176cbdb3b251de2e62b9f5dc9d385bbdf" target="_blank">642faf0</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/772ca2b7db816d00b9acfbbffd7ff75348b77f7d" target="_blank">772ca2b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -360,6 +360,7 @@ Untracked files:
     Untracked:  data/leafcutter/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/ssFC200.cov.bed
+    Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
 
@@ -400,6 +401,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/772ca2b7db816d00b9acfbbffd7ff75348b77f7d/analysis/enrichmentPAS.Rmd" target="_blank">772ca2b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-13
+</td>
+<td style="text-align:left;">
+picard enrichment plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/08b593457c104b333a203741789e2d632e85bfa1/docs/enrichmentPAS.html" target="_blank">08b5934</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-13
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/642faf0176cbdb3b251de2e62b9f5dc9d385bbdf/analysis/enrichmentPAS.Rmd" target="_blank">642faf0</a>
 </td>
 <td style="text-align:left;">
@@ -418,6 +453,32 @@ start PAS enrichment analysis
 <p></details></p>
 <hr />
 <p>I am going to use this analysis to look for enrichment of my 3’ seq reads at annoated PAS sites. This is similar to the analysis I ran for the net-seq <a href="https://brimittleman.github.io/Net-seq/use_deeptools.html" class="uri">https://brimittleman.github.io/Net-seq/use_deeptools.html</a>.</p>
+<div id="load-libraries" class="section level2">
+<h2>Load libraries</h2>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>Loading required package: rmarkdown</code></pre>
+<pre><code>This is workflowr version 1.0.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)</code></pre>
+<pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.4.4</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyr)
+library(reshape2)</code></pre>
+<pre><code>Warning: package &#39;reshape2&#39; was built under R version 3.4.3</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+</div>
 <div id="running-deep-tools" class="section level2">
 <h2>Running Deep Tools:</h2>
 <p>Step 1: Create bigwig coverage files with bamcoverage</p>
@@ -452,13 +513,31 @@ sample=$1
 describer=$(echo ${sample} | sed -e &#39;s/.*\YL-SP-//&#39; | sed -e &quot;s/-sort.bam$//&quot;)
 
 
-bamCoverage -b $1
- -o /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.bw
+bamCoverage -b $1 -o /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.bw
 
 computeMatrix reference-point -S project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.bw  -R /project2/gilad/briana/apa_sites/rnaseq_LCL/clusters_fullAnno.bed  -b 500 -a 500 -out /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.PAS.gz
 
 plotHeatmap --sortRegions descend --refPointLabel &quot;PAS&quot;  -m /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.PAS.gz  -out /project2/gilad/briana/threeprimeseq/output/deeptools/${describer}.PAS.gz.png</code></pre>
 <p>I am running this on YL-SP-18486-N_S10_R1_001-sort.bam to try it first.</p>
+</div>
+<div id="picard-statistics" class="section level2">
+<h2>Picard statistics</h2>
+<pre class="r"><code>pic.enrich=read.csv(&quot;../output/picard/picard.all.enrichment.csv&quot;)
+
+pic.enrich.melt=melt(pic.enrich, id.vars=&quot;normalized_position&quot;) %&gt;% mutate(fraction=ifelse(grepl(&quot;T&quot;,variable), &quot;total&quot;, &quot;nuclear&quot;))%&gt;% mutate(line=substr(variable,3,7))</code></pre>
+<pre><code>Warning: package &#39;bindrcpp&#39; was built under R version 3.4.4</code></pre>
+<p>Plot this as line plot:</p>
+<pre class="r"><code>enrichment.by.line=ggplot(pic.enrich.melt, aes(x=normalized_position, y=value, col=fraction)) + geom_line() + facet_wrap(~line) + labs(y=&quot;Normalized Coverage&quot;, title=&quot;3&#39; Seq enrichment at 3&#39; end of genes&quot;, x=&quot;Normalized Position&quot;) +scale_color_manual(values=c(&quot;red&quot;, &quot;blue&quot;))
+ggsave(&quot;../output/plots/enrich.by.line.png&quot;, enrichment.by.line)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>enrichment_byfrac=ggplot(pic.enrich.melt, aes(x=normalized_position, y=value, by=line, col=fraction)) + geom_line() + labs(y=&quot;Normalized Coverage&quot;, title=&quot;3&#39; Seq enrichment at 3&#39; end of genes&quot;, x=&quot;Normalized Position&quot;)+ scale_color_manual(values=c(&quot;red&quot;, &quot;blue&quot;))
+ggsave(&quot;../output/plots/enrich.by.fraction.png&quot;, enrichment_byfrac)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>enrich.by.line.fraction=ggplot(pic.enrich.melt, aes(x=normalized_position, y=value, col=line)) + geom_line() + facet_wrap(~fraction) + labs(y=&quot;Normalized Coverage&quot;, title=&quot;3&#39; Seq enrichment at 3&#39; end of genes&quot;, x=&quot;Normalized Position&quot;) 
+
+
+ggsave(&quot;../output/plots/enrich.by.line.fraction.png&quot;,enrich.by.line.fraction)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -477,14 +556,23 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+[1] bindrcpp_0.2.2  reshape2_1.4.3  tidyr_0.7.2     dplyr_0.7.5    
+[5] ggplot2_2.2.1   workflowr_1.0.1 rmarkdown_1.8.5
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.0.1   Rcpp_0.12.17      digest_0.6.15    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
-[10] stringi_1.2.2     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.6.0     rmarkdown_1.8.5   tools_3.4.2      
-[16] stringr_1.3.1     yaml_2.1.19       compiler_3.4.2   
-[19] htmltools_0.3.6   knitr_1.18       </code></pre>
+ [1] Rcpp_0.12.17      compiler_3.4.2    pillar_1.1.0     
+ [4] git2r_0.21.0      plyr_1.8.4        bindr_0.1.1      
+ [7] R.methodsS3_1.7.1 R.utils_2.6.0     tools_3.4.2      
+[10] digest_0.6.15     evaluate_0.10.1   tibble_1.4.2     
+[13] gtable_0.2.0      pkgconfig_2.0.1   rlang_0.2.1      
+[16] yaml_2.1.19       stringr_1.3.1     knitr_1.18       
+[19] rprojroot_1.3-2   grid_3.4.2        tidyselect_0.2.4 
+[22] glue_1.2.0        R6_2.2.2          purrr_0.2.5      
+[25] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
+[28] scales_0.5.0      htmltools_0.3.6   assertthat_0.2.0 
+[31] colorspace_1.3-2  labeling_0.3      stringi_1.2.2    
+[34] lazyeval_0.2.1    munsell_0.4.3     R.oo_1.22.0      </code></pre>
 </div>
 
 <hr>
