@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-12</p>
+<p><strong>Last updated:</strong> 2018-06-15</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,12 +341,15 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/8e585ce583320466cb0fbdb85f743e1031b8c7db" target="_blank">8e585ce</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9d9cfece6657169037f5a6317e622d59d71a4e98" target="_blank">9d9cfec</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
+    Ignored:    output/.DS_Store
 
 Untracked files:
     Untracked:  data/18486.genecov.txt
@@ -358,6 +361,7 @@ Untracked files:
     Untracked:  data/leafcutter/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/ssFC200.cov.bed
+    Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
 
@@ -393,6 +397,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/9d9cfece6657169037f5a6317e622d59d71a4e98/analysis/a.content.Rmd" target="_blank">9d9cfec</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-15
+</td>
+<td style="text-align:left;">
+add correlation with perc and bin count in N
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/256ba93fa029b734d871e5d78c0b6ab9bc351abc/docs/a.content.html" target="_blank">256ba93</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-12
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -502,6 +540,13 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>The following objects are masked from &#39;package:base&#39;:
 
     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>Warning: package &#39;cowplot&#39; was built under R version 3.4.3</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
 <pre class="r"><code>library(tidyr)
 library(reshape2)</code></pre>
 <pre><code>Warning: package &#39;reshape2&#39; was built under R version 3.4.3</code></pre>
@@ -1034,12 +1079,77 @@ perc_A_bin_filt_cov_melt=melt(perc_A_bin_filt_cov, id.vars=&quot;bin&quot;)
 
 #plot it 
 
-ggplot(perc_A_bin_filt_cov, aes(y=T_18486, x=percA)) + geom_point()</code></pre>
-<p><img src="figure/a.content.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /> I will remove bins we did not have coverage in.</p>
+perA_18486total=ggplot(perc_A_bin_filt_cov, aes(y=T_18486, x=percA)) + geom_point()+ labs(y=&quot;Total Bin count&quot;,x=&quot;Percent A in bin&quot;) + geom_smooth(method=&quot;lm&quot;, col=&quot;red&quot;)
+
+
+
+#select bin coverage fore 18486
+cov_all_filt_18486N=cov_all_filt %&gt;%separate(col=Geneid, into=c(&quot;bin&quot;,&quot;gene&quot;), sep=&quot;.E&quot;) %&gt;% select(bin, N_18486)
+cov_all_filt_18486N$bin=as.integer(cov_all_filt_18486N$bin)
+#join with percA
+perc_A_bin_filt_covN= perc_A_bin_filt %&gt;% select(bin, percA) %&gt;% right_join(cov_all_filt_18486N,by=&quot;bin&quot;) 
+#melt it 
+perc_A_bin_filt_cov_melNt=melt(perc_A_bin_filt_covN, id.vars=&quot;bin&quot;) 
+perA_18486nuc=ggplot(perc_A_bin_filt_covN, aes(y=N_18486, x=percA)) + geom_point() + labs(y=&quot;Nuclear Bin count&quot;,x=&quot;Percent A in bin&quot;) + geom_smooth(method=&quot;lm&quot;, col=&quot;red&quot;)
+title &lt;- ggdraw() + draw_label(&quot;No relationship between bin read count and percentage \n of A nucleotides in a bin &quot;, fontface = &#39;bold&#39;)
+
+x=plot_grid(perA_18486total,perA_18486nuc)
+
+grid.plot=plot_grid(title, x,ncol=1, rel_heights=c(0.3, 1))
+
+ggsave( &quot;../output/plots/perc.A.bincount.png&quot;, grid.plot, width = 10, height = 7)</code></pre>
+<pre class="r"><code>lm(perc_A_bin_filt_covN$percA~perc_A_bin_filt_covN$N_18486 )</code></pre>
+<pre><code>
+Call:
+lm(formula = perc_A_bin_filt_covN$percA ~ perc_A_bin_filt_covN$N_18486)
+
+Coefficients:
+                 (Intercept)  perc_A_bin_filt_covN$N_18486  
+                   2.655e-01                     2.643e-05  </code></pre>
+<pre class="r"><code>lm( perc_A_bin_filt_cov$percA ~ perc_A_bin_filt_cov$T_18486)</code></pre>
+<pre><code>
+Call:
+lm(formula = perc_A_bin_filt_cov$percA ~ perc_A_bin_filt_cov$T_18486)
+
+Coefficients:
+                (Intercept)  perc_A_bin_filt_cov$T_18486  
+                  0.2658285                    0.0000085  </code></pre>
+<p>Both have about a 0 correlation.</p>
+<p>I will remove bins we did not have coverage in.</p>
 <pre class="r"><code>perc_A_bin_filt_cov_no0= perc_A_bin_filt %&gt;% select(bin, percA) %&gt;% right_join(cov_all_filt_18486,by=&quot;bin&quot;) %&gt;% filter(T_18486 &gt;0 )
 
-ggplot(perc_A_bin_filt_cov_no0, aes(y=T_18486, x=percA)) + geom_point()</code></pre>
-<p><img src="figure/a.content.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+ggplot(perc_A_bin_filt_cov_no0, aes(y=T_18486, x=percA)) + geom_point() + geom_smooth(method=&quot;lm&quot;, col=&quot;red&quot;)</code></pre>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/256ba93fa029b734d871e5d78c0b6ab9bc351abc/docs/figure/a.content.Rmd/unnamed-chunk-20-1.png" target="_blank">256ba93</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-12
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Check for T</p>
 <pre class="r"><code>#join with percA
 perc_T_bin_filt_cov= perc_T_bin_filt %&gt;% select(bin, percT) %&gt;% right_join(cov_all_filt_18486,by=&quot;bin&quot;) 
@@ -1049,7 +1159,37 @@ perc_T_bin_filt_cov_melt=melt(perc_T_bin_filt_cov, id.vars=&quot;bin&quot;)
 #plot it 
 
 ggplot(perc_T_bin_filt_cov, aes(y=T_18486, x=percT)) + geom_point()</code></pre>
-<p><img src="figure/a.content.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/256ba93fa029b734d871e5d78c0b6ab9bc351abc/docs/figure/a.content.Rmd/unnamed-chunk-21-1.png" target="_blank">256ba93</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-12
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="number-of-times-we-see-5-of-a-nucleotide" class="section level4">
 <h4>Number of times we see 5 of a nucleotide</h4>
@@ -1060,8 +1200,9 @@ bin_Anuccov_filt_cov= bin_Anuccov_filt %&gt;% select(bin, fiveA) %&gt;% right_jo
 #plot it 
 
 ggplot(bin_Anuccov_filt_cov, aes(y=T_18486, x=fiveA)) + geom_point()</code></pre>
-<p><img src="figure/a.content.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/a.content.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>It does not look like these are drivers of the variation we see in counts.</p>
+<p>This analysis has shown me that mispriming is not a global problem in the samples. We do not see a correlaation bertween percent As in a bin and the read count for either the total or the nuclear. I also do not see any outliers bins with high coverage and high A percentage. If this is a problem it is at a specfici locus level. We can assess this in regions we see differences between total and nuclear fractions.</p>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -1082,8 +1223,8 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] bindrcpp_0.2.2  reshape2_1.4.3  tidyr_0.7.2     dplyr_0.7.5    
-[5] ggplot2_2.2.1   workflowr_1.0.1 rmarkdown_1.8.5
+[1] bindrcpp_0.2.2  reshape2_1.4.3  tidyr_0.7.2     cowplot_0.9.2  
+[5] dplyr_0.7.5     ggplot2_2.2.1   workflowr_1.0.1 rmarkdown_1.8.5
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.17      compiler_3.4.2    pillar_1.1.0     
