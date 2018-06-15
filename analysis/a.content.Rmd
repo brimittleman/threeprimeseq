@@ -20,8 +20,10 @@ One method is to measure the number of AAAAAs in my bins with bedtools nuc. I wi
 library(workflowr)
 library(ggplot2)
 library(dplyr)
+library(cowplot)
 library(tidyr)
 library(reshape2)
+
 ```
 
 
@@ -234,8 +236,8 @@ countT_regions= bin_Tnuccov_filt %>% group_by(fiveT) %>% count(fiveT)
 The numbers are not super different.  
 
 ##Correlation between count and A statistics  
-
-####Percent nucleotide  
+  
+####Percent nucleotide   
 cov_all_filt
 
 ```{r}
@@ -249,15 +251,43 @@ perc_A_bin_filt_cov_melt=melt(perc_A_bin_filt_cov, id.vars="bin")
 
 #plot it 
 
-ggplot(perc_A_bin_filt_cov, aes(y=T_18486, x=percA)) + geom_point()
+perA_18486total=ggplot(perc_A_bin_filt_cov, aes(y=T_18486, x=percA)) + geom_point()+ labs(y="Total Bin count",x="Percent A in bin") + geom_smooth(method="lm", col="red")
 
+
+
+#select bin coverage fore 18486
+cov_all_filt_18486N=cov_all_filt %>%separate(col=Geneid, into=c("bin","gene"), sep=".E") %>% select(bin, N_18486)
+cov_all_filt_18486N$bin=as.integer(cov_all_filt_18486N$bin)
+#join with percA
+perc_A_bin_filt_covN= perc_A_bin_filt %>% select(bin, percA) %>% right_join(cov_all_filt_18486N,by="bin") 
+#melt it 
+perc_A_bin_filt_cov_melNt=melt(perc_A_bin_filt_covN, id.vars="bin") 
+perA_18486nuc=ggplot(perc_A_bin_filt_covN, aes(y=N_18486, x=percA)) + geom_point() + labs(y="Nuclear Bin count",x="Percent A in bin") + geom_smooth(method="lm", col="red")
+title <- ggdraw() + draw_label("No relationship between bin read count and percentage \n of A nucleotides in a bin ", fontface = 'bold')
+
+x=plot_grid(perA_18486total,perA_18486nuc)
+
+grid.plot=plot_grid(title, x,ncol=1, rel_heights=c(0.3, 1))
+
+ggsave( "../output/plots/perc.A.bincount.png", grid.plot, width = 10, height = 7)
 ```
+
+```{r}
+
+lm(perc_A_bin_filt_covN$percA~perc_A_bin_filt_covN$N_18486 )
+
+lm( perc_A_bin_filt_cov$percA ~ perc_A_bin_filt_cov$T_18486)
+```
+
+Both have about a 0 correlation. 
+
+
 I will remove bins we did not have coverage in.  
 
 ```{r}
 perc_A_bin_filt_cov_no0= perc_A_bin_filt %>% select(bin, percA) %>% right_join(cov_all_filt_18486,by="bin") %>% filter(T_18486 >0 )
 
-ggplot(perc_A_bin_filt_cov_no0, aes(y=T_18486, x=percA)) + geom_point()
+ggplot(perc_A_bin_filt_cov_no0, aes(y=T_18486, x=percA)) + geom_point() + geom_smooth(method="lm", col="red")
 ```
 
 Check for T  
@@ -292,4 +322,7 @@ ggplot(bin_Anuccov_filt_cov, aes(y=T_18486, x=fiveA)) + geom_point()
 ```
 
 It does not look like these are drivers of the variation we see in counts.  
+
+
+This analysis has shown me that mispriming is not a global problem in the samples. We do not see a correlaation bertween percent As in a bin and the read count for either the total or the nuclear. I also do not see any outliers bins with high coverage and high A percentage. If this is a problem it is at a specfici locus level. We can assess this in regions we see differences between total and nuclear fractions.  
 
