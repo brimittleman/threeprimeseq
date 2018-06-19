@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Briana Mittleman" />
+
+
+<title>Filter Reads Mapping to A’s</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Three Prime Sequencing in Human LCLs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brimittleman/threeprimeseq">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Filter Reads Mapping to A’s</h1>
+<h4 class="author"><em>Briana Mittleman</em></h4>
+<h4 class="date"><em>6/18/2018</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-06-19</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2f53108df56d30d9b96e687b97d0a6de02326959" target="_blank">2f53108</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    output/.DS_Store
+
+Untracked files:
+    Untracked:  data/18486.genecov.txt
+    Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/bin200.5.T.nuccov.bed
+    Untracked:  data/bin200.Anuccov.bed
+    Untracked:  data/bin200.nuccov.bed
+    Untracked:  data/gene_cov/
+    Untracked:  data/leafcutter/
+    Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  data/ssFC200.cov.bed
+    Untracked:  output/picard/
+    Untracked:  output/plots/
+    Untracked:  output/qual.fig2.pdf
+
+Unstaged changes:
+    Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/explore.filters.Rmd
+    Modified:   code/Snakefile
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2f53108df56d30d9b96e687b97d0a6de02326959/analysis/filter_As.Rmd" target="_blank">2f53108</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-19
+</td>
+<td style="text-align:left;">
+filter A code
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<p>I will use this analysis to develop a filtering method to filter reads that map to genomic locations with PolyA stretches. These reads could be due to priming of the poly dT primer in the protocol rather than actual polyA tails. This will be a problem for our differential APA analysis between total and nuclear RNA if mis primming is more likely to happen in the nuclear fraction. I am adapting a script by Ankeeta Shah to detect misprimming in coelesce seq. The script uses the python package pysam to work with bam files in python like samtools.</p>
+<div id="coelesce-seq-script" class="section level2">
+<h2>Coelesce seq script</h2>
+<pre><code>#!/usr/bin/env python
+
+&quot;&quot;&quot;
+Usage: python extractReadsWithMismatchesin6FirstNct_noS.py &lt;input_bam&gt; &lt;output_bam&gt; 
+&quot;&quot;&quot;
+
+import sys, pysam, re
+
+iBAM = pysam.Samfile(sys.argv[1], &#39;r&#39;) # reads from the standard input
+oBAM = pysam.Samfile(sys.argv[2], &#39;w&#39;, template=iBAM) # output 
+
+for line in iBAM:
+    if (line.is_read2): #for paired end reads, if mate 2 
+        string = line.cigarstring 
+        regex=re.compile(&#39;^[0-9]*M&#39;) #only look for reads that have M (meaning match or mismatch) at the front of the cigar string 
+        if re.match(regex, string):
+            md=re.findall(r&#39;\d+&#39;, [tag[1] for tag in line.tags if tag[0]==&#39;MD&#39;][0]) #get md tag
+            if len(md) == 1 :       # if there are no mismatches 
+                oBAM.write(line)    # write the alignment into the output file
+            else:
+                if (not line.is_reverse) and (int(md[0]) &gt;= 6): # if the first mismatch occurs after the 6th nt (from the 5&#39; end)
+                  oBAM.write(line)                           # write the alignment into the output file
+                elif (line.is_reverse) and (int(md[-1]) &gt;= 6):  # same as above but for reads that align to the reverse strand
+                  oBAM.write(line)
+
+# close files
+iBAM.close()
+oBAM.close()</code></pre>
+<p>I need to make the following changes to this script:</p>
+<ul>
+<li><p>Remove first if statement because I do not have paired end reads</p></li>
+<li><p>get all of the places that have an M in the cigar string. Then look at the one with the longest integer attached. This will correspond to the longest region of the read mapping.</p></li>
+<li><p>Add a reg exp. to check if mapping region includes 6 A’s.</p></li>
+</ul>
+<p>This should write out a bam with just the reads mapping to 6 A’s.</p>
+</div>
+<div id="update-script" class="section level2">
+<h2>Update Script</h2>
+<pre><code>#!/usr/bin/env python
+
+&quot;&quot;&quot;
+Usage: python filter6As.py &lt;input_bam&gt; &lt;output_bam&gt; 
+&quot;&quot;&quot;
+
+import sys, pysam, re
+
+iBAM = pysam.Samfile(sys.argv[1], &#39;r&#39;) # reads from the standard input
+oBAM = pysam.Samfile(sys.argv[2], &#39;w&#39;, template=iBAM) # output 
+
+for line in iBAM:
+      string = line.cigarstring 
+      regex=re.compile(&#39;[0-9]*M&#39;) #only look for reads that have M (meaning match or mismatch) at the front of the cigar string 
+      test.string=&quot;AAAAAA&quot;
+        if len(re.findall(regex, string))&gt;=1:
+          #find the logest mapping string
+          match=re.findall(regex, string)
+          maxM=0
+          matchind=0
+          numM=re.compile(&#39;[0-9]*&#39;)
+          for M in range(len(match)):
+            if re.findall(numM,match[M]) &gt; maxM:
+              maxM= re.findall(numM,match[M])
+              matchind=M
+          longestmatch=match[M]
+          #query_alignment_sequence
+          md=re.findall(r&#39;\d+&#39;, [tag[1] for tag in line.tags if tag[0]==&#39;MD&#39;][0]) #get md tag
+           
+           
+           
+            if len(md) == 1 :       # if there are no mismatches 
+                oBAM.write(line)    # write the alignment into the output file
+            &lt;!-- else: --&gt;
+            &lt;!--     if (not line.is_reverse) and (int(md[0]) &gt;= 6): # if the first mismatch occurs after the 6th nt (from the 5&#39; end) --&gt;
+            &lt;!--         oBAM.write(line)                           # write the alignment into the output file --&gt;
+            &lt;!--     elif (line.is_reverse) and (int(md[-1]) &gt;= 6):  # same as above but for reads that align to the reverse strand --&gt;
+            &lt;!--         oBAM.write(line) --&gt;
+
+# close files
+iBAM.close()
+oBAM.close()</code></pre>
+<p>Try to not use the cigar string method. Just look at the mapped reads.</p>
+<pre><code>#!/usr/bin/env python
+
+&quot;&quot;&quot;
+Usage: python filter6As.py &lt;input_bam&gt; &lt;output_bam&gt; 
+&quot;&quot;&quot;
+
+import sys, pysam, re
+iBAM = pysam.Samfile(&#39;/project2/gilad/briana/threeprimeseq/data/sort/YL-SP-19257-T_S25_R1_001-sort.bam&#39;, &#39;r&#39;) # reads from the standard input
+oBAM = pysam.Samfile(&#39;test.bam&#39;, &#39;w&#39;, template=iBAM) # output 
+for line in iBAM:
+  seq=line.query_alignment_sequence
+  Aseq=re.compile(&quot;AAAAAA&quot;)
+  if len(re.findall(Aseq, seq))&gt;=1:
+    oBAM.write(line)
+iBAM.close()
+oBAM.close()</code></pre>
+<p>What I need to do is combine both of these ideas. I need to test for mismatches using the cigar string, then extract the sequence and test for the multiple As in that section. I could seperate the alligned sequence and the coresponding cigar sequence into a list of tuples. Then I can find the largest mapping section, test for the mismatches and sequence of AAAAAs in this section.</p>
+<p>Try on /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-19257-T_S25_R1_001-sort.bam</p>
+</div>
+<div id="alternative-method" class="section level2">
+<h2>Alternative method:</h2>
+<p>An alternative way to think about this is that we expect directly upstream of the read to be 6 A’s. I am going to write a script that changes the bed file to give me the 6 basepairs before the read. This is start -6 to start on the fwd strand and end to encd +6 on rhe reverse strand. I can then use the bedtools nuc tool for these. I will filter the lines that have 100% As on the fwd strand and 100% Ts on the rev strand.</p>
+<p>Script to look at positions upstream 6 bases. 6up_bed.sh</p>
+<pre class="bash"><code>
+#!/bin/bash
+
+#SBATCH --job-name=6upbed
+#SBATCH --time=8:00:00
+#SBATCH --output=6upbed.out
+#SBATCH --error=6upbed.err
+#SBATCH --account=pi-yangili1
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+#imput sorted bed file 
+bed=$1
+describer=$(echo ${bed} | sed -e &#39;s/.*\YL-SP-//&#39; | sed -e &quot;s/-sort.bed$//&quot;)
+
+
+awk &#39;{if($6== &quot;+&quot;) print($1 &quot;\t&quot; $2-6 &quot;\t&quot; $2 &quot;\t&quot; $4 &quot;\t&quot; $5 &quot;\t&quot; $6 ); else print($1 &quot;\t&quot; $3 &quot;\t&quot; $3 + 6 &quot;\t&quot; $4 &quot;\t&quot; $5 &quot;\t&quot; $6)}&#39; $1 | awk &#39;{if($2 &lt;0) print($1 &quot;\t&quot; &quot;0&quot; &quot;\t&quot; $3 &quot;\t&quot; $4 &quot;\t&quot; $5 &quot;\t&quot; $6) ; else print($1 &quot;\t&quot; $2 &quot;\t&quot; $3&quot;\t&quot; $4 &quot;\t&quot; $5 &quot;\t&quot; $6)}&#39; &gt; /project2/gilad/briana/threeprimeseq/data/bed_6up/sixup.${describer}.6up.sort.bed  
+</code></pre>
+<p>Write wrapper w_6up.sh:</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=w_6up
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_6up.out
+#SBATCH --error=w_6up.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/*.bed); do
+            sbatch 6up_bed.sh  $i 
+        done</code></pre>
+<p>Write the nuc script:</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuc6up
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=nuc6up.out
+#SBATCH --error=nuc6up.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+#imput 6up sorted bed file 
+bed=$1
+describer=$(echo ${bed} | sed -e &#39;s/.*sixup.//&#39; | sed -e &quot;s/.6up.sort.bed$//&quot;)
+
+bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed $1 &gt; /project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.${describer}.bed </code></pre>
+<p>test with /project2/gilad/briana/threeprimeseq/data/bed_6up/sixup.18486-N_S10_R1_001.6up.sort.bed</p>
+<p><strong>Error: malformed BED entry at line 5671859. Start was greater than end. Exiting.</strong> The problem is adding 6 on the end goes outisde the boundaries of the chromosome. I need the lengths of the chromosomes and I need to check for this when I make the file.</p>
+<p>The hacky way will be to seperate the into seperate chromosomes and check both ends, then put back together.</p>
+<p>6308726 - 5671859</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.2 (2017-09-28)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.0.1   Rcpp_0.12.17      digest_0.6.15    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
+[10] stringi_1.2.2     whisker_0.3-2     R.oo_1.22.0      
+[13] R.utils_2.6.0     rmarkdown_1.8.5   tools_3.4.2      
+[16] stringr_1.3.1     yaml_2.1.19       compiler_3.4.2   
+[19] htmltools_0.3.6   knitr_1.18       </code></pre>
+</div>
+
+<hr>
+<p>
+    
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
