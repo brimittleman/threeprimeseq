@@ -1,0 +1,225 @@
+---
+title: "Filter Reads Mapping to A's"
+author: "Briana Mittleman"
+date: "6/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this analysis to develop a filtering method to filter reads that map to genomic locations with PolyA stretches. These reads could be due to priming of the poly dT primer in the protocol rather than actual polyA tails. This will be a problem for our differential APA analysis between total and nuclear RNA if mis primming is more likely to happen in the nuclear fraction. I am adapting a script by Ankeeta Shah to detect misprimming in coelesce seq. The script uses the python package pysam to work with bam files in python like samtools.  
+
+##Coelesce seq script
+```
+#!/usr/bin/env python
+
+"""
+Usage: python extractReadsWithMismatchesin6FirstNct_noS.py <input_bam> <output_bam> 
+"""
+
+import sys, pysam, re
+
+iBAM = pysam.Samfile(sys.argv[1], 'r') # reads from the standard input
+oBAM = pysam.Samfile(sys.argv[2], 'w', template=iBAM) # output 
+
+for line in iBAM:
+    if (line.is_read2): #for paired end reads, if mate 2 
+        string = line.cigarstring 
+        regex=re.compile('^[0-9]*M') #only look for reads that have M (meaning match or mismatch) at the front of the cigar string 
+        if re.match(regex, string):
+            md=re.findall(r'\d+', [tag[1] for tag in line.tags if tag[0]=='MD'][0]) #get md tag
+            if len(md) == 1 :       # if there are no mismatches 
+                oBAM.write(line)    # write the alignment into the output file
+            else:
+                if (not line.is_reverse) and (int(md[0]) >= 6): # if the first mismatch occurs after the 6th nt (from the 5' end)
+                  oBAM.write(line)                           # write the alignment into the output file
+                elif (line.is_reverse) and (int(md[-1]) >= 6):  # same as above but for reads that align to the reverse strand
+                  oBAM.write(line)
+
+# close files
+iBAM.close()
+oBAM.close()
+```
+
+I need to make the following changes to this script:  
+
+* Remove first if statement because I do not have paired end reads  
+
+* get all of the places that have an M in the cigar string. Then look at the one with the longest integer attached. This will correspond to the longest region of the read mapping.  
+
+* Add a reg exp. to check if mapping region includes 6 A's.  
+
+This should write out a bam with just the reads mapping to 6 A's.  
+
+
+##Update Script  
+
+```
+#!/usr/bin/env python
+
+"""
+Usage: python filter6As.py <input_bam> <output_bam> 
+"""
+
+import sys, pysam, re
+
+iBAM = pysam.Samfile(sys.argv[1], 'r') # reads from the standard input
+oBAM = pysam.Samfile(sys.argv[2], 'w', template=iBAM) # output 
+
+for line in iBAM:
+      string = line.cigarstring 
+      regex=re.compile('[0-9]*M') #only look for reads that have M (meaning match or mismatch) at the front of the cigar string 
+      test.string="AAAAAA"
+        if len(re.findall(regex, string))>=1:
+          #find the logest mapping string
+          match=re.findall(regex, string)
+          maxM=0
+          matchind=0
+          numM=re.compile('[0-9]*')
+          for M in range(len(match)):
+            if re.findall(numM,match[M]) > maxM:
+              maxM= re.findall(numM,match[M])
+              matchind=M
+          longestmatch=match[M]
+          #query_alignment_sequence
+          md=re.findall(r'\d+', [tag[1] for tag in line.tags if tag[0]=='MD'][0]) #get md tag
+           
+           
+           
+            if len(md) == 1 :       # if there are no mismatches 
+                oBAM.write(line)    # write the alignment into the output file
+            <!-- else: -->
+            <!--     if (not line.is_reverse) and (int(md[0]) >= 6): # if the first mismatch occurs after the 6th nt (from the 5' end) -->
+            <!--         oBAM.write(line)                           # write the alignment into the output file -->
+            <!--     elif (line.is_reverse) and (int(md[-1]) >= 6):  # same as above but for reads that align to the reverse strand -->
+            <!--         oBAM.write(line) -->
+
+# close files
+iBAM.close()
+oBAM.close()
+```
+
+
+Try to not use the cigar string method. Just look at the mapped reads.  
+
+
+
+```
+#!/usr/bin/env python
+
+"""
+Usage: python filter6As.py <input_bam> <output_bam> 
+"""
+
+import sys, pysam, re
+iBAM = pysam.Samfile('/project2/gilad/briana/threeprimeseq/data/sort/YL-SP-19257-T_S25_R1_001-sort.bam', 'r') # reads from the standard input
+oBAM = pysam.Samfile('test.bam', 'w', template=iBAM) # output 
+for line in iBAM:
+  seq=line.query_alignment_sequence
+  Aseq=re.compile("AAAAAA")
+  if len(re.findall(Aseq, seq))>=1:
+    oBAM.write(line)
+iBAM.close()
+oBAM.close()
+```
+
+
+What I need to do is combine both of these ideas. I need to test for mismatches using the cigar string, then extract the sequence and test for the multiple As in that section. I could seperate the alligned sequence and the coresponding cigar sequence into a list of tuples. Then I can find the largest mapping section, test for the mismatches and sequence of AAAAAs in this section.  
+
+
+Try on /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-19257-T_S25_R1_001-sort.bam
+
+
+##Alternative method:  
+
+An alternative way to think about this is that we expect directly upstream of the read to be 6 A's. I am going to write a script that changes the bed file to give me the 6 basepairs before the read. This is start -6 to start on the fwd strand and end to encd +6 on rhe reverse strand. I can then use the bedtools nuc tool for these. I will filter the lines that have 100% As on the fwd strand and 100% Ts on the rev strand.  
+
+
+Script to look at positions upstream 6 bases. 6up_bed.sh 
+```{bash, eval=FALSE}
+
+#!/bin/bash
+
+#SBATCH --job-name=6upbed
+#SBATCH --time=8:00:00
+#SBATCH --output=6upbed.out
+#SBATCH --error=6upbed.err
+#SBATCH --account=pi-yangili1
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+#imput sorted bed file 
+bed=$1
+describer=$(echo ${bed} | sed -e 's/.*\YL-SP-//' | sed -e "s/-sort.bed$//")
+
+
+awk '{if($6== "+") print($1 "\t" $2-6 "\t" $2 "\t" $4 "\t" $5 "\t" $6 ); else print($1 "\t" $3 "\t" $3 + 6 "\t" $4 "\t" $5 "\t" $6)}' $1 | awk '{if($2 <0) print($1 "\t" "0" "\t" $3 "\t" $4 "\t" $5 "\t" $6) ; else print($1 "\t" $2 "\t" $3"\t" $4 "\t" $5 "\t" $6)}' > /project2/gilad/briana/threeprimeseq/data/bed_6up/sixup.${describer}.6up.sort.bed  
+
+
+
+```
+
+Write wrapper w_6up.sh:  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_6up
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_6up.out
+#SBATCH --error=w_6up.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/*.bed); do
+            sbatch 6up_bed.sh  $i 
+        done
+```
+
+
+Write the nuc script:  
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nuc6up
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=nuc6up.out
+#SBATCH --error=nuc6up.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+#imput 6up sorted bed file 
+bed=$1
+describer=$(echo ${bed} | sed -e 's/.*sixup.//' | sed -e "s/.6up.sort.bed$//")
+
+bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed $1 > /project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.${describer}.bed 
+```
+
+test with /project2/gilad/briana/threeprimeseq/data/bed_6up/sixup.18486-N_S10_R1_001.6up.sort.bed
+
+
+**Error: malformed BED entry at line 5671859. Start was greater than end. Exiting.**
+The problem is adding 6 on the end goes outisde the boundaries of the chromosome. I need the lengths of the chromosomes and I need to check for this when I make the file.  
+
+The hacky way will be to seperate the into seperate chromosomes and check both ends, then put back together. 
+
+
+6308726 - 5671859
+
