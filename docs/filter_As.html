@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2f53108df56d30d9b96e687b97d0a6de02326959" target="_blank">2f53108</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/478db0ceb41ea1692638821c3209f64c44d0d5d9" target="_blank">478db0c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -358,6 +358,7 @@ Untracked files:
     Untracked:  data/bin200.nuccov.bed
     Untracked:  data/gene_cov/
     Untracked:  data/leafcutter/
+    Untracked:  data/nuc6up/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/ssFC200.cov.bed
     Untracked:  output/picard/
@@ -396,6 +397,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/478db0ceb41ea1692638821c3209f64c44d0d5d9/analysis/filter_As.Rmd" target="_blank">478db0c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-19
+</td>
+<td style="text-align:left;">
+filter 2 samples for 6 As
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/30b415e3b95d62eafebb6a4824a29fba6c727be2/docs/filter_As.html" target="_blank">30b415e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-19
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -521,8 +556,8 @@ oBAM.close()</code></pre>
 <p>What I need to do is combine both of these ideas. I need to test for mismatches using the cigar string, then extract the sequence and test for the multiple As in that section. I could seperate the alligned sequence and the coresponding cigar sequence into a list of tuples. Then I can find the largest mapping section, test for the mismatches and sequence of AAAAAs in this section.</p>
 <p>Try on /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-19257-T_S25_R1_001-sort.bam</p>
 </div>
-<div id="alternative-method" class="section level2">
-<h2>Alternative method:</h2>
+<div id="alternative-method--6-bases-upstream" class="section level2">
+<h2>Alternative method- 6 bases upstream:</h2>
 <p>An alternative way to think about this is that we expect directly upstream of the read to be 6 A’s. I am going to write a script that changes the bed file to give me the 6 basepairs before the read. This is start -6 to start on the fwd strand and end to encd +6 on rhe reverse strand. I can then use the bedtools nuc tool for these. I will filter the lines that have 100% As on the fwd strand and 100% Ts on the rev strand.</p>
 <p>Script to look at positions upstream 6 bases. 6up_bed.sh</p>
 <pre class="bash"><code>
@@ -564,6 +599,46 @@ awk &#39;{if($6== &quot;+&quot;) print($1 &quot;\t&quot; $2-6 &quot;\t&quot; $2 
 for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/*.bed); do
             sbatch 6up_bed.sh  $i 
         done</code></pre>
+<p>The problem is adding 6 on the end goes outisde the boundaries of the chromosome. I need the lengths of the chromosomes and I need to check for this when I make the file.</p>
+<p>I can intersect these files with a bed file with the chromosome lengths then only keep the ones that fully intersect.</p>
+<p>The chromosome lengths are in /project2/gilad/briana/genome_anotation_data/chrom_lengths.sort.bed</p>
+<p>Intersect with this bed and only keep lines that are 100% in the chrom lengths. a = 6up b= /project2/gilad/briana/genome_anotation_data/chrom_lengths.sort.bed -sorted -wa -f require minimum overlap fraction (1)</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=intchrom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=intchrom.out
+#SBATCH --error=intchrom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+module load Anaconda3  
+
+source activate three-prime-env
+
+#imput 6up sorted bed file 
+bed=$1
+describer=$(echo ${bed} | sed -e &#39;s/.*sixup.//&#39; | sed -e &quot;s/.6up.sort.bed$//&quot;)
+
+bedtools intersect -wa -f 1 -a $1 -b  /project2/gilad/briana/genome_anotation_data/chrom_lengths2.sort.bed &gt; /project2/gilad/briana/threeprimeseq/data/bed_6upint/sixupint.${describer}.6up.sort.int.bed 
+</code></pre>
+<p>wrap function</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=w_int
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_int.out
+#SBATCH --error=w_int.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_6up/*.bed); do
+            sbatch int_chrom.sh  $i 
+        done</code></pre>
 <p>Write the nuc script:</p>
 <pre class="bash"><code>#!/bin/bash
 
@@ -583,13 +658,142 @@ source activate three-prime-env
 
 #imput 6up sorted bed file 
 bed=$1
-describer=$(echo ${bed} | sed -e &#39;s/.*sixup.//&#39; | sed -e &quot;s/.6up.sort.bed$//&quot;)
+describer=$(echo ${bed} | sed -e &#39;s/.*sixupint.//&#39; | sed -e &quot;s/.6up.sort.int.bed$//&quot;)
 
 bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed $1 &gt; /project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.${describer}.bed </code></pre>
-<p>test with /project2/gilad/briana/threeprimeseq/data/bed_6up/sixup.18486-N_S10_R1_001.6up.sort.bed</p>
-<p><strong>Error: malformed BED entry at line 5671859. Start was greater than end. Exiting.</strong> The problem is adding 6 on the end goes outisde the boundaries of the chromosome. I need the lengths of the chromosomes and I need to check for this when I make the file.</p>
-<p>The hacky way will be to seperate the into seperate chromosomes and check both ends, then put back together.</p>
-<p>6308726 - 5671859</p>
+<p>Wrap this function:</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=w_nuc6
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_nuc6.out
+#SBATCH --error=w_nuc6.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_6upint/*.bed); do
+            sbatch nuc_6up.sh  $i 
+        done
+</code></pre>
+<div id="explore-results-for-2-files" class="section level3">
+<h3>Explore results for 2 files</h3>
+<p>sixupnuc.18486-N_S10_R1_001.bed and sixupnuc.18486-T_S9_R1_001.bed</p>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>Loading required package: rmarkdown</code></pre>
+<pre><code>This is workflowr version 1.0.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)</code></pre>
+<pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.4.4</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>Warning: package &#39;cowplot&#39; was built under R version 3.4.3</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>library(tidyr)
+library(reshape2)</code></pre>
+<pre><code>Warning: package &#39;reshape2&#39; was built under R version 3.4.3</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+<pre class="r"><code>names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pct_at&quot;, &quot;pct_gc&quot;, &quot;numA&quot;, &quot;numC&quot;, &quot;numG&quot;, &quot;numT&quot;, &quot;numN&quot;, &quot;numOther&quot;, &quot;seqlen&quot;)
+N_18486=read.table(&quot;../data/nuc6up/sixupnuc.18486-N_S10_R1_001.bed&quot;, col.names = names)
+T_18486=read.table(&quot;../data/nuc6up/sixupnuc.18486-T_S9_R1_001.bed&quot;, col.names = names)</code></pre>
+<p>Mutate to get the percent A and percent T. I will then use an if statement to keep the + strand reads A percent and the - strand read T percentage.</p>
+<pre class="r"><code>N_18486_filt = N_18486 %&gt;% mutate(pc_A=numA/seqlen) %&gt;% mutate(pc_T=numT/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_A &gt; .8  )|(strand==&quot;-&quot; &amp; pc_T &gt; .8)) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_A&quot;, &quot;pc_T&quot;)</code></pre>
+<pre><code>Warning: package &#39;bindrcpp&#39; was built under R version 3.4.4</code></pre>
+<pre class="r"><code>T_18486_filt = T_18486 %&gt;% mutate(pc_A=numA/seqlen) %&gt;% mutate(pc_T=numT/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_A &gt; .8  )|(strand==&quot;-&quot; &amp; pc_T &gt; .8)) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_A&quot;, &quot;pc_T&quot;)</code></pre>
+<p>Look at the number of reads matching this:</p>
+<pre class="r"><code>percN_readex=nrow(N_18486_filt)/nrow(N_18486)
+percT_readex=nrow(T_18486_filt)/nrow(T_18486)</code></pre>
+<ul>
+<li><p>The percent of reads that would be filtered in the nuclear file is 0.2388687</p></li>
+<li><p>The percent of reads that would be filtered in the total file is 0.137103</p></li>
+</ul>
+<p>The next step is to write an R script that can process each of the files. I will then wrap this for all of the files.</p>
+</div>
+<div id="expand-to-all-files" class="section level3">
+<h3>Expand to all files</h3>
+<pre class="r"><code>#!/bin/rscripts
+
+
+
+# usage: ./filter80percA.R infile, outfile
+
+#this script takes the bedtools nuc output for  6bp upstream of the read and filters for 80% A&#39;s
+
+#use optparse for management of input arguments I want to be able to imput the 6up nuc file and write out a filter file  
+library(optparse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+
+option_list = list(
+  make_option(c(&quot;-f&quot;, &quot;--file&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;input file&quot;),
+  make_option(c(&quot;-o&quot;, &quot;--output&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;output file&quot;)
+)
+  
+
+opt_parser &lt;- OptionParser(option_list=option_list)
+opt &lt;- parse_args(opt_parser)
+
+
+#interrupt execution if no file is  supplied
+if (is.null(opt$file)){
+  print_help(opt_parser)
+  stop(&quot;Need input file&quot;, call.=FALSE)
+}
+
+#import file  
+names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pct_at&quot;, &quot;pct_gc&quot;, &quot;numA&quot;, &quot;numC&quot;, &quot;numG&quot;, &quot;numT&quot;, &quot;numN&quot;, &quot;numOther&quot;, &quot;seqlen&quot;)
+infile=read.table(file = opt$file,  col.names = names)
+
+
+infile_filt = infile %&gt;% mutate(pc_A=numA/seqlen) %&gt;% mutate(pc_T=numT/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_A &gt; .8  )|(strand==&quot;-&quot; &amp; pc_T &gt; .8)) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_A&quot;, &quot;pc_T&quot;)
+
+write.table(infile_filt, filename =  opt$output, quote=F, col.names = T, row.names = F, sep=&quot;\t&quot;)</code></pre>
+<p>Now I need a bash script that calls this script:</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run.Rfilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=runRfilt.out
+#SBATCH --error=runRfilt.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+sample=$1 
+describer=$(echo ${sample} | sed -e &#39;s/.*sixupnuc.//&#39; | sed -e &quot;s/.bed$//&quot;)
+
+Rscript filter80percA.R $1 /project2/gilad/briana/threeprimeseq/data/nuc6A_filt/filtnucA.${describer}.txt
+</code></pre>
+<p>test on /project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.18486-N_S10_R1_001.bed</p>
+<p><strong>ERROR</strong> Error in getopt(spec = spec, opt = args) : “/project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.18486-N_S10_R1_001.bed” is not a valid option, or does not support an argument Calls: parse_args -&gt; getopt Execution halted</p>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -608,14 +812,23 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+[1] bindrcpp_0.2.2  reshape2_1.4.3  tidyr_0.7.2     cowplot_0.9.2  
+[5] dplyr_0.7.5     ggplot2_2.2.1   workflowr_1.0.1 rmarkdown_1.8.5
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.0.1   Rcpp_0.12.17      digest_0.6.15    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
-[10] stringi_1.2.2     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.6.0     rmarkdown_1.8.5   tools_3.4.2      
-[16] stringr_1.3.1     yaml_2.1.19       compiler_3.4.2   
-[19] htmltools_0.3.6   knitr_1.18       </code></pre>
+ [1] Rcpp_0.12.17      compiler_3.4.2    pillar_1.1.0     
+ [4] git2r_0.21.0      plyr_1.8.4        bindr_0.1.1      
+ [7] R.methodsS3_1.7.1 R.utils_2.6.0     tools_3.4.2      
+[10] digest_0.6.15     evaluate_0.10.1   tibble_1.4.2     
+[13] gtable_0.2.0      pkgconfig_2.0.1   rlang_0.2.1      
+[16] yaml_2.1.19       stringr_1.3.1     knitr_1.18       
+[19] rprojroot_1.3-2   grid_3.4.2        tidyselect_0.2.4 
+[22] glue_1.2.0        R6_2.2.2          purrr_0.2.5      
+[25] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
+[28] scales_0.5.0      htmltools_0.3.6   assertthat_0.2.0 
+[31] colorspace_1.3-2  stringi_1.2.2     lazyeval_0.2.1   
+[34] munsell_0.4.3     R.oo_1.22.0      </code></pre>
 </div>
 
 <hr>
