@@ -132,7 +132,7 @@ What I need to do is combine both of these ideas. I need to test for mismatches 
 Try on /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-19257-T_S25_R1_001-sort.bam
 
 
-##Alternative method:  
+##Alternative method- 6 bases upstream:  
 
 An alternative way to think about this is that we expect directly upstream of the read to be 6 A's. I am going to write a script that changes the bed file to give me the 6 basepairs before the read. This is start -6 to start on the fwd strand and end to encd +6 on rhe reverse strand. I can then use the bedtools nuc tool for these. I will filter the lines that have 100% As on the fwd strand and 100% Ts on the rev strand.  
 
@@ -187,6 +187,64 @@ for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/*.bed); do
 ```
 
 
+The problem is adding 6 on the end goes outisde the boundaries of the chromosome. I need the lengths of the chromosomes and I need to check for this when I make the file.  
+
+I can intersect these files with a bed file with the chromosome lengths then only keep the ones that fully intersect.  
+
+The chromosome lengths are in /project2/gilad/briana/genome_anotation_data/chrom_lengths.sort.bed  
+
+Intersect with this bed and only keep lines that are 100% in the chrom lengths.
+a = 6up 
+b= /project2/gilad/briana/genome_anotation_data/chrom_lengths.sort.bed 
+-sorted 
+-wa
+-f require minimum overlap fraction (1)
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=intchrom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=intchrom.out
+#SBATCH --error=intchrom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+module load Anaconda3  
+
+source activate three-prime-env
+
+#imput 6up sorted bed file 
+bed=$1
+describer=$(echo ${bed} | sed -e 's/.*sixup.//' | sed -e "s/.6up.sort.bed$//")
+
+bedtools intersect -wa -f 1 -a $1 -b  /project2/gilad/briana/genome_anotation_data/chrom_lengths2.sort.bed > /project2/gilad/briana/threeprimeseq/data/bed_6upint/sixupint.${describer}.6up.sort.int.bed 
+
+```
+
+wrap function
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_int
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_int.out
+#SBATCH --error=w_int.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_6up/*.bed); do
+            sbatch int_chrom.sh  $i 
+        done
+```
+
+
+
 Write the nuc script:  
 ```{bash, eval=F}
 #!/bin/bash
@@ -207,19 +265,160 @@ source activate three-prime-env
 
 #imput 6up sorted bed file 
 bed=$1
-describer=$(echo ${bed} | sed -e 's/.*sixup.//' | sed -e "s/.6up.sort.bed$//")
+describer=$(echo ${bed} | sed -e 's/.*sixupint.//' | sed -e "s/.6up.sort.int.bed$//")
 
 bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed $1 > /project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.${describer}.bed 
 ```
 
-test with /project2/gilad/briana/threeprimeseq/data/bed_6up/sixup.18486-N_S10_R1_001.6up.sort.bed
+Wrap this function:  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_nuc6
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_nuc6.out
+#SBATCH --error=w_nuc6.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
 
 
-**Error: malformed BED entry at line 5671859. Start was greater than end. Exiting.**
-The problem is adding 6 on the end goes outisde the boundaries of the chromosome. I need the lengths of the chromosomes and I need to check for this when I make the file.  
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_6upint/*.bed); do
+            sbatch nuc_6up.sh  $i 
+        done
 
-The hacky way will be to seperate the into seperate chromosomes and check both ends, then put back together. 
+
+```
+
+###Explore results for 2 files  
+
+sixupnuc.18486-N_S10_R1_001.bed and sixupnuc.18486-T_S9_R1_001.bed
 
 
-6308726 - 5671859
+```{r}
+library(workflowr)
+library(ggplot2)
+library(dplyr)
+library(cowplot)
+library(tidyr)
+library(reshape2)
 
+```
+
+
+```{r}
+names=c("chr", "start", "end", "read", "score", "strand", "pct_at", "pct_gc", "numA", "numC", "numG", "numT", "numN", "numOther", "seqlen")
+N_18486=read.table("../data/nuc6up/sixupnuc.18486-N_S10_R1_001.bed", col.names = names)
+T_18486=read.table("../data/nuc6up/sixupnuc.18486-T_S9_R1_001.bed", col.names = names)
+
+```
+
+
+Mutate to get the percent A and percent T. I will then use an if statement to keep the + strand reads A percent and the - strand read T percentage. 
+
+```{r}
+
+N_18486_filt = N_18486 %>% mutate(pc_A=numA/seqlen) %>% mutate(pc_T=numT/seqlen) %>% filter((strand=="+" & pc_A > .8  )|(strand=="-" & pc_T > .8)) %>% select("chr", "start", "end", "read", "score", "strand", "pc_A", "pc_T")
+
+
+T_18486_filt = T_18486 %>% mutate(pc_A=numA/seqlen) %>% mutate(pc_T=numT/seqlen) %>% filter((strand=="+" & pc_A > .8  )|(strand=="-" & pc_T > .8)) %>% select("chr", "start", "end", "read", "score", "strand", "pc_A", "pc_T")
+
+
+```
+
+Look at the number of reads matching this:  
+```{r}
+percN_readex=nrow(N_18486_filt)/nrow(N_18486)
+percT_readex=nrow(T_18486_filt)/nrow(T_18486)
+```
+
+* The percent of reads that would be filtered in the nuclear file is `r percN_readex`  
+
+* The percent of reads that would be filtered in the total file is `r percT_readex`
+
+The next step is to write an R script that can process each of the files. I will then wrap this for all of the files.   
+
+###Expand to all files  
+
+```{r, eval=FALSE}
+#!/bin/rscripts
+
+
+
+# usage: ./filter80percA.R infile, outfile
+
+#this script takes the bedtools nuc output for  6bp upstream of the read and filters for 80% A's
+
+#use optparse for management of input arguments I want to be able to imput the 6up nuc file and write out a filter file  
+library(optparse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+
+option_list = list(
+  make_option(c("-f", "--file"), action="store", default=NA, type='character',
+              help="input file"),
+  make_option(c("-o", "--output"), action="store", default=NA, type='character',
+              help="output file")
+)
+  
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+#interrupt execution if no file is  supplied
+if (is.null(opt$file)){
+  print_help(opt_parser)
+  stop("Need input file", call.=FALSE)
+}
+
+#import file  
+names=c("chr", "start", "end", "read", "score", "strand", "pct_at", "pct_gc", "numA", "numC", "numG", "numT", "numN", "numOther", "seqlen")
+infile=read.table(file = opt$file,  col.names = names)
+
+
+infile_filt = infile %>% mutate(pc_A=numA/seqlen) %>% mutate(pc_T=numT/seqlen) %>% filter((strand=="+" & pc_A > .8  )|(strand=="-" & pc_T > .8)) %>% select("chr", "start", "end", "read", "score", "strand", "pc_A", "pc_T")
+
+write.table(infile_filt, filename =  opt$output, quote=F, col.names = T, row.names = F, sep="\t")
+
+
+```
+
+Now I need a bash script that calls this script:  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run.Rfilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=runRfilt.out
+#SBATCH --error=runRfilt.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+sample=$1 
+describer=$(echo ${sample} | sed -e 's/.*sixupnuc.//' | sed -e "s/.bed$//")
+
+Rscript filter80percA.R $1 /project2/gilad/briana/threeprimeseq/data/nuc6A_filt/filtnucA.${describer}.txt
+
+
+
+```
+test on /project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.18486-N_S10_R1_001.bed
+
+
+**ERROR**
+Error in getopt(spec = spec, opt = args) : 
+  "/project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.18486-N_S10_R1_001.bed" is not a valid option, or does not support an argument
+Calls: parse_args -> getopt
+Execution halted
