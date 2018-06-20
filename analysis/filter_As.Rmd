@@ -381,9 +381,9 @@ names=c("chr", "start", "end", "read", "score", "strand", "pct_at", "pct_gc", "n
 infile=read.table(file = opt$file,  col.names = names)
 
 
-infile_filt = infile %>% mutate(pc_A=numA/seqlen) %>% mutate(pc_T=numT/seqlen) %>% filter((strand=="+" & pc_A > .8  )|(strand=="-" & pc_T > .8)) %>% select("chr", "start", "end", "read", "score", "strand", "pc_A", "pc_T")
+infile_filt = infile %>% mutate(pc_A=numA/seqlen) %>% mutate(pc_T=numT/seqlen) %>% filter((strand=="+" & pc_A > .8  )|(strand=="-" & pc_T > .8)) %>% select(chr, start, end, read, score, strand, pc_A, pc_T)
 
-write.table(infile_filt, filename =  opt$output, quote=F, col.names = T, row.names = F, sep="\t")
+write.table(infile_filt, file =  opt$output, quote=F, col.names = T, row.names = F, sep="\t")
 
 
 ```
@@ -409,16 +409,70 @@ source activate three-prime-env
 sample=$1 
 describer=$(echo ${sample} | sed -e 's/.*sixupnuc.//' | sed -e "s/.bed$//")
 
-Rscript filter80percA.R $1 /project2/gilad/briana/threeprimeseq/data/nuc6A_filt/filtnucA.${describer}.txt
+Rscript filter80percA.R -f $1 -o /project2/gilad/briana/threeprimeseq/data/nuc6A_filt/filtnucA.${describer}.txt
 
 
 
 ```
 test on /project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.18486-N_S10_R1_001.bed
 
+Write a wrapper for this:  
 
-**ERROR**
-Error in getopt(spec = spec, opt = args) : 
-  "/project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.18486-N_S10_R1_001.bed" is not a valid option, or does not support an argument
-Calls: parse_args -> getopt
-Execution halted
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_rprocess
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_rproc.out
+#SBATCH --error=w_rproc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/nuc_6up/*.bed); do
+            sbatch run.Rfilt.sh  $i 
+        done
+
+
+```
+
+
+Now I can look at the percentage that are filtered out in all lines.
+
+```{r}
+
+#upload data and melt it
+filt_stats=read.csv("../data/nuc6up/sixAup_filterstats.csv", header=T)
+filt_stats$Line= as.factor(filt_stats$Line)
+filt_stats_melt=melt(filt_stats, id.vars=c("Line", "Fraction")) %>% filter(variable=="perc_filt")
+
+
+#graph
+
+ggplot(filt_stats_melt, aes(x=Line, fill=Fraction, y=value)) + geom_bar( stat="identity", position="dodge") + labs(title="Filtering out reads with 6 A's upstream of read", y="Percent of reads filtered") +  scale_fill_manual(values=c("#D55E00","#0072B2"))
+
+```
+
+I want to check how many of reads would be filtered out for Cs and Gs as a baseline. I will use the line I have loaded here.  
+```{r}
+
+
+N_18486_filtC = N_18486 %>% mutate(pc_C=numC/seqlen) %>% mutate(pc_G=numG/seqlen) %>% filter((strand=="+" & pc_C > .8  )|(strand=="-" & pc_G > .8)) %>% select("chr", "start", "end", "read", "score", "strand", "pc_C", "pc_G")
+
+
+T_18486_filtC = T_18486 %>% mutate(pc_C=numC/seqlen) %>% mutate(pc_G=numG/seqlen) %>% filter((strand=="+" & pc_C > .8  )|(strand=="-" & pc_G > .8)) %>% select("chr", "start", "end", "read", "score", "strand", "pc_C", "pc_G")
+
+
+percNC_readex=nrow(N_18486_filtC)/nrow(N_18486)
+percTC_readex=nrow(T_18486_filtC)/nrow(T_18486)
+
+
+```
+
+If we look for stretches of Cs we get:  
+
+* The percent of reads that would be filtered in the nuclear file is `r percNC_readex`  
+
+* The percent of reads that would be filtered in the total file is `r percTC_readex`
