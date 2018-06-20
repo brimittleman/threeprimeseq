@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-19</p>
+<p><strong>Last updated:</strong> 2018-06-20</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/478db0ceb41ea1692638821c3209f64c44d0d5d9" target="_blank">478db0c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a0f23a45b85d53d0b45d1fca8028eecfacec35c3" target="_blank">a0f23a4</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -397,6 +397,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a0f23a45b85d53d0b45d1fca8028eecfacec35c3/analysis/filter_As.Rmd" target="_blank">a0f23a4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-20
+</td>
+<td style="text-align:left;">
+add stats for all lines and baseline analysis
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/d5ac83fe8b3fc9ef80eb5ade11610b9e02c4cc74/docs/filter_As.html" target="_blank">d5ac83f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-19
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -767,9 +801,9 @@ names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &
 infile=read.table(file = opt$file,  col.names = names)
 
 
-infile_filt = infile %&gt;% mutate(pc_A=numA/seqlen) %&gt;% mutate(pc_T=numT/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_A &gt; .8  )|(strand==&quot;-&quot; &amp; pc_T &gt; .8)) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_A&quot;, &quot;pc_T&quot;)
+infile_filt = infile %&gt;% mutate(pc_A=numA/seqlen) %&gt;% mutate(pc_T=numT/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_A &gt; .8  )|(strand==&quot;-&quot; &amp; pc_T &gt; .8)) %&gt;% select(chr, start, end, read, score, strand, pc_A, pc_T)
 
-write.table(infile_filt, filename =  opt$output, quote=F, col.names = T, row.names = F, sep=&quot;\t&quot;)</code></pre>
+write.table(infile_filt, file =  opt$output, quote=F, col.names = T, row.names = F, sep=&quot;\t&quot;)</code></pre>
 <p>Now I need a bash script that calls this script:</p>
 <pre class="bash"><code>#!/bin/bash
 
@@ -789,10 +823,51 @@ source activate three-prime-env
 sample=$1 
 describer=$(echo ${sample} | sed -e &#39;s/.*sixupnuc.//&#39; | sed -e &quot;s/.bed$//&quot;)
 
-Rscript filter80percA.R $1 /project2/gilad/briana/threeprimeseq/data/nuc6A_filt/filtnucA.${describer}.txt
+Rscript filter80percA.R -f $1 -o /project2/gilad/briana/threeprimeseq/data/nuc6A_filt/filtnucA.${describer}.txt
 </code></pre>
 <p>test on /project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.18486-N_S10_R1_001.bed</p>
-<p><strong>ERROR</strong> Error in getopt(spec = spec, opt = args) : “/project2/gilad/briana/threeprimeseq/data/nuc_6up/sixupnuc.18486-N_S10_R1_001.bed” is not a valid option, or does not support an argument Calls: parse_args -&gt; getopt Execution halted</p>
+<p>Write a wrapper for this:</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=w_rprocess
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_rproc.out
+#SBATCH --error=w_rproc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/nuc_6up/*.bed); do
+            sbatch run.Rfilt.sh  $i 
+        done
+</code></pre>
+<p>Now I can look at the percentage that are filtered out in all lines.</p>
+<pre class="r"><code>#upload data and melt it
+filt_stats=read.csv(&quot;../data/nuc6up/sixAup_filterstats.csv&quot;, header=T)
+filt_stats$Line= as.factor(filt_stats$Line)
+filt_stats_melt=melt(filt_stats, id.vars=c(&quot;Line&quot;, &quot;Fraction&quot;)) %&gt;% filter(variable==&quot;perc_filt&quot;)
+
+
+#graph
+
+ggplot(filt_stats_melt, aes(x=Line, fill=Fraction, y=value)) + geom_bar( stat=&quot;identity&quot;, position=&quot;dodge&quot;) + labs(title=&quot;Filtering out reads with 6 A&#39;s upstream of read&quot;, y=&quot;Percent of reads filtered&quot;) +  scale_fill_manual(values=c(&quot;#D55E00&quot;,&quot;#0072B2&quot;))</code></pre>
+<p><img src="figure/filter_As.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I want to check how many of reads would be filtered out for Cs and Gs as a baseline. I will use the line I have loaded here.</p>
+<pre class="r"><code>N_18486_filtC = N_18486 %&gt;% mutate(pc_C=numC/seqlen) %&gt;% mutate(pc_G=numG/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_C &gt; .8  )|(strand==&quot;-&quot; &amp; pc_G &gt; .8)) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_C&quot;, &quot;pc_G&quot;)
+
+
+T_18486_filtC = T_18486 %&gt;% mutate(pc_C=numC/seqlen) %&gt;% mutate(pc_G=numG/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_C &gt; .8  )|(strand==&quot;-&quot; &amp; pc_G &gt; .8)) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_C&quot;, &quot;pc_G&quot;)
+
+
+percNC_readex=nrow(N_18486_filtC)/nrow(N_18486)
+percTC_readex=nrow(T_18486_filtC)/nrow(T_18486)</code></pre>
+<p>If we look for stretches of Cs we get:</p>
+<ul>
+<li><p>The percent of reads that would be filtered in the nuclear file is 4.894273710^{-4}</p></li>
+<li><p>The percent of reads that would be filtered in the total file is 7.527303710^{-4}</p></li>
+</ul>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -827,8 +902,8 @@ loaded via a namespace (and not attached):
 [22] glue_1.2.0        R6_2.2.2          purrr_0.2.5      
 [25] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
 [28] scales_0.5.0      htmltools_0.3.6   assertthat_0.2.0 
-[31] colorspace_1.3-2  stringi_1.2.2     lazyeval_0.2.1   
-[34] munsell_0.4.3     R.oo_1.22.0      </code></pre>
+[31] colorspace_1.3-2  labeling_0.3      stringi_1.2.2    
+[34] lazyeval_0.2.1    munsell_0.4.3     R.oo_1.22.0      </code></pre>
 </div>
 
 <hr>
