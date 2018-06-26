@@ -27,5 +27,10 @@ Initial analysis on first 32 3' seq libraries:
 
 Explore and filter mis-primming:  
 * [Look at number of As in bins](a.content.html)  
-* [Create script to filter mapped A's](filter_As.html)
+* [Create script to filter mapped A's](filter_As.html)  
+
+
+Peak calling:  
+
+* [Testing macs2 on 3'seq data](test.max2.html)  
 

@@ -1,0 +1,14 @@
+---
+title: "Test Macs2 peak caller"
+author: "Briana Mittleman"
+date: "6/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this analysis I want to test macs2 as a potential peak caller in the 3' seq data. This is a widely used peak caller for chip seq data.  
+
+I have to create a specific environment to install macs2 because you need to use python 2.7. I call it macs-env. To access this environment I use source activate macs-env.  
