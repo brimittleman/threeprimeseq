@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-20</p>
+<p><strong>Last updated:</strong> 2018-06-26</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a0f23a45b85d53d0b45d1fca8028eecfacec35c3" target="_blank">a0f23a4</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e344b95df4d6ff65cc1afed9a66da1ac801d69a4" target="_blank">e344b95</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -368,6 +368,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/index.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
@@ -397,6 +398,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e344b95df4d6ff65cc1afed9a66da1ac801d69a4/analysis/filter_As.Rmd" target="_blank">e344b95</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+<td style="text-align:left;">
+final notes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/61338d71506e499f9ee4b7d4ab63a3b4dd4233dc/docs/filter_As.html" target="_blank">61338d7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-20
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -854,6 +889,36 @@ filt_stats_melt=melt(filt_stats, id.vars=c(&quot;Line&quot;, &quot;Fraction&quot
 
 ggplot(filt_stats_melt, aes(x=Line, fill=Fraction, y=value)) + geom_bar( stat=&quot;identity&quot;, position=&quot;dodge&quot;) + labs(title=&quot;Filtering out reads with 6 A&#39;s upstream of read&quot;, y=&quot;Percent of reads filtered&quot;) +  scale_fill_manual(values=c(&quot;#D55E00&quot;,&quot;#0072B2&quot;))</code></pre>
 <p><img src="figure/filter_As.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/61338d71506e499f9ee4b7d4ab63a3b4dd4233dc/docs/figure/filter_As.Rmd/unnamed-chunk-14-1.png" target="_blank">61338d7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-20
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I want to check how many of reads would be filtered out for Cs and Gs as a baseline. I will use the line I have loaded here.</p>
 <pre class="r"><code>N_18486_filtC = N_18486 %&gt;% mutate(pc_C=numC/seqlen) %&gt;% mutate(pc_G=numG/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_C &gt; .8  )|(strand==&quot;-&quot; &amp; pc_G &gt; .8)) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_C&quot;, &quot;pc_G&quot;)
 
@@ -867,6 +932,21 @@ percTC_readex=nrow(T_18486_filtC)/nrow(T_18486)</code></pre>
 <ul>
 <li><p>The percent of reads that would be filtered in the nuclear file is 4.894273710^{-4}</p></li>
 <li><p>The percent of reads that would be filtered in the total file is 7.527303710^{-4}</p></li>
+</ul>
+<p><strong>We could change it because Nuc flips the ref genome</strong></p>
+<pre class="r"><code>N_18486_filt_s = N_18486 %&gt;% mutate(pc_A=numA/seqlen) %&gt;% mutate(pc_T=numT/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_T &gt; .8  )) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_A&quot;, &quot;pc_T&quot;)
+
+
+T_18486_filt_s = T_18486 %&gt;% mutate(pc_A=numA/seqlen) %&gt;% mutate(pc_T=numT/seqlen) %&gt;% filter((strand==&quot;+&quot; &amp; pc_T &gt; .8  )) %&gt;% select(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;read&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;pc_A&quot;, &quot;pc_T&quot;)
+
+
+percN_readexS=nrow(N_18486_filt_s)/nrow(N_18486)
+percT_readexS=nrow(T_18486_filt_s)/nrow(T_18486)</code></pre>
+<p>Notes:</p>
+<ul>
+<li><p>nuc profiles the sequence accorrding to strand. I dont need to look at the opposite metric for the negative strand</p></li>
+<li><p>we care about %T because this is the read from the sequencing primer</p></li>
+<li><p>The next step for this analysis is to create a snakepipeline with parameters I can control for the number of bases upstream we care about and the percent of T’s we filter on.</p></li>
 </ul>
 </div>
 </div>
