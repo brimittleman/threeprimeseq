@@ -476,3 +476,31 @@ If we look for stretches of Cs we get:
 * The percent of reads that would be filtered in the nuclear file is `r percNC_readex`  
 
 * The percent of reads that would be filtered in the total file is `r percTC_readex`
+
+
+**We could change it because Nuc flips the ref genome**
+
+```{r}
+
+
+
+N_18486_filt_s = N_18486 %>% mutate(pc_A=numA/seqlen) %>% mutate(pc_T=numT/seqlen) %>% filter((strand=="+" & pc_T > .8  )) %>% select("chr", "start", "end", "read", "score", "strand", "pc_A", "pc_T")
+
+
+T_18486_filt_s = T_18486 %>% mutate(pc_A=numA/seqlen) %>% mutate(pc_T=numT/seqlen) %>% filter((strand=="+" & pc_T > .8  )) %>% select("chr", "start", "end", "read", "score", "strand", "pc_A", "pc_T")
+
+
+percN_readexS=nrow(N_18486_filt_s)/nrow(N_18486)
+percT_readexS=nrow(T_18486_filt_s)/nrow(T_18486)
+```
+
+
+Notes:  
+
+* nuc profiles the sequence accorrding to strand. I dont need to look at the opposite metric for the negative strand  
+
+* we care about %T because this is the read from the sequencing primer  
+
+* The next step for this analysis is to create a snakepipeline with parameters I can control for the number of bases upstream we care about and the percent of T's we filter on.  
+
+
