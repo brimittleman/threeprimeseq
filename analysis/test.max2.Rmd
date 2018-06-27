@@ -100,6 +100,34 @@ source activate macs-env
 macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/allBamFiles.bam  -f "BAM" -g 'hs' --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n threeprimebatch1.40.200 --slocal 1000 --nomodel -m 40 200  
 ```
 
+Try to not have a shift.  
+
+
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=macs2noshift
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=macs2nomod.noshift.out
+#SBATCH --error=macs2nomod.noshift.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3 
+
+source activate macs-env
+
+macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/allBamFiles.bam  -f "BAM" -g 'hs' --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n threeprimebatch1.noshift --slocal 1000 --nomodel --shift 0 --extsize 200
+```
+
+Does not look like this changed anything.  
+
+
 I also want to run this using seperate files for the total and nuclear fractions.  
 
 I wil first merge the total and nuclear bam files seperatly.  
