@@ -12,3 +12,139 @@ knitr::opts_chunk$set(echo = TRUE)
 In this analysis I want to test macs2 as a potential peak caller in the 3' seq data. This is a widely used peak caller for chip seq data.  
 
 I have to create a specific environment to install macs2 because you need to use python 2.7. I call it macs-env. To access this environment I use source activate macs-env.  
+
+First, I will merge all of my files into 1 bam file. Using samtools merge. I will do all of my work for this in data/macs2  
+
+```{bash, eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=merge
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load samtools
+
+samtools merge macs2/allBamFiles.bam bam/*.bam
+```
+
+
+I will create a script in the code directory to call the peaks:  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=macs2nomod
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=macs2nomod.out
+#SBATCH --error=macs2nomod.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3 
+
+source activate macs-env
+
+macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/allBamFiles.bam  -f "BAM" -g 'hs' --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n threeprimebatch1 --slocal 1000 --nomodel 
+```
+
+
+This method called 102988 peaks. This is likely more than the true PAS. 
+
+Update the -m (MFOLD) term to change the fold enrichment. They must be lower than the upper limmit and higher than the lower limit. The default is 5 50. I will try to make this 20 100.  
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=macs2nomod20.100
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=macs2nomod.20.100.out
+#SBATCH --error=macs2nomod.20.100.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3 
+
+source activate macs-env
+
+macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/allBamFiles.bam  -f "BAM" -g 'hs' --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n threeprimebatch1.20.100 --slocal 1000 --nomodel -m 20 100  
+```
+
+
+This did not change anything. I am going to try a higher cutoff.  
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=macs2nomod40.400
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=macs2nomod.40.200.out
+#SBATCH --error=macs2nomod.40.200.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3 
+
+source activate macs-env
+
+macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/allBamFiles.bam  -f "BAM" -g 'hs' --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n threeprimebatch1.40.200 --slocal 1000 --nomodel -m 40 200  
+```
+
+I also want to run this using seperate files for the total and nuclear fractions.  
+
+I wil first merge the total and nuclear bam files seperatly.  
+
+
+```{bash, eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=mergeTN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load samtools
+
+samtools merge macs2/TotalBamFiles.bam bam/*T*.bam
+
+
+samtools merge macs2/NuclearBamFiles.bam bam/*N*.bam
+```
+Now I can run the original call peaks on each seperatly with macs2_nomod_TN.sh.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=macs2nomodTN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=macs2nomodTN.out
+#SBATCH --error=macs2nomodTN.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3 
+
+source activate macs-env
+
+macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.bam  -f "BAM" -g 'hs' --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n Totalthreeprimebatch1 --slocal 1000 --nomodel 
+
+macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles.bam  -f "BAM" -g 'hs' --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n Nuclearthreeprimebatch1 --slocal 1000 --nomodel 
+```
+
+
