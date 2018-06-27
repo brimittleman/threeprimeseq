@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/5e81c8e7b77285d2dab284d77ac1533853c5f4e8" target="_blank">5e81c8e</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/15c0dd0919ab8abda2982800e201e01b4728ecb8" target="_blank">15c0dd0</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -397,6 +397,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/15c0dd0919ab8abda2982800e201e01b4728ecb8/analysis/test.max2.Rmd" target="_blank">15c0dd0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-27
+</td>
+<td style="text-align:left;">
+try no shift
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/8120471aee2393b65f0fe2472673140c8c445e11/docs/test.max2.html" target="_blank">8120471</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-06-27
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -524,6 +558,25 @@ module load Anaconda3
 source activate macs-env
 
 macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/allBamFiles.bam  -f &quot;BAM&quot; -g &#39;hs&#39; --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n threeprimebatch1.40.200 --slocal 1000 --nomodel -m 40 200  </code></pre>
+<p>Try to not have a shift.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=macs2noshift
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=macs2nomod.noshift.out
+#SBATCH --error=macs2nomod.noshift.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3 
+
+source activate macs-env
+
+macs2 callpeak -t /project2/gilad/briana/threeprimeseq/data/macs2/allBamFiles.bam  -f &quot;BAM&quot; -g &#39;hs&#39; --outdir /project2/gilad/briana/threeprimeseq/data/macs2/ -n threeprimebatch1.noshift --slocal 1000 --nomodel --shift 0 --extsize 200</code></pre>
+<p>Does not look like this changed anything.</p>
 <p>I also want to run this using seperate files for the total and nuclear fractions.</p>
 <p>I wil first merge the total and nuclear bam files seperatly.</p>
 <pre class="bash"><code>
