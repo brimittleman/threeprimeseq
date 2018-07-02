@@ -1,0 +1,131 @@
+---
+title: "deNovo peak callling"
+author: "Briana Mittleman"
+date: "6/28/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Create Bedgraph
+
+I will call peaks de novo in the combined total and nuclear fraction 3' Seq. The data is reletevely clean so I will start with regions that have continuous coverage. I will first create a bedgraph.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=Tbedgraph
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Tbedgraph.out
+#SBATCH --error=Tbedgraph.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+samtools sort -o /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.bam
+
+bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam -bga > /project2/gilad/briana/threeprimeseq/data/bedgraph/TotalBamFiles.bedgraph
+
+```
+
+Next I will create the file without the 0 places in the genome. I will be able to use this for the bedtools merge function.  
+
+```{bash, eval=F}
+awk '{if ($4 != 0) print}' TotalBamFiles.bedgraph >TotalBamFiles_no0.bedgraph 
+```
+
+I can merge the regions with consequtive reads using the bedtools merge function.  
+
+* -i input bed  
+
+* -c colomn to act on  
+
+* -o collapse, print deliminated list of the counts from -c call  
+ 
+* -delim ","  
+
+This is the mergeBedgraph.sh script. It takes in the no 0 begraph filename without the path.  
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=merge
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=merge.out
+#SBATCH --error=merge.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+bedgraph=$1
+describer=$(echo ${bedgraph} | sed -e "s/.bedgraph$//")
+
+bedtools merge -c 4,4,4 -o count,mean,collapse -delim "," -i /project2/gilad/briana/threeprimeseq/data/bedgraph/$1 > /project2/gilad/briana/threeprimeseq/data/bedgraph/${describer}.peaks.bed
+
+
+```
+
+Run this first on the total bedgraph, TotalBamFiles_no0.bedgraph. The file has chromosome, start, end, number of regions, mean, and a string of the values.
+
+This is not exaclty what I want. I need to go back and do genome cov not collapsing with bedgraph.  
+
+
+To evaluate this I will bring the file into R and plot some statistics about it.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=Tgencov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Tgencov.out
+#SBATCH --error=Tgencov.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam -d > /project2/gilad/briana/threeprimeseq/data/bedgraph/TotalBamFiles.genomecov.bed
+
+```
+
+
+##Evaluate regions  
+
+
+First I will look at the bedgraph file. This is not as imformative becuase it combined regions with the same counts.  
+
+```{r}
+total_bedgraph=read.table("../data/bedgraph_peaks/TotalBamFiles_no0.peaks.bed",col.names = c("chr", "start", "end", "regions", "mean", "counts"))
+```
+
+Plot the mean:  
+
+```{r}
+plot(sort(log10(total_bedgraph$mean), decreasing=T), xlab="Region", ylab="log10 of bedgraph region bin", main="Distribution of log10 region means from bedgraph")
+```
+I want to look at the distribution of how many bases are included in the regions.
+
+```{r}
+library(dplyr)
+Tregion_bases=total_bedgraph %>% mutate(bases=end-start) %>% select(bases)
+
+plot(sort(log10(Tregion_bases$bases), decreasing = T), xlab="Region", ylab="log10 of region size", main="Distribution of bases in regions- log10")
+```
+
+Given the reads are abotu 60bp this is probably pretty good.  
+
