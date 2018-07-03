@@ -102,9 +102,48 @@ source activate three-prime-env
 bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam -d > /project2/gilad/briana/threeprimeseq/data/bedgraph/TotalBamFiles.genomecov.bed
 
 ```
+I will now remove the bases with 0 coverage.  
 
+```{bash, eval=F}
+awk '{if ($3 != 0) print}' TotalBamFiles.genomecov.bed > TotalBamFiles.genomecov.no0.bed 
+
+awk '{print $1 "\t" $2 "\t"  $2 "\t" $3}' TotalBamFiles.genomecov.no0.bed > TotalBamFiles.genomecov.no0.fixed.bed
+```
+
+I will now merge the genomecov_no0 file with mergeGencov.sh
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergegc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=mergegc.out
+#SBATCH --error=mergegc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+gencov=$1
+describer=$(echo ${gencov} | sed -e "s/.genomecov.no0.fixed.bed$//")
+
+bedtools merge -c 4,4,4 -o count,mean,collapse -delim "," -i /project2/gilad/briana/threeprimeseq/data/bedgraph/$1 > /project2/gilad/briana/threeprimeseq/data/bedgraph/${describer}.gencovpeaks.bed
+
+
+```
+This method gives us 811,637 regions. 
 
 ##Evaluate regions  
+
+###Bedgraph results 
+```{r}
+library(dplyr)
+library(ggplot2)
+library(workflowr)
+library(tidyr)
+```
 
 
 First I will look at the bedgraph file. This is not as imformative becuase it combined regions with the same counts.  
@@ -121,11 +160,75 @@ plot(sort(log10(total_bedgraph$mean), decreasing=T), xlab="Region", ylab="log10 
 I want to look at the distribution of how many bases are included in the regions.
 
 ```{r}
-library(dplyr)
+
 Tregion_bases=total_bedgraph %>% mutate(bases=end-start) %>% select(bases)
 
 plot(sort(log10(Tregion_bases$bases), decreasing = T), xlab="Region", ylab="log10 of region size", main="Distribution of bases in regions- log10")
 ```
 
 Given the reads are abotu 60bp this is probably pretty good.  
+
+###GenomeCov results  
+
+I am only going to look at the number of bases in region and mean coverage columns here because the file is really big. 
+
+
+```{r}
+total_gencov=read.table("../data/bedgraph_peaks/TotalBamFiles.gencovpeaks_noregstring.bed",col.names = c("chr", "start", "end", "regions", "mean"))
+```
+
+Plot the mean:  
+
+```{r}
+plot(sort(log10(total_gencov$mean), decreasing=T), xlab="Region", ylab="log10 of mean bin count", main="Distribution of log10 region means")
+```
+
+```{r}
+
+
+plot(sort(log10(total_gencov$regions), decreasing = T), xlab="Region", ylab="log10 of region size", main="Distribution of bases in regions- log10")
+```
+
+Plot number of bases against the mean:  
+
+```{r}
+
+
+ggplot(total_gencov, aes(y=log10(regions), x=log10(mean))) +
+         geom_point(na.rm = TRUE, size = 0.1) +
+         geom_density2d(na.rm = TRUE, size = 1, colour = 'red') +
+         ylab('Log10 Region size') +
+         xlab('Log10 Mean region coverage') + 
+        ggtitle("Region size vs Region Coverage: Combined Total Libraries")
+```
+
+##Troubleshooting 
+###Account for split reads  
+
+In the previous analysis I did not account for split reads in the genome coveragre step. This may explain some of the long regions that are an effect of splicing. This script is 
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=Tgencovsplit
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Tgencovsplit.out
+#SBATCH --error=Tgencovaplit.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam -d -split > /project2/gilad/briana/threeprimeseq/data/bedgraph/TotalBamFiles.split.genomecov.bed
+```
+
+
+###Investigate long regions
+
+Some of the regions are long and probably represent 2 or more sites. This is evident in highly expressed genes such as actB. I will look at some of the long regions and make histograms with the strings of coverage in the region.  
 
