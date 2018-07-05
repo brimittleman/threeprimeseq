@@ -141,6 +141,7 @@ This method gives us 811,637 regions.
 ```{r}
 library(dplyr)
 library(ggplot2)
+library(readr)
 library(workflowr)
 library(tidyr)
 ```
@@ -266,4 +267,41 @@ ggplot(total_gencov_split, aes(y=log10(regions), x=log10(mean))) +
 ###Investigate long regions
 
 Some of the regions are long and probably represent 2 or more sites. This is evident in highly expressed genes such as actB. I will look at some of the long regions and make histograms with the strings of coverage in the region.  
+
+First I am going to look at chr11:65266512-65268654, this is peak 580475 I will go into the otalBamFiles.split.gencovpeaks.bed  file and use:
+
+```{bash, eval=F}
+ grep -n 65266512 TotalBamFiles.split.gencovpeaks.bed | awk '{print $6}' > loc_ch11_65266512_65268654.txt
+```
+
+```{r}
+loc_ch11_65266512_65268654=read.csv("../data/bedgraph_peaks/loc_ch11_65266512_65268654.txt", header=F) %>% t
+
+
+loc_ch11_65266512_65268654_df= as.data.frame(loc_ch11_65266512_65268654)
+
+loc_ch11_65266512_65268654_df$loc= seq(1:nrow(loc_ch11_65266512_65268654_df))
+colnames(loc_ch11_65266512_65268654_df)= c("count", "loc")
+
+ggplot(loc_ch11_65266512_65268654_df, aes(x=loc, y=count)) + geom_line() + labs(y="Read Count", x="Peak Location", title="Example of long region called as 1 peak \n ch11 65266512-65268654")
+```
+
+
+Try one more. Example. line 816811, chr:17- 79476983- 79477761
+```{bash, eval=F}
+ grep -n 79476983 TotalBamFiles.split.gencovpeaks.bed | awk '{print $6}' > loc_ch17_79476983_79477761.txt
+```
+
+
+```{r}
+loc_ch17_79476983_79477761=read.csv("../data/bedgraph_peaks/loc_ch17_79476983_79477761.txt", header=F) %>% t
+
+loc_ch17_79476983_79477761_df= as.data.frame(loc_ch17_79476983_79477761)
+
+loc_ch17_79476983_79477761_df$loc= seq(1:nrow(loc_ch17_79476983_79477761_df))
+colnames(loc_ch17_79476983_79477761_df)= c("count", "loc")
+
+ggplot(loc_ch17_79476983_79477761_df, aes(x=loc, y=count)) + geom_line() + labs(y="Read Count", x="Peak Location", title="Example of long region called as 1 peak \n ch17 79476983:79477761")
+```
+This one is not multiple peaks but it does need to be trimmed.  
 
