@@ -226,7 +226,42 @@ source activate three-prime-env
 
 bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam -d -split > /project2/gilad/briana/threeprimeseq/data/bedgraph/TotalBamFiles.split.genomecov.bed
 ```
+Now I need to remove the 0s and merge. 
+```{bash, eval=F}
+awk '{if ($3 != 0) print}' TotalBamFiles.split.genomecov.bed > TotalBamFiles.split.genomecov.no0.bed
 
+awk '{print $1 "\t" $2 "\t"  $2 "\t" $3}' TotalBamFiles.split.genomecov.no0.bed > TotalBamFiles.split.genomecov.no0.fixed.bed
+```
+
+
+Use this file to run mergeGencov.sh.  
+
+```{r}
+total_gencov_split=read.table("../data/bedgraph_peaks/TotalBamFiles.split.gencovpeaks.noregstring.bed",col.names = c("chr", "start", "end", "regions", "mean"))
+```
+
+Plot the region size. I expect some of the long regions are gone.  
+
+```{r}
+
+plot(sort(log10(total_gencov_split$regions), decreasing = T), xlab="Region", ylab="log10 of region size", main="Distribution of bases in regions- log10 SPLIT")
+```
+
+Plot the region size against the mean:  
+
+
+Plot number of bases against the mean:  
+
+```{r}
+
+
+ggplot(total_gencov_split, aes(y=log10(regions), x=log10(mean))) +
+         geom_point(na.rm = TRUE, size = 0.1) +
+         geom_density2d(na.rm = TRUE, size = 1, colour = 'red') +
+         ylab('Log10 Region size') +
+         xlab('Log10 Mean region coverage') + 
+        ggtitle("Region size vs Region Coverage: Combined Total Libraries SPLIT")
+```
 
 ###Investigate long regions
 
