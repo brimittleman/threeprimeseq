@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/15c79674071d2330e1f4289e9eb7d611eed63b24" target="_blank">15c7967</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c619183e1288ef8f31ace4ee51fc3056d258d830" target="_blank">c619183</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -399,6 +399,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c619183e1288ef8f31ace4ee51fc3056d258d830/analysis/deNovopeakcalling.Rmd" target="_blank">c619183</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-05
+</td>
+<td style="text-align:left;">
+examine long peaks
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2d67ec51a1081d45a630bef20fac1692948657b8/docs/deNovopeakcalling.html" target="_blank">2d67ec5</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -602,6 +636,7 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 
     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(ggplot2)
+library(readr)
 library(workflowr)</code></pre>
 <pre><code>Loading required package: rmarkdown</code></pre>
 <pre><code>This is workflowr version 1.0.1
@@ -819,6 +854,36 @@ awk &#39;{print $1 &quot;\t&quot; $2 &quot;\t&quot;  $2 &quot;\t&quot; $3}&#39; 
 <p>Plot the region size. I expect some of the long regions are gone.</p>
 <pre class="r"><code>plot(sort(log10(total_gencov_split$regions), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in regions- log10 SPLIT&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2d67ec51a1081d45a630bef20fac1692948657b8/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-18-1.png" target="_blank">2d67ec5</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Plot the region size against the mean:</p>
 <p>Plot number of bases against the mean:</p>
 <pre class="r"><code>ggplot(total_gencov_split, aes(y=log10(regions), x=log10(mean))) +
@@ -828,10 +893,63 @@ awk &#39;{print $1 &quot;\t&quot; $2 &quot;\t&quot;  $2 &quot;\t&quot; $3}&#39; 
          xlab(&#39;Log10 Mean region coverage&#39;) + 
         ggtitle(&quot;Region size vs Region Coverage: Combined Total Libraries SPLIT&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2d67ec51a1081d45a630bef20fac1692948657b8/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-19-1.png" target="_blank">2d67ec5</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="investigate-long-regions" class="section level3">
 <h3>Investigate long regions</h3>
 <p>Some of the regions are long and probably represent 2 or more sites. This is evident in highly expressed genes such as actB. I will look at some of the long regions and make histograms with the strings of coverage in the region.</p>
+<p>First I am going to look at chr11:65266512-65268654, this is peak 580475 I will go into the otalBamFiles.split.gencovpeaks.bed file and use:</p>
+<pre class="bash"><code> grep -n 65266512 TotalBamFiles.split.gencovpeaks.bed | awk &#39;{print $6}&#39; &gt; loc_ch11_65266512_65268654.txt</code></pre>
+<pre class="r"><code>loc_ch11_65266512_65268654=read.csv(&quot;../data/bedgraph_peaks/loc_ch11_65266512_65268654.txt&quot;, header=F) %&gt;% t
+
+
+loc_ch11_65266512_65268654_df= as.data.frame(loc_ch11_65266512_65268654)
+
+loc_ch11_65266512_65268654_df$loc= seq(1:nrow(loc_ch11_65266512_65268654_df))
+colnames(loc_ch11_65266512_65268654_df)= c(&quot;count&quot;, &quot;loc&quot;)
+
+ggplot(loc_ch11_65266512_65268654_df, aes(x=loc, y=count)) + geom_line() + labs(y=&quot;Read Count&quot;, x=&quot;Peak Location&quot;, title=&quot;Example of long region called as 1 peak \n ch11 65266512-65268654&quot;)</code></pre>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Try one more. Example. line 816811, chr:17- 79476983- 79477761</p>
+<pre class="bash"><code> grep -n 79476983 TotalBamFiles.split.gencovpeaks.bed | awk &#39;{print $6}&#39; &gt; loc_ch17_79476983_79477761.txt</code></pre>
+<pre class="r"><code>loc_ch17_79476983_79477761=read.csv(&quot;../data/bedgraph_peaks/loc_ch17_79476983_79477761.txt&quot;, header=F) %&gt;% t
+
+loc_ch17_79476983_79477761_df= as.data.frame(loc_ch17_79476983_79477761)
+
+loc_ch17_79476983_79477761_df$loc= seq(1:nrow(loc_ch17_79476983_79477761_df))
+colnames(loc_ch17_79476983_79477761_df)= c(&quot;count&quot;, &quot;loc&quot;)
+
+ggplot(loc_ch17_79476983_79477761_df, aes(x=loc, y=count)) + geom_line() + labs(y=&quot;Read Count&quot;, x=&quot;Peak Location&quot;, title=&quot;Example of long region called as 1 peak \n ch17 79476983:79477761&quot;)</code></pre>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /> This one is not multiple peaks but it does need to be trimmed.</p>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -853,7 +971,7 @@ attached base packages:
 
 other attached packages:
 [1] bindrcpp_0.2.2  tidyr_0.7.2     workflowr_1.0.1 rmarkdown_1.8.5
-[5] ggplot2_2.2.1   dplyr_0.7.5    
+[5] readr_1.1.1     ggplot2_2.2.1   dplyr_0.7.5    
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.17      compiler_3.4.2    pillar_1.1.0     
@@ -862,13 +980,13 @@ loaded via a namespace (and not attached):
 [10] digest_0.6.15     evaluate_0.10.1   tibble_1.4.2     
 [13] gtable_0.2.0      pkgconfig_2.0.1   rlang_0.2.1      
 [16] yaml_2.1.19       stringr_1.3.1     knitr_1.18       
-[19] rprojroot_1.3-2   grid_3.4.2        tidyselect_0.2.4 
-[22] glue_1.2.0        R6_2.2.2          purrr_0.2.5      
-[25] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
-[28] scales_0.5.0      htmltools_0.3.6   MASS_7.3-48      
-[31] assertthat_0.2.0  colorspace_1.3-2  labeling_0.3     
-[34] stringi_1.2.2     lazyeval_0.2.1    munsell_0.4.3    
-[37] R.oo_1.22.0      </code></pre>
+[19] hms_0.4.1         rprojroot_1.3-2   grid_3.4.2       
+[22] tidyselect_0.2.4  glue_1.2.0        R6_2.2.2         
+[25] purrr_0.2.5       magrittr_1.5      whisker_0.3-2    
+[28] MASS_7.3-48       backports_1.1.2   scales_0.5.0     
+[31] htmltools_0.3.6   assertthat_0.2.0  colorspace_1.3-2 
+[34] labeling_0.3      stringi_1.2.2     lazyeval_0.2.1   
+[37] munsell_0.4.3     R.oo_1.22.0      </code></pre>
 </div>
 
 <hr>
