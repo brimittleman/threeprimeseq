@@ -16,7 +16,7 @@ Initial analysis on RNA seq of nuclear and total fractions:
 * [Initial data QC](total.nuc.rnaseq.html)  
 
 Initial analysis on first 32 3' seq libraries:  
-
+  
 * [Initial mapping QC](initial_map_qc.html) 
 * [Initial gene leve QC](initial_gene_qc.html)  
 * [Coverage in 200bp bins](cov200bpwind.html)  
@@ -26,6 +26,7 @@ Initial analysis on first 32 3' seq libraries:
 
 
 Explore and filter mis-primming:  
+  
 * [Look at number of As in bins](a.content.html)  
 * [Create script to filter mapped A's](filter_As.html)  
 
@@ -33,4 +34,6 @@ Explore and filter mis-primming:
 Peak calling:  
 
 * [Testing macs2 on 3'seq data](test.max2.html)  
+* [Call peak regions de-novo](deNovopeakcalling.html)
+
 
