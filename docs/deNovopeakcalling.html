@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-03</p>
+<p><strong>Last updated:</strong> 2018-07-05</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/776fc62d1c6ee9e6f9dbb1511b64741aafe36a6a" target="_blank">776fc62</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/15c79674071d2330e1f4289e9eb7d611eed63b24" target="_blank">15c7967</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -399,6 +399,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/15c79674071d2330e1f4289e9eb7d611eed63b24/analysis/deNovopeakcalling.Rmd" target="_blank">15c7967</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-05
+</td>
+<td style="text-align:left;">
+add split analysis
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/deNovopeakcalling.html" target="_blank">24c6663</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-03
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -577,11 +611,72 @@ Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>total_bedgraph=read.table(&quot;../data/bedgraph_peaks/TotalBamFiles_no0.peaks.bed&quot;,col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;regions&quot;, &quot;mean&quot;, &quot;counts&quot;))</code></pre>
 <p>Plot the mean:</p>
 <pre class="r"><code>plot(sort(log10(total_bedgraph$mean), decreasing=T), xlab=&quot;Region&quot;, ylab=&quot;log10 of bedgraph region bin&quot;, main=&quot;Distribution of log10 region means from bedgraph&quot;)</code></pre>
-<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /> I want to look at the distribution of how many bases are included in the regions.</p>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-9-1.png" target="_blank">24c6663</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>I want to look at the distribution of how many bases are included in the regions.</p>
 <pre class="r"><code>Tregion_bases=total_bedgraph %&gt;% mutate(bases=end-start) %&gt;% select(bases)</code></pre>
 <pre><code>Warning: package &#39;bindrcpp&#39; was built under R version 3.4.4</code></pre>
 <pre class="r"><code>plot(sort(log10(Tregion_bases$bases), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in regions- log10&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-10-1.png" target="_blank">24c6663</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Given the reads are abotu 60bp this is probably pretty good.</p>
 </div>
 <div id="genomecov-results" class="section level3">
@@ -591,8 +686,68 @@ Run ?workflowr for help getting started</code></pre>
 <p>Plot the mean:</p>
 <pre class="r"><code>plot(sort(log10(total_gencov$mean), decreasing=T), xlab=&quot;Region&quot;, ylab=&quot;log10 of mean bin count&quot;, main=&quot;Distribution of log10 region means&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-12-1.png" target="_blank">24c6663</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot(sort(log10(total_gencov$regions), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in regions- log10&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-13-1.png" target="_blank">24c6663</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Plot number of bases against the mean:</p>
 <pre class="r"><code>ggplot(total_gencov, aes(y=log10(regions), x=log10(mean))) +
          geom_point(na.rm = TRUE, size = 0.1) +
@@ -601,6 +756,36 @@ Run ?workflowr for help getting started</code></pre>
          xlab(&#39;Log10 Mean region coverage&#39;) + 
         ggtitle(&quot;Region size vs Region Coverage: Combined Total Libraries&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-14-1.png" target="_blank">24c6663</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 </div>
 <div id="troubleshooting" class="section level2">
@@ -625,6 +810,24 @@ source activate three-prime-env
 
 
 bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam -d -split &gt; /project2/gilad/briana/threeprimeseq/data/bedgraph/TotalBamFiles.split.genomecov.bed</code></pre>
+<p>Now I need to remove the 0s and merge.</p>
+<pre class="bash"><code>awk &#39;{if ($3 != 0) print}&#39; TotalBamFiles.split.genomecov.bed &gt; TotalBamFiles.split.genomecov.no0.bed
+
+awk &#39;{print $1 &quot;\t&quot; $2 &quot;\t&quot;  $2 &quot;\t&quot; $3}&#39; TotalBamFiles.split.genomecov.no0.bed &gt; TotalBamFiles.split.genomecov.no0.fixed.bed</code></pre>
+<p>Use this file to run mergeGencov.sh.</p>
+<pre class="r"><code>total_gencov_split=read.table(&quot;../data/bedgraph_peaks/TotalBamFiles.split.gencovpeaks.noregstring.bed&quot;,col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;regions&quot;, &quot;mean&quot;))</code></pre>
+<p>Plot the region size. I expect some of the long regions are gone.</p>
+<pre class="r"><code>plot(sort(log10(total_gencov_split$regions), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in regions- log10 SPLIT&quot;)</code></pre>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Plot the region size against the mean:</p>
+<p>Plot number of bases against the mean:</p>
+<pre class="r"><code>ggplot(total_gencov_split, aes(y=log10(regions), x=log10(mean))) +
+         geom_point(na.rm = TRUE, size = 0.1) +
+         geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) +
+         ylab(&#39;Log10 Region size&#39;) +
+         xlab(&#39;Log10 Mean region coverage&#39;) + 
+        ggtitle(&quot;Region size vs Region Coverage: Combined Total Libraries SPLIT&quot;)</code></pre>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="investigate-long-regions" class="section level3">
 <h3>Investigate long regions</h3>
