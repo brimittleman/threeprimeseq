@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-05</p>
+<p><strong>Last updated:</strong> 2018-07-06</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,13 +341,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c619183e1288ef8f31ace4ee51fc3056d258d830" target="_blank">c619183</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/df5cfe4942df2cf4fcc82dffd8d5b3a7d1fdfe02" target="_blank">df5cfe4</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -399,6 +400,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/df5cfe4942df2cf4fcc82dffd8d5b3a7d1fdfe02/analysis/deNovopeakcalling.Rmd" target="_blank">df5cfe4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-06
+</td>
+<td style="text-align:left;">
+add Yangs peaks
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/9de36772e8b1b166540211cc7fcf5c076f223070/docs/deNovopeakcalling.html" target="_blank">9de3677</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -886,14 +921,29 @@ Briana Mittleman
 <p></details></p>
 <p>Plot the region size against the mean:</p>
 <p>Plot number of bases against the mean:</p>
-<pre class="r"><code>ggplot(total_gencov_split, aes(y=log10(regions), x=log10(mean))) +
+<pre class="r"><code>splitplot=ggplot(total_gencov_split, aes(y=log10(regions), x=log10(mean))) +
          geom_point(na.rm = TRUE, size = 0.1) +
          geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) +
          ylab(&#39;Log10 Region size&#39;) +
          xlab(&#39;Log10 Mean region coverage&#39;) + 
-        ggtitle(&quot;Region size vs Region Coverage: Combined Total Libraries SPLIT&quot;)</code></pre>
-<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
+        ggtitle(&quot;Combined Total Libraries SPLIT&quot;)</code></pre>
+</div>
+<div id="investigate-long-regions" class="section level3">
+<h3>Investigate long regions</h3>
+<p>Some of the regions are long and probably represent 2 or more sites. This is evident in highly expressed genes such as actB. I will look at some of the long regions and make histograms with the strings of coverage in the region.</p>
+<p>First I am going to look at chr11:65266512-65268654, this is peak 580475 I will go into the otalBamFiles.split.gencovpeaks.bed file and use:</p>
+<pre class="bash"><code> grep -n 65266512 TotalBamFiles.split.gencovpeaks.bed | awk &#39;{print $6}&#39; &gt; loc_ch11_65266512_65268654.txt</code></pre>
+<pre class="r"><code>loc_ch11_65266512_65268654=read.csv(&quot;../data/bedgraph_peaks/loc_ch11_65266512_65268654.txt&quot;, header=F) %&gt;% t
+
+
+loc_ch11_65266512_65268654_df= as.data.frame(loc_ch11_65266512_65268654)
+
+loc_ch11_65266512_65268654_df$loc= seq(1:nrow(loc_ch11_65266512_65268654_df))
+colnames(loc_ch11_65266512_65268654_df)= c(&quot;count&quot;, &quot;loc&quot;)
+
+ggplot(loc_ch11_65266512_65268654_df, aes(x=loc, y=count)) + geom_line() + labs(y=&quot;Read Count&quot;, x=&quot;Peak Location&quot;, title=&quot;Example of long region called as 1 peak \n ch11 65266512-65268654&quot;)</code></pre>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
 <thead>
 <tr>
@@ -911,7 +961,7 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/2d67ec51a1081d45a630bef20fac1692948657b8/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-19-1.png" target="_blank">2d67ec5</a>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/9de36772e8b1b166540211cc7fcf5c076f223070/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-21-1.png" target="_blank">9de3677</a>
 </td>
 <td style="text-align:left;">
 Briana Mittleman
@@ -923,22 +973,6 @@ Briana Mittleman
 </tbody>
 </table>
 <p></details></p>
-</div>
-<div id="investigate-long-regions" class="section level3">
-<h3>Investigate long regions</h3>
-<p>Some of the regions are long and probably represent 2 or more sites. This is evident in highly expressed genes such as actB. I will look at some of the long regions and make histograms with the strings of coverage in the region.</p>
-<p>First I am going to look at chr11:65266512-65268654, this is peak 580475 I will go into the otalBamFiles.split.gencovpeaks.bed file and use:</p>
-<pre class="bash"><code> grep -n 65266512 TotalBamFiles.split.gencovpeaks.bed | awk &#39;{print $6}&#39; &gt; loc_ch11_65266512_65268654.txt</code></pre>
-<pre class="r"><code>loc_ch11_65266512_65268654=read.csv(&quot;../data/bedgraph_peaks/loc_ch11_65266512_65268654.txt&quot;, header=F) %&gt;% t
-
-
-loc_ch11_65266512_65268654_df= as.data.frame(loc_ch11_65266512_65268654)
-
-loc_ch11_65266512_65268654_df$loc= seq(1:nrow(loc_ch11_65266512_65268654_df))
-colnames(loc_ch11_65266512_65268654_df)= c(&quot;count&quot;, &quot;loc&quot;)
-
-ggplot(loc_ch11_65266512_65268654_df, aes(x=loc, y=count)) + geom_line() + labs(y=&quot;Read Count&quot;, x=&quot;Peak Location&quot;, title=&quot;Example of long region called as 1 peak \n ch11 65266512-65268654&quot;)</code></pre>
-<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Try one more. Example. line 816811, chr:17- 79476983- 79477761</p>
 <pre class="bash"><code> grep -n 79476983 TotalBamFiles.split.gencovpeaks.bed | awk &#39;{print $6}&#39; &gt; loc_ch17_79476983_79477761.txt</code></pre>
 <pre class="r"><code>loc_ch17_79476983_79477761=read.csv(&quot;../data/bedgraph_peaks/loc_ch17_79476983_79477761.txt&quot;, header=F) %&gt;% t
@@ -949,8 +983,167 @@ loc_ch17_79476983_79477761_df$loc= seq(1:nrow(loc_ch17_79476983_79477761_df))
 colnames(loc_ch17_79476983_79477761_df)= c(&quot;count&quot;, &quot;loc&quot;)
 
 ggplot(loc_ch17_79476983_79477761_df, aes(x=loc, y=count)) + geom_line() + labs(y=&quot;Read Count&quot;, x=&quot;Peak Location&quot;, title=&quot;Example of long region called as 1 peak \n ch17 79476983:79477761&quot;)</code></pre>
-<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /> This one is not multiple peaks but it does need to be trimmed.</p>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-23-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/9de36772e8b1b166540211cc7fcf5c076f223070/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-23-1.png" target="_blank">9de3677</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>This one is not multiple peaks but it does need to be trimmed.</p>
+<p>Yang created an adhoc method to do this.</p>
+<pre class="python"><code>def main(inFile, outFile, ctarget):
+    fout = open(outFile,&#39;w&#39;)
+    mincount = 10
+    ov = 20
+    current_peak = []
+    
+    currentChrom = None
+    
+    for ln in open(inFile):
+        chrom, pos, count = ln.split()
+        if chrom != ctarget: continue
+        count = float(count)
+        if currentChrom == None:
+            currentChrom = chrom
+            
+        if count == 0 or currentChrom != chrom:
+            if len(current_peak) &gt; 0:
+                M = max([x[1] for x in current_peak])
+                if M &gt; mincount:
+                    all_peaks = refine_peak(current_peak, M, M*0.1,M*0.05)
+                    #refined_peaks = [(x[0][0],x[-1][0], np.mean([y[1] for y in x])) for x in all_peaks]  
+                    rpeaks = [(int(x[0][0])-ov,int(x[-1][0])+ov, np.mean([y[1] for y in x])) for x in all_peaks]
+                    if len(rpeaks) &gt; 1:
+                        for clu in cluster_intervals(rpeaks)[0]:
+                            M = max([x[2] for x in clu])
+                            merging = []
+                            for x in clu:
+                                if x[2] &gt; M *0.5:
+                                    #print x, M
+                                    merging.append(x)
+                            c, s,e,mean =  chrom, min([x[0] for x in merging])+ov, max([x[1] for x in merging])-ov, np.mean([x[2] for x in merging])
+                            #print c,s,e,mean
+                            fout.write(&quot;chr%s\t%d\t%d\t%d\t+\t.\n&quot;%(c,s,e,mean))
+                            fout.flush()
+                    elif len(rpeaks) == 1:
+                        s,e,mean = rpeaks[0]
+                        fout.write(&quot;chr%s\t%d\t%d\t%f\t+\t.\n&quot;%(chrom,s+ov,e-ov,mean))
+                        print &quot;chr%s&quot;%chrom+&quot;\t%d\t%d\t%f\t+\t.\n&quot;%rpeaks[0]
+                    #print refined_peaks
+            current_peak = []
+        else:
+            current_peak.append((pos,count))
+        currentChrom = chrom
+def refine_peak(current_peak, M, thresh, noise, minpeaksize=30):
+    
+    cpeak = []
+    opeak = []
+    allcpeaks = []
+    allopeaks = []
+    for pos, count in current_peak:
+        if count &gt; thresh:
+            cpeak.append((pos,count))
+            opeak = []
+            continue
+        elif count &gt; noise: 
+            opeak.append((pos,count))
+        else:
+            if len(opeak) &gt; minpeaksize:
+                allopeaks.append(opeak) 
+            opeak = []
+        if len(cpeak) &gt; minpeaksize:
+            allcpeaks.append(cpeak)
+            cpeak = []
+        
+    if len(cpeak) &gt; minpeaksize:
+        allcpeaks.append(cpeak)
+    if len(opeak) &gt; minpeaksize:
+        allopeaks.append(opeak)
+    allpeaks = allcpeaks
+    for opeak in allopeaks:
+        M = max([x[1] for x in opeak])
+        allpeaks += refine_peak(opeak, M, M*0.3, noise)
+    #print [(x[0],x[-1]) for x in allcpeaks], [(x[0],x[-1]) for x in allopeaks], [(x[0],x[-1]) for x in allpeaks]
+    #print &#39;---\n&#39;
+    return allpeaks
+if __name__ == &quot;__main__&quot;:
+    import numpy as np
+    from misc_helper import *
+    import sys
+    chrom = sys.argv[1]
+    inFile = &quot;/project2/yangili1/threeprimeseq/gencov/TotalBamFiles.split.genomecov.bed&quot;
+    outFile = &quot;APApeaks_chr%s.bed&quot;%chrom
+    main(inFile, outFile, chrom)</code></pre>
+<p>This is done by chromosome and takes in the TotalBam Split genome coverage file I made.I am going to look at the stats for these peaks.</p>
+<pre class="r"><code>YL_peaks=read.table(&quot;../data/bedgraph_peaks/APApeaks.bed&quot;, col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;count&quot;, &quot;strand&quot;, &quot;score&quot;)) %&gt;% mutate(length=end-start)</code></pre>
+<p>Plot the lengths</p>
+<pre class="r"><code>plot(sort(log10(YL_peaks$length), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in YL regions- log10 &quot;)</code></pre>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Plot number of bases against the mean:</p>
+<pre class="r"><code>YLplot=ggplot(YL_peaks, aes(y=log10(length), x=log10(count))) +
+         geom_point(na.rm = TRUE, size = 0.1) +
+         geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) +
+         ylab(&#39;Log10 Region size&#39;) +
+         xlab(&#39;Log10 Mean region coverage&#39;) + 
+        ggtitle(&quot;YL Peaks Combined Total Libraries&quot;)</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>Warning: package &#39;cowplot&#39; was built under R version 3.4.3</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>plot_grid(splitplot, YLplot)</code></pre>
+<p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+</div>
+<div id="run-this-on-the-nuclear-fraction-bam" class="section level2">
+<h2>Run this on the Nuclear Fraction Bam</h2>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=Ngencov_s
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Ngencov_s.out
+#SBATCH --error=Ngencov_s.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+samtools sort -o /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles.sort.bam /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles.bam 
+
+
+bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles.sort.bam -d -split &gt; /project2/gilad/briana/threeprimeseq/data/bedgraph/NuclearBamFiles.split.genomecov.bed
+</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -970,23 +1163,24 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] bindrcpp_0.2.2  tidyr_0.7.2     workflowr_1.0.1 rmarkdown_1.8.5
-[5] readr_1.1.1     ggplot2_2.2.1   dplyr_0.7.5    
+[1] cowplot_0.9.2   bindrcpp_0.2.2  tidyr_0.7.2     workflowr_1.0.1
+[5] rmarkdown_1.8.5 readr_1.1.1     ggplot2_2.2.1   dplyr_0.7.5    
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.17      compiler_3.4.2    pillar_1.1.0     
  [4] git2r_0.21.0      plyr_1.8.4        bindr_0.1.1      
  [7] R.methodsS3_1.7.1 R.utils_2.6.0     tools_3.4.2      
-[10] digest_0.6.15     evaluate_0.10.1   tibble_1.4.2     
-[13] gtable_0.2.0      pkgconfig_2.0.1   rlang_0.2.1      
-[16] yaml_2.1.19       stringr_1.3.1     knitr_1.18       
-[19] hms_0.4.1         rprojroot_1.3-2   grid_3.4.2       
-[22] tidyselect_0.2.4  glue_1.2.0        R6_2.2.2         
-[25] purrr_0.2.5       magrittr_1.5      whisker_0.3-2    
-[28] MASS_7.3-48       backports_1.1.2   scales_0.5.0     
-[31] htmltools_0.3.6   assertthat_0.2.0  colorspace_1.3-2 
-[34] labeling_0.3      stringi_1.2.2     lazyeval_0.2.1   
-[37] munsell_0.4.3     R.oo_1.22.0      </code></pre>
+[10] digest_0.6.15     jsonlite_1.5      evaluate_0.10.1  
+[13] tibble_1.4.2      gtable_0.2.0      pkgconfig_2.0.1  
+[16] rlang_0.2.1       yaml_2.1.19       stringr_1.3.1    
+[19] knitr_1.18        hms_0.4.1         rprojroot_1.3-2  
+[22] grid_3.4.2        tidyselect_0.2.4  reticulate_1.4   
+[25] glue_1.2.0        R6_2.2.2          purrr_0.2.5      
+[28] magrittr_1.5      whisker_0.3-2     MASS_7.3-48      
+[31] backports_1.1.2   scales_0.5.0      htmltools_0.3.6  
+[34] assertthat_0.2.0  colorspace_1.3-2  labeling_0.3     
+[37] stringi_1.2.2     lazyeval_0.2.1    munsell_0.4.3    
+[40] R.oo_1.22.0      </code></pre>
 </div>
 
 <hr>
