@@ -261,6 +261,7 @@ splitplot=ggplot(total_gencov_split, aes(y=log10(regions), x=log10(mean))) +
          geom_density2d(na.rm = TRUE, size = 1, colour = 'red') +
          ylab('Log10 Region size') +
          xlab('Log10 Mean region coverage') + 
+     scale_y_continuous(limits = c(0, 3)) +
         ggtitle("Combined Total Libraries SPLIT")
 ```
 
@@ -424,6 +425,7 @@ YLplot=ggplot(YL_peaks, aes(y=log10(length), x=log10(count))) +
          geom_density2d(na.rm = TRUE, size = 1, colour = 'red') +
          ylab('Log10 Region size') +
          xlab('Log10 Mean region coverage') + 
+        scale_y_continuous(limits = c(0, 3)) + 
         ggtitle("YL Peaks Combined Total Libraries")
 ```
 
