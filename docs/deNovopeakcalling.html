@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-06</p>
+<p><strong>Last updated:</strong> 2018-07-09</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2522654f0e90864f429121515856254655ae0d85" target="_blank">2522654</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4348871eae879ece3e83fb7f33fc65d868af2b98" target="_blank">4348871</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -399,6 +399,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4348871eae879ece3e83fb7f33fc65d868af2b98/analysis/deNovopeakcalling.Rmd" target="_blank">4348871</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-09
+</td>
+<td style="text-align:left;">
+call peaks on nuclear
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f4f19189e372c610cb22b8020035ea9dadc99bf5/docs/deNovopeakcalling.html" target="_blank">f4f1918</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1049,6 +1083,10 @@ Briana Mittleman
 </table>
 <p></details></p>
 <p>This one is not multiple peaks but it does need to be trimmed.</p>
+</div>
+</div>
+<div id="compare-to-adhoc-method-by-yang" class="section level2">
+<h2>Compare to adhoc method by Yang</h2>
 <p>Yang created an adhoc method to do this.</p>
 <pre class="python"><code>def main(inFile, outFile, ctarget):
     fout = open(outFile,&#39;w&#39;)
@@ -1087,7 +1125,7 @@ Briana Mittleman
                     elif len(rpeaks) == 1:
                         s,e,mean = rpeaks[0]
                         fout.write(&quot;chr%s\t%d\t%d\t%f\t+\t.\n&quot;%(chrom,s+ov,e-ov,mean))
-                        print &quot;chr%s&quot;%chrom+&quot;\t%d\t%d\t%f\t+\t.\n&quot;%rpeaks[0]
+                        print (&quot;chr%s&quot;%chrom+&quot;\t%d\t%d\t%f\t+\t.\n&quot;%rpeaks[0])
                     #print refined_peaks
             current_peak = []
         else:
@@ -1203,6 +1241,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f4f19189e372c610cb22b8020035ea9dadc99bf5/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-28-1.png" target="_blank">f4f1918</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-06
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a0541e37d08c94cb1df9592aca3537ed38406b91/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-28-1.png" target="_blank">a0541e3</a>
 </td>
 <td style="text-align:left;">
@@ -1215,7 +1264,6 @@ Briana Mittleman
 </tbody>
 </table>
 <p></details></p>
-</div>
 </div>
 <div id="run-this-on-the-nuclear-fraction-bam" class="section level2">
 <h2>Run this on the Nuclear Fraction Bam</h2>
@@ -1239,6 +1287,33 @@ samtools sort -o /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles
 
 bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles.sort.bam -d -split &gt; /project2/gilad/briana/threeprimeseq/data/bedgraph/NuclearBamFiles.split.genomecov.bed
 </code></pre>
+<p>I modified Yang’s script to take the nuclear gencov and put the output in the data/peaks directory. I will create a wrapper to call this on chromosomes 1-22.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=w_getpeakYL
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=w_getpeakYL.out
+#SBATCH --error=w_getpeakYL.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(seq 1 22); do 
+  sbatch callPeaksYL_Nuc.py $i
+done
+</code></pre>
+<p>I can now concatenate all of these into one file:</p>
+<pre class="bash"><code>cat * | sort -k 1,1 -k2,2n &gt; APApeaks_nuclear_all.bed </code></pre>
+<p>Thoughts:</p>
+<ul>
+<li><p>Remove peaks outside 1kb of the genes</p></li>
+<li><p>Remove peaks with low expression</p></li>
+</ul>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
