@@ -306,7 +306,7 @@ ggplot(loc_ch17_79476983_79477761_df, aes(x=loc, y=count)) + geom_line() + labs(
 ```
 This one is not multiple peaks but it does need to be trimmed.  
 
-
+##Compare to adhoc method by Yang
 Yang created an adhoc method to do this.  
 
 ```{python, eval=F}
@@ -348,7 +348,7 @@ def main(inFile, outFile, ctarget):
                     elif len(rpeaks) == 1:
                         s,e,mean = rpeaks[0]
                         fout.write("chr%s\t%d\t%d\t%f\t+\t.\n"%(chrom,s+ov,e-ov,mean))
-                        print "chr%s"%chrom+"\t%d\t%d\t%f\t+\t.\n"%rpeaks[0]
+                        print ("chr%s"%chrom+"\t%d\t%d\t%f\t+\t.\n"%rpeaks[0])
                     #print refined_peaks
             current_peak = []
         else:
@@ -434,6 +434,10 @@ library(cowplot)
 plot_grid(splitplot, YLplot)
 ```
 
+
+
+
+
 ##Run this on the Nuclear Fraction Bam  
 
 ```{bash, eval=F}
@@ -457,6 +461,41 @@ samtools sort -o /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles
 
 bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles.sort.bam -d -split > /project2/gilad/briana/threeprimeseq/data/bedgraph/NuclearBamFiles.split.genomecov.bed
 
+```
 
+
+I modified Yang's script to take the nuclear gencov and put the output in the data/peaks directory. I will create a wrapper to call this on chromosomes 1-22. 
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_getpeakYL
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=w_getpeakYL.out
+#SBATCH --error=w_getpeakYL.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(seq 1 22); do 
+  sbatch callPeaksYL_Nuc.py $i
+done
 
 ```
+
+I can now concatenate all of these into one file:  
+```{bash, eval=F}
+cat * | sort -k 1,1 -k2,2n > APApeaks_nuclear_all.bed 
+```
+
+
+Thoughts:  
+
+* Remove peaks outside 1kb of the genes   
+
+* Remove peaks with low expression  
