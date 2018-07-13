@@ -19,6 +19,7 @@ Initial analysis on first 32 3' seq libraries:
   
 * [Initial mapping QC](initial_map_qc.html) 
 * [Initial gene leve QC](initial_gene_qc.html)  
+* [Compare coverage in Three prime seq to RNAseq](cov.analysis.threeprime1.html)  
 * [Coverage in 200bp bins](cov200bpwind.html)  
 * [Differential isoform usage between fractions](dif.iso.usage.leafcutter.html)  
 * [Explore filter cuttoffs](explore.filters.html)  

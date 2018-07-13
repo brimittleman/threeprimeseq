@@ -1,0 +1,77 @@
+---
+title: "Coverage analysis"
+author: "Briana Mittleman"
+date: "7/13/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this analysis to compare the 3' seq data to the RNA seq data. I am going to look at the protein coding genes.  
+
+```{r}
+library(workflowr)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(reshape2)
+```
+
+Load RNA seq gene cov for 18486.  
+```{r}
+rnaseq=read.table("../data/18486.genecov.txt")
+names(rnaseq)=c("Chr", "start", "end", "gene", "score", "strand", "count")
+rnaseq_counts= rnaseq %>% select(gene, count)
+```
+
+Load all total fraction 3' seq libraries.  
+
+```{r}
+t18486=read.table("../data/gene_cov/YL-SP-18486-T_S9_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T18486") )
+t18497=read.table("../data/gene_cov/YL-SP-18497-T_S11_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T18497") )
+t18500=read.table("../data/gene_cov/YL-SP-18500-T_S19_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T18500") )
+t18505=read.table("../data/gene_cov/YL-SP-18500-T_S19_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T18505") )
+t18508=read.table("../data/gene_cov/YL-SP-18508-T_S5_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T18508") )
+t18853=read.table("../data/gene_cov/YL-SP-18853-T_S31_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T18853") )
+t18870=read.table("../data/gene_cov/YL-SP-18870-T_S23_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T18870") )
+t19128=read.table("../data/gene_cov/YL-SP-19128-T_S29_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19128") )
+t19141=read.table("../data/gene_cov/YL-SP-19141-T_S17_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19141") )
+t19193=read.table("../data/gene_cov/YL-SP-19193-T_S21_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19193") )
+t19209=read.table("../data/gene_cov/YL-SP-19209-T_S15_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19209") )
+t19223=read.table("../data/gene_cov/YL-SP-19233-T_S7_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19223") )
+t19225=read.table("../data/gene_cov/YL-SP-19225-T_S27_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19225") )
+t19238=read.table("../data/gene_cov/YL-SP-19238-T_S3_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19238") )
+t19239=read.table("../data/gene_cov/YL-SP-19239-T_S13_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19239") )
+t19257=read.table("../data/gene_cov/YL-SP-19257-T_S25_R1_001-genecov.txt",col.names =c("Chr", "start", "end", "gene", "score", "strand", "T19257") )
+```
+
+Merge all of the files: 
+
+```{r}
+threeprimeall=cbind(t18486,t18497$T18497, t18500$T18500, t18505$T18505, t18508$T18508, t18853$T18853, t18870$T18870, t19128$T19128, t19141$T19141,t19193$T19193, t19209$T19209, t19223$T19223, t19225$T19225, t19238$T19238, t19239$T19239, t19257$T19257)
+
+
+threeprimeall_sum=threeprimeall %>% mutate(Counts_all= T18486,t18497$T18497, t18500$T18500, t18505$T18505, t18508$T18508, t18853$T18853, t18870$T18870, t19128$T19128, t19141$T19141,t19193$T19193, t19209$T19209, t19223$T19223, t19225$T19225, t19238$T19238, t19239$T19239, t19257$T19257) %>% select(gene, Counts_all)
+threeprimeall_sum$gene=as.character(threeprimeall_sum$gene)
+```
+
+
+Melt the data fro ggplot.
+
+```{r}
+all_counts= cbind(threeprimeall_sum,rnaseq_counts$count) 
+colnames(all_counts)= c("gene", "threeprime", "RNAseq")
+
+all_counts_melt= melt(all_counts, id.vars="gene")
+names(all_counts_melt)=c("gene", "Library", "Count")
+```
+
+Plot the CDFs  
+
+```{r}
+ggplot(all_counts_melt, aes(x=log10(Count), col=Library)) + stat_ecdf(geom = "step", pad = FALSE) + labs(title= "Log10 counts CDF")
+``` 
+
+
