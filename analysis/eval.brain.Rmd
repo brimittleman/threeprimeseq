@@ -1,0 +1,137 @@
+---
+title: "Evaluate Brain Data"
+author: "Briana Mittleman"
+date: "7/16/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I downloaded the brain 3' seq data from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM747470 and I want to use this analysis to see how similar their peaks are to ours eventhough the data is from different cell types.  
+
+First I will use the bedtools jaccard function to explore the overlaps. It will give me one stat that is the length(intersection)/length(union) - length(intersection). Here I can have file A brain peaks and file B be our peaks to see the similarity between the sets.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=jaccard_brain
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=jacard_brain.out
+#SBATCH --error=jacard_brain.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+bedtools jaccard -a /project2/gilad/briana/threeprimeseq/data/derti_brain/GSM747470_human_brain.sites.clustered.hg19.sort.bed -b /project2/gilad/briana/threeprimeseq/data/peaks/APApeaksYL.total.bed  > /project2/gilad/briana/threeprimeseq/data/derti_brain/total.jaccard.txt 
+```
+
+
+Results: 
+intersection	union-intersection	jaccard	n_intersections
+21371	25414133	0.00084091	21352
+
+The brain set has 89110 peaks and our set has 288350. I will filter ours by score then see if the top 25% have a higher overlap percentage.  
+
+```{r}
+library(workflowr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(reshape2)
+```
+
+
+```{r}
+YL_peaks=read.table("../data/bedgraph_peaks/APApeaks.bed", col.names = c("chr", "start", "end", "count", "strand", "score")) %>% mutate(length=end-start)
+```
+
+I want the counts for the top 25% of the peaks. 
+
+```{r}
+quantile(YL_peaks$count)
+```
+
+I will subset the peaks by having a count > 61.  
+
+```{bash, eval=F}
+awk '$4 >= 60 {print}' APApeaksYL.total.bed > APApeaksYL.top25.total.bed
+```
+
+I can rerun the jaccard with this and see if it changes, this new file has 72877 peaks.  
+
+Results:   
+intersection	union-intersection	jaccard	n_intersections
+13221	6452066	0.00204911	13207
+
+
+The proportion of overlap increased. Next I can try to make plots where I seperate my peaks by if they have a corresponding one in the brain file then plot the scores. To do this I will first use bedtool intersect to get just my peaks that contain a peak in the brain file. I can then use dplyr to merge them. 
+
+Here A is my file and B is the brain file. 
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=int_brain
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=int.brain.out
+#SBATCH --error=int.brain.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+bedtools intersect -wa -a /project2/gilad/briana/threeprimeseq/data/peaks/APApeaksYL.total.bed  -b /project2/gilad/briana/threeprimeseq/data/derti_brain/GSM747470_human_brain.sites.clustered.hg19.sort.bed > /project2/gilad/briana/threeprimeseq/data/derti_brain/APApeaksYL.total.inbrain.bed 
+
+
+```
+The resulting file has 21378 peaks.  
+
+```{r}
+YL_peaks_overlap=read.table("../data/APApeaksYL.total.inbrain.bed", col.names = c("chr", "start", "end", "count", "strand", "score")) %>% mutate(length=end-start) %>% mutate(in_brain="Y")
+```
+
+
+Now I need to join them.  
+
+```{r}
+YL_peaks_join=YL_peaks %>% full_join(YL_peaks_overlap, by = c("chr", "start", "end", "count", "strand", "score", "length"))
+
+YL_peaks_join$in_brain[is.na(YL_peaks_join$in_brain)]="N"
+
+YL_peaks_join_sel=YL_peaks_join %>% select(count, in_brain)
+  
+```
+
+Plot these.  
+
+
+```{r}
+ggplot(YL_peaks_join_sel, aes(y=log10(count), x=in_brain, fill=in_brain)) + geom_boxplot() + labs(x="Peak called in brain dataset", y="log10 Score", title="Peak score distribution by inclusion in brain dataset")
+
+```
+
+
+```{r}
+ggplot(YL_peaks_join_sel, aes(x=log10(count), fill=in_brain), bins=50) + geom_density(position="identity", alpha=.5) + labs(x="log10 of Score", title="Distribution of log10 Scores in peaks included in brain dataset")
+```
+
+It would be better if the background was just a random subset of the same number. There are 21378 included peaks so I should select a random 21378 to make a background distribution.  
+
+```{r}
+samp_YLpeaks= sample_n(YL_peaks, 21378)
+
+ggplot() + geom_histogram(data=samp_YLpeaks, aes(log10(count)), bins=100) + geom_histogram(data=YL_peaks_overlap, aes(log10(count)),fill="Red", bins=100) + labs(x="Log10 of Score", title="Scores in Overlapping set compared to scores in random set")
+```
+
