@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-16</p>
+<p><strong>Last updated:</strong> 2018-07-17</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4fede8412f8277c95afc167709e9e370c386cf8b" target="_blank">4fede84</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c287f4e87a45c12f7ac4163a0528e0336cc0ff4c" target="_blank">c287f4e</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -401,6 +401,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c287f4e87a45c12f7ac4163a0528e0336cc0ff4c/analysis/eval.brain.Rmd" target="_blank">c287f4e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-17
+</td>
+<td style="text-align:left;">
+call Brain peaks with Yangs script
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/dc4a51af1b101200e1685b760ac3f5c78db359b3/docs/eval.brain.html" target="_blank">dc4a51a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-16
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -508,13 +542,141 @@ YL_peaks_join_sel=YL_peaks_join %&gt;% select(count, in_brain)</code></pre>
 <p>Plot these.</p>
 <pre class="r"><code>ggplot(YL_peaks_join_sel, aes(y=log10(count), x=in_brain, fill=in_brain)) + geom_boxplot() + labs(x=&quot;Peak called in brain dataset&quot;, y=&quot;log10 Score&quot;, title=&quot;Peak score distribution by inclusion in brain dataset&quot;)</code></pre>
 <p><img src="figure/eval.brain.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/dc4a51af1b101200e1685b760ac3f5c78db359b3/docs/figure/eval.brain.Rmd/unnamed-chunk-9-1.png" target="_blank">dc4a51a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(YL_peaks_join_sel, aes(x=log10(count), fill=in_brain), bins=50) + geom_density(position=&quot;identity&quot;, alpha=.5) + labs(x=&quot;log10 of Score&quot;, title=&quot;Distribution of log10 Scores in peaks included in brain dataset&quot;)</code></pre>
 <p><img src="figure/eval.brain.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/dc4a51af1b101200e1685b760ac3f5c78db359b3/docs/figure/eval.brain.Rmd/unnamed-chunk-10-1.png" target="_blank">dc4a51a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>It would be better if the background was just a random subset of the same number. There are 21378 included peaks so I should select a random 21378 to make a background distribution.</p>
 <pre class="r"><code>samp_YLpeaks= sample_n(YL_peaks, 21378)
 
 ggplot() + geom_histogram(data=samp_YLpeaks, aes(log10(count)), bins=100) + geom_histogram(data=YL_peaks_overlap, aes(log10(count)),fill=&quot;Red&quot;, bins=100) + labs(x=&quot;Log10 of Score&quot;, title=&quot;Scores in Overlapping set compared to scores in random set&quot;)</code></pre>
 <p><img src="figure/eval.brain.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/dc4a51af1b101200e1685b760ac3f5c78db359b3/docs/figure/eval.brain.Rmd/unnamed-chunk-11-1.png" target="_blank">dc4a51a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>The next step is to download the Brain fastq data and call peaks using Yangs script. I used sra-tools to download SRR299106. Then I ran my snakemake pipeline on it.</p>
+<p>I need to make the genome cov file then use Yangs script to call the peaks.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=braingencovsplit
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=brain_gencovsplit.out
+#SBATCH --error=brain_gencovaplit.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+bedtools genomecov -ibam /project2/gilad/briana/derti_brain_raw/data/sort/derti_brain-sort.bam  -d -split &gt; /project2/gilad/briana/derti_brain_raw/data/gencov/derti_brain.gencov.bed</code></pre>
+<p>Wrap Yangs script:</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=w_getpeakYLB
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=w_getpeakYLB.out
+#SBATCH --error=w_getpeakYLB.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(seq 1 22); do 
+  sbatch callPeaksYL_derti.py $i
+done</code></pre>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
