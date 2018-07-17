@@ -36,6 +36,7 @@ Peak calling:
 
 * [Testing macs2 on 3'seq data](test.max2.html)  
 * [Call peak regions de-novo](deNovopeakcalling.html)
-* [Compare peaks in Derti Brain set](eval.brain.html)
+* [Compare peaks in Derti Brain set](eval.brain.html)  
+* [Test SMASH smoothing](test.smash.html)  
 
 
