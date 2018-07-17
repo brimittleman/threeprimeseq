@@ -135,3 +135,52 @@ samp_YLpeaks= sample_n(YL_peaks, 21378)
 ggplot() + geom_histogram(data=samp_YLpeaks, aes(log10(count)), bins=100) + geom_histogram(data=YL_peaks_overlap, aes(log10(count)),fill="Red", bins=100) + labs(x="Log10 of Score", title="Scores in Overlapping set compared to scores in random set")
 ```
 
+The next step is to download the Brain fastq data and call peaks using Yangs script. I used sra-tools to download SRR299106. Then I ran my snakemake pipeline on it.  
+
+I need to make the genome cov file then use Yangs script to call the peaks.   
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=braingencovsplit
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=brain_gencovsplit.out
+#SBATCH --error=brain_gencovaplit.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+bedtools genomecov -ibam /project2/gilad/briana/derti_brain_raw/data/sort/derti_brain-sort.bam  -d -split > /project2/gilad/briana/derti_brain_raw/data/gencov/derti_brain.gencov.bed
+```
+
+
+Wrap Yangs script: 
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_getpeakYLB
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=w_getpeakYLB.out
+#SBATCH --error=w_getpeakYLB.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(seq 1 22); do 
+  sbatch callPeaksYL_derti.py $i
+done
+```
+
+
