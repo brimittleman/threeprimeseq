@@ -1,0 +1,126 @@
+---
+title: "Test SMASH"
+author: "Briana Mittleman"
+date: "7/16/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+In this analysis I will use the tutorial I did for the SMASH package on chip seq data to test it on the three prime seq data. In order to complete this I need to make a matrix with genome location counts for where reads start for positions 880001:1011072 on chr1, I am using this region because I already know it fits the $2^{x}$ criterion.  I need the matrix to be individual by basepair. I can use genome cov in all of the total fractions then merge the results together to make a matrix.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=5gencov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=5gencov.out
+#SBATCH --error=5gencov.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+#imput sorted bam file 
+bam=$1
+
+describer=$(echo ${bam} | sed -e 's/.*\YL-SP-//' | sed -e "s/-sort.bam$//")
+
+
+bedtools genomecov-ibam $1 -d  -5 > /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.${describer}.bed
+```
+
+
+run on /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-18486-N_S10_R1_001-sort.bam
+
+
+wrap this function:  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_5gencov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=w_5gencov.out
+#SBATCH --error=w_5gencov.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/sort/*.bam); do
+        sbatch 5primegencov.sh $i 
+    done
+```
+
+
+First I will get ch1 880001:1011072  for each individual.
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=test.reg
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=test.reg.out
+#SBATCH --error=test.reg.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18486-T_S9_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18486-T_S9_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18497-T_S11_R1_001.bed   > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18497-T_S11_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 &5& $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18500-T_S19_R1_001.bed   > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18500-T_S19_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18505-T_S1_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18505-T_S1_R1_001.testregion.bed
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' gencov5prime.18508-T_S5_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18508-T_S5_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}'/project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18853-T_S31_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18853-T_S31_R1_001.testregion.bed
+
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18870-T_S23_R1_001.bed   > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18870-T_S23_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19128-T_S29_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19128-T_S29_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19141-T_S17_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19141-T_S17_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19193-T_S21_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19193-T_S21_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19209-T_S15_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19209-T_S15_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19233-T_S7_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19223-T_S7_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19225-T_S27_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19225-T_S27_R1_001.testregion.bed
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19238-T_S3_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19238-T_S3_R1_001.testregion.bed
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19239-T_S13_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19239-T_S13_R1_001.testregion.bed
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19257-T_S25_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19257-T_S25_R1_001.testregion.bed
+
+```
+
