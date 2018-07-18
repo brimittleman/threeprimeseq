@@ -123,4 +123,91 @@ awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/th
 awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19257-T_S25_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19257-T_S25_R1_001.testregion.bed
 
 ```
+3 didnt work. Try these again. 
+
+```{bash, eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=test.reg2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=test.reg2.out
+#SBATCH --error=test.reg2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18508-T_S5_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18508-T_S5_R1_001.testregion.bed
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18853-T_S31_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18853-T_S31_R1_001.testregion.bed
+
+awk '$1 == 1 && $2 >= 880001 && $2 <= 1011072 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18500-T_S19_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18500-T_S19_R1_001.testregion.bed
+
+
+```
+
+Now I will pull in these regions and merge them to make a matrix I can put into smashr.  
+
+```{r}
+test_18468=read.table("../data/smash_testregion/gencov5prime.18486-T_S9_R1_001.testregion.bed", col.names=c("chr", "base", "T18486"))
+
+test_18497=read.table("../data/smash_testregion/gencov5prime.18497-T_S11_R1_001.testregion.bed", col.names=c("chr", "base", "T18497"))
+
+test_18500=read.table("../data/smash_testregion/gencov5prime.18500-T_S19_R1_001.testregion.bed", col.names=c("chr", "base", "T18500"))  
+
+test_18505=read.table("../data/smash_testregion/gencov5prime.18505-T_S1_R1_001.testregion.bed", col.names=c("chr", "base", "T18505"))
+
+test_18508=read.table("../data/smash_testregion/gencov5prime.18508-T_S5_R1_001.testregion.bed", col.names=c("chr", "base", "T18508"))
+
+test_18853=read.table("../data/smash_testregion/gencov5prime.18853-T_S31_R1_001.testregion.bed", col.names=c("chr", "base", "T18853"))
+
+test_18870=read.table("../data/smash_testregion/gencov5prime.18870-T_S23_R1_001.testregion.bed", col.names=c("chr", "base", "T18870"))
+
+test_19128=read.table("../data/smash_testregion/gencov5prime.19128-T_S29_R1_001.testregion.bed", col.names=c("chr", "base", "T19128"))
+
+test_19239=read.table("../data/smash_testregion/gencov5prime.19239-T_S13_R1_001.testregion.bed", col.names=c("chr", "base", "T19239"))
+
+test_19257=read.table("../data/smash_testregion/gencov5prime.19257-T_S25_R1_001.testregion.bed", col.names=c("chr", "base", "T19257"))
+
+test_19141=read.table("../data/smash_testregion/gencov5prime.19141-T_S17_R1_001.testregion.bed", col.names=c("chr", "base", "T19141"))
+
+test_19193=read.table("../data/smash_testregion/gencov5prime.19193-T_S21_R1_001.testregion.bed", col.names=c("chr", "base", "T19193"))
+
+test_19209=read.table("../data/smash_testregion/gencov5prime.19209-T_S15_R1_001.testregion.bed", col.names=c("chr", "base", "T19209"))
+
+test_19223=read.table("../data/smash_testregion/gencov5prime.19223-T_S7_R1_001.testregion.bed", col.names=c("chr", "base", "T19223"))
+
+test_19225=read.table("../data/smash_testregion/gencov5prime.19225-T_S27_R1_001.testregion.bed", col.names=c("chr", "base", "T19225"))
+
+test_19238=read.table("../data/smash_testregion/gencov5prime.19238-T_S3_R1_001.testregion.bed", col.names=c("chr", "base", "T19238"))
+```
+
+Load Packages:
+```{r}
+library(devtools)
+library(scales)
+library(smashr)
+library(tidyr)
+library(workflowr)
+library(dplyr)
+```
+Bind all of the count 
+
+```{r}
+test_matrix=cbind(test_18468$T18486, test_18497$T18497, test_18500$T18500, test_18505$T18505, test_18508$T18508, test_18853$T18853, test_18870$T18870, test_19128$T19128, test_19141$T19141, test_19193$T19193, test_19209$T19209, test_19223$T19223, test_19225$T19225, test_19238$T19238, test_19239$T19239, test_19257$T19257) %>% t
+```
+Run smash:  
+
+```{r}
+res = smash.poiss(test_matrix[1,]+test_matrix[2,],post.var=TRUE)
+```
+```{r}
+bppos = 880001:1011072
+
+plot(bppos,test_matrix[1,]+test_matrix[2,],xlab="position",ylab="counts",pch=16,cex=0.5, col=alpha("black",0.04))
+
+plot(bppos,res$est,type='l',xlab="position",ylab="intensity")
+```
 
