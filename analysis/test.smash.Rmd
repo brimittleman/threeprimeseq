@@ -210,4 +210,131 @@ plot(bppos,test_matrix[1,]+test_matrix[2,],xlab="position",ylab="counts",pch=16,
 
 plot(bppos,res$est,type='l',xlab="position",ylab="intensity")
 ```
+Create a coverage file with the results.  
+
+```{r}
+cov=cbind(test_18468$chr, test_18468$base + 1, test_18468$base, res$est)
+```
+
+
+
+I want to try this on a region with higher background for example where actb is. I can run a smaller region of $2^{10}$ bases. chr7:5,566,662-5,567,686. The following script to extract the region is called test.actbregion.sh.  
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=test.regactb
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=test.regact.out
+#SBATCH --error=test.regact.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18486-T_S9_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18486-T_S9_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18497-T_S11_R1_001.bed   > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18497-T_S11_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18500-T_S19_R1_001.bed   > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18500-T_S19_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18505-T_S1_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18505-T_S1_R1_001.testregion.actb.bed
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18508-T_S5_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18508-T_S5_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18853-T_S31_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18853-T_S31_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18870-T_S23_R1_001.bed   > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18870-T_S23_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19128-T_S29_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19128-T_S29_R1_001.testregion.actb.bed
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19141-T_S17_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19141-T_S17_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19193-T_S21_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19193-T_S21_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19209-T_S15_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19209-T_S15_R1_001.testregion.actb.bed
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19233-T_S7_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19223-T_S7_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19225-T_S27_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19225-T_S27_R1_001.testregion.actb.bed
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19238-T_S3_R1_001.bed > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19238-T_S3_R1_001.testregion.actb.bed
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19239-T_S13_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19239-T_S13_R1_001.testregion.actb.bed
+
+
+awk '$1 == 7 && $2 >= 5566662 && $2 <= 5567686 {print}' /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19257-T_S25_R1_001.bed  > /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19257-T_S25_R1_001.testregion.actb.bed
+
+```
+
+18853 did not work, running seperatly.  
+
+
+```{r}
+actb_test_18468=read.table("../data/smash_testregion/gencov5prime.18486-T_S9_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T18486"))
+
+actb_test_18497=read.table("../data/smash_testregion/gencov5prime.18497-T_S11_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T18497"))
+
+actb_test_18500=read.table("../data/smash_testregion/gencov5prime.18500-T_S19_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T18500"))  
+
+actb_test_18505=read.table("../data/smash_testregion/gencov5prime.18505-T_S1_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T18505"))
+
+actb_test_18508=read.table("../data/smash_testregion/gencov5prime.18508-T_S5_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T18508"))
+
+actb_test_18853=read.table("../data/smash_testregion/gencov5prime.18853-T_S31_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T18853"))
+
+actb_test_18870=read.table("../data/smash_testregion/gencov5prime.18870-T_S23_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T18870"))
+
+actb_test_19128=read.table("../data/smash_testregion/gencov5prime.19128-T_S29_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19128"))
+
+actb_test_19239=read.table("../data/smash_testregion/gencov5prime.19239-T_S13_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19239"))
+
+actb_test_19257=read.table("../data/smash_testregion/gencov5prime.19257-T_S25_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19257"))
+
+actb_test_19141=read.table("../data/smash_testregion/gencov5prime.19141-T_S17_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19141"))
+
+actb_test_19193=read.table("../data/smash_testregion/gencov5prime.19193-T_S21_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19193"))
+
+actb_test_19209=read.table("../data/smash_testregion/gencov5prime.19209-T_S15_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19209"))
+
+actb_test_19223=read.table("../data/smash_testregion/gencov5prime.19223-T_S7_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19223"))
+
+actb_test_19225=read.table("../data/smash_testregion/gencov5prime.19225-T_S27_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19225"))
+
+actb_test_19238=read.table("../data/smash_testregion/gencov5prime.19238-T_S3_R1_001.testregion.actb.bed", col.names=c("chr", "base", "T19238"))
+```
+
+
+
+Make matrix
+```{r}
+actb_test_matrix=cbind(actb_test_18468$T18486, actb_test_18497$T18497, actb_test_18500$T18500, actb_test_18505$T18505, actb_test_18508$T18508, actb_test_18853$T18853, actb_test_18870$T18870, actb_test_19128$T19128, actb_test_19141$T19141, actb_test_19193$T19193, actb_test_19209$T19209, actb_test_19223$T19223, actb_test_19225$T19225, actb_test_19238$T19238, actb_test_19239$T19239, actb_test_19257$T19257) %>% t
+```
+Run smash:  
+
+
+```{r}
+actb_res = smash.poiss(actb_test_matrix[1,]+actb_test_matrix[2,],post.var=TRUE)
+```
+
+Make plots: 
+```{r}
+actb_bppos = 5566662:5567686
+
+plot(actb_bppos,actb_test_matrix[1,]+actb_test_matrix[2,],xlab="position",ylab="counts",pch=16,cex=0.5, col=alpha("black",1))
+
+plot(actb_bppos,actb_res$est,type='l',xlab="position",ylab="intensity")
+
+```
+
 
