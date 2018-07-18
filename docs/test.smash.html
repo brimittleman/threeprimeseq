@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-17</p>
+<p><strong>Last updated:</strong> 2018-07-18</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/cc5cc50c1522e65db9c5347be32b84b8a3cc8701" target="_blank">cc5cc50</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9d320762cc20d555c01ef24c55f9b9c5253631f7" target="_blank">9d32076</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -362,6 +362,9 @@ Untracked files:
     Untracked:  data/leafcutter/
     Untracked:  data/nuc6up/
     Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  data/smash.cov.results.bed
+    Untracked:  data/smash.cov.results.csv
+    Untracked:  data/smash.cov.results.txt
     Untracked:  data/smash_testregion/
     Untracked:  data/ssFC200.cov.bed
     Untracked:  output/picard/
@@ -401,6 +404,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/9d320762cc20d555c01ef24c55f9b9c5253631f7/analysis/test.smash.Rmd" target="_blank">9d32076</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-18
+</td>
+<td style="text-align:left;">
+add actb example
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/0464829eb7efe6e59a1e4c9b119aacf011b4bdaa/docs/test.smash.html" target="_blank">0464829</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-17
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -847,8 +884,179 @@ Objective fn: 83064.5  Extrapolation: 1  Steplength: 3.24189</code></pre>
 
 plot(bppos,test_matrix[1,]+test_matrix[2,],xlab=&quot;position&quot;,ylab=&quot;counts&quot;,pch=16,cex=0.5, col=alpha(&quot;black&quot;,0.04))</code></pre>
 <p><img src="figure/test.smash.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0464829eb7efe6e59a1e4c9b119aacf011b4bdaa/docs/figure/test.smash.Rmd/unnamed-chunk-9-1.png" target="_blank">0464829</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-17
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot(bppos,res$est,type=&#39;l&#39;,xlab=&quot;position&quot;,ylab=&quot;intensity&quot;)</code></pre>
 <p><img src="figure/test.smash.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0464829eb7efe6e59a1e4c9b119aacf011b4bdaa/docs/figure/test.smash.Rmd/unnamed-chunk-9-2.png" target="_blank">0464829</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-17
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Create a coverage file with the results.</p>
+<pre class="r"><code>cov=cbind(test_18468$chr, test_18468$base + 1, test_18468$base, res$est)</code></pre>
+<p>I want to try this on a region with higher background for example where actb is. I can run a smaller region of <span class="math inline">\(2^{10}\)</span> bases. chr7:5,566,662-5,567,686. The following script to extract the region is called test.actbregion.sh.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=test.regactb
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=test.regact.out
+#SBATCH --error=test.regact.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18486-T_S9_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18486-T_S9_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18497-T_S11_R1_001.bed   &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18497-T_S11_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18500-T_S19_R1_001.bed   &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18500-T_S19_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18505-T_S1_R1_001.bed &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18505-T_S1_R1_001.testregion.actb.bed
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18508-T_S5_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18508-T_S5_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18853-T_S31_R1_001.bed &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18853-T_S31_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18870-T_S23_R1_001.bed   &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18870-T_S23_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19128-T_S29_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19128-T_S29_R1_001.testregion.actb.bed
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19141-T_S17_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19141-T_S17_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19193-T_S21_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19193-T_S21_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19209-T_S15_R1_001.bed &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19209-T_S15_R1_001.testregion.actb.bed
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19233-T_S7_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19223-T_S7_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19225-T_S27_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19225-T_S27_R1_001.testregion.actb.bed
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19238-T_S3_R1_001.bed &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19238-T_S3_R1_001.testregion.actb.bed
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19239-T_S13_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19239-T_S13_R1_001.testregion.actb.bed
+
+
+awk &#39;$1 == 7 &amp;&amp; $2 &gt;= 5566662 &amp;&amp; $2 &lt;= 5567686 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19257-T_S25_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19257-T_S25_R1_001.testregion.actb.bed
+</code></pre>
+<p>18853 did not work, running seperatly.</p>
+<pre class="r"><code>actb_test_18468=read.table(&quot;../data/smash_testregion/gencov5prime.18486-T_S9_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18486&quot;))
+
+actb_test_18497=read.table(&quot;../data/smash_testregion/gencov5prime.18497-T_S11_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18497&quot;))
+
+actb_test_18500=read.table(&quot;../data/smash_testregion/gencov5prime.18500-T_S19_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18500&quot;))  
+
+actb_test_18505=read.table(&quot;../data/smash_testregion/gencov5prime.18505-T_S1_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18505&quot;))
+
+actb_test_18508=read.table(&quot;../data/smash_testregion/gencov5prime.18508-T_S5_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18508&quot;))
+
+actb_test_18853=read.table(&quot;../data/smash_testregion/gencov5prime.18853-T_S31_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18853&quot;))
+
+actb_test_18870=read.table(&quot;../data/smash_testregion/gencov5prime.18870-T_S23_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18870&quot;))
+
+actb_test_19128=read.table(&quot;../data/smash_testregion/gencov5prime.19128-T_S29_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19128&quot;))
+
+actb_test_19239=read.table(&quot;../data/smash_testregion/gencov5prime.19239-T_S13_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19239&quot;))
+
+actb_test_19257=read.table(&quot;../data/smash_testregion/gencov5prime.19257-T_S25_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19257&quot;))
+
+actb_test_19141=read.table(&quot;../data/smash_testregion/gencov5prime.19141-T_S17_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19141&quot;))
+
+actb_test_19193=read.table(&quot;../data/smash_testregion/gencov5prime.19193-T_S21_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19193&quot;))
+
+actb_test_19209=read.table(&quot;../data/smash_testregion/gencov5prime.19209-T_S15_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19209&quot;))
+
+actb_test_19223=read.table(&quot;../data/smash_testregion/gencov5prime.19223-T_S7_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19223&quot;))
+
+actb_test_19225=read.table(&quot;../data/smash_testregion/gencov5prime.19225-T_S27_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19225&quot;))
+
+actb_test_19238=read.table(&quot;../data/smash_testregion/gencov5prime.19238-T_S3_R1_001.testregion.actb.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19238&quot;))</code></pre>
+<p>Make matrix</p>
+<pre class="r"><code>actb_test_matrix=cbind(actb_test_18468$T18486, actb_test_18497$T18497, actb_test_18500$T18500, actb_test_18505$T18505, actb_test_18508$T18508, actb_test_18853$T18853, actb_test_18870$T18870, actb_test_19128$T19128, actb_test_19141$T19141, actb_test_19193$T19193, actb_test_19209$T19209, actb_test_19223$T19223, actb_test_19225$T19225, actb_test_19238$T19238, actb_test_19239$T19239, actb_test_19257$T19257) %&gt;% t</code></pre>
+<p>Run smash:</p>
+<pre class="r"><code>actb_res = smash.poiss(actb_test_matrix[1,]+actb_test_matrix[2,],post.var=TRUE)</code></pre>
+<pre><code>Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm</code></pre>
+<p>Make plots:</p>
+<pre class="r"><code>actb_bppos = 5566662:5567686
+
+plot(actb_bppos,actb_test_matrix[1,]+actb_test_matrix[2,],xlab=&quot;position&quot;,ylab=&quot;counts&quot;,pch=16,cex=0.5, col=alpha(&quot;black&quot;,1))</code></pre>
+<p><img src="figure/test.smash.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(actb_bppos,actb_res$est,type=&#39;l&#39;,xlab=&quot;position&quot;,ylab=&quot;intensity&quot;)</code></pre>
+<p><img src="figure/test.smash.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
