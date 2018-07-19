@@ -325,14 +325,14 @@ Run smash:
 
 
 ```{r}
-actb_res = smash.poiss(actb_test_matrix[1,]+actb_test_matrix[2,],post.var=TRUE)
+actb_res = smash.poiss(actb_test_matrix[1,]+actb_test_matrix[2,]+ actb_test_matrix[3,]+actb_test_matrix[4,]+actb_test_matrix[5,]+actb_test_matrix[6,]+actb_test_matrix[7,]+actb_test_matrix[8,]+actb_test_matrix[9,]+actb_test_matrix[10,]+actb_test_matrix[11,]+actb_test_matrix[12,]+actb_test_matrix[13,]+actb_test_matrix[14,]+actb_test_matrix[15,]+actb_test_matrix[16,],post.var=TRUE)
 ```
 
 Make plots: 
 ```{r}
 actb_bppos = 5566662:5567686
 
-plot(actb_bppos,actb_test_matrix[1,]+actb_test_matrix[2,],xlab="position",ylab="counts",pch=16,cex=0.5, col=alpha("black",1), main="Raw data ACTB")
+plot(actb_bppos,actb_test_matrix[1,]+actb_test_matrix[2,]+ actb_test_matrix[3,]+actb_test_matrix[4,]+actb_test_matrix[5,]+actb_test_matrix[6,]+actb_test_matrix[7,]+actb_test_matrix[8,]+actb_test_matrix[9,]+actb_test_matrix[10,]+actb_test_matrix[11,]+actb_test_matrix[12,]+actb_test_matrix[13,]+actb_test_matrix[14,]+actb_test_matrix[15,]+actb_test_matrix[16,],xlab="position",ylab="counts",pch=16,cex=0.5, col=alpha("black",.5), main="Raw data ACTB")
 
 plot(actb_bppos,actb_res$est,type='l',xlab="position",ylab="intensity", main="SMASH results ACTB")
 
@@ -446,14 +446,14 @@ Run smash:
 
 
 ```{r}
-gap_res = smash.poiss(gap_test_matrix[1,]+gap_test_matrix[2,],post.var=TRUE)
+gap_res = smash.poiss(gap_test_matrix[1,]+gap_test_matrix[2,]+gap_test_matrix[3,]+gap_test_matrix[4,]+gap_test_matrix[5,]+gap_test_matrix[6,]+gap_test_matrix[7,]+gap_test_matrix[8,]+gap_test_matrix[9,]+gap_test_matrix[10,]+gap_test_matrix[11,]+gap_test_matrix[12,]+gap_test_matrix[13,]+gap_test_matrix[14,]+gap_test_matrix[15,]+gap_test_matrix[15,]+ gap_test_matrix[16,],post.var=TRUE)
 ```
 
 Make plots: 
 ```{r}
 gap_bppos =6646755:6647779
 
-plot(gap_bppos,gap_test_matrix[1,]+gap_test_matrix[2,],xlab="position",ylab="counts",pch=16,cex=0.5, col=alpha("black",1), main="Raw data GAPDH")
+plot(gap_test_matrix[1,]+gap_test_matrix[2,]+gap_test_matrix[3,]+gap_test_matrix[4,]+gap_test_matrix[5,]+gap_test_matrix[6,]+gap_test_matrix[7,]+gap_test_matrix[8,]+gap_test_matrix[9,]+gap_test_matrix[10,]+gap_test_matrix[11,]+gap_test_matrix[12,]+gap_test_matrix[13,]+gap_test_matrix[14,]+gap_test_matrix[15,]+gap_test_matrix[15,]+ gap_test_matrix[16,],xlab="position",ylab="counts",pch=16,cex=0.5, col=alpha("black",.5), main="Raw data GAPDH")
 
 plot(gap_bppos,gap_res$est,type='l',xlab="position",ylab="intensity", main="SMASH results GAPDH")
 
