@@ -317,7 +317,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-18</p>
+<p><strong>Last updated:</strong> 2018-07-19</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -341,7 +341,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9d320762cc20d555c01ef24c55f9b9c5253631f7" target="_blank">9d32076</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/31482e2756b96a67021ff4f25923469e45a99453" target="_blank">31482e2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -404,6 +404,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/31482e2756b96a67021ff4f25923469e45a99453/analysis/test.smash.Rmd" target="_blank">31482e2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-19
+</td>
+<td style="text-align:left;">
+gapdh
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/319322373c1d7d83d53b6eb868a5fefae3dd682d/docs/test.smash.html" target="_blank">3193223</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-18
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -495,6 +529,8 @@ add smash test
 <p></details></p>
 <hr />
 <p>In this analysis I will use the tutorial I did for the SMASH package on chip seq data to test it on the three prime seq data. In order to complete this I need to make a matrix with genome location counts for where reads start for positions 880001:1011072 on chr1, I am using this region because I already know it fits the <span class="math inline">\(2^{x}\)</span> criterion. I need the matrix to be individual by basepair. I can use genome cov in all of the total fractions then merge the results together to make a matrix.</p>
+<div id="create-coverage-files" class="section level2">
+<h2>Create Coverage files</h2>
 <pre class="bash"><code>#!/bin/bash
 
 #SBATCH --job-name=5gencov
@@ -537,6 +573,9 @@ source activate three-prime-env
 for i in $(ls /project2/gilad/briana/threeprimeseq/data/sort/*.bam); do
         sbatch 5primegencov.sh $i 
     done</code></pre>
+</div>
+<div id="test-example-region" class="section level2">
+<h2>Test example region</h2>
 <p>First I will get ch1 880001:1011072 for each individual.</p>
 <pre class="bash"><code>#!/bin/bash
 
@@ -948,6 +987,9 @@ Briana Mittleman
 <p></details></p>
 <p>Create a coverage file with the results.</p>
 <pre class="r"><code>cov=cbind(test_18468$chr, test_18468$base + 1, test_18468$base, res$est)</code></pre>
+</div>
+<div id="test-actb" class="section level2">
+<h2>Test actb</h2>
 <p>I want to try this on a region with higher background for example where actb is. I can run a smaller region of <span class="math inline">\(2^{10}\)</span> bases. chr7:5,566,662-5,567,686. The following script to extract the region is called test.actbregion.sh.</p>
 <pre class="bash"><code>#!/bin/bash
 
@@ -1053,10 +1095,183 @@ Due to absence of package REBayes, switching to EM algorithm</code></pre>
 <p>Make plots:</p>
 <pre class="r"><code>actb_bppos = 5566662:5567686
 
-plot(actb_bppos,actb_test_matrix[1,]+actb_test_matrix[2,],xlab=&quot;position&quot;,ylab=&quot;counts&quot;,pch=16,cex=0.5, col=alpha(&quot;black&quot;,1))</code></pre>
+plot(actb_bppos,actb_test_matrix[1,]+actb_test_matrix[2,],xlab=&quot;position&quot;,ylab=&quot;counts&quot;,pch=16,cex=0.5, col=alpha(&quot;black&quot;,1), main=&quot;Raw data ACTB&quot;)</code></pre>
 <p><img src="figure/test.smash.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(actb_bppos,actb_res$est,type=&#39;l&#39;,xlab=&quot;position&quot;,ylab=&quot;intensity&quot;)</code></pre>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/319322373c1d7d83d53b6eb868a5fefae3dd682d/docs/figure/test.smash.Rmd/unnamed-chunk-15-1.png" target="_blank">3193223</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-18
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>plot(actb_bppos,actb_res$est,type=&#39;l&#39;,xlab=&quot;position&quot;,ylab=&quot;intensity&quot;, main=&quot;SMASH results ACTB&quot;)</code></pre>
 <p><img src="figure/test.smash.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/319322373c1d7d83d53b6eb868a5fefae3dd682d/docs/figure/test.smash.Rmd/unnamed-chunk-15-2.png" target="_blank">3193223</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-18
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="test-gapdh" class="section level2">
+<h2>Test Gapdh</h2>
+<p>Check on another highly expressed gene to see if this dual peak pattern appears again. I will look at GAPDH. Chr12 6,646,755-6,647,779</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=test.reggap
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=test.reggap.out
+#SBATCH --error=test.reggap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18486-T_S9_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18486-T_S9_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18497-T_S11_R1_001.bed   &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18497-T_S11_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18500-T_S19_R1_001.bed   &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18500-T_S19_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18505-T_S1_R1_001.bed &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18505-T_S1_R1_001.testregion.gap.bed
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18508-T_S5_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18508-T_S5_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18853-T_S31_R1_001.bed &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18853-T_S31_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.18870-T_S23_R1_001.bed   &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.18870-T_S23_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19128-T_S29_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19128-T_S29_R1_001.testregion.gap.bed
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19141-T_S17_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19141-T_S17_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19193-T_S21_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19193-T_S21_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19209-T_S15_R1_001.bed &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19209-T_S15_R1_001.testregion.gap.bed
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19233-T_S7_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19223-T_S7_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19225-T_S27_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19225-T_S27_R1_001.testregion.gap.bed
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19238-T_S3_R1_001.bed &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19238-T_S3_R1_001.testregion.gap.bed
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19239-T_S13_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19239-T_S13_R1_001.testregion.gap.bed
+
+
+awk &#39;$1 == 12 &amp;&amp; $2 &gt;= 6646755 &amp;&amp; $2 &lt;= 6647779 {print}&#39; /project2/gilad/briana/threeprimeseq/data/test.smash/gencov5prime.19257-T_S25_R1_001.bed  &gt; /project2/gilad/briana/threeprimeseq/data/test.region/gencov5prime.19257-T_S25_R1_001.testregion.gap.bed
+</code></pre>
+<p>Pull in the data:</p>
+<pre class="r"><code>gap_test_18468=read.table(&quot;../data/smash_testregion/gencov5prime.18486-T_S9_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18486&quot;))
+
+gap_test_18497=read.table(&quot;../data/smash_testregion/gencov5prime.18497-T_S11_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18497&quot;))
+
+gap_test_18500=read.table(&quot;../data/smash_testregion/gencov5prime.18500-T_S19_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18500&quot;))  
+
+gap_test_18505=read.table(&quot;../data/smash_testregion/gencov5prime.18505-T_S1_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18505&quot;))
+
+gap_test_18508=read.table(&quot;../data/smash_testregion/gencov5prime.18508-T_S5_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18508&quot;))
+
+gap_test_18853=read.table(&quot;../data/smash_testregion/gencov5prime.18853-T_S31_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18853&quot;))
+
+gap_test_18870=read.table(&quot;../data/smash_testregion/gencov5prime.18870-T_S23_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T18870&quot;))
+
+gap_test_19128=read.table(&quot;../data/smash_testregion/gencov5prime.19128-T_S29_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19128&quot;))
+
+gap_test_19239=read.table(&quot;../data/smash_testregion/gencov5prime.19239-T_S13_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19239&quot;))
+
+gap_test_19257=read.table(&quot;../data/smash_testregion/gencov5prime.19257-T_S25_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19257&quot;))
+
+gap_test_19141=read.table(&quot;../data/smash_testregion/gencov5prime.19141-T_S17_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19141&quot;))
+
+gap_test_19193=read.table(&quot;../data/smash_testregion/gencov5prime.19193-T_S21_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19193&quot;))
+
+gap_test_19209=read.table(&quot;../data/smash_testregion/gencov5prime.19209-T_S15_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19209&quot;))
+
+gap_test_19223=read.table(&quot;../data/smash_testregion/gencov5prime.19223-T_S7_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19223&quot;))
+
+gap_test_19225=read.table(&quot;../data/smash_testregion/gencov5prime.19225-T_S27_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19225&quot;))
+
+gap_test_19238=read.table(&quot;../data/smash_testregion/gencov5prime.19238-T_S3_R1_001.testregion.gap.bed&quot;, col.names=c(&quot;chr&quot;, &quot;base&quot;, &quot;T19238&quot;))</code></pre>
+<p>Make matrix</p>
+<pre class="r"><code>gap_test_matrix=cbind(gap_test_18468$T18486, gap_test_18497$T18497, gap_test_18500$T18500, gap_test_18505$T18505, gap_test_18508$T18508, gap_test_18853$T18853, gap_test_18870$T18870, gap_test_19128$T19128, gap_test_19141$T19141, gap_test_19193$T19193, gap_test_19209$T19209, gap_test_19223$T19223, gap_test_19225$T19225, gap_test_19238$T19238, gap_test_19239$T19239, gap_test_19257$T19257) %&gt;% t</code></pre>
+<p>Run smash:</p>
+<pre class="r"><code>gap_res = smash.poiss(gap_test_matrix[1,]+gap_test_matrix[2,],post.var=TRUE)</code></pre>
+<pre><code>Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm
+Due to absence of package REBayes, switching to EM algorithm</code></pre>
+<p>Make plots:</p>
+<pre class="r"><code>gap_bppos =6646755:6647779
+
+plot(gap_bppos,gap_test_matrix[1,]+gap_test_matrix[2,],xlab=&quot;position&quot;,ylab=&quot;counts&quot;,pch=16,cex=0.5, col=alpha(&quot;black&quot;,1), main=&quot;Raw data GAPDH&quot;)</code></pre>
+<p><img src="figure/test.smash.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(gap_bppos,gap_res$est,type=&#39;l&#39;,xlab=&quot;position&quot;,ylab=&quot;intensity&quot;, main=&quot;SMASH results GAPDH&quot;)</code></pre>
+<p><img src="figure/test.smash.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
