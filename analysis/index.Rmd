@@ -39,5 +39,5 @@ Peak calling:
 * [Call peak regions de-novo](deNovopeakcalling.html)
 * [Compare peaks in Derti Brain set](eval.brain.html)  
 * [Test SMASH smoothing](test.smash.html)  
-
+* [Expand SMASH analysis for use on midway](expand.smash.html)
 

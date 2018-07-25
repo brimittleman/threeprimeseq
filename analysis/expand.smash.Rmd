@@ -1,0 +1,204 @@
+---
+title: "Expand Smash"
+author: "Briana Mittleman"
+date: "7/24/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to run smash on a whole chromosome to see what regions I can do it on to get the whole genome. First I am going to try chromosome 22. 
+
+
+##Prepare data  
+
+I want to create a bedgraph for the combined nuclear and total files.  
+
+* /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam  
+
+* /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles.bam  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=5gencov_comb
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=5gencov_comb.out
+#SBATCH --error=5gencov_com.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+
+bedtools genomecov -d -5 -ibam  /project2/gilad/briana/threeprimeseq/data/macs2/TotalBamFiles.sort.bam   > /project2/gilad/briana/threeprimeseq/data/genomecov/gencov5prime.combinedTotal.bed
+
+bedtools genomecov -d -5 -ibam  /project2/gilad/briana/threeprimeseq/data/macs2/NuclearBamFiles.sort.bam > /project2/gilad/briana/threeprimeseq/data/genomecov/gencov5prime.combinedNuclear.bed
+```
+
+I now need to subset the bed files to chr22.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=subset22
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=subset22.out
+#SBATCH --error=subset22.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+awk '$1==22 {print}' /project2/gilad/briana/threeprimeseq/data/genomecov/gencov5prime.combinedNuclear.bed > /project2/gilad/briana/threeprimeseq/data/genomecov_chr22/gencov5prime.combinedNuclear.chr22.bed
+
+
+awk '$1==22 {print}' /project2/gilad/briana/threeprimeseq/data/genomecov/gencov5prime.combinedTotal.bed > /project2/gilad/briana/threeprimeseq/data/genomecov_chr22/gencov5prime.combinedTotal.chr22.bed
+```
+
+
+
+
+##Run smash  
+
+Chromosome 22 is 51304566 bases. I need this to satisfy the $2^{x}$ criteria. I can use the log rule, $log_{2}length=x$ 
+
+```{r}
+log2(51304566)
+2^26
+zeros_to_add=67108864 -51304566
+```
+I will use 2^26, 67108864. This means I need to add `r 67108864 -51304566` 0s to the matrix. I can do this by making a matrix with the correct number of zeros and row binding it.  
+
+```{r}
+zero_matrix=matrix(0.1, zeros_to_add)
+```
+
+
+I will write and R script that I can run on the cluster. The file will take in the genomecoverage file and will output the graph and the smash results in a bedgraph format.  
+
+```{r, eval=F}
+#!/bin/rscripts
+
+# usage: ./run_smash.R gencoverage, outfile_plot, outfile_bedgraph
+
+#this script takes the genomecov file and a name for an output plot (.png) and an output bedgraph (.bg)
+
+#use optparse for management of input arguments I want to be able to imput the 6up nuc file and write out a filter file  
+
+#script needs to run outside of conda env. should module load R in bash script when I submit it 
+library(optparse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(smashr)
+
+
+option_list = list(
+  make_option(c("-f", "--file"), action="store", default=NA, type='character',
+              help="input file"),
+  make_option(c("-p", "--plot"), action="store", default=NA, type='character',
+              help="output plot file"),
+  make_option(c("-o", "--output"), action="store", default=NA, type='character',
+              help="output file")
+)
+  
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+#interrupt execution if no file is  supplied
+if (is.null(opt$file)){
+  print_help(opt_parser)
+  stop("Need input file", call.=FALSE)
+}
+
+
+
+#Functions for this script
+
+
+criteria=function(x){
+  #function takes a number and makes the matrix with 0s
+  exp=log2(x)
+  exp_round=ceiling(exp)
+  zerosadd= 2^exp_round - x
+  seq_0=rep(0, zerosadd)
+  return(seq_0)
+}
+
+
+#import bedgraph
+names=c("Chr", "Pos", "Count")
+cov=read.table(file = opt$file,  col.names = names)
+
+chromosome=cov[1,1]
+
+
+#prepare data by adding 0s
+zero_seq=criteria(nrow(cov))
+data_vec=as.vector(cov$Count)
+data_zero_vec=c(data_vec, zero_seq)
+data_zero_matrix=matrix(data_zero_vec, 1, length(data_zero_vec))
+
+#run smash
+
+smash_res=smash.poiss(data_zero_matrix[1,],post.var=TRUE)
+
+
+#create and save plot
+pos=1:length(data_vec)
+png(opt$plot)
+finalplot=plot(pos,smash_res$est[1:length(data_vec)],type='l',xlab="position",ylab="intensity", main="SMASH results")
+dev.off()
+
+#create bedgraph and write it out  
+
+bedgraph=cbind(lapply(cov$Chr, function(x) paste("chr", x, sep="")), cov$Pos, cov$Pos + 1,  smash_res$est[1:length(data_vec)])
+
+write.table(bedgraph, file=opt$output, quote = F, row.names = F, col.names = F)  
+ 
+
+
+
+
+```
+
+
+To run this I will have to create a batch script similar to the following.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run.run_smash
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=run_runsmash.out
+#SBATCH --error=run_runsmash.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=20G
+#SBATCH --mail-type=END
+
+module load R
+
+Rscript run_smash.R -f /project2/gilad/briana/threeprimeseq/data/genomecov_chr22/gencov5prime.combinedTotal.chr22.bed -p /project2/gilad/briana/threeprimeseq/data/smash.chr22/smooth.combinedTotal.chr22.png -o /project2/gilad/briana/threeprimeseq/data/smash.chr22/smooth.combinedTotal.chr22.bg
+
+
+
+```
+
+
