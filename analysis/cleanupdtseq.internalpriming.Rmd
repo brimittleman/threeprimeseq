@@ -1,0 +1,132 @@
+---
+title: "Use cleanUpdTSeq for internal priming"
+author: "Briana Mittleman"
+date: "7/24/2018"
+output: html_document
+---
+
+
+Install new packages:
+```{r, eval=F}
+source("https://bioconductor.org/biocLite.R")
+biocLite("BSgenome.Hsapiens.UCSC.hg19")
+```
+
+
+Load Packages:  
+```{r}
+library(workflowr)
+library(cleanUpdTSeq)
+library(GenomicRanges)
+library(BSgenome.Hsapiens.UCSC.hg19)
+```
+
+I am also going to install cleanUpdTSeq on my midway account because I will want to write scripts using this package that can take in any bedfile and will write out the file with the classification results. I can also have the cutoff option be a parameter that will change.  
+
+The test set should have chr, start, end, name, score, strand.  
+
+
+
+```{r, eval=F}
+#!/bin/rscripts
+
+# usage: ./cleanupdtseq.R in_bedfile, outfile, cuttoff
+
+#this script takes a putative peak file, and output file name and a cuttoff for classification and outputs the file with all of the seqs classified. 
+
+#use optparse for management of input arguments I want to be able to imput the 6up nuc file and write out a filter file  
+
+#script needs to run outside of conda env. should module load R in bash script when I submit it 
+library(optparse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cleanUpdTSeq)
+library(GenomicRanges)
+library(BSgenome.Hsapiens.UCSC.hg19)
+
+
+option_list = list(
+  make_option(c("-f", "--file"), action="store", default=NA, type='character',
+              help="input file"),
+  make_option(c("-o", "--output"), action="store", default=NA, type='character',
+              help="output file"),
+  make_option(c("-c", "--cutoff"), action="store", default=NA, type='double',
+              help="assignment cuttoff")
+)
+  
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+#interrupt execution if no file is  supplied
+if (is.null(opt$file)){
+  print_help(opt_parser)
+  stop("Need input file", call.=FALSE)
+}
+
+#imput file for test data 
+testSet <- read.table(file = opt$file, sep="\t", header=TRUE)
+peaks <- BED2GRangesSeq(testSet, withSeq=FALSE)
+
+#build vector with human genome  
+
+testSet.NaiveBayes <- buildFeatureVector(peaks, BSgenomeName=Hsapiens,
+                                         upstream=40, downstream=30, 
+                                         wordSize=6, alphabet=c("ACGT"),
+                                         sampleType="unknown", 
+                                         replaceNAdistance=30, 
+                                         method="NaiveBayes",
+                                         ZeroBasedIndex=1, fetchSeq=TRUE)
+
+#classfy sites with built in classsifer
+
+data(classifier)
+testResults <- predictTestSet(testSet.NaiveBayes=testSet.NaiveBayes,
+                              classifier=classifier,
+                              outputFile=NULL, 
+                              assignmentCutoff=opt$cutoff)
+
+
+#write results  
+
+write.table(testResults, file=opt$output, quote = F, row.names = F, col.names = T)  
+```
+
+
+I will need to module load R in the bash script that writes this.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=clean_filteredpeakstotal
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=clean_filteredpeakstotal.out
+#SBATCH --error=clean_filteredpeakstotal.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+
+module load R
+
+Rscript cleanupdtseq.R  -f /project2/gilad/briana/threeprimeseq/data/clean.peaks/APAfiltered_named.bed -o /project2/gilad/briana/threeprimeseq/data/clean.peaks/clean_APAfilteredTotal.txt -c .5
+
+
+```
+
+
+```{bash, eval=F}
+#add names to bed file with peaks 
+#awk '{print $1 "\t" $2 "\t" $3 "\t" $1 ":" $2 ":" $3 "\t"  $4 "\t"  $5 "\t" $6}' APAfiltered.bed > APAfiltered_named.bed
+
+
+seq 1 199880 > peak.num.txt
+paste APAfiltered.bed peak.num.txt | column -s $'\t' -t > temp
+awk '{print $1 "\t" $2 "\t" $3 "\t" $7  "\t"  $4 "\t"  $5 "\t" $6}' temp >  APAfiltered_named.bed
+!sq
+
+```
+

@@ -30,6 +30,7 @@ Explore and filter mis-primming:
   
 * [Look at number of As in bins](a.content.html)  
 * [Create script to filter mapped A's](filter_As.html)  
+* [Test cleanUpdTSeq for calling internal priming](cleanupdtseq.internalpriming.html)
 
 
 Peak calling:  
