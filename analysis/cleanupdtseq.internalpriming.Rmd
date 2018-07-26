@@ -19,7 +19,14 @@ library(workflowr)
 library(cleanUpdTSeq)
 library(GenomicRanges)
 library(BSgenome.Hsapiens.UCSC.hg19)
+library(ggseqlogo)
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+library(tidyr)
 ```
+
+##Clean Peaks
 
 I am also going to install cleanUpdTSeq on my midway account because I will want to write scripts using this package that can take in any bedfile and will write out the file with the classification results. I can also have the cutoff option be a parameter that will change.  
 
@@ -126,7 +133,64 @@ Rscript cleanupdtseq.R  -f /project2/gilad/briana/threeprimeseq/data/clean.peaks
 seq 1 199880 > peak.num.txt
 paste APAfiltered.bed peak.num.txt | column -s $'\t' -t > temp
 awk '{print $1 "\t" $2 "\t" $3 "\t" $7  "\t"  $4 "\t"  $5 "\t" $6}' temp >  APAfiltered_named.bed
-!sq
 
 ```
+
+
+##Characterize results  
+
+This cuttoff results in a move from 199880 to 125825 called sites.  
+
+
+```{r}
+peaks=read.table("../data/clean_peaks/clean_APAfilteredTotal.txt", header = T, stringsAsFactors = F)
+```
+
+Plot the density of the probabilities. I expect a bimodal distribution.  
+
+```{r}
+ggplot(peaks, aes(probTrue)) + geom_density(fill="blue") + labs(title="Density of Probability Peak is a True APA peak", x="Probability True PAS")
+```
+
+Next I want to make logo plots for the upstream sequences seperated by class. I expect to see an overrepresentation of A/T in the upstream of the false samples.  
+
+```{r}
+true_peaks=peaks %>% filter(pred.class==1)
+false_peaks=peaks %>% filter(pred.class==0)
+```
+
+I can extract just the upstream seq for each class.  
+
+```{r}
+true_peaks_up=peaks %>% filter(pred.class==1) %>% select(UpstreamSeq)
+false_peaks_up= peaks %>% filter(pred.class==0) %>% select(UpstreamSeq)
+
+
+```
+
+
+```{r}
+trueplot_up=ggseqlogo(true_peaks_up,seq_type='dna', method = 'prob') + labs(x="Base number", title="Upstream Seq: True PAS")
+
+falseplot_up=ggseqlogo(false_peaks_up,seq_type='dna', method = 'prob')  + labs(x="Base number", title="Upstream Seq: False PAS")
+
+
+gridExtra::grid.arrange(trueplot_up,falseplot_up)
+```
+
+I can do the same thing for the downstream seq.  
+
+```{r}
+true_peaks_down=peaks %>% filter(pred.class==1) %>% select(DownstreamSeq)
+false_peaks_down= peaks %>% filter(pred.class==0) %>% select(DownstreamSeq)
+
+
+trueplot_down=ggseqlogo(true_peaks_down,seq_type='dna', method = 'prob') + labs(x="Base number", title="Downstream Seq: True PAS")
+
+falseplot_down=ggseqlogo(false_peaks_down,seq_type='dna', method = 'prob')  + labs(x="Base number", title="Downstream Seq: False PAS")
+
+
+gridExtra::grid.arrange(trueplot_down,falseplot_down)
+```
+
 
