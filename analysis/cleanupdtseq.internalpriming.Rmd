@@ -168,7 +168,7 @@ false_peaks_up= peaks %>% filter(pred.class==0) %>% select(UpstreamSeq)
 
 ```
 
-
+###Sequence composition  
 ```{r}
 trueplot_up=ggseqlogo(true_peaks_up,seq_type='dna', method = 'prob') + labs(x="Base number", title="Upstream Seq: True PAS")
 
@@ -191,6 +191,35 @@ falseplot_down=ggseqlogo(false_peaks_down,seq_type='dna', method = 'prob')  + la
 
 
 gridExtra::grid.arrange(trueplot_down,falseplot_down)
+```
+
+###Length differnces between true and false peaks
+
+I can join all of the information from the original bed with the results using a join by the name.
+
+```{r}
+names=c("chr", "start", "end", "PeakName", "Cov", "Strand", "score")
+YL_peaks=read.table("../data/clean_peaks/APAfiltered_named.bed", col.names = names)
+```
+
+```{r}
+full_peaks= inner_join(YL_peaks, peaks, by="PeakName") %>% mutate(length=end-start)
+full_peaks$pred.class= as.factor(full_peaks$pred.class)
+```
+
+
+```{r}
+
+ggplot(full_peaks, aes(length, group=pred.class, fill=pred.class)) + geom_density(alpha=.4) + scale_x_log10() + labs(title="Peak lengths do not differ by predicted class", x="Length of called Peak") + scale_fill_manual(values=c("red", "blue"), name="Predicted Class", labels=c("False Positive", "True PAS"))
+```
+
+
+
+###Coverage differnces between true and false peaks
+```{r}
+
+ggplot(full_peaks, aes(x=Cov, group=pred.class, fill=pred.class)) + geom_density(alpha=.4) + scale_x_log10() + labs(title="Peak coverage by predicted class", x=" Peak coverage") + scale_fill_manual(values=c("red", "blue"), name="Predicted Class", labels=c("False Positive", "True PAS"))
+```
 ```
 
 
