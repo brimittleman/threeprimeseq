@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-25</p>
+<p><strong>Last updated:</strong> 2018-07-26</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/be5fac4c31b52fe11818ab0e508be8c8f964ec12" target="_blank">be5fac4</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/31118c688b6d5fc5f8fa7a390965b1c557707a50" target="_blank">31118c6</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -410,6 +410,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/31118c688b6d5fc5f8fa7a390965b1c557707a50/analysis/cleanupdtseq.internalpriming.Rmd" target="_blank">31118c6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-26
+</td>
+<td style="text-align:left;">
+add length and coverage analysis
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f3eaa0b416677872ab9f982813007c8d5b044768/docs/cleanupdtseq.internalpriming.html" target="_blank">f3eaa0b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-25
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -676,12 +710,44 @@ awk &#39;{print $1 &quot;\t&quot; $2 &quot;\t&quot; $3 &quot;\t&quot; $7  &quot;
 <p>Plot the density of the probabilities. I expect a bimodal distribution.</p>
 <pre class="r"><code>ggplot(peaks, aes(probTrue)) + geom_density(fill=&quot;blue&quot;) + labs(title=&quot;Density of Probability Peak is a True APA peak&quot;, x=&quot;Probability True PAS&quot;)</code></pre>
 <p><img src="figure/cleanupdtseq.internalpriming.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f3eaa0b416677872ab9f982813007c8d5b044768/docs/figure/cleanupdtseq.internalpriming.Rmd/unnamed-chunk-7-1.png" target="_blank">f3eaa0b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-25
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Next I want to make logo plots for the upstream sequences seperated by class. I expect to see an overrepresentation of A/T in the upstream of the false samples.</p>
 <pre class="r"><code>true_peaks=peaks %&gt;% filter(pred.class==1)
 false_peaks=peaks %&gt;% filter(pred.class==0)</code></pre>
 <p>I can extract just the upstream seq for each class.</p>
 <pre class="r"><code>true_peaks_up=peaks %&gt;% filter(pred.class==1) %&gt;% select(UpstreamSeq)
 false_peaks_up= peaks %&gt;% filter(pred.class==0) %&gt;% select(UpstreamSeq)</code></pre>
+<div id="sequence-composition" class="section level3">
+<h3>Sequence composition</h3>
 <pre class="r"><code>trueplot_up=ggseqlogo(true_peaks_up,seq_type=&#39;dna&#39;, method = &#39;prob&#39;) + labs(x=&quot;Base number&quot;, title=&quot;Upstream Seq: True PAS&quot;)
 
 falseplot_up=ggseqlogo(false_peaks_up,seq_type=&#39;dna&#39;, method = &#39;prob&#39;)  + labs(x=&quot;Base number&quot;, title=&quot;Upstream Seq: False PAS&quot;)
@@ -689,6 +755,36 @@ falseplot_up=ggseqlogo(false_peaks_up,seq_type=&#39;dna&#39;, method = &#39;prob
 
 gridExtra::grid.arrange(trueplot_up,falseplot_up)</code></pre>
 <p><img src="figure/cleanupdtseq.internalpriming.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f3eaa0b416677872ab9f982813007c8d5b044768/docs/figure/cleanupdtseq.internalpriming.Rmd/unnamed-chunk-10-1.png" target="_blank">f3eaa0b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-25
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I can do the same thing for the downstream seq.</p>
 <pre class="r"><code>true_peaks_down=peaks %&gt;% filter(pred.class==1) %&gt;% select(DownstreamSeq)
 false_peaks_down= peaks %&gt;% filter(pred.class==0) %&gt;% select(DownstreamSeq)
@@ -701,6 +797,52 @@ falseplot_down=ggseqlogo(false_peaks_down,seq_type=&#39;dna&#39;, method = &#39;
 
 gridExtra::grid.arrange(trueplot_down,falseplot_down)</code></pre>
 <p><img src="figure/cleanupdtseq.internalpriming.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f3eaa0b416677872ab9f982813007c8d5b044768/docs/figure/cleanupdtseq.internalpriming.Rmd/unnamed-chunk-11-1.png" target="_blank">f3eaa0b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-25
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="length-differnces-between-true-and-false-peaks" class="section level3">
+<h3>Length differnces between true and false peaks</h3>
+<p>I can join all of the information from the original bed with the results using a join by the name.</p>
+<pre class="r"><code>names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;PeakName&quot;, &quot;Cov&quot;, &quot;Strand&quot;, &quot;score&quot;)
+YL_peaks=read.table(&quot;../data/clean_peaks/APAfiltered_named.bed&quot;, col.names = names)</code></pre>
+<pre class="r"><code>full_peaks= inner_join(YL_peaks, peaks, by=&quot;PeakName&quot;) %&gt;% mutate(length=end-start)
+full_peaks$pred.class= as.factor(full_peaks$pred.class)</code></pre>
+<pre class="r"><code>ggplot(full_peaks, aes(length, group=pred.class, fill=pred.class)) + geom_density(alpha=.4) + scale_x_log10() + labs(title=&quot;Peak lengths do not differ by predicted class&quot;, x=&quot;Length of called Peak&quot;) + scale_fill_manual(values=c(&quot;red&quot;, &quot;blue&quot;), name=&quot;Predicted Class&quot;, labels=c(&quot;False Positive&quot;, &quot;True PAS&quot;))</code></pre>
+<p><img src="figure/cleanupdtseq.internalpriming.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="coverage-differnces-between-true-and-false-peaks" class="section level3">
+<h3>Coverage differnces between true and false peaks</h3>
+<pre class="r"><code>ggplot(full_peaks, aes(x=Cov, group=pred.class, fill=pred.class)) + geom_density(alpha=.4) + scale_x_log10() + labs(title=&quot;Peak coverage by predicted class&quot;, x=&quot; Peak coverage&quot;) + scale_fill_manual(values=c(&quot;red&quot;, &quot;blue&quot;), name=&quot;Predicted Class&quot;, labels=c(&quot;False Positive&quot;, &quot;True PAS&quot;))</code></pre>
+<p><img src="figure/cleanupdtseq.internalpriming.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /> ```</p>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
