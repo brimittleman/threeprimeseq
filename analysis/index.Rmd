@@ -23,14 +23,16 @@ Initial analysis on first 32 3' seq libraries:
 * [Coverage in 200bp bins](cov200bpwind.html)  
 * [Differential isoform usage between fractions](dif.iso.usage.leafcutter.html)  
 * [Explore filter cuttoffs](explore.filters.html)  
-* [Enrichment at PAS](enrichmentPAS.html)  
+* [Enrichment at PAS](enrichmentPAS.html)    
+* [Second Lane data](comb.lanes.qc.html)  
 
 
 Explore and filter mis-primming:  
   
 * [Look at number of As in bins](a.content.html)  
 * [Create script to filter mapped A's](filter_As.html)  
-* [Test cleanUpdTSeq for calling internal priming](cleanupdtseq.internalpriming.html)
+* [Test cleanUpdTSeq for calling internal priming](cleanupdtseq.internalpriming.html)  
+* [Pipeline to create peaks and clean them](peak.cov.pipeline.html)  
 
 
 Peak calling:  

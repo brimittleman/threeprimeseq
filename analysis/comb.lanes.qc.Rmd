@@ -1,0 +1,43 @@
+---
+title: "Combined Lane QC"
+author: "Briana Mittleman"
+date: "7/27/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to use this analysis to run simple QC on the first 32 libraries now that we have 2 lanes per library.  
+
+First, I will look at the new map stats to see how many more reads/mapped reads the socond lane provided.  
+
+```{r}
+library(tidyr)
+library(reshape2)
+library(ggplot2)
+library(dplyr)
+library(workflowr)
+```
+
+
+```{r}
+comb_map=read.csv("../data/combined_reads_mapped_three_prime_seq.csv", header = T, stringsAsFactors = T)
+comb_map$line=as.factor(comb_map$line)
+```
+
+```{r}
+mapped_melt=melt(comb_map, id.vars=c("line", "fraction"), measure.vars = c( "lane1_mapped", "comb_mapped"))
+mapped_melt$line=as.factor(mapped_melt$line)
+
+ggplot(mapped_melt, aes(y=value, x=line, by=fraction,fill=fraction)) + geom_bar(stat="identity", position = "dodge") + facet_grid(.~ variable)+ labs(y="Reads Mapped") 
+```
+
+Next I want to look at the x more mapped reads we got by line and fraction  
+
+```{r}
+ggplot(comb_map, aes(x=line,y=combed_xrmappedmore, fill=fraction)) + geom_bar(stat="identity", position = "dodge") + labs(title="X more mapped reads in adding second lane", y="X more mapped reads")
+```
+
+

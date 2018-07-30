@@ -1,0 +1,114 @@
+---
+title: "Pipeline for peak coverage"
+author: "Briana Mittleman"
+date: "7/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I need to create a processing pipeline that I can run each time I get more individuals that will do the following:  
+
+* combine all total and nuclear libraries (as a bigwig/genome coverage)
+
+* call peaks with Yang's script  
+
+* filter peaks with Yang's script  
+
+* clean peaks
+
+* run feature counts on these peaks for all fo the individuals  
+
+
+
+##Create bedgraph and bigwig:  
+
+I can do this step in my snakefile. First, I added the following to my environemnt.  
+
+* ucsc-bedgraphtobigwig  
+* ucsc-bigwigmerge  
+* ucsc-wigtobigwig  
+* ucsc-bigwigtobedgraph  
+
+I want to create bedgraph for each file. I will add a rule to my snakefile that does this and puts them in the bedgraph directory.  
+
+```{bash, eval=F}
+#add to directory
+dir_bedgraph= dir_data + "bedgraph/"
+
+#add to rule_all  
+
+expand(dir_bedgraph + "{samples}.bg", samples=samples)
+
+#rule
+rule bedgraph: 
+  input:
+    bam = dir_sort + "{samples}-sort.bam"
+  output: dir_bedgraph + "{samples}.bg"
+  shell: "bedtools genomecov -ibam {input.bam} -bg -5 > {output}"
+```
+
+I want to add more memory for this rule in the cluster.json  
+
+```{bash, eval=F}
+"bedgraph" :
+    {
+            "mem": 16000
+    }
+```
+
+
+I will use the bedgraphtobigwig tool.
+
+```{bash, eval=F}
+#add to directory
+dir_bigwig= dir_data + "bigwig/"
+dir_sortbg= dir_data + "bedgraph_sort/"
+
+#add to rule_all  
+expand(dir_sortbg + "{samples}.sort.bg", samples=samples)
+expand(dir_bigwig + "{samples}.bw", samples=samples)
+
+rule sort_bg:
+    input: dir_bedgraph + "{samples}.bg"
+    output: dir_sortbg + "{samples}.sort.bg"
+    shell: "sort -k1,1 -k2,2n {input} > {output}"
+
+rule bg_to_bw:
+    input: 
+        bg=dir_sortbg + "{samples}.sort.bg"
+        len= chrom_length 
+    output: dir_bigwig + "{samples}.bw"
+    shell: "bedGraphToBigWig {input.bg} {input.len} {output}""
+```
+
+##Merge BW
+
+This next step will take all of the files in the bigwig directory and merge them. To do this I will create a script that creates a list of all of the files then uses this list in the merge script.
+
+mergeBW.sh  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeBW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeBW.out
+#SBATCH --error=mergeBW.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+ls -d -1 $PWD/* /project2/gilad/briana/threeprimeseq/data/bigwig | tail -n +2 > /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_bigwig.txt
+
+bigWigMerge -inList /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_bigwig.txt /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.bg
+
+```
+
+The result of this script will be a merged bedgraph of all of the files.  
