@@ -105,10 +105,35 @@ mergeBW.sh
 module load Anaconda3
 source activate three-prime-env
 
-ls -d -1 $PWD/* /project2/gilad/briana/threeprimeseq/data/bigwig | tail -n +2 > /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_bigwig.txt
+ls -d -1 /project2/gilad/briana/threeprimeseq/data/bigwig/* | tail -n +2 > /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_bigwig.txt
 
 bigWigMerge -inList /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_bigwig.txt /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.bg
 
 ```
 
 The result of this script will be a merged bedgraph of all of the files.  
+
+##Merge to get peaks  
+```{r}
+library(workflowr)
+library(ggplot2)
+library(dplyr)
+```
+
+update the following: callPeaksYL_combdata.py
+
+Merge until the coverage is less than a number (ex. 5). Then start again when it is greater than that number. Previously we used the cuttoff 5. I can look at the distribution of the coverage to pick an informative cuttoff.  
+
+```{r}
+merged_bg=read.table("../data/merged_combined_YL-SP-threeprimeseq.bg", col.names=c("chr", "start", "end", "cov"))
+summary(merged_bg$cov)
+```
+
+
+```{r, eval=FALSE}
+cov_plot=plot(sort(log10(merged_bg$cov)))
+abline(h=1)
+```
+
+
+From this itlooks like 10 is a good cuttoff for the peaks.  
