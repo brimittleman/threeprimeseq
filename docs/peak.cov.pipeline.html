@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-30</p>
+<p><strong>Last updated:</strong> 2018-07-31</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/782320dfc427b4fd8e3f5dddb9e9419e5752a831" target="_blank">782320d</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/7c203e4453ad83b3f43467b51fe088209ed97a01" target="_blank">7c203e4</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -366,7 +366,12 @@ Untracked files:
     Untracked:  data/bin200.nuccov.bed
     Untracked:  data/clean_peaks/
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/gencov.test.csv
+    Untracked:  data/gencov.test.txt
+    Untracked:  data/gencov_zero.test.csv
+    Untracked:  data/gencov_zero.test.txt
     Untracked:  data/gene_cov/
+    Untracked:  data/joined
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
     Untracked:  data/nuc6up/
@@ -376,6 +381,10 @@ Untracked files:
     Untracked:  data/smash.cov.results.txt
     Untracked:  data/smash_testregion/
     Untracked:  data/ssFC200.cov.bed
+    Untracked:  data/temp.file1
+    Untracked:  data/temp.file2
+    Untracked:  data/temp.gencov.test.txt
+    Untracked:  data/temp.gencov_zero.test.txt
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -414,6 +423,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7c203e4453ad83b3f43467b51fe088209ed97a01/analysis/peak.cov.pipeline.Rmd" target="_blank">7c203e4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-31
+</td>
+<td style="text-align:left;">
+format files for yangs peak script
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7fc2ce7c17935c36fa37afd67b6298f805b84714/docs/peak.cov.pipeline.html" target="_blank">7fc2ce7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -554,8 +597,8 @@ bigWigMerge -inList /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_bi
 </code></pre>
 <p>The result of this script will be a merged bedgraph of all of the files.</p>
 </div>
-<div id="merge-to-get-peaks" class="section level2">
-<h2>Merge to get peaks</h2>
+<div id="convert-to-coverage" class="section level2">
+<h2>Convert to coverage</h2>
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
@@ -577,7 +620,188 @@ summary(merged_bg$cov)</code></pre>
       1       1       3      52       9 5304660 </code></pre>
 <pre class="r"><code>cov_plot=plot(sort(log10(merged_bg$cov)))
 abline(h=1)</code></pre>
-<p>From this itlooks like 10 is a good cuttoff for the peaks.</p>
+<p>From this it looks like 10 is a good cuttoff for the peaks. I want to make a script that will convert the bedgraph to a coverage file.</p>
+<pre class="bash"><code>#!/usr/bin/env python
+
+
+main(inFile, outFile):
+    fout = open(outFile,&#39;w&#39;)
+    for ind,ln in enumerate(open(inFile)):
+      print(ind)
+      chrom, start, end, count = ln.split()
+      i2=int(start)
+      while i2 &lt; int(end):
+        fout.write(&quot;%s\t%d\t%s\n&quot;%(chrom, i2 + 1, count))
+        fout.flush()
+        i2 += 1
+    fout.close()    
+    
+
+if __name__ == &quot;__main__&quot;:
+    import numpy as np
+    from misc_helper import *
+    import sys
+    inFile = sys.argv[1]
+    outFile = sys.argv[2]
+    main(inFile, outFile)</code></pre>
+<p>Create a bash script to run this. I want the input and output files to be arguments in the python script.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_bgtocov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_bgtocov.out
+#SBATCH --error=run_bgtocov.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+python bg_to_cov.py &quot;/project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.bg&quot; &quot;/project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt&quot;</code></pre>
+</div>
+<div id="get-peaks" class="section level2">
+<h2>Get peaks</h2>
+<p>Next I need to run Yangs peak script. This script is callPeaksYL_GEN.py</p>
+<p>infile: “/project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt”</p>
+<p>Outfile: “/project2/gilad/briana/threeprimeseq/data/mergedPeaks/merged_combined_YL-SP-threeprimeseq.coverage.peaks.chr%s.bed”%chrom</p>
+<p>The bash script runs this on each chromosome.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=w_getpeakYLgen
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=w_getpeakYLgen.out
+#SBATCH --error=w_getpeakYLgen.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(seq 1 22); do 
+  python callPeaksYL_GEN.py $i
+done</code></pre>
+<p>Problem: all peak files are empty because my genome coverage file does not have 0s. In need to merge a genome coverage file with only 0s with the file I just made.</p>
+<pre class="bash"><code>awk &#39;{print $1 &quot;\t&quot; $2 &quot;\t&quot; &quot;0&quot;}&#39; /project2/gilad/briana/threeprimeseq/data/bedgraph_comb/NuclearBamFiles.split.genomecov.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedBW/genomecov_zero.txt </code></pre>
+<p>The next script will sort the coverage file and merge it:</p>
+<p>add_zero.R</p>
+<pre class="r"><code>#!/bin/rscripts
+
+# usage: ./addZeros.R in_cov, zero_cov, outfile
+
+#this script takes in the coverage file without 0s and adds the rows with 0s
+
+library(optparse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+
+
+option_list = list(
+  make_option(c(&quot;-f&quot;, &quot;--file&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;input coverage file&quot;),
+  make_option(c(&quot;-z&quot;, &quot;--zero&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;gencov file 0&quot;),
+  make_option(c(&quot;-o&quot;, &quot;--output&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;output file&quot;)
+)
+
+
+opt_parser &lt;- OptionParser(option_list=option_list)
+opt &lt;- parse_args(opt_parser)
+
+
+#interrupt execution if no file is  supplied
+if (is.null(opt$file)){
+  print_help(opt_parser)
+  stop(&quot;Need input file&quot;, call.=FALSE)
+}
+
+names=c(&quot;chr&quot;, &quot;base&quot;, &quot;cov&quot;)
+cov_file=read.table(file = opt$file, sep=&quot;\t&quot;,  col.names=names)
+zero_file=read.table(file=opt$zero, sep=&quot;\t&quot;,  col.names=names)
+
+anti=anti_join(zero_file, cov_file, by=c(&quot;chr&quot;, &quot;base&quot;))  
+
+final=full_join(cov_file, anti, by=c(&quot;chr&quot;, &quot;base&quot;, &quot;cov&quot;))
+
+write.table(final, file=opt$output, quote = F, row.names = F, col.names = F)  </code></pre>
+<p>Test this method:</p>
+<pre class="r"><code>names=c(&quot;chr&quot;, &quot;base&quot;, &quot;cov&quot;)
+cov=read.table(&quot;../data/gencov.test.csv&quot;, col.names=names, header=F, sep=&quot;,&quot;)</code></pre>
+<pre><code>Warning in read.table(&quot;../data/gencov.test.csv&quot;, col.names = names,
+header = F, : incomplete final line found by readTableHeader on &#39;../data/
+gencov.test.csv&#39;</code></pre>
+<pre class="r"><code>zero=read.table(&quot;../data/gencov_zero.test.csv&quot;,col.names=names, header=F, sep=&quot;,&quot;)
+
+
+anti=anti_join(zero, cov, by=c(&quot;chr&quot;, &quot;base&quot;))  
+
+final=full_join(cov, anti, by=c(&quot;chr&quot;, &quot;base&quot;, &quot;cov&quot;)) </code></pre>
+<p>run_add_zero.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_add0
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_add0.out
+#SBATCH --error=run_add0.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=40G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt &gt; /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt
+
+Rscript add_zero.R -f /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt -z /project2/gilad/briana/threeprimeseq/data/mergedBW/genomecov_zero.txt -o /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.txt
+</code></pre>
+<p>This next script will sort the final gencov file sort_gencov.sh :</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=sort_gencov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=sort_gencov.out
+#SBATCH --error=sort_gencov.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+sort -k1,1 -k2,2n  /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.txt &gt; /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.sort.txt </code></pre>
+<p>Try this with bash:</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=addzero_bash
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=addzerobash.out
+#SBATCH --error=addzerobash.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt &gt; /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt
+
+less /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt | awk &#39;{print($1&quot;.&quot;$2&quot;\t&quot;$3)}&#39; &gt;  /project2/gilad/briana/threeprimeseq/data/mergedBW/temp1.txt
+
+less /project2/gilad/briana/threeprimeseq/data/mergedBW/genomecov_zero.txt | awk &#39;{print($1&quot;.&quot;$2&quot;\t&quot;$3)}&#39; &gt;  /project2/gilad/briana/threeprimeseq/data/mergedBW/temp2.txt
+
+join  -a1  -a2 -o &#39;0,1.2&#39; -e 0   /project2/gilad/briana/threeprimeseq/data/mergedBW/temp1.txt /project2/gilad/briana/threeprimeseq/data/mergedBW/temp.2.txt | tr &#39;.&#39; &#39;\t&#39; | tr &#39; &#39; &#39;\t&#39; | cut -f1-4 &gt; /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.bash.txt
+</code></pre>
+<p>Run yangs scrip on /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.sort.txt by making this the input file in the callPeaksYL_GEN.py</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
