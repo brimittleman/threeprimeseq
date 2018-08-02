@@ -81,7 +81,7 @@ rule bg_to_bw:
         bg=dir_sortbg + "{samples}.sort.bg"
         len= chrom_length 
     output: dir_bigwig + "{samples}.bw"
-    shell: "bedGraphToBigWig {input.bg} {input.len} {output}""
+    shell: "bedGraphToBigWig {input.bg} {input.len} {output}"
 ```
 
 ##Merge BW
@@ -119,24 +119,7 @@ library(workflowr)
 library(ggplot2)
 library(dplyr)
 ```
-
-update the following: callPeaksYL_combdata.py
-
-Merge until the coverage is less than a number (ex. 5). Then start again when it is greater than that number. Previously we used the cuttoff 5. I can look at the distribution of the coverage to pick an informative cuttoff.  
-
-```{r}
-merged_bg=read.table("../data/merged_combined_YL-SP-threeprimeseq.bg", col.names=c("chr", "start", "end", "cov"))
-summary(merged_bg$cov)
-```
-
-
-```{r, eval=FALSE}
-cov_plot=plot(sort(log10(merged_bg$cov)))
-abline(h=1)
-```
-
-
-From this it looks like 10 is a good cuttoff for the peaks.  I want to make a script that will convert the bedgraph to a coverage file. 
+ 
 
 ```{bash, eval=F}
 #!/usr/bin/env python
@@ -185,15 +168,67 @@ python bg_to_cov.py "/project2/gilad/briana/threeprimeseq/data/mergedBW/merged_c
 ```
 
 
-##Get peaks  
+##Change to genome coverage  (NEW SCRIPT DONT NEED THIS)   
 
-Next I need to run Yangs peak script.  This script is callPeaksYL_GEN.py  
+Add zeros to the bedgraph to make it a genome coverage file.  
 
-infile: "/project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt"
+```{bash, eval=F}
+awk '{print $1 "\t" $2 "\t" "0"}' /project2/gilad/briana/threeprimeseq/data/bedgraph_comb/NuclearBamFiles.split.genomecov.bed > /project2/gilad/briana/threeprimeseq/data/mergedBW/genomecov_zero.txt 
+```
 
-Outfile: "/project2/gilad/briana/threeprimeseq/data/mergedPeaks/merged_combined_YL-SP-threeprimeseq.coverage.peaks.chr%s.bed"%chrom
+Try this with bash:  
 
-The bash script runs this on each chromosome. 
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=addzero_bash
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=addzerobash.out
+#SBATCH --error=addzerobash.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt > /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt
+
+less /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt | awk '{print($1"^"$2"\t"$3)}'  >  /project2/gilad/briana/threeprimeseq/data/mergedBW/temp1.txt
+
+less /project2/gilad/briana/threeprimeseq/data/mergedBW/genomecov_zero.txt | awk '{print($1"^"$2"\t"$3)}' >  /project2/gilad/briana/threeprimeseq/data/mergedBW/temp2.txt
+
+join  -a1  -a2 -o '0,1.2' -e 0  /project2/gilad/briana/threeprimeseq/data/mergedBW/temp1.txt /project2/gilad/briana/threeprimeseq/data/mergedBW/temp2.txt | tr '^' '\t' | tr ' ' '\t' | cut -f1-4 > /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.bash.txt
+
+```
+
+sort_gencov.sh  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=sort_gencov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=sortgencov.out
+#SBATCH --error=sortgencov.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.bash.txt > /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.bash.sort.txt
+```
+
+##Call Peaks 
+
+
+Run yangs scrip on /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.sort.txt by making this the input file in the  callPeaksYL_GEN.py   
+
+*  inFile = "/project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.bash.sort.txt"  
+
+
 
 ```{bash, eval=F}
 #!/bin/bash
@@ -217,148 +252,124 @@ done
 ```
 
 
-Problem: all peak files are empty because my genome coverage file does not have 0s. In need to merge a genome coverage file with only 0s with the file I just made. 
 
-```{bash, eval=F}
-awk '{print $1 "\t" $2 "\t" "0"}' /project2/gilad/briana/threeprimeseq/data/bedgraph_comb/NuclearBamFiles.split.genomecov.bed > /project2/gilad/briana/threeprimeseq/data/mergedBW/genomecov_zero.txt 
-```
+Run the file with : sbatch w_getpeakYLGEN.sh 
 
-The next script will sort the coverage file and merge it:
-
-
-add_zero.R
-
-```{r, eval=F}
-#!/bin/rscripts
-
-# usage: ./addZeros.R in_cov, zero_cov, outfile
-
-#this script takes in the coverage file without 0s and adds the rows with 0s
-
-library(optparse)
-library(dplyr)
-library(tidyr)
-library(ggplot2)
+After I have the peaks I will need to use Yangs filter peak function.  
 
 
 
-option_list = list(
-  make_option(c("-f", "--file"), action="store", default=NA, type='character',
-              help="input coverage file"),
-  make_option(c("-z", "--zero"), action="store", default=NA, type='character',
-              help="gencov file 0"),
-  make_option(c("-o", "--output"), action="store", default=NA, type='character',
-              help="output file")
-)
 
-
-opt_parser <- OptionParser(option_list=option_list)
-opt <- parse_args(opt_parser)
-
-
-#interrupt execution if no file is  supplied
-if (is.null(opt$file)){
-  print_help(opt_parser)
-  stop("Need input file", call.=FALSE)
-}
-
-names=c("chr", "base", "cov")
-cov_file=read.table(file = opt$file, sep="\t",  col.names=names)
-zero_file=read.table(file=opt$zero, sep="\t",  col.names=names)
-
-anti=anti_join(zero_file, cov_file, by=c("chr", "base"))  
-
-final=full_join(cov_file, anti, by=c("chr", "base", "cov"))
-
-write.table(final, file=opt$output, quote = F, row.names = F, col.names = F)  
-```
-
-
-Test this method:
-
-```{r}
-names=c("chr", "base", "cov")
-cov=read.table("../data/gencov.test.csv", col.names=names, header=F, sep=",")
-zero=read.table("../data/gencov_zero.test.csv",col.names=names, header=F, sep=",")
-
-
-anti=anti_join(zero, cov, by=c("chr", "base"))  
-
-final=full_join(cov, anti, by=c("chr", "base", "cov")) 
-```
-
-run_add_zero.sh   
-
+##Problem with peak script : try with bam merge  
 
 ```{bash, eval=F}
 #!/bin/bash
 
-#SBATCH --job-name=run_add0
+#SBATCH --job-name=comb_gencov
 #SBATCH --account=pi-yangili1
 #SBATCH --time=24:00:00
-#SBATCH --output=run_add0.out
-#SBATCH --error=run_add0.err
-#SBATCH --partition=broadwl
-#SBATCH --mem=40G
+#SBATCH --output=comb_gencov.out
+#SBATCH --error=comb_gencov.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
 #SBATCH --mail-type=END
 
+
 module load Anaconda3
-source activate three-prime-env
+source activate three-prime-env 
 
-sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt > /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt
 
-Rscript add_zero.R -f /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt -z /project2/gilad/briana/threeprimeseq/data/mergedBW/genomecov_zero.txt -o /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.txt
+samtools merge /project2/gilad/briana/threeprimeseq/data/comb_bam/all_total.nuc_comb.bam  /project2/gilad/briana/threeprimeseq/data/sort/*.bam
 
+
+bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/comb_bam/all_total.nuc_comb.bam -d -split > /project2/gilad/briana/threeprimeseq/data/comb_bam/all_total.nuc_comb.split.genomecov.bed
 ```
 
 
-This next script will sort the final gencov file sort_gencov.sh :  
-```{bash, eval=F}
-#!/bin/bash
-
-#SBATCH --job-name=sort_gencov
-#SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
-#SBATCH --output=sort_gencov.out
-#SBATCH --error=sort_gencov.err
-#SBATCH --partition=broadwl
-#SBATCH --mem=12G
-#SBATCH --mail-type=END
-
-module load Anaconda3
-source activate three-prime-env
-
-sort -k1,1 -k2,2n  /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.txt > /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.sort.txt 
-```
 
 
-Try this with bash:  
+
+##Filter peaks    
+Update each of the following scripts:    
+
+
+1. Combine the peaks from all of the chromosome peak files. 
 
 ```{bash, eval=F}
-#!/bin/bash
-
-#SBATCH --job-name=addzero_bash
-#SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
-#SBATCH --output=addzerobash.out
-#SBATCH --error=addzerobash.err
-#SBATCH --partition=broadwl
-#SBATCH --mem=12G
-#SBATCH --mail-type=END
-
-module load Anaconda3
-source activate three-prime-env
-
-sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt > /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt
-
-less /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt | awk '{print($1"."$2"\t"$3)}' >  /project2/gilad/briana/threeprimeseq/data/mergedBW/temp1.txt
-
-less /project2/gilad/briana/threeprimeseq/data/mergedBW/genomecov_zero.txt | awk '{print($1"."$2"\t"$3)}' >  /project2/gilad/briana/threeprimeseq/data/mergedBW/temp2.txt
-
-join  -a1  -a2 -o '0,1.2' -e 0   /project2/gilad/briana/threeprimeseq/data/mergedBW/temp1.txt /project2/gilad/briana/threeprimeseq/data/mergedBW/temp.2.txt | tr '.' '\t' | tr ' ' '\t' | cut -f1-4 > /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.bash.txt
-
+cat /project2/gilad/briana/threeprimeseq/data/mergedPeaks/*.bed > 
 ```
 
 
-Run yangs scrip on /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.with0.sort.txt by making this the input file in the  callPeaksYL_GEN.py   
+
+bed2saf.py
+
+* input: peaks bed  file   
+* output: peaks saf file   
+  
+run_feature.sh  
+
+* featureCounts -a PEAK.saf -F SAF -o APAquant.fc /project2/gilad/briana/threeprimeseq/data/sort/*-sort.bam -s 1  
+
+
+
+filter_peaks.py  
+
+* input: APAquant.fc  
+* output: filtered peaks  
+
+
+##Clean peaks  
+
+
+##Ind. Coverage with feature counts  
+
+
+#Update:
+
+Add a rule to the snakefile that creates the 5' bp resolution but also one that uses the whole read. I will use the whole read method for peak calling.  
+
+
+```{bash, eval=F}
+#add to directory
+dir_bedgraph= dir_data + "bedgraph/"
+dir_bigwig= dir_data + "bigwig/"
+dir_sortbg= dir_data + "bedgraph_sort/"
+dir_bedgraph_5= dir_data + "bedgraph_5prime/"
+
+#add to rule_all  
+
+expand(dir_bedgraph + "{samples}.split.bg", samples=samples)
+expand(dir_sortbg + "{samples}.sort.bg", samples=samples)
+expand(dir_bigwig + "{samples}.bw", samples=samples)
+expand(dir_bedgraph_5 + "{samples}.5.bg", samples=samples)
+
+#rule
+rule bedgraph_5: 
+  input:
+    bam = dir_sort + "{samples}-sort.bam"
+  output: dir_bedgraph_5 + "{samples}.5.bg"
+  shell: "bedtools genomecov -ibam {input.bam} -bg -5 > {output}"
+  
+rule bedgraph: 
+  input:
+    bam = dir_sort + "{samples}-sort.bam"
+  output: dir_bedgraph + "{samples}.split.bg"
+  shell: "bedtools genomecov -ibam {input.bam} -bg -split > {output}"
+
+rule sort_bg:
+    input: dir_bedgraph + "{samples}.split.bg"
+    output: dir_sortbg + "{samples}.sort.bg"
+    shell: "sort -k1,1 -k2,2n {input} > {output}"
+
+rule bg_to_bw:
+    input: 
+        bg=dir_sortbg + "{samples}.sort.bg"
+        len= chrom_length 
+    output: dir_bigwig + "{samples}.bw"
+    shell: "bedGraphToBigWig {input.bg} {input.len} {output}"
+```
+
+
+Will need to run mergeBW.sh and run_bgtocov.sh then call peaks with the updated callpeaks script from yang  (get_APA_peaks.py)  I run this with w_getpeakYLGEN.sh. 
+
 
