@@ -43,3 +43,8 @@ Peak calling:
 * [Test SMASH smoothing](test.smash.html)  
 * [Expand SMASH analysis for use on midway](expand.smash.html)
 
+
+Peak coverage:  
+
+* [Start evaluating peak quantificaiton](28ind.peak.explore.html)  
+

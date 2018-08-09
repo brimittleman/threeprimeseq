@@ -1,0 +1,177 @@
+---
+title: "28 Ind. Peak Quant"
+author: "Briana Mittleman"
+date: "8/9/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I know have 28 individuals sequences on 2 lanes. I have combined these and used the peak coverage pipeline to call and clean peaks. I will use this analysis to explore the library sizes and coverage at these peaks.  
+
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+library(reshape2)
+library(devtools)
+```
+
+##Reads and Mapping Stats:  
+
+```{r}
+map_stats=read.csv("../data/comb_map_stats.csv", header=T)
+map_stats$line=as.factor(map_stats$line)
+map_stats$batch=as.factor(map_stats$batch)
+```
+
+The number of reads for each library and the number of mapped reads.  
+
+```{r}
+read_plot=ggplot(map_stats, aes(x=line, y=comb_reads, fill=fraction))+ geom_bar(stat="identity", position="dodge") +labs(y="Reads", title="Reads by line and fraction") 
+map_plot=ggplot(map_stats, aes(x=line, y=comb_mapped, fill=fraction))+ geom_bar(stat="identity", position="dodge") +labs(y="Mapped Reads", title="Mapped reads by line and fraction") + geom_hline(yintercept=10000000) + annotate("text",label="10 million mapped reads", y=9000000, x=10)
+
+plot_grid(read_plot, map_plot)
+```
+
+
+The percent of reads that map per line are pretty uniform accross libraries. The mean is 72%. 
+
+```{r}
+ggplot(map_stats, aes(x=line, y=comb_prop_mapped, fill=fraction))+ geom_bar(stat="identity", position="dodge") +labs(y="Mapped Percent", title="Percent of reads mapping by line and fraction") 
+
+mean(map_stats$comb_prop_mapped)
+```
+
+##Clean peak exploration  
+
+```{r}
+peak_quant=read.table(file = "../data/clean_peaks/APAquant.fc.cleanpeaks.fc", header=T)
+```
+
+Fix the names 
+```{r}
+file_names=colnames(peak_quant)[7:62]
+file_names_split=lapply(file_names, function(x)strsplit(x,".", fixed=T))
+libraries=c()
+for (i in file_names_split){
+  unlist_i=unlist(i)
+  libraries=c(libraries, paste(unlist_i[10], unlist_i[11], sep="-"))
+}
+colnames(peak_quant)=c(colnames(peak_quant)[1:6], libraries)  
+```
+
+
+Explore the peaks before quantifications:  
+
+```{r}
+#length of peaks
+plot(sort(peak_quant$Length,decreasing = T), main="Peak Lengths", ylab="Peak Length", xlab="Peak index")
+
+
+#mean cov of peaks
+
+peak_cov=peak_quant %>% select(contains("-"))
+
+peak_mean=apply(peak_cov,1,mean)
+peak_var=apply(peak_cov, 1, var)
+
+plot(log10(sort(peak_mean,decreasing = T)))
+plot(peak_var)
+
+
+plot(log10(peak_var)~log10(peak_mean))
+
+
+```
+
+Plot the coverage vs the length:  
+
+```{r}
+plot(peak_mean~peak_quant$Length)
+```
+
+##Clustering:  
+
+
+```{r}
+cor_function=function(data){
+  corr_matrix= matrix(0,ncol(data),ncol(data))
+  for (i in seq(1,ncol(data))){
+    for (j in seq(1,ncol(data))){
+      x=cor.test(data[,i],  data[,j], method='pearson')
+      cor_ij=as.numeric(x$estimate)
+      corr_matrix[i,j]=cor_ij
+    }
+  }
+  return(corr_matrix)
+}
+
+count_cor=cor_function(peak_cov)
+rownames(count_cor)=libraries
+colnames(count_cor)=libraries
+
+
+```
+
+
+```{r}
+melted_count_corr=melt(count_cor)
+ggheatmap=ggplot(data = melted_count_corr, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title="Correlation Heatplot")
+
+
+ggheatmap
+```
+
+
+CLustering:  
+
+```{r}
+pca_peak= prcomp(peak_cov,center = TRUE,scale. = TRUE)
+summary(pca_peak)
+```
+```{r}
+
+pc_df=as.data.frame(pca_peak$rotation) %>% rownames_to_column(var="lib") %>% mutate(fraction=ifelse(grepl("T", lib), "total", "nuclear"))
+
+ggplot(pc_df, aes(x=PC1, y=PC2, col=fraction)) + geom_point() + labs(x="PC1: Prop explained 0.7763", y="PC2: Prop explained 0.1330", title="Raw PAS qunatification data")
+```
+
+
+I now want to explore what the first PC is representing. Some ideas are:  
+
+* batch  
+
+* sequencing depth  
+
+* mapped reads  
+
+
+All of this info is in the map stats.  
+
+```{r}
+pc_df=as.data.frame(pca_peak$rotation) %>% rownames_to_column(var="lib") %>% mutate(fraction=ifelse(grepl("T", lib), "total", "nuclear")) %>% mutate(reads=map_stats$comb_reads) %>% mutate(batch=map_stats$batch) %>% mutate(mapped=map_stats$comb_mapped)
+
+
+batch_gg= ggplot(pc_df, aes(x=PC1, y=PC2, col=batch)) + geom_point() + labs(x="PC1: Prop explained 0.7763", y="PC2: Prop explained 0.1330", title="Batch")
+
+frac_gg= ggplot(pc_df, aes(x=PC1, y=PC2, col=fraction)) + geom_point() + labs(x="PC1: Prop explained 0.7763", y="PC2: Prop explained 0.1330", title="Fraction")
+
+reads_gg= ggplot(pc_df, aes(x=PC1, y=PC2, col=reads)) + geom_point() + labs(x="PC1: Prop explained 0.7763", y="PC2: Prop explained 0.1330", title="Reads")
+
+
+mapped_gg= ggplot(pc_df, aes(x=PC1, y=PC2, col=mapped)) + geom_point() + labs(x="PC1: Prop explained 0.7763", y="PC2: Prop explained 0.1330", title="Mapped Reads")
+
+plot_grid(frac_gg,batch_gg,reads_gg,mapped_gg)
+
+
+```
+
+Proportion of reads mapping to peaks. This may be in the feature counts summary.  
+
+
