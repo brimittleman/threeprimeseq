@@ -443,3 +443,53 @@ plot(log10(NotInThreePrime$RNAseqCount), main="Post-clean up, \n coverage of RNA
 
 ##Map to refseq  
 It looks like mapping to the refseq genes may be more effective here due to the better 3' UTR annotatations  
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak2_dirty_refseq
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak2_dirty_rs.out
+#SBATCH --error=mapgene2peak2_dirty_rs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools map -c 4 -o count_distinct -a /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseq_countdistgenes.txt
+
+```
+
+
+Also do coverage for the RNA seq with this.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=refseq-rnaseqcov18486
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=refseq-rnaseqcov18486.out
+#SBATCH --error=refseq-rnaseqcov18486.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+
+
+bedtools coverage -counts -sorted -a /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm.sort.bed-b /project2/gilad/briana/threeprimeseq/data/rnaseq_bed/18486.bed > /project2/gilad/briana/threeprimeseq/data/rnaseq_cov/18486.refseq.gencov.txt
+```
+
+
+bedfile is currupt. i need to make one from teh original vcf.  
