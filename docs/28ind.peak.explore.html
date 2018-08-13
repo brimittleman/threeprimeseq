@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-09</p>
+<p><strong>Last updated:</strong> 2018-08-13</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,13 +346,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/03761cbbf00f95021204eefca436dbb1f2146cbc" target="_blank">03761cb</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/3901f7e5e803eb923911ee362288fc71f5859534" target="_blank">3901f7e</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -360,6 +361,7 @@ Untracked files:
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
     Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
@@ -432,6 +434,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3901f7e5e803eb923911ee362288fc71f5859534/analysis/28ind.peak.explore.Rmd" target="_blank">3901f7e</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-13
+</td>
+<td style="text-align:left;">
+pre and post clean peaks per gene
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/28ind.peak.explore.html" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/03761cbbf00f95021204eefca436dbb1f2146cbc/analysis/28ind.peak.explore.Rmd" target="_blank">03761cb</a>
 </td>
 <td style="text-align:left;">
@@ -486,9 +522,69 @@ map_plot=ggplot(map_stats, aes(x=line, y=comb_mapped, fill=fraction))+ geom_bar(
 
 plot_grid(read_plot, map_plot)</code></pre>
 <p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-3-1.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>The percent of reads that map per line are pretty uniform accross libraries. The mean is 72%.</p>
 <pre class="r"><code>ggplot(map_stats, aes(x=line, y=comb_prop_mapped, fill=fraction))+ geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) +labs(y=&quot;Mapped Percent&quot;, title=&quot;Percent of reads mapping by line and fraction&quot;) </code></pre>
 <p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-4-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-4-1.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>mean(map_stats$comb_prop_mapped)</code></pre>
 <pre><code>[1] 0.7230478</code></pre>
 </div>
@@ -508,6 +604,36 @@ colnames(peak_quant)=c(colnames(peak_quant)[1:6], libraries)  </code></pre>
 <pre class="r"><code>#length of peaks
 plot(sort(peak_quant$Length,decreasing = T), main=&quot;Peak Lengths&quot;, ylab=&quot;Peak Length&quot;, xlab=&quot;Peak index&quot;)</code></pre>
 <p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-7-1.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>#mean cov of peaks
 
 peak_cov=peak_quant %&gt;% select(contains(&quot;-&quot;))
@@ -517,39 +643,136 @@ peak_var=apply(peak_cov, 1, var)
 
 plot(log10(sort(peak_mean,decreasing = T)))</code></pre>
 <p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-7-2.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot(peak_var)</code></pre>
 <p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-7-3.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot(log10(peak_var)~log10(peak_mean))</code></pre>
 <p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-7-4.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Plot the coverage vs the length:</p>
 <pre class="r"><code>plot(peak_mean~peak_quant$Length)</code></pre>
 <p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-8-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-8-1.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="clustering" class="section level2">
 <h2>Clustering:</h2>
-<pre class="r"><code>cor_function=function(data){
-  corr_matrix= matrix(0,ncol(data),ncol(data))
-  for (i in seq(1,ncol(data))){
-    for (j in seq(1,ncol(data))){
-      x=cor.test(data[,i],  data[,j], method=&#39;pearson&#39;)
-      cor_ij=as.numeric(x$estimate)
-      corr_matrix[i,j]=cor_ij
-    }
-  }
-  return(corr_matrix)
-}
-
-count_cor=cor_function(peak_cov)
-rownames(count_cor)=libraries
-colnames(count_cor)=libraries</code></pre>
-<pre class="r"><code>melted_count_corr=melt(count_cor)
-ggheatmap=ggplot(data = melted_count_corr, aes(x=Var1, y=Var2, fill=value)) +
-  geom_tile() +
-  labs(title=&quot;Correlation Heatplot&quot;)
-
-
-ggheatmap</code></pre>
-<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>CLustering:</p>
 <pre class="r"><code>pca_peak= prcomp(peak_cov,center = TRUE,scale. = TRUE)
 summary(pca_peak)</code></pre>
@@ -597,7 +820,37 @@ Cumulative Proportion  1.00000</code></pre>
 <pre class="r"><code>pc_df=as.data.frame(pca_peak$rotation) %&gt;% rownames_to_column(var=&quot;lib&quot;) %&gt;% mutate(fraction=ifelse(grepl(&quot;T&quot;, lib), &quot;total&quot;, &quot;nuclear&quot;))
 
 ggplot(pc_df, aes(x=PC1, y=PC2, col=fraction)) + geom_point() + labs(x=&quot;PC1: Prop explained 0.7763&quot;, y=&quot;PC2: Prop explained 0.1330&quot;, title=&quot;Raw PAS qunatification data&quot;)</code></pre>
-<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-10-1.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I now want to explore what the first PC is representing. Some ideas are:</p>
 <ul>
 <li><p>batch</p></li>
@@ -618,8 +871,249 @@ reads_gg= ggplot(pc_df, aes(x=PC1, y=PC2, col=reads)) + geom_point() + labs(x=&q
 mapped_gg= ggplot(pc_df, aes(x=PC1, y=PC2, col=mapped)) + geom_point() + labs(x=&quot;PC1: Prop explained 0.7763&quot;, y=&quot;PC2: Prop explained 0.1330&quot;, title=&quot;Mapped Reads&quot;)
 
 plot_grid(frac_gg,batch_gg,reads_gg,mapped_gg)</code></pre>
-<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Proportion of reads mapping to peaks. This may be in the feature counts summary.</p>
+<pre class="r"><code>map_summary=read.table(&quot;../data/clean_peaks/APAquant.fc.cleanpeaks.fc.summary&quot;, header=T)
+
+colnames(map_summary)=c(colnames(map_summary)[1], libraries) 
+
+map_summary_m=map_summary[,2:57] %&gt;% t 
+colnames(map_summary_m)=map_summary$Status
+
+map_summary_m_df= as.data.frame(map_summary_m) %&gt;% mutate(perc_feature=(Assigned/(Assigned+Unassigned_NoFeatures)))</code></pre>
+<pre class="r"><code>pc_df_mapsum=as.data.frame(pca_peak$rotation) %&gt;% rownames_to_column(var=&quot;lib&quot;) %&gt;% mutate(fraction=ifelse(grepl(&quot;T&quot;, lib), &quot;total&quot;, &quot;nuclear&quot;)) %&gt;% mutate(reads=map_stats$comb_reads) %&gt;% mutate(batch=map_stats$batch) %&gt;% mutate(mapped=map_stats$comb_mapped) %&gt;% mutate(PercFeature=map_summary_m_df$perc_feature)
+
+propfrac_gg= ggplot(pc_df_mapsum, aes(x=PC1, y=PC2, col=PercFeature)) + geom_point() + labs(x=&quot;PC1: Prop explained 0.7763&quot;, y=&quot;PC2: Prop explained 0.1330&quot;, title=&quot;Percent Reads mapping to a feature&quot;)
+
+
+propfrac_gg</code></pre>
+<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/figure/28ind.peak.explore.Rmd/unnamed-chunk-13-1.png" target="_blank">38bfbaf</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="map-peaks-to-genes" class="section level2">
+<h2>Map peaks to genes</h2>
+<p>I want to use the bedtools closest command to find the clostest protein coding gene to each peak.</p>
+<ul>
+<li><p>-s (require same strandedness)</p></li>
+<li><p>-d add a column with distance to closest (strand spec) report distance wrt the genes</p></li>
+<li><p>A is the peak</p></li>
+<li><p>B is protein coding genes</p></li>
+</ul>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak.out
+#SBATCH --error=mapgene2peak.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools closest -s -d -a /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean_fixed.bed -b /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.bed &gt; /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_comb_clean_dist2gene.txt</code></pre>
+<pre class="r"><code>clean_peaks=read.table(&quot;../data/clean_peaks/APApeaks_combined_clean.bed&quot;, header=F)</code></pre>
+<p>This scirpt is called fix_cleanpeakbed.py</p>
+<pre class="bash"><code>from misc_helper import *
+fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean_fixed.bed&quot;,&#39;w&#39;)
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean.bed&quot;):
+    chrom, start, end, name, cov, strand, score2 = ln.split()
+    chrom_nochr= int(chrom[3:])
+    start_i = int(start)
+    end_i = int(end)
+    cov_i=float(cov)
+    fout.write(&quot;%d\t%d\t%d\t%s\t%f\t%s\n&quot;%(chrom_nochr, start_i, end_i, name, cov_i, strand))
+fout.close()
+</code></pre>
+<p>Second option is to use bedtools map. This will tell me directly how many peaks overlap each gene. I will use the -c and -o commands. I want it to tell me the number of peaks rather than the mean of the coverage. I can give it the name column as the -c and -0 count_distinct</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak2.out
+#SBATCH --error=mapgene2peak2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools map -c 4 -o count_distinct -a /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.bed -b /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean_fixed.bed &gt; /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean_countdistgenes.txt</code></pre>
+<p>First look at the count for peaks in genes. this will not give us information for peaks outside of the annotaiton.</p>
+<pre class="r"><code>genes_per_peak=read.table(&quot;../data/clean_peaks/APApeaks_combined_clean_countdistgenes.txt&quot;, header=F, stringsAsFactors = F, col.names = c(&quot;chr&quot;, &quot;strart&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;numPeaks&quot;))
+nrow(genes_per_peak)</code></pre>
+<pre><code>[1] 20345</code></pre>
+<pre class="r"><code>genes_with_peak= genes_per_peak %&gt;% filter(numPeaks&gt;0) %&gt;% nrow()
+genes_with_peak</code></pre>
+<pre><code>[1] 12867</code></pre>
+<pre class="r"><code>genes_with_2peak= genes_per_peak %&gt;% filter(numPeaks&gt;1) %&gt;% nrow()
+genes_with_2peak</code></pre>
+<pre><code>[1] 10797</code></pre>
+<p>There are in total 20,345 genes in the protein coding gene set. There are 12,867 with at least 1 peak and 10,797 with at least 2 peaks.</p>
+<p>Look at the distribution:</p>
+<pre class="r"><code>plot(sort(genes_per_peak$numPeaks, decreasing = T), ylab=&quot;Number of Peaks&quot;, main=&quot;Number of peaks mapping to each protein coding gene&quot;)</code></pre>
+<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The next dataset has more information aboutthe distance to the gene. If it overlaps, the distance should be 0.</p>
+<pre class="r"><code>dist_to_peak=read.table(&quot;../data/clean_peaks/APApeaks_comb_clean_dist2gene.txt&quot;, header=F)</code></pre>
+</div>
+<div id="compare-this-to-rnaseq" class="section level2">
+<h2>Compare this to RNAseq</h2>
+<pre class="r"><code>rnaseq_18486=read.table(&quot;../data/18486.genecov.txt&quot;, header=F,col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;name&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot;))
+
+expressed_genes=rnaseq_18486 %&gt;% filter(count&gt;0) %&gt;% nrow()
+expressed_genes</code></pre>
+<pre><code>[1] 16925</code></pre>
+<p>Get gene level coverage for 18486T 3’ seq data. I have this in /project2/gilad/briana/threeprimeseq/data/gene_cov.</p>
+<pre class="r"><code>threeprime_18486T=read.table(&quot;../data/YL-SP-18486-T-combined-genecov.txt&quot;, header=F, col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;name&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;count&quot;))</code></pre>
+<pre class="r"><code>rnaseq_sm=rnaseq_18486 %&gt;% select(&quot;name&quot;, &quot;count&quot;)
+threeprime_sm=threeprime_18486T %&gt;% select(&quot;name&quot;, &quot;count&quot;)
+
+gene_cov=rnaseq_sm %&gt;% left_join(threeprime_sm, by= &quot;name&quot;) 
+names(gene_cov)= c(&quot;name&quot;, &quot;rnaseq&quot;, &quot;threeprime&quot;)
+
+ggplot(gene_cov,aes(x=log10(rnaseq), y=log10(threeprime)))+ geom_point(na.rm=TRUE, size=.1) + geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) + labs(y=&#39;Log(three prime seq gene Count)&#39;, x=&#39;Log(RNA seq gene Count)&#39;, title=&quot;Correlation between three prime seq and rna seq read counts&quot;) + xlab(&#39;Log(RNA seq gene Count)&#39;) + geom_smooth(method=&quot;lm&quot;)</code></pre>
+<pre><code>Warning: Removed 6778 rows containing non-finite values (stat_smooth).</code></pre>
+<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Subset genes with coverage in RNA seq but not in three prime seq.</p>
+<pre class="r"><code>genecov_onlyRNA=gene_cov %&gt;% filter(threeprime==0 &amp; rnaseq !=0) %&gt;% arrange(desc(rnaseq))</code></pre>
+<p>What I actually want to look at genes with no peaks but RNA reads.</p>
+<pre class="r"><code>colnames(rnaseq_sm)=c(&quot;gene&quot;, &quot;RNAseqCount&quot;)
+
+cov_rnavthreeprime= rnaseq_sm %&gt;% left_join(genes_per_peak, by=&quot;gene&quot;) %&gt;% select(gene, RNAseqCount, numPeaks)</code></pre>
+<pre><code>Warning: Column `gene` joining factor and character vector, coercing into
+character vector</code></pre>
+<pre class="r"><code>ggplot(cov_rnavthreeprime,aes(x=log10(RNAseqCount), y=log10(numPeaks)))+ geom_point(na.rm=TRUE, size=.1) + geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;)  + geom_smooth(method=&quot;lm&quot;)</code></pre>
+<pre><code>Warning: Removed 7575 rows containing non-finite values (stat_smooth).</code></pre>
+<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Explore how many genes have coverage in the RNAseq set but not the</p>
+<pre class="r"><code>NotInThreePrime=cov_rnavthreeprime %&gt;% filter(numPeaks==0 &amp; RNAseqCount !=0) %&gt;% arrange(desc(RNAseqCount))</code></pre>
+<pre class="r"><code>par(mfrow=c(1,2))
+
+plot(log10(sort(cov_rnavthreeprime$RNAseqCount, decreasing = T)))
+plot(log10(NotInThreePrime$RNAseqCount), main=&quot;Post-clean up, coverage of RNA seq without a PAS&quot;, xlab=&quot;gene&quot;, ylab=&quot;log10 coverage RNA seq 18486&quot;)</code></pre>
+<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /> Top RNA seq without peaks:</p>
+<ul>
+<li><p>GAPDH - doesnt male sense. Visually see peak</p></li>
+<li><p>EEF2</p></li>
+<li><p>PFN1</p></li>
+<li><p>PTMA</p></li>
+</ul>
+<div id="try-with-peaks-before-cleaning" class="section level3">
+<h3>Try with peaks before cleaning</h3>
+<p>In looking at IGV the places have coverage and peaks are called in Yang protocol but they are all removed in the cleaning step. I want to look at how many genes have APA when we use the pre-cleaned list of peaks. This file is filtered_APApeaks_merged_allchrom.bed. I need to map these to genes like I did the other peaks.</p>
+<p>This scirpt is called fix_dirtypeakbed.py</p>
+<pre class="bash"><code>from misc_helper import *
+fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed&quot;,&#39;w&#39;)
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.bed&quot;):
+    chrom, start, end, name, cov, strand, score2 = ln.split()
+    chrom_nochr= int(chrom[3:])
+    start_i = int(start)
+    end_i = int(end)
+    cov_i=float(cov)
+    fout.write(&quot;%d\t%d\t%d\t%s\t%f\t%s\n&quot;%(chrom_nochr, start_i, end_i, name, cov_i, strand))
+fout.close()
+</code></pre>
+<p>mapgene2peak_dirty.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak_dirty
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak_dirty.out
+#SBATCH --error=mapgene2peak_dirty.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools closest -s -d -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed -b /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_dist2gene.txt</code></pre>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak2_dirty
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak2_dirty.out
+#SBATCH --error=mapgene2peak2_dirty.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools map -c 4 -o count_distinct -a /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_countdistgenes.txt</code></pre>
+<pre class="r"><code>dirty_peak=read.table(&quot;../data/clean_peaks/filtered_APApeaks_merged_allchrom_countdistgenes.txt&quot;, col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;, &quot;numPeaks&quot;))
+
+
+genes_with_peak_dirty= dirty_peak %&gt;% filter(numPeaks&gt;0) %&gt;% nrow()
+genes_with_peak_dirty</code></pre>
+<pre><code>[1] 14678</code></pre>
+<pre class="r"><code>genes_with_2peak_dirty=  dirty_peak %&gt;% filter(numPeaks&gt;1) %&gt;% nrow()
+genes_with_2peak_dirty</code></pre>
+<pre><code>[1] 12761</code></pre>
+<pre class="r"><code>rnaseq_dirtypeaks=rnaseq_sm %&gt;% left_join(dirty_peak, by=&quot;gene&quot;) %&gt;% mutate(length=end-start) %&gt;% select(gene, RNAseqCount, numPeaks, length, start, end, chr)
+
+
+dirty_onlyinRNA= rnaseq_dirtypeaks %&gt;% filter(numPeaks==0 &amp; RNAseqCount !=0) %&gt;% arrange(desc(RNAseqCount))
+
+
+summary(rnaseq_dirtypeaks$length)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+     59    8547   25654   65309   67508 2304638 </code></pre>
+<pre class="r"><code>summary(dirty_onlyinRNA$length)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+     59    4500   16166   51003   53592 1117544 </code></pre>
+<pre class="r"><code>par(mfrow=c(1,2))
+
+
+plot(log10(dirty_onlyinRNA$RNAseqCount), main=&quot;Pre-clean up, \n coverage of RNA seq without a PAS&quot;, xlab=&quot;gene&quot;, ylab=&quot;log10 coverage RNA seq 18486&quot;)
+
+plot(log10(NotInThreePrime$RNAseqCount), main=&quot;Post-clean up, \n coverage of RNA seq without a PAS&quot;, xlab=&quot;gene&quot;, ylab=&quot;log10 coverage RNA seq 18486&quot;)</code></pre>
+<p><img src="figure/28ind.peak.explore.Rmd/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="map-to-refseq" class="section level2">
+<h2>Map to refseq</h2>
+<p>It looks like mapping to the refseq genes may be more effective here due to the better 3’ UTR annotatations</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -659,10 +1153,10 @@ loaded via a namespace (and not attached):
 [34] grid_3.5.1        rprojroot_1.3-2   cli_1.0.0        
 [37] tools_3.5.1       magrittr_1.5      lazyeval_0.2.1   
 [40] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.1  
-[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
-[46] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.7   
-[49] R6_2.2.2          nlme_3.1-137      git2r_0.23.0     
-[52] compiler_3.5.1   </code></pre>
+[43] MASS_7.3-50       xml2_1.2.0        lubridate_1.7.4  
+[46] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
+[49] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
+[52] git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
