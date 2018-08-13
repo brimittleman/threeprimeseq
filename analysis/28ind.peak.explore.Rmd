@@ -97,36 +97,6 @@ plot(peak_mean~peak_quant$Length)
 ##Clustering:  
 
 
-```{r}
-cor_function=function(data){
-  corr_matrix= matrix(0,ncol(data),ncol(data))
-  for (i in seq(1,ncol(data))){
-    for (j in seq(1,ncol(data))){
-      x=cor.test(data[,i],  data[,j], method='pearson')
-      cor_ij=as.numeric(x$estimate)
-      corr_matrix[i,j]=cor_ij
-    }
-  }
-  return(corr_matrix)
-}
-
-count_cor=cor_function(peak_cov)
-rownames(count_cor)=libraries
-colnames(count_cor)=libraries
-
-
-```
-
-
-```{r}
-melted_count_corr=melt(count_cor)
-ggheatmap=ggplot(data = melted_count_corr, aes(x=Var1, y=Var2, fill=value)) +
-  geom_tile() +
-  labs(title="Correlation Heatplot")
-
-
-ggheatmap
-```
 
 
 CLustering:  
@@ -175,3 +145,301 @@ plot_grid(frac_gg,batch_gg,reads_gg,mapped_gg)
 Proportion of reads mapping to peaks. This may be in the feature counts summary.  
 
 
+```{r}
+map_summary=read.table("../data/clean_peaks/APAquant.fc.cleanpeaks.fc.summary", header=T)
+
+colnames(map_summary)=c(colnames(map_summary)[1], libraries) 
+
+map_summary_m=map_summary[,2:57] %>% t 
+colnames(map_summary_m)=map_summary$Status
+
+map_summary_m_df= as.data.frame(map_summary_m) %>% mutate(perc_feature=(Assigned/(Assigned+Unassigned_NoFeatures)))
+
+```
+
+```{r}
+pc_df_mapsum=as.data.frame(pca_peak$rotation) %>% rownames_to_column(var="lib") %>% mutate(fraction=ifelse(grepl("T", lib), "total", "nuclear")) %>% mutate(reads=map_stats$comb_reads) %>% mutate(batch=map_stats$batch) %>% mutate(mapped=map_stats$comb_mapped) %>% mutate(PercFeature=map_summary_m_df$perc_feature)
+
+propfrac_gg= ggplot(pc_df_mapsum, aes(x=PC1, y=PC2, col=PercFeature)) + geom_point() + labs(x="PC1: Prop explained 0.7763", y="PC2: Prop explained 0.1330", title="Percent Reads mapping to a feature")
+
+
+propfrac_gg
+```
+
+##Map peaks to genes  
+
+I want to use the bedtools closest command to find the clostest protein coding gene to each peak. 
+
+* -s (require same strandedness)  
+
+* -d add a column with distance to closest (strand spec) report distance wrt the genes
+
+* A is the peak  
+
+* B is protein coding genes 
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak.out
+#SBATCH --error=mapgene2peak.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools closest -s -d -a /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean_fixed.bed -b /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.bed > /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_comb_clean_dist2gene.txt
+```
+
+```{r}
+clean_peaks=read.table("../data/clean_peaks/APApeaks_combined_clean.bed", header=F)
+```
+
+
+This scirpt is called fix_cleanpeakbed.py  
+```{bash, eval=F}
+from misc_helper import *
+fout = file("/project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean_fixed.bed",'w')
+for ln in open("/project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean.bed"):
+    chrom, start, end, name, cov, strand, score2 = ln.split()
+    chrom_nochr= int(chrom[3:])
+    start_i = int(start)
+    end_i = int(end)
+    cov_i=float(cov)
+    fout.write("%d\t%d\t%d\t%s\t%f\t%s\n"%(chrom_nochr, start_i, end_i, name, cov_i, strand))
+fout.close()
+
+
+```
+
+
+
+Second option is to use bedtools map. This will tell me directly how many peaks overlap each gene.  I will use the -c and -o commands. I want it to tell me the number of peaks rather than the mean of the coverage. I can give it the name column as the -c and -0 count_distinct 
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak2.out
+#SBATCH --error=mapgene2peak2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools map -c 4 -o count_distinct -a /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.bed -b /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean_fixed.bed > /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APApeaks_combined_clean_countdistgenes.txt
+```
+
+
+First look at the count for peaks in genes. this will not give us information for peaks outside of the annotaiton.  
+
+```{r}
+genes_per_peak=read.table("../data/clean_peaks/APApeaks_combined_clean_countdistgenes.txt", header=F, stringsAsFactors = F, col.names = c("chr", "strart", "end", "gene", "score", "strand", "numPeaks"))
+nrow(genes_per_peak)
+
+genes_with_peak= genes_per_peak %>% filter(numPeaks>0) %>% nrow()
+genes_with_peak
+
+
+genes_with_2peak= genes_per_peak %>% filter(numPeaks>1) %>% nrow()
+genes_with_2peak
+```
+
+There are in total 20,345 genes in the protein coding gene set. There are 12,867 with at least 1 peak and 10,797 with at least 2 peaks. 
+
+
+Look at the distribution:  
+```{r}
+plot(sort(genes_per_peak$numPeaks, decreasing = T), ylab="Number of Peaks", main="Number of peaks mapping to each protein coding gene")
+```
+
+The next dataset has more information aboutthe distance to the gene. If it overlaps, the distance should be 0. 
+
+```{r}
+dist_to_peak=read.table("../data/clean_peaks/APApeaks_comb_clean_dist2gene.txt", header=F)
+```
+
+##Compare this to RNAseq  
+
+```{r}
+rnaseq_18486=read.table("../data/18486.genecov.txt", header=F,col.names = c("chr", "start", "end", "name", "score", "strand", "count"))
+
+expressed_genes=rnaseq_18486 %>% filter(count>0) %>% nrow()
+expressed_genes
+```
+
+Get gene level coverage for 18486T 3' seq data. I have this in /project2/gilad/briana/threeprimeseq/data/gene_cov. 
+
+```{r}
+threeprime_18486T=read.table("../data/YL-SP-18486-T-combined-genecov.txt", header=F, col.names = c("chr", "start", "end", "name", "score", "strand", "count"))
+```
+
+
+
+
+```{r}
+rnaseq_sm=rnaseq_18486 %>% select("name", "count")
+threeprime_sm=threeprime_18486T %>% select("name", "count")
+
+gene_cov=rnaseq_sm %>% left_join(threeprime_sm, by= "name") 
+names(gene_cov)= c("name", "rnaseq", "threeprime")
+
+ggplot(gene_cov,aes(x=log10(rnaseq), y=log10(threeprime)))+ geom_point(na.rm=TRUE, size=.1) + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + labs(y='Log(three prime seq gene Count)', x='Log(RNA seq gene Count)', title="Correlation between three prime seq and rna seq read counts") + xlab('Log(RNA seq gene Count)') + geom_smooth(method="lm")
+```
+
+Subset genes with coverage in RNA seq but not in three prime seq.  
+
+```{r}
+genecov_onlyRNA=gene_cov %>% filter(threeprime==0 & rnaseq !=0) %>% arrange(desc(rnaseq))
+```
+
+
+What I actually want to look at genes with no peaks but RNA reads. 
+
+```{r}
+colnames(rnaseq_sm)=c("gene", "RNAseqCount")
+
+cov_rnavthreeprime= rnaseq_sm %>% left_join(genes_per_peak, by="gene") %>% select(gene, RNAseqCount, numPeaks)
+
+ggplot(cov_rnavthreeprime,aes(x=log10(RNAseqCount), y=log10(numPeaks)))+ geom_point(na.rm=TRUE, size=.1) + geom_density2d(na.rm = TRUE, size = 1, colour = 'red')  + geom_smooth(method="lm")
+
+```
+
+Explore how many genes have coverage in the RNAseq set but not the 
+
+```{r}
+NotInThreePrime=cov_rnavthreeprime %>% filter(numPeaks==0 & RNAseqCount !=0) %>% arrange(desc(RNAseqCount))
+
+```
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(log10(sort(cov_rnavthreeprime$RNAseqCount, decreasing = T)))
+plot(log10(NotInThreePrime$RNAseqCount), main="Post-clean up, coverage of RNA seq without a PAS", xlab="gene", ylab="log10 coverage RNA seq 18486")
+```
+Top RNA seq without peaks:
+
+* GAPDH - doesnt male sense. Visually see peak
+
+* EEF2 
+
+* PFN1  
+
+* PTMA
+
+
+###Try with peaks before cleaning  
+
+In looking at IGV the places have coverage and peaks are called in Yang protocol but they are all removed in the cleaning step. I want to look at how many genes have APA when we use the pre-cleaned list of peaks. This file is filtered_APApeaks_merged_allchrom.bed. I need to map these to genes like I did the other peaks. 
+
+
+This scirpt is called fix_dirtypeakbed.py  
+```{bash, eval=F}
+from misc_helper import *
+fout = file("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed",'w')
+for ln in open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.bed"):
+    chrom, start, end, name, cov, strand, score2 = ln.split()
+    chrom_nochr= int(chrom[3:])
+    start_i = int(start)
+    end_i = int(end)
+    cov_i=float(cov)
+    fout.write("%d\t%d\t%d\t%s\t%f\t%s\n"%(chrom_nochr, start_i, end_i, name, cov_i, strand))
+fout.close()
+
+
+```
+
+mapgene2peak_dirty.sh
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak_dirty
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak_dirty.out
+#SBATCH --error=mapgene2peak_dirty.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools closest -s -d -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed -b /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_dist2gene.txt
+```
+
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mapgene2peak2_dirty
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapgene2peak2_dirty.out
+#SBATCH --error=mapgene2peak2_dirty.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools map -c 4 -o count_distinct -a /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_countdistgenes.txt
+```
+
+
+```{r}
+dirty_peak=read.table("../data/clean_peaks/filtered_APApeaks_merged_allchrom_countdistgenes.txt", col.names = c("chr", "start", "end", "gene", "score", "strand", "numPeaks"))
+
+
+genes_with_peak_dirty= dirty_peak %>% filter(numPeaks>0) %>% nrow()
+genes_with_peak_dirty
+
+
+genes_with_2peak_dirty=  dirty_peak %>% filter(numPeaks>1) %>% nrow()
+genes_with_2peak_dirty
+
+```
+```{r}
+rnaseq_dirtypeaks=rnaseq_sm %>% left_join(dirty_peak, by="gene") %>% mutate(length=end-start) %>% select(gene, RNAseqCount, numPeaks, length, start, end, chr)
+
+
+dirty_onlyinRNA= rnaseq_dirtypeaks %>% filter(numPeaks==0 & RNAseqCount !=0) %>% arrange(desc(RNAseqCount))
+
+
+summary(rnaseq_dirtypeaks$length)
+summary(dirty_onlyinRNA$length)
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+
+plot(log10(dirty_onlyinRNA$RNAseqCount), main="Pre-clean up, \n coverage of RNA seq without a PAS", xlab="gene", ylab="log10 coverage RNA seq 18486")
+
+plot(log10(NotInThreePrime$RNAseqCount), main="Post-clean up, \n coverage of RNA seq without a PAS", xlab="gene", ylab="log10 coverage RNA seq 18486")
+
+  
+  
+```
+
+##Map to refseq  
+It looks like mapping to the refseq genes may be more effective here due to the better 3' UTR annotatations  
