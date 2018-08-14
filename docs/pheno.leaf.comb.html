@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/ba9a74f4e00c39a9fbf415e1d876195e9c0621e9" target="_blank">ba9a74f</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/edbdbccfe8dca23b26715ac25ed0c35c815142f7" target="_blank">edbdbcc</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -435,6 +435,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/edbdbccfe8dca23b26715ac25ed0c35c815142f7/analysis/pheno.leaf.comb.Rmd" target="_blank">edbdbcc</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-14
+</td>
+<td style="text-align:left;">
+attempt at x/y pheno format
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/c67380e570e74625b061e504b345fae77f0e3a6e/docs/pheno.leaf.comb.html" target="_blank">c67380e</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-14
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/ba9a74f4e00c39a9fbf415e1d876195e9c0621e9/analysis/pheno.leaf.comb.Rmd" target="_blank">ba9a74f</a>
 </td>
 <td style="text-align:left;">
@@ -505,7 +539,128 @@ source activate three-prime-env
 
 featureCounts -a /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant.fc /project2/gilad/briana/threeprimeseq/data/sort/*-sort.bam -s 1
 </code></pre>
-<p>The header of this file will need to be changed. I can do this by writing it out in python.</p>
+<p>The header of this file will need to be changed. I can do this by writing it out in python. fix_head_fc.py</p>
+<pre class="bash"><code>
+infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant.fc&quot;, &quot;r&quot;)
+fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()
+      
+</code></pre>
+<p>The next step is looking by gene and make the x/y form. x is the number that already appears and y is the sum for all peaks in a specific gene.</p>
+<p>The final file will just have the GeneID column and a column for each individual.</p>
+<p>To work on this step I am going to make a smaller version of this file that I can easily work with interactively in python.</p>
+<pre class="bash"><code>head -n 20 filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_fixed.fc &gt; small.test.txt
+</code></pre>
+<pre class="bash"><code>#example from yangs dir /project2/yangili1/CMC/reformat_counts,py
+
+
+from misc_helper import *
+import gzip
+
+dic_IND = {}
+dic_BAM = {}
+header = [x for x in gzip.open(&quot;DGN_perind.counts.gz&quot;).readline().split()]
+                                                                                                                                           
+for ln in open(&quot;file_id_mapping.txt&quot;):
+    bam, IND = ln.split()
+    if bam not in header: continue
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+INDs = dic_BAM.keys()
+print INDs, len(INDs)
+fout = gzip.open(&quot;DGNmerged_perind.counts.gz&quot;,&#39;w&#39;)
+
+fout.write(&quot; &quot;.join([&#39;chrom&#39;]+INDs)+&#39;\n&#39;)
+
+
+for dic in stream_table(gzip.open(&quot;DGN_perind.counts.gz&quot;),&#39; &#39;):
+    buf = [dic[&#39;chrom&#39;]]
+    for ind in INDs:
+        T,B = 0, 0
+        for bam in dic_BAM[ind]:
+            t,b =dic[bam].split(&#39;/&#39;)
+            T+=int(t)
+            B+=int(b)
+            #print ind, t,b
+        buf.append(&quot;%d/%d&quot;%(T,B))
+    fout.write(&quot; &quot;.join(buf)+&#39;\n&#39;)
+
+fout.close()</code></pre>
+<p>Re-write this for my test file. I need a file with the bams and the individuals. I can make this using the header from the previous file.</p>
+<p>create_fileid.py</p>
+<pre class="bash"><code>fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping.txt&quot;,&#39;w&#39;)
+infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_fixed.fc&quot;, &quot;r&quot;)
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + &quot;\t&quot; + samp_st
+            fout.write(outLine + &quot;\n&quot;)
+fout.close()
+      
+</code></pre>
+<pre class="bash"><code>
+&lt;!-- from misc_helper import * --&gt;
+
+
+&lt;!-- dic_IND = {} --&gt;
+&lt;!-- dic_BAM = {} --&gt;
+
+&lt;!-- for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping.txt&quot;): --&gt;
+&lt;!--     bam, IND = ln.split() --&gt;
+&lt;!--     IND = IND.strip() --&gt;
+&lt;!--     dic_IND[bam] = IND --&gt;
+&lt;!--     if IND not in dic_BAM: --&gt;
+&lt;!--         dic_BAM[IND] = [] --&gt;
+&lt;!--     dic_BAM[IND].append(bam) --&gt;
+
+
+&lt;!-- INDs = dic_BAM.keys() --&gt;
+&lt;!-- print INDs, len(INDs) --&gt;
+&lt;!-- fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/small.test.counts.txt&quot;,&#39;w&#39;) --&gt;
+
+&lt;!-- fout.write(&quot; &quot;.join([&#39;chrom&#39;]+INDs)+&#39;\n&#39;) --&gt;
+
+
+&lt;!-- for dic in stream_table(open(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/small.test.txt&quot;),&#39; &#39;): --&gt;
+&lt;!--     print(dic) --&gt;
+&lt;!--     buf = [dic[&#39;chrom&#39;]] --&gt;
+&lt;!--     for ind in INDs: --&gt;
+&lt;!--         T,B = 0, 0 --&gt;
+&lt;!--         for bam in dic_BAM[ind]: --&gt;
+&lt;!--             t,b =dic[bam].split(&#39;/&#39;) --&gt;
+&lt;!--             T+=int(t) --&gt;
+&lt;!--             B+=int(b) --&gt;
+&lt;!--             print ind, t,b --&gt;
+&lt;!--         buf.append(&quot;%d/%d&quot;%(T,B)) --&gt;
+&lt;!--     fout.write(&quot; &quot;.join(buf)+&#39;\n&#39;) --&gt;
+
+&lt;!-- fout.close() --&gt;</code></pre>
+<p>I dont think this is the right script. It looks like the DGN_perind.counts.gz file is already in the x/y format. I need to look more into this script or write my own. I will def need dictionaries for the genes and for the individuals.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
