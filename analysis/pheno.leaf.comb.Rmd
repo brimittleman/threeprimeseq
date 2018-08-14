@@ -1,0 +1,91 @@
+---
+title: "Prepare leafcutter pheno combined peak"
+author: "Briana Mittleman"
+date: "8/14/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Like I did on the first 16 individuals, I want to prepare a phenotype file for leafcutter. I will use this to start calling QTLs. I am using the filtered peaks called with Yang's script. I need a file that has the peak and the coverage per individual. The phenotype per peak per individual is coverage at peak/coverage for all peaks in the same gene. First step is to map the peaks to a gene. I am going to use the refseq genes because they look like that have better annotated UTRs. I am going to subset to only the NM tagged mRNAs.  
+
+/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm.sort.bed  
+
+
+```{bash, eval=F}
+awk '$4 ~ /NM/ {print}' ncbiRefSeq_sm.sort.bed > ncbiRefSeq_sm.sort.mRNA.bed
+```
+
+
+I will use bedtools intersect and have it write peak and the gene that it intersects with. A is the peaks and B is the genes. I want to write out A with -wa and -wb because I want all of the info. I can then subset the parts I care about after. I want to force strandedness with -s. I say it is sorted with -sorted
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=intGenes_combfilterPeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=intGenes_combfilterPeaks.out
+#SBATCH --error=intGenes_combfilterPeaks.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools intersect -wa -wb -sorted -s -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed -b /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.bed
+```
+The result of this file has both files. I want to keep columns 1-6 and 10. This will be the peaks and the gene that overlaped it.  
+
+```{bash, eval=F}
+awk '{print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $10}' /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes_sm.bed
+
+```
+
+Now I can run feature counts on this file. In need to make the file into a saf file.  This file has GeneID, Chr, Start, End, Strand. I want the ID to be peak#:chr1:start:end:strand:gene 
+
+
+```{bash, eval=F}
+from misc_helper import *
+
+fout = file("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm.SAF",'w')
+fout.write("GeneID\tChr\tStart\tEnd\tStrand\n")
+for ln in open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes_sm.bed"):
+    chrom, start, end, name, score, strand, gene = ln.split()
+    name_i=int(name)
+    start_i=int(start)
+    end_i=int(end)
+    ID = "peak%d:%s:%d:%d:%s:%s"%(name_i, chrom, start_i, end_i, strand, gene)
+    fout.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+fout.close()
+```
+
+
+
+
+ref_gene_peak_fc.sh  
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=ref_gene_peak_fc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=ref_gene_peak_fc.out
+#SBATCH --error=ref_gene_peak_fc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+featureCounts -a /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant.fc /project2/gilad/briana/threeprimeseq/data/sort/*-sort.bam -s 1
+
+```
+
+
+The header of this file will need to be changed. I can do this by writing it out in python.  

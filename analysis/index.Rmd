@@ -48,3 +48,5 @@ Peak coverage:
 
 * [Start evaluating peak quantificaiton](28ind.peak.explore.html)  
 
+* [Prepare the data for leafcutter QTL calling](pheno.leaf.comb.html)
+
