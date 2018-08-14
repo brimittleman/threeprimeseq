@@ -88,4 +88,161 @@ featureCounts -a /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov
 ```
 
 
-The header of this file will need to be changed. I can do this by writing it out in python.  
+The header of this file will need to be changed. I can do this by writing it out in python. fix_head_fc.py 
+
+```{bash, eval=F}
+
+infile= open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant.fc", "r")
+fout = file("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+      
+
+```
+
+The next step is looking by gene and make the x/y form. x is the number that already appears and y is the sum for all peaks in a specific gene.  
+  
+The final file will just have the GeneID column and a column for each individual.  
+
+To work on this step I am going to make a smaller version of this file that I can easily work with interactively in python.  
+
+
+```{bash, eval=F}
+head -n 20 filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_fixed.fc > small.test.txt
+
+```
+
+
+
+
+
+
+```{bash, eval=F}
+#example from yangs dir /project2/yangili1/CMC/reformat_counts,py
+
+
+from misc_helper import *
+import gzip
+
+dic_IND = {}
+dic_BAM = {}
+header = [x for x in gzip.open("DGN_perind.counts.gz").readline().split()]
+                                                                                                                                           
+for ln in open("file_id_mapping.txt"):
+    bam, IND = ln.split()
+    if bam not in header: continue
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+INDs = dic_BAM.keys()
+print INDs, len(INDs)
+fout = gzip.open("DGNmerged_perind.counts.gz",'w')
+
+fout.write(" ".join(['chrom']+INDs)+'\n')
+
+
+for dic in stream_table(gzip.open("DGN_perind.counts.gz"),' '):
+    buf = [dic['chrom']]
+    for ind in INDs:
+        T,B = 0, 0
+        for bam in dic_BAM[ind]:
+            t,b =dic[bam].split('/')
+            T+=int(t)
+            B+=int(b)
+            #print ind, t,b
+        buf.append("%d/%d"%(T,B))
+    fout.write(" ".join(buf)+'\n')
+
+fout.close()
+```
+
+
+Re-write this for my test file. I need a file with the bams and the individuals.  I can make this using the header from the previous file.  
+
+
+
+create_fileid.py  
+```{bash, eval=F}
+fout = file("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping.txt",'w')
+infile= open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_fixed.fc", "r")
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + "\t" + samp_st
+            fout.write(outLine + "\n")
+fout.close()
+      
+
+```
+
+
+
+
+
+```{bash, eval=F}
+
+<!-- from misc_helper import * -->
+
+
+<!-- dic_IND = {} -->
+<!-- dic_BAM = {} -->
+
+<!-- for ln in open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping.txt"): -->
+<!--     bam, IND = ln.split() -->
+<!--     IND = IND.strip() -->
+<!--     dic_IND[bam] = IND -->
+<!--     if IND not in dic_BAM: -->
+<!--         dic_BAM[IND] = [] -->
+<!--     dic_BAM[IND].append(bam) -->
+
+
+<!-- INDs = dic_BAM.keys() -->
+<!-- print INDs, len(INDs) -->
+<!-- fout = open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/small.test.counts.txt",'w') -->
+
+<!-- fout.write(" ".join(['chrom']+INDs)+'\n') -->
+
+
+<!-- for dic in stream_table(open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/small.test.txt"),' '): -->
+<!--     print(dic) -->
+<!--     buf = [dic['chrom']] -->
+<!--     for ind in INDs: -->
+<!--         T,B = 0, 0 -->
+<!--         for bam in dic_BAM[ind]: -->
+<!--             t,b =dic[bam].split('/') -->
+<!--             T+=int(t) -->
+<!--             B+=int(b) -->
+<!--             print ind, t,b -->
+<!--         buf.append("%d/%d"%(T,B)) -->
+<!--     fout.write(" ".join(buf)+'\n') -->
+
+<!-- fout.close() -->
+```
+
+I dont think this is the right script. It looks like the DGN_perind.counts.gz file is already in the x/y format. I need to look more into this script or write my own. I will def need dictionaries for the genes and for the individuals.  
+
+
+  
