@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/7ccb243cc9fe39c33fe78c7ebfe68812be107016" target="_blank">7ccb243</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/695a918f5197757e39ac49d497f042413ed15f96" target="_blank">695a918</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -430,6 +430,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/695a918f5197757e39ac49d497f042413ed15f96/analysis/pheno.leaf.comb.Rmd" target="_blank">695a918</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+<td style="text-align:left;">
+code for pheno file sep total and nuc
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/0db7822ff5f434d73a8b86cc493829b58b4aae07/docs/pheno.leaf.comb.html" target="_blank">0db7822</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1021,7 +1055,7 @@ fout.close()</code></pre>
 dic_IND = {}
 dic_BAM = {}
 
-for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping_nuclear.txt&quot;):
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping_nuc.txt&quot;):
     bam, IND = ln.split()
     IND = IND.strip()
     dic_IND[bam] = IND
