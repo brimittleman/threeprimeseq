@@ -348,3 +348,329 @@ source activate three-prime-env
 python makePhenoRefSeqPeaks.py 
 ```
 
+Seperate total and nuclear columns. I can run FC seperatly then fix the headers and rerun the makephen file.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=ref_gene_peak_fc_total
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=ref_gene_peak_fc_T.out
+#SBATCH --error=ref_gene_peak_fc_T.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+featureCounts -a /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 1
+
+```
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=ref_gene_peak_fc_nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=ref_gene_peak_fc_N.out
+#SBATCH --error=ref_gene_peak_fc_N.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+featureCounts -a /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 1
+
+```
+
+Fix the headers: 
+* fix_head_fc_tot.py  
+
+```{bash, eval=F}
+
+infile= open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Total.fc", "r")
+fout = file("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Total_fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+```
+
+
+* fix_head_fc_nuc.py  
+
+```{bash, eval=F}
+
+infile= open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Nuclear.fc", "r")
+fout = file("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Nuclear_fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+```
+
+Create file IDs:  
+
+
+create_fileid_total.py  
+```{bash, eval=F}
+fout = file("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping_total.txt",'w')
+infile= open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Total_fixed.fc", "r")
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + "\t" + samp_st
+            fout.write(outLine + "\n")
+fout.close()
+      
+
+```
+
+
+create_fileid_nuc.py  
+```{bash, eval=F}
+fout = file("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping_nuc.txt",'w')
+infile= open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Nuclear_fixed.fc", "r")
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + "\t" + samp_st
+            fout.write(outLine + "\n")
+fout.close()
+      
+
+```
+Make pheno: 
+
+makePhenoRefSeqPeaks_Total.py 
+
+```{bash, eval=F}
+
+#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping_total.txt"):
+    bam, IND = ln.split()
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#list of genes   
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Total_fixed.fc", "r")
+genes=[]
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Total_fixed.fc", "r")
+for line, i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt","w")
+peak=["PeakID"]
+fout.write(" ".join(peak + inds) + '\n' )
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Total_fixed.fc", "r")
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        buff=[id]
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append("%d/%d"%(t,b))
+        fout.write(" ".join(buff)+ '\n')
+        
+fout.close()
+```
+
+
+makePhenoRefSeqPeaks_Nuclear.py 
+
+```{bash, eval=F}
+
+#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping_nuclear.txt"):
+    bam, IND = ln.split()
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#list of genes   
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Nuclear_fixed.fc", "r")
+genes=[]
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Nuclear_fixed.fc", "r")
+for line, i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt","w")
+peak=["PeakID"]
+fout.write(" ".join(peak + inds) + '\n' )
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_sm_quant_Nuclear_fixed.fc", "r")
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        buff=[id]
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append("%d/%d"%(t,b))
+        fout.write(" ".join(buff)+ '\n')
+        
+fout.close()
+```
+
+
+run the pheno.py scripts.  
+
+run_makePhen_sep.sh
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_makepheno_sep
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_makepheno_sep.out
+#SBATCH --error=run_makepheno_sep.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python makePhenoRefSeqPeaks_Total.py 
+
+python makePhenoRefSeqPeaks_Nuclear.py 
+```
