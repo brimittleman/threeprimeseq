@@ -576,7 +576,7 @@ makePhenoRefSeqPeaks_Nuclear.py
 dic_IND = {}
 dic_BAM = {}
 
-for ln in open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping_nuclear.txt"):
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping_nuc.txt"):
     bam, IND = ln.split()
     IND = IND.strip()
     dic_IND[bam] = IND
