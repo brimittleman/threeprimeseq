@@ -44,9 +44,9 @@ Peak calling:
 * [Expand SMASH analysis for use on midway](expand.smash.html)
 
 
-Peak coverage:  
+Peak coverage/Nominal QTLs:  
 
 * [Start evaluating peak quantificaiton](28ind.peak.explore.html)  
-
 * [Prepare the data for leafcutter QTL calling](pheno.leaf.comb.html)
+* [Call nominal QTLs](apaQTLwLeafcutter.html)
 
