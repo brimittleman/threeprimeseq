@@ -269,3 +269,34 @@ plot(-log10(tot.chr1$bh), main="Total chr1 BH corrected pval")
 ```
 
 10% FDR is 1 on this plot. 
+
+
+Extend to all results: 
+
+
+```{r}
+nuc.res= read.table("../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permQTLresults.out",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+
+plot(nuc.res$ppval, nuc.res$bpval, xlab="Direct method", ylab="Beta approximation", main="Nuclear Check plot")
+abline(0, 1, col="red")
+
+tot.res=read.table("../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permQTLresults.out", head=F, stringsAsFactors = F, col.names= c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+
+plot(tot.res$ppval, tot.res$bpval, xlab="Direct method", ylab="Beta approximation", main="Total Check plot")
+abline(0, 1, col="red")
+```
+
+* BH    
+
+```{r}
+nuc.res$bh=p.adjust(nuc.res$bpval, method="fdr")
+
+plot(-log10(nuc.res$bh), main="Nuclear BH corrected pval")
+abline(h=1, col="red")
+
+tot.res$bh=p.adjust(tot.res$bpval, method="fdr")
+plot(-log10(tot.res$bh), main="Total BH corrected pval")
+abline(h=1, col="red")
+```
