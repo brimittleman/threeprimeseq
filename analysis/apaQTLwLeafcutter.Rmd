@@ -195,3 +195,77 @@ do
 done
 
 ```
+
+
+The results file has the folowing columns: 
+
+* ID of the tested molecular phenotype (in this particular case, the gene ID)  
+* Number of variants tested in cis for this phenotype  
+* MLE of the shape1 parameter of the Beta distribution  
+* MLE of the shape2 parameter of the Beta distribution  
+* Dummy [To be described later]  
+* ID of the best variant found for this molecular phenotypes (i.e. with the smallest p-value)  
+* Distance between the molecular phenotype - variant pair  
+* The nominal p-value of association that quantifies how significant from 0, the regression coefficient is  
+* The slope associated with the nominal p-value of association [only in version > v2-184]  
+* A first permutation p-value directly obtained from the permutations with the direct method. This is basically a corrected version of the nominal p-value that accounts for the fact that multiple variants are tested per molecular phenotype.  
+* A second permutation p-value obtained via beta approximation. We advice to use this one in any downstream analysis.  
+
+
+I can check the experiments as recomended by the FastQTL site.  
+
+```{r, eval=F}
+d = read.table("permutations.all.chunks.txt.gz", hea=F, stringsAsFactors=F)
+colnames(d) = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "ppval", "bpval")
+plot(d$ppval, d$bpval, xlab="Direct method", ylab="Beta approximation", main="Check plot")
+abline(0, 1, col="red")
+```
+
+
+I will try this first on the resutls from chr1.  
+
+
+```{r}
+nuc.chr1= read.table("../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr1.perm.out",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+
+plot(nuc.chr1$ppval, nuc.chr1$bpval, xlab="Direct method", ylab="Beta approximation", main="Nuclear Check plot")
+abline(0, 1, col="red")
+
+tot.chr1=read.table("../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr1.perm.out", head=F, stringsAsFactors = F, col.names= c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+
+plot(tot.chr1$ppval, tot.chr1$bpval, xlab="Direct method", ylab="Beta approximation", main="Total Check plot")
+abline(0, 1, col="red")
+```
+
+Correct for multiple testing:  
+
+
+* Bonferonni 
+```{r}
+nuc.chr1$bonferroni = p.adjust(nuc.chr1$bpval, method="bonferroni")
+
+plot(-log10(nuc.chr1$bonferroni), main="Nuclear chr1 bonferroni corrected pval")
+
+
+tot.chr1$bonferroni = p.adjust(tot.chr1$bpval, method="bonferroni")
+
+plot(-log10(tot.chr1$bonferroni),  main="Total chr1 bonferroni corrected pval")
+```
+
+< .05 is 1.3 on this plot.  
+
+
+* BH    
+
+```{r}
+nuc.chr1$bh=p.adjust(nuc.chr1$bpval, method="fdr")
+
+plot(-log10(nuc.chr1$bh), main="Nuclear chr1 BH corrected pval")
+
+tot.chr1$bh=p.adjust(tot.chr1$bpval, method="fdr")
+plot(-log10(tot.chr1$bh), main="Total chr1 BH corrected pval")
+```
+
+10% FDR is 1 on this plot. 
