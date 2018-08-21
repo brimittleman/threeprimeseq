@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a3c44fb46f6e13e5eefd54b8400b3104527f4de6" target="_blank">a3c44fb</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/73516a698eb437501aa622955fecb92beb197dc5" target="_blank">73516a6</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -380,6 +380,7 @@ Untracked files:
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
     Untracked:  data/nuc6up/
+    Untracked:  data/perm_QTL/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -431,6 +432,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/73516a698eb437501aa622955fecb92beb197dc5/analysis/apaQTLwLeafcutter.Rmd" target="_blank">73516a6</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-21
+</td>
+<td style="text-align:left;">
+chr1 results
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/d682ab62f513ea83a98564f2e54d7f39ed752f3c/docs/apaQTLwLeafcutter.html" target="_blank">d682ab6</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-21
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -627,6 +662,72 @@ do
 /home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/SAMPLE.txt
 done
 </code></pre>
+<p>The results file has the folowing columns:</p>
+<ul>
+<li>ID of the tested molecular phenotype (in this particular case, the gene ID)<br />
+</li>
+<li>Number of variants tested in cis for this phenotype<br />
+</li>
+<li>MLE of the shape1 parameter of the Beta distribution<br />
+</li>
+<li>MLE of the shape2 parameter of the Beta distribution<br />
+</li>
+<li>Dummy [To be described later]<br />
+</li>
+<li>ID of the best variant found for this molecular phenotypes (i.e. with the smallest p-value)<br />
+</li>
+<li>Distance between the molecular phenotype - variant pair<br />
+</li>
+<li>The nominal p-value of association that quantifies how significant from 0, the regression coefficient is<br />
+</li>
+<li>The slope associated with the nominal p-value of association [only in version &gt; v2-184]<br />
+</li>
+<li>A first permutation p-value directly obtained from the permutations with the direct method. This is basically a corrected version of the nominal p-value that accounts for the fact that multiple variants are tested per molecular phenotype.<br />
+</li>
+<li>A second permutation p-value obtained via beta approximation. We advice to use this one in any downstream analysis.</li>
+</ul>
+<p>I can check the experiments as recomended by the FastQTL site.</p>
+<pre class="r"><code>d = read.table(&quot;permutations.all.chunks.txt.gz&quot;, hea=F, stringsAsFactors=F)
+colnames(d) = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;ppval&quot;, &quot;bpval&quot;)
+plot(d$ppval, d$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Check plot&quot;)
+abline(0, 1, col=&quot;red&quot;)</code></pre>
+<p>I will try this first on the resutls from chr1.</p>
+<pre class="r"><code>nuc.chr1= read.table(&quot;../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr1.perm.out&quot;,head=F, stringsAsFactors=F, col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
+
+
+plot(nuc.chr1$ppval, nuc.chr1$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
+abline(0, 1, col=&quot;red&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>tot.chr1=read.table(&quot;../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr1.perm.out&quot;, head=F, stringsAsFactors = F, col.names= c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
+
+
+plot(tot.chr1$ppval, tot.chr1$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
+abline(0, 1, col=&quot;red&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Correct for multiple testing:</p>
+<ul>
+<li>Bonferonni</li>
+</ul>
+<pre class="r"><code>nuc.chr1$bonferroni = p.adjust(nuc.chr1$bpval, method=&quot;bonferroni&quot;)
+
+plot(-log10(nuc.chr1$bonferroni), main=&quot;Nuclear chr1 bonferroni corrected pval&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>tot.chr1$bonferroni = p.adjust(tot.chr1$bpval, method=&quot;bonferroni&quot;)
+
+plot(-log10(tot.chr1$bonferroni),  main=&quot;Total chr1 bonferroni corrected pval&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>&lt; .05 is 1.3 on this plot.</p>
+<ul>
+<li>BH</li>
+</ul>
+<pre class="r"><code>nuc.chr1$bh=p.adjust(nuc.chr1$bpval, method=&quot;fdr&quot;)
+
+plot(-log10(nuc.chr1$bh), main=&quot;Nuclear chr1 BH corrected pval&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>tot.chr1$bh=p.adjust(tot.chr1$bpval, method=&quot;fdr&quot;)
+plot(-log10(tot.chr1$bh), main=&quot;Total chr1 BH corrected pval&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>10% FDR is 1 on this plot.</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
