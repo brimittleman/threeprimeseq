@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-21</p>
+<p><strong>Last updated:</strong> 2018-08-22</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/5ffffe1b8cc40aef93b6f4d5f768087f315a450c" target="_blank">5ffffe1</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/0fbf10b5c4210bd78d27d0b0f8da4927323a12f5" target="_blank">0fbf10b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -379,6 +379,7 @@ Untracked files:
     Untracked:  data/joined
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/nom_QTL/
     Untracked:  data/nuc6up/
     Untracked:  data/perm_QTL/
     Untracked:  data/reads_mapped_three_prime_seq.csv
@@ -432,6 +433,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0fbf10b5c4210bd78d27d0b0f8da4927323a12f5/analysis/apaQTLwLeafcutter.Rmd" target="_blank">0fbf10b</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-22
+</td>
+<td style="text-align:left;">
+work on plotting top QTL
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/bd21c34a85376d7d769ed310b9c7f128c23634a9/docs/apaQTLwLeafcutter.html" target="_blank">bd21c34</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-21
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -696,6 +731,45 @@ do
 /home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/SAMPLE.txt
 done
 </code></pre>
+<p>Try with normal approximation for the chroms that dont work:</p>
+<p>APAqtl_perm_norm_tot.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_perm_tot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_perm_tot.out
+#SBATCH --error=APAqtl_perm_tot.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 13 18 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr$i.perm.norm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/SAMPLE.txt
+done
+</code></pre>
+<p>APAqtl_perm_norm_nuc.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_perm_nuc.out
+#SBATCH --error=APAqtl_perm_nuc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 3 13
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.perm.norm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/SAMPLE.txt
+done</code></pre>
+</div>
+<div id="evaluate-the-results" class="section level2">
+<h2>Evaluate the results</h2>
 <p>The results file has the folowing columns:</p>
 <ul>
 <li>ID of the tested molecular phenotype (in this particular case, the gene ID)<br />
@@ -731,152 +805,6 @@ abline(0, 1, col=&quot;red&quot;)</code></pre>
 
 plot(nuc.chr1$ppval, nuc.chr1$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/b6e6ed906c8e7e19ee7eafb7a2eb6e3cd20023bb/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-10-1.png" target="_blank">b6e6ed9</a>
-</td>
-<td style="text-align:left;">
-brimittleman
-</td>
-<td style="text-align:left;">
-2018-08-21
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<pre class="r"><code>tot.chr1=read.table(&quot;../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr1.perm.out&quot;, head=F, stringsAsFactors = F, col.names= c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
-
-
-plot(tot.chr1$ppval, tot.chr1$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
-abline(0, 1, col=&quot;red&quot;)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/b6e6ed906c8e7e19ee7eafb7a2eb6e3cd20023bb/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-10-2.png" target="_blank">b6e6ed9</a>
-</td>
-<td style="text-align:left;">
-brimittleman
-</td>
-<td style="text-align:left;">
-2018-08-21
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<p>Correct for multiple testing:</p>
-<ul>
-<li>Bonferonni</li>
-</ul>
-<pre class="r"><code>nuc.chr1$bonferroni = p.adjust(nuc.chr1$bpval, method=&quot;bonferroni&quot;)
-
-plot(-log10(nuc.chr1$bonferroni), main=&quot;Nuclear chr1 bonferroni corrected pval&quot;)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/b6e6ed906c8e7e19ee7eafb7a2eb6e3cd20023bb/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-11-1.png" target="_blank">b6e6ed9</a>
-</td>
-<td style="text-align:left;">
-brimittleman
-</td>
-<td style="text-align:left;">
-2018-08-21
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<pre class="r"><code>tot.chr1$bonferroni = p.adjust(tot.chr1$bpval, method=&quot;bonferroni&quot;)
-
-plot(-log10(tot.chr1$bonferroni),  main=&quot;Total chr1 bonferroni corrected pval&quot;)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/b6e6ed906c8e7e19ee7eafb7a2eb6e3cd20023bb/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-11-2.png" target="_blank">b6e6ed9</a>
-</td>
-<td style="text-align:left;">
-brimittleman
-</td>
-<td style="text-align:left;">
-2018-08-21
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<p>&lt; .05 is 1.3 on this plot.</p>
-<ul>
-<li>BH</li>
-</ul>
-<pre class="r"><code>nuc.chr1$bh=p.adjust(nuc.chr1$bpval, method=&quot;fdr&quot;)
-
-plot(-log10(nuc.chr1$bh), main=&quot;Nuclear chr1 BH corrected pval&quot;)</code></pre>
 <p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -908,8 +836,11 @@ brimittleman
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>tot.chr1$bh=p.adjust(tot.chr1$bpval, method=&quot;fdr&quot;)
-plot(-log10(tot.chr1$bh), main=&quot;Total chr1 BH corrected pval&quot;)</code></pre>
+<pre class="r"><code>tot.chr1=read.table(&quot;../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr1.perm.out&quot;, head=F, stringsAsFactors = F, col.names= c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
+
+
+plot(tot.chr1$ppval, tot.chr1$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
+abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-12-2.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -941,6 +872,149 @@ brimittleman
 </tbody>
 </table>
 <p></details></p>
+<p>Correct for multiple testing:</p>
+<ul>
+<li>Bonferonni</li>
+</ul>
+<pre class="r"><code>nuc.chr1$bonferroni = p.adjust(nuc.chr1$bpval, method=&quot;bonferroni&quot;)
+
+plot(-log10(nuc.chr1$bonferroni), main=&quot;Nuclear chr1 bonferroni corrected pval&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/bd21c34a85376d7d769ed310b9c7f128c23634a9/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-13-1.png" target="_blank">bd21c34</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-21
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>tot.chr1$bonferroni = p.adjust(tot.chr1$bpval, method=&quot;bonferroni&quot;)
+
+plot(-log10(tot.chr1$bonferroni),  main=&quot;Total chr1 bonferroni corrected pval&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/bd21c34a85376d7d769ed310b9c7f128c23634a9/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-13-2.png" target="_blank">bd21c34</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-21
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>&lt; .05 is 1.3 on this plot.</p>
+<ul>
+<li>BH</li>
+</ul>
+<pre class="r"><code>nuc.chr1$bh=p.adjust(nuc.chr1$bpval, method=&quot;fdr&quot;)
+
+plot(-log10(nuc.chr1$bh), main=&quot;Nuclear chr1 BH corrected pval&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/bd21c34a85376d7d769ed310b9c7f128c23634a9/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-14-1.png" target="_blank">bd21c34</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-21
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>tot.chr1$bh=p.adjust(tot.chr1$bpval, method=&quot;fdr&quot;)
+plot(-log10(tot.chr1$bh), main=&quot;Total chr1 BH corrected pval&quot;)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/bd21c34a85376d7d769ed310b9c7f128c23634a9/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-14-2.png" target="_blank">bd21c34</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-21
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>10% FDR is 1 on this plot.</p>
 <p>Extend to all results:</p>
 <pre class="r"><code>nuc.res= read.table(&quot;../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permQTLresults.out&quot;,head=F, stringsAsFactors=F, col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
@@ -948,13 +1022,13 @@ brimittleman
 
 plot(nuc.res$ppval, nuc.res$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>tot.res=read.table(&quot;../data/perm_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permQTLresults.out&quot;, head=F, stringsAsFactors = F, col.names= c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
 
 
 plot(tot.res$ppval, tot.res$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /></p>
 <ul>
 <li>BH</li>
 </ul>
@@ -962,11 +1036,139 @@ abline(0, 1, col=&quot;red&quot;)</code></pre>
 
 plot(-log10(nuc.res$bh), main=&quot;Nuclear BH corrected pval&quot;)
 abline(h=1, col=&quot;red&quot;)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>tot.res$bh=p.adjust(tot.res$bpval, method=&quot;fdr&quot;)
 plot(-log10(tot.res$bh), main=&quot;Total BH corrected pval&quot;)
 abline(h=1, col=&quot;red&quot;)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Next steps:</p>
+<ul>
+<li><p>make plots for some of these snps</p></li>
+<li>/project2/yangili1/yangili/APAqtl/output/ceu.apaqtl.txt.gz.bh.txt (use nominal pvalue)<br />
+</li>
+<li><ol style="list-style-type: decimal">
+<li>plot a qqplot with only these SNPs<br />
+</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>plot a qqplot with all SNPs that you tested</li>
+</ol></li>
+</ul>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>ceu_QTL=read.table(&quot;../data/nom_QTL/ceu.apaqtl.txt.gz.bh.txt&quot;, header = T, stringsAsFactors = F)
+nom_nuc=read.table(&quot;../data/nom_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_nomQTLresults.out&quot;, head=F, stringsAsFactors = F, col.names = c(&quot;peakID&quot;, &quot;snpID&quot;, &quot;dist&quot;, &quot;Nuc_pval&quot;, &quot;slope&quot;))
+nom_tot=read.table(&quot;../data/nom_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_nomQTLresults.out&quot;,head=F , stringsAsFactors = F,  col.names = c(&quot;peakID&quot;, &quot;snpID&quot;, &quot;dist&quot;, &quot;tot_pval&quot;, &quot;slope&quot;))</code></pre>
+<p>First I want to filter the CEU data just for snps. Then I want to reformat them to be in the same configuration as the nps in my results.</p>
+<p>chr#:pos</p>
+<pre class="r"><code>ceu_QTL_snp=ceu_QTL %&gt;% filter(grepl(&quot;snp&quot;, dummy2)) %&gt;% separate(dummy2, c(&quot;type&quot;, &quot;chr&quot;, &quot;loc&quot;), sep=&quot;_&quot;) %&gt;% unite(snpID, c(&quot;chr&quot;, &quot;loc&quot;), sep=&quot;:&quot;)</code></pre>
+<p>Join the data frames by the snp ID.</p>
+<pre class="r"><code>ceuAndTot= ceu_QTL_snp %&gt;% inner_join(nom_tot, by=&quot;snpID&quot;) %&gt;% select(snpID, bpval, tot_pval)
+
+
+
+ceuAndNuc= ceu_QTL_snp %&gt;% inner_join(nom_nuc, by=&quot;snpID&quot;) %&gt;% select(snpID, bpval, Nuc_pval)</code></pre>
+<pre class="r"><code>tot_ceuSNPS=runif(nrow(ceuAndTot))
+
+nuc_ceuSNPS=runif(nrow(ceuAndNuc))</code></pre>
+<pre class="r"><code>par(mfrow=c(1,2))
+qqplot(-log10(tot_ceuSNPS), -log10(ceuAndTot$tot_pval), ylab=&quot;-log10 Total pvalues&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Total pvalues for in CEU snps&quot;)
+abline(0,1)
+
+
+qqplot(-log10(nuc_ceuSNPS), -log10(ceuAndNuc$Nuc_pva), ylab=&quot;-log10 Nuclear pvalues&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear pvalues for in CEU snps&quot;)
+abline(0,1)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /> Try with all of the snps:</p>
+<pre class="r"><code>par(mfrow=c(1,2))
+
+
+qqplot(-log10(runif(nrow(nom_tot))), -log10(nom_tot$tot_pval), ylab=&quot;-log10 Total pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Total pvalues for all snps&quot;)
+abline(0,1)
+
+qqplot(-log10(runif(nrow(nom_nuc))), -log10(nom_nuc$Nuc_pval), ylab=&quot;-log10 Nuclear pvalue&quot;, xlab=&quot;Uniform expectation&quot;,main= &quot;Nuclear pvalues for all snps&quot;)
+abline(0,1)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Try this with te permuted pvalues:</p>
+<pre class="r"><code>par(mfrow=c(1,2))
+qqplot(-log10(runif(nrow(tot.res))), -log10(tot.res$bpval),ylab=&quot;-log10 Total permuted pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Total permuted pvalues for all snps&quot;)
+abline(0,1)
+
+qqplot(-log10(runif(nrow(nuc.res))), -log10(nuc.res$bpval), ylab=&quot;-log10 Nuclear permuted pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear permuted pvalues for all snps&quot;)
+abline(0,1)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Locus zoom plots to vizualize the top QTLs:</p>
+<p>Kenneth gave me this code for making these plots. I can modify this code.</p>
+<pre class="r"><code>plot_locuszoom &lt;- function(this, gen, xlim, ylim, ...)
+{
+  
+  #this is a r object that will have the results from the fastqtl and the genotypes 
+  #this$annotations has gene, snp, dist, pvalue, beta, rsid, chr, pos, bpval, and other extra annotations about the snps
+  rbPal &lt;- colorRampPalette(c(&#39;lightblue&#39;,&#39;blue&#39;,&#39;purple&#39;,&#39;red&#39;))(101)
+  cols &lt;- c()
+  
+  # gotta figure out how everythign correlates with this snp
+  # row &lt;- which(this$annotations$rsid==snp)
+  # gen &lt;- as.numeric(this$genotypes[row,10:129])
+  nrow &lt;- nrow(this$annotations)
+  cors &lt;- sapply(1:nrow, function(j) cor(gen, as.numeric(this$genotypes[j,10:33])))
+  
+  cols &lt;- c()
+  for (j in 1:nrow) cols[j] &lt;- rbPal[round(100*(cors[j])^2)+1]
+  
+  plot.new()
+  plot.window(xlim=xlim, ylim=ylim, xlab=&#39;position&#39;, ylab=&#39;-log10(p-value)&#39;, ...)
+
+ 
+  points(x=this$annotations$pos, y=-log(this$annotations$bpval,10), pch=19, col=cols)
+  axis(2)
+  box()
+  mtext(&#39;-log10(p-value)&#39;, side=2, line=2, cex=0.7)
+}</code></pre>
+<p>I will try this with the top total snp first. It is in chrom15, the snip id is 15:76191353. I want to pull genotypes for snp within 50000 bases (window size).</p>
+<p>I can write a python script that takes a snp position and filters only the snps 25000 up and 25000 downstream of this snp. I can subset just the individuals in the sample list once i move this into R.</p>
+<p>Need to make sure to unzip the specfici vcf file first.</p>
+<pre class="bash"><code>python filter_geno.py  15 76191353 /project2/gilad/briana/threeprimeseq/data/filtered_geno/chrom15pos76191353.vcf
+</code></pre>
+<pre class="r"><code>samples=c(&quot;NA18486&quot;,&quot;NA18505&quot;, &#39;NA18508&#39;,&#39;NA18511&#39;,&#39;NA18519&#39;,&#39;NA18520&#39;,&#39;NA18853&#39;,&#39;NA18858&#39;,&#39;NA18861&#39;,&#39;NA18870&#39;,&#39;NA18909&#39;,&#39;NA18916&#39;,&#39;NA19119&#39;,&#39;NA19128&#39;,&#39;NA19130&#39;,&#39;NA19141&#39;,&#39;NA19160&#39;,&#39;NA19209&#39;,&#39;NA19210&#39;,&#39;NA19223&#39;,&#39;NA19225&#39;,&#39;NA19238&#39;,&#39;NA19239&#39;,&#39;NA19257&#39;)
+
+
+chr15.76191353geno=read.table(&quot;../data/perm_QTL/chrom15pos76191353.vcf&quot;, col.names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;sid&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;), stringsAsFactors = F) %&gt;% select(one_of(samples))
+
+chr15.76191353geno_anno=read.table(&quot;../data/perm_QTL/chrom15pos76191353.vcf&quot;, col.names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;sid&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;), stringsAsFactors = F) %&gt;% select(CHROM, POS, sid, REF, ALT, QUAL, FILTER, INFO, FORMAT)
+chr15.76191353geno_dose=apply(chr15.76191353geno, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,&quot;:&quot;)[[1]][[2]])))
+
+chr15.76191353geno_dose_full=data.frame(cbind(chr15.76191353geno_anno, chr15.76191353geno_dose))
+
+gen=as.integer(which(chr15.76191353geno_dose_full$POS==76191353))[1]
+gen</code></pre>
+<pre><code>[1] 84</code></pre>
+<pre class="r"><code>#subset snps in window
+tot.res_window=tot.res %&gt;% semi_join(chr15.76191353geno_dose_full, by=&quot;sid&quot;)
+
+
+mylist=list(annotations=tot.res_window,genotypes=chr15.76191353geno_dose_full )
+
+start=76191353 - 25000
+end=76191353 + 25000
+
+
+#plot_locuszoom(mylist, 84, start, end)</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -985,14 +1187,29 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] bindrcpp_0.2.2  cowplot_0.9.3   workflowr_1.1.1 forcats_0.3.0  
+ [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
+ [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.1.1   Rcpp_0.12.18      digest_0.6.15    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.23.0      magrittr_1.5      evaluate_0.11    
-[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.6.0     rmarkdown_1.10    tools_3.5.1      
-[16] stringr_1.3.1     yaml_2.1.19       compiler_3.5.1   
-[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.1.19      
+ [7] rlang_0.2.1       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.6.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] evaluate_0.11     knitr_1.20        broom_0.5.0      
+[25] Rcpp_0.12.18      scales_0.5.0      backports_1.1.2  
+[28] jsonlite_1.5      hms_0.4.2         digest_0.6.15    
+[31] stringi_1.2.4     grid_3.5.1        rprojroot_1.3-2  
+[34] cli_1.0.0         tools_3.5.1       magrittr_1.5     
+[37] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
+[40] pkgconfig_2.0.1   xml2_1.2.0        lubridate_1.7.4  
+[43] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
+[46] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
+[49] git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
