@@ -197,6 +197,56 @@ done
 ```
 
 
+
+Try with normal approximation for the chroms that dont work:  
+
+APAqtl_perm_norm_tot.sh
+
+```{bash, eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_perm_tot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_perm_tot.out
+#SBATCH --error=APAqtl_perm_tot.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 13 18 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr$i.perm.norm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/SAMPLE.txt
+done
+
+```
+
+
+
+APAqtl_perm_norm_nuc.sh
+
+```{bash, eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_perm_nuc.out
+#SBATCH --error=APAqtl_perm_nuc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 3 13
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.perm.norm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/SAMPLE.txt
+done
+```
+
+##Evaluate the results  
+
 The results file has the folowing columns: 
 
 * ID of the tested molecular phenotype (in this particular case, the gene ID)  
@@ -300,3 +350,165 @@ tot.res$bh=p.adjust(tot.res$bpval, method="fdr")
 plot(-log10(tot.res$bh), main="Total BH corrected pval")
 abline(h=1, col="red")
 ```
+
+
+Next steps:
+
+* make plots for some of these snps   
+
+* /project2/yangili1/yangili/APAqtl/output/ceu.apaqtl.txt.gz.bh.txt  (use nominal pvalue)  
+- (1) plot a qqplot with only these SNPs  
+- (2) plot a qqplot with all SNPs that you tested  
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+```
+
+```{r}
+ceu_QTL=read.table("../data/nom_QTL/ceu.apaqtl.txt.gz.bh.txt", header = T, stringsAsFactors = F)
+nom_nuc=read.table("../data/nom_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_nomQTLresults.out", head=F, stringsAsFactors = F, col.names = c("peakID", "snpID", "dist", "Nuc_pval", "slope"))
+nom_tot=read.table("../data/nom_QTL/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_nomQTLresults.out",head=F , stringsAsFactors = F,  col.names = c("peakID", "snpID", "dist", "tot_pval", "slope"))
+```
+
+First I want to filter the CEU data just for snps. Then I want to reformat them to be in the same configuration as the nps in my results. 
+
+chr#:pos
+
+```{r}
+ceu_QTL_snp=ceu_QTL %>% filter(grepl("snp", dummy2)) %>% separate(dummy2, c("type", "chr", "loc"), sep="_") %>% unite(snpID, c("chr", "loc"), sep=":")
+```
+
+Join the data frames by the snp ID.  
+
+```{r}
+ceuAndTot= ceu_QTL_snp %>% inner_join(nom_tot, by="snpID") %>% select(snpID, bpval, tot_pval)
+
+
+
+ceuAndNuc= ceu_QTL_snp %>% inner_join(nom_nuc, by="snpID") %>% select(snpID, bpval, Nuc_pval)
+
+```
+
+
+
+
+```{r}
+tot_ceuSNPS=runif(nrow(ceuAndTot))
+
+nuc_ceuSNPS=runif(nrow(ceuAndNuc))
+
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+qqplot(-log10(tot_ceuSNPS), -log10(ceuAndTot$tot_pval), ylab="-log10 Total pvalues", xlab="Uniform expectation", main="Total pvalues for in CEU snps")
+abline(0,1)
+
+
+qqplot(-log10(nuc_ceuSNPS), -log10(ceuAndNuc$Nuc_pva), ylab="-log10 Nuclear pvalues", xlab="Uniform expectation", main="Nuclear pvalues for in CEU snps")
+abline(0,1)
+```
+Try with all of the snps:  
+
+```{r}
+par(mfrow=c(1,2))
+
+
+qqplot(-log10(runif(nrow(nom_tot))), -log10(nom_tot$tot_pval), ylab="-log10 Total pvalue", xlab="Uniform expectation", main="Total pvalues for all snps")
+abline(0,1)
+
+qqplot(-log10(runif(nrow(nom_nuc))), -log10(nom_nuc$Nuc_pval), ylab="-log10 Nuclear pvalue", xlab="Uniform expectation",main= "Nuclear pvalues for all snps")
+abline(0,1)
+```
+
+Try this with te permuted pvalues:  
+
+```{r}
+
+par(mfrow=c(1,2))
+qqplot(-log10(runif(nrow(tot.res))), -log10(tot.res$bpval),ylab="-log10 Total permuted pvalue", xlab="Uniform expectation", main="Total permuted pvalues for all snps")
+abline(0,1)
+
+qqplot(-log10(runif(nrow(nuc.res))), -log10(nuc.res$bpval), ylab="-log10 Nuclear permuted pvalue", xlab="Uniform expectation", main="Nuclear permuted pvalues for all snps")
+abline(0,1)
+```
+
+Locus zoom plots to vizualize the top QTLs:  
+
+Kenneth gave me this code for making these plots. I can modify this code. 
+
+
+```{r}
+plot_locuszoom <- function(this, gen, xlim, ylim, ...)
+{
+  
+  #this is a r object that will have the results from the fastqtl and the genotypes 
+  #this$annotations has gene, snp, dist, pvalue, beta, rsid, chr, pos, bpval, and other extra annotations about the snps
+  rbPal <- colorRampPalette(c('lightblue','blue','purple','red'))(101)
+  cols <- c()
+  
+  # gotta figure out how everythign correlates with this snp
+  # row <- which(this$annotations$rsid==snp)
+  # gen <- as.numeric(this$genotypes[row,10:129])
+  nrow <- nrow(this$annotations)
+  cors <- sapply(1:nrow, function(j) cor(gen, as.numeric(this$genotypes[j,10:33])))
+  
+  cols <- c()
+  for (j in 1:nrow) cols[j] <- rbPal[round(100*(cors[j])^2)+1]
+  
+  plot.new()
+  plot.window(xlim=xlim, ylim=ylim, xlab='position', ylab='-log10(p-value)', ...)
+
+ 
+  points(x=this$annotations$pos, y=-log(this$annotations$bpval,10), pch=19, col=cols)
+  axis(2)
+  box()
+  mtext('-log10(p-value)', side=2, line=2, cex=0.7)
+}
+```
+
+I will try this with the top total snp first. It is in chrom15, the snip id is 15:76191353. I want to pull genotypes for snp within 50000 bases (window size).     
+
+I can write a python script that takes a snp position and filters only the snps 25000 up and 25000 downstream of this snp. I can subset just the individuals in the sample list once i move this into R. 
+
+Need to make sure to unzip the specfici vcf file first.  
+```{bash, eval=F}
+python filter_geno.py  15 76191353 /project2/gilad/briana/threeprimeseq/data/filtered_geno/chrom15pos76191353.vcf
+
+```
+
+
+```{r}
+
+samples=c("NA18486","NA18505", 'NA18508','NA18511','NA18519','NA18520','NA18853','NA18858','NA18861','NA18870','NA18909','NA18916','NA19119','NA19128','NA19130','NA19141','NA19160','NA19209','NA19210','NA19223','NA19225','NA19238','NA19239','NA19257')
+
+
+chr15.76191353geno=read.table("../data/perm_QTL/chrom15pos76191353.vcf", col.names=c('CHROM', 'POS', 'sid', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT', 'NA18486', 'NA18487', 'NA18488', 'NA18489', 'NA18498', 'NA18499', 'NA18501', 'NA18502', 'NA18504', 'NA18505', 'NA18507', 'NA18508', 'NA18510', 'NA18511', 'NA18516', 'NA18517', 'NA18519', 'NA18520', 'NA18522', 'NA18523', 'NA18852', 'NA18853', 'NA18855', 'NA18856', 'NA18858', 'NA18859', 'NA18861', 'NA18862', 'NA18867', 'NA18868', 'NA18870', 'NA18871', 'NA18873', 'NA18874', 'NA18907', 'NA18909', 'NA18910', 'NA18912', 'NA18913', 'NA18916', 'NA18917', 'NA18923', 'NA18924', 'NA18933', 'NA18934', 'NA19093', 'NA19095', 'NA19096', 'NA19098', 'NA19099', 'NA19101', 'NA19102', 'NA19107', 'NA19108', 'NA19113', 'NA19114', 'NA19116', 'NA19117', 'NA19118', 'NA19119', 'NA19121', 'NA19122', 'NA19127', 'NA19128', 'NA19129', 'NA19130', 'NA19131', 'NA19137', 'NA19138', 'NA19140', 'NA19141', 'NA19143', 'NA19144', 'NA19146', 'NA19147', 'NA19149', 'NA19150', 'NA19152', 'NA19153', 'NA19159', 'NA19160', 'NA19171', 'NA19172', 'NA19175', 'NA19176', 'NA19184', 'NA19185', 'NA19189', 'NA19190', 'NA19197', 'NA19198', 'NA19200', 'NA19201', 'NA19203', 'NA19204', 'NA19206', 'NA19207', 'NA19209', 'NA19210', 'NA19213', 'NA19214', 'NA19222', 'NA19223', 'NA19225', 'NA19226', 'NA19235', 'NA19236', 'NA19238', 'NA19239', 'NA19247', 'NA19248', 'NA19256', 'NA19257'), stringsAsFactors = F) %>% select(one_of(samples))
+
+chr15.76191353geno_anno=read.table("../data/perm_QTL/chrom15pos76191353.vcf", col.names=c('CHROM', 'POS', 'sid', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT', 'NA18486', 'NA18487', 'NA18488', 'NA18489', 'NA18498', 'NA18499', 'NA18501', 'NA18502', 'NA18504', 'NA18505', 'NA18507', 'NA18508', 'NA18510', 'NA18511', 'NA18516', 'NA18517', 'NA18519', 'NA18520', 'NA18522', 'NA18523', 'NA18852', 'NA18853', 'NA18855', 'NA18856', 'NA18858', 'NA18859', 'NA18861', 'NA18862', 'NA18867', 'NA18868', 'NA18870', 'NA18871', 'NA18873', 'NA18874', 'NA18907', 'NA18909', 'NA18910', 'NA18912', 'NA18913', 'NA18916', 'NA18917', 'NA18923', 'NA18924', 'NA18933', 'NA18934', 'NA19093', 'NA19095', 'NA19096', 'NA19098', 'NA19099', 'NA19101', 'NA19102', 'NA19107', 'NA19108', 'NA19113', 'NA19114', 'NA19116', 'NA19117', 'NA19118', 'NA19119', 'NA19121', 'NA19122', 'NA19127', 'NA19128', 'NA19129', 'NA19130', 'NA19131', 'NA19137', 'NA19138', 'NA19140', 'NA19141', 'NA19143', 'NA19144', 'NA19146', 'NA19147', 'NA19149', 'NA19150', 'NA19152', 'NA19153', 'NA19159', 'NA19160', 'NA19171', 'NA19172', 'NA19175', 'NA19176', 'NA19184', 'NA19185', 'NA19189', 'NA19190', 'NA19197', 'NA19198', 'NA19200', 'NA19201', 'NA19203', 'NA19204', 'NA19206', 'NA19207', 'NA19209', 'NA19210', 'NA19213', 'NA19214', 'NA19222', 'NA19223', 'NA19225', 'NA19226', 'NA19235', 'NA19236', 'NA19238', 'NA19239', 'NA19247', 'NA19248', 'NA19256', 'NA19257'), stringsAsFactors = F) %>% select(CHROM, POS, sid, REF, ALT, QUAL, FILTER, INFO, FORMAT)
+chr15.76191353geno_dose=apply(chr15.76191353geno, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,":")[[1]][[2]])))
+
+chr15.76191353geno_dose_full=data.frame(cbind(chr15.76191353geno_anno, chr15.76191353geno_dose))
+
+gen=as.integer(which(chr15.76191353geno_dose_full$POS==76191353))[1]
+gen
+
+#subset snps in window
+tot.res_window=tot.res %>% semi_join(chr15.76191353geno_dose_full, by="sid")
+
+
+mylist=list(annotations=tot.res_window,genotypes=chr15.76191353geno_dose_full )
+
+start=76191353 - 25000
+end=76191353 + 25000
+
+
+#plot_locuszoom(mylist, 84, start, end)
+
+```
+
+
+
