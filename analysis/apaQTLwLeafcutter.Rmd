@@ -493,20 +493,67 @@ chr15.76191353geno_dose=apply(chr15.76191353geno, 2, function(y)sapply(y, functi
 
 chr15.76191353geno_dose_full=data.frame(cbind(chr15.76191353geno_anno, chr15.76191353geno_dose))
 
-gen=as.integer(which(chr15.76191353geno_dose_full$POS==76191353))[1]
+gen=chr15.76191353geno_dose_full[which(chr15.76191353geno_dose_full$POS==76191353),]
 gen
 
-#subset snps in window
-tot.res_window=tot.res %>% semi_join(chr15.76191353geno_dose_full, by="sid")
 
+in_both_perm= tot.res %>% semi_join(chr15.76191353geno_dose_full, by="sid")
 
-mylist=list(annotations=tot.res_window,genotypes=chr15.76191353geno_dose_full )
+mylist=list(annotations=tot.res,genotypes=chr15.76191353geno_dose_full )
 
 start=76191353 - 25000
 end=76191353 + 25000
 
 
-#plot_locuszoom(mylist, 84, start, end)
+#plot_locuszoom(mylist, gen, start, end)
+
+```
+
+Try to make a boxplot: 
+
+FIrst for the strongest total pval. 
+
+```{r}
+geno=chr15.76191353geno_dose_full[which(chr15.76191353geno_dose_full$POS==76191353),10:33]
+# find the phentpye values for peak 15:76234771:76234852:NM_138573.3_-_peak118132
+#grep -F "15:76234771:76234852:NM_138573.3_-_peak118132" filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.phen_chr15 > ../qtl_example/tot_peak118132
+pheno=read.table("../data/perm_QTL/tot_peak118132", stringsAsFactors = F, col.names = c("Chr",	"start",	"end",	"ID",	'NA18486',	'NA18497',	'NA18500',	'NA18505','NA18508'	,'NA18511',	'NA18519',	'NA18520',	'NA18853',	'NA18858',	'NA18861'	,'NA18870', 'NA18909',	'NA18916',	'NA19092',	'NA19119',	'NA19128'	,'NA19130',	'NA19141'	,'NA19160',	'NA19193',	'NA19209'	,'NA19210',	'NA19223'	,'NA19225',	'NA19238',	'NA19239'	,'NA19257')) %>%  select(one_of(samples))
+
+
+for_plot=data.frame(bind_rows(geno,pheno) %>% t)
+colnames(for_plot)=c("Genotype", "PAS")
+for_plot$Genotype=as.factor(for_plot$Genotype)
+
+
+ggplot(for_plot, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x="Genotype", title="15:76234771:76234852:NM_138573.3_-_peak118132 QTL") + geom_jitter( aes(x=Genotype, y=PAS))
+```
+Generally I will need to grep the correct line from the geno and pheno file then make the plot like this.  
+
+Next I will run for the top Nuc QTL.  
+
+peak: 12:9092958:9093051:NM_004426.2_+_peak67056
+SNP: 12:9049821
+
+
+```{r}
+#grep -F "12:9092958:9093051:NM_004426.2_+_peak67056" filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.phen_chr12 > ../qtl_example/nuc_peak67056
+pheno_names=c("Chr",	"start",	"end",	"ID",	'NA18486',	'NA18497',	'NA18500',	'NA18505','NA18508'	,'NA18511',	'NA18519',	'NA18520',	'NA18853',	'NA18858',	'NA18861'	,'NA18870', 'NA18909',	'NA18916',	'NA19092',	'NA19119',	'NA19128'	,'NA19130',	'NA19141'	,'NA19160',	'NA19193',	'NA19209'	,'NA19210',	'NA19223'	,'NA19225',	'NA19238',	'NA19239'	,'NA19257')
+geno_names=c('CHROM', 'POS', 'sid', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT', 'NA18486', 'NA18487', 'NA18488', 'NA18489', 'NA18498', 'NA18499', 'NA18501', 'NA18502', 'NA18504', 'NA18505', 'NA18507', 'NA18508', 'NA18510', 'NA18511', 'NA18516', 'NA18517', 'NA18519', 'NA18520', 'NA18522', 'NA18523', 'NA18852', 'NA18853', 'NA18855', 'NA18856', 'NA18858', 'NA18859', 'NA18861', 'NA18862', 'NA18867', 'NA18868', 'NA18870', 'NA18871', 'NA18873', 'NA18874', 'NA18907', 'NA18909', 'NA18910', 'NA18912', 'NA18913', 'NA18916', 'NA18917', 'NA18923', 'NA18924', 'NA18933', 'NA18934', 'NA19093', 'NA19095', 'NA19096', 'NA19098', 'NA19099', 'NA19101', 'NA19102', 'NA19107', 'NA19108', 'NA19113', 'NA19114', 'NA19116', 'NA19117', 'NA19118', 'NA19119', 'NA19121', 'NA19122', 'NA19127', 'NA19128', 'NA19129', 'NA19130', 'NA19131', 'NA19137', 'NA19138', 'NA19140', 'NA19141', 'NA19143', 'NA19144', 'NA19146', 'NA19147', 'NA19149', 'NA19150', 'NA19152', 'NA19153', 'NA19159', 'NA19160', 'NA19171', 'NA19172', 'NA19175', 'NA19176', 'NA19184', 'NA19185', 'NA19189', 'NA19190', 'NA19197', 'NA19198', 'NA19200', 'NA19201', 'NA19203', 'NA19204', 'NA19206', 'NA19207', 'NA19209', 'NA19210', 'NA19213', 'NA19214', 'NA19222', 'NA19223', 'NA19225', 'NA19226', 'NA19235', 'NA19236', 'NA19238', 'NA19239', 'NA19247', 'NA19248', 'NA19256', 'NA19257')
+
+top_nuc_geno=read.table("../data/perm_QTL/genotpye12:904921", stringsAsFactors = F, col.names = geno_names) %>%  select(one_of(samples))
+
+top_nuc_geno_dose=apply(top_nuc_geno, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,":")[[1]][[2]])))
+
+
+top_nuc_pheo=read.table("../data/perm_QTL/nuc_peak67056", stringsAsFactors = F, col.names = pheno_names) %>% select(one_of(samples))
+
+
+
+top_nuc_plot=data.frame(bind_rows(top_nuc_geno_dose, top_nuc_pheo) %>% t)
+colnames(top_nuc_plot)=c("Genotype", "PAS")
+top_nuc_plot$Genotype=as.factor(top_nuc_plot$Genotype)
+
+ggplot(top_nuc_plot, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x="Genotype", title="12:9092958:9093051:NM_004426.2_+_peak67056") + geom_jitter( aes(x=Genotype, y=PAS))
 
 ```
 
