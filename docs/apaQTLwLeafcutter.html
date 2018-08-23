@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c1f8d60cea58fda6cfc80bba454436ef2f2283b1" target="_blank">c1f8d60</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f5c2ce22cc4a378370c860fe754af7108ae5e565" target="_blank">f5c2ce2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -433,6 +433,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f5c2ce22cc4a378370c860fe754af7108ae5e565/analysis/apaQTLwLeafcutter.Rmd" target="_blank">f5c2ce2</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-23
+</td>
+<td style="text-align:left;">
+work more on locus zoom prob
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b33443c60c0bd42e7b003489770307bad95a9ad9/docs/apaQTLwLeafcutter.html" target="_blank">b33443c</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-23
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1499,16 +1533,16 @@ brimittleman
 <pre class="r"><code>samples=c(&quot;NA18486&quot;,&quot;NA18505&quot;, &#39;NA18508&#39;,&#39;NA18511&#39;,&#39;NA18519&#39;,&#39;NA18520&#39;,&#39;NA18853&#39;,&#39;NA18858&#39;,&#39;NA18861&#39;,&#39;NA18870&#39;,&#39;NA18909&#39;,&#39;NA18916&#39;,&#39;NA19119&#39;,&#39;NA19128&#39;,&#39;NA19130&#39;,&#39;NA19141&#39;,&#39;NA19160&#39;,&#39;NA19209&#39;,&#39;NA19210&#39;,&#39;NA19223&#39;,&#39;NA19225&#39;,&#39;NA19238&#39;,&#39;NA19239&#39;,&#39;NA19257&#39;)
 
 
-chr15.76191353geno=read.table(&quot;../data/perm_QTL/chrom15pos76191353.vcf&quot;, col.names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;sid&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;), stringsAsFactors = F) %&gt;% select(one_of(samples))
+chr15.76191353geno=read.table(&quot;../data/perm_QTL/chrom15pos76191353.vcf&quot;, col.names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;snpID&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;), stringsAsFactors = F) %&gt;% select(one_of(samples))
 
-chr15.76191353geno_anno=read.table(&quot;../data/perm_QTL/chrom15pos76191353.vcf&quot;, col.names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;sid&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;), stringsAsFactors = F) %&gt;% select(CHROM, POS, sid, REF, ALT, QUAL, FILTER, INFO, FORMAT)
+chr15.76191353geno_anno=read.table(&quot;../data/perm_QTL/chrom15pos76191353.vcf&quot;, col.names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;snpID&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;), stringsAsFactors = F) %&gt;% select(CHROM, POS, snpID, REF, ALT, QUAL, FILTER, INFO, FORMAT)
 chr15.76191353geno_dose=apply(chr15.76191353geno, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,&quot;:&quot;)[[1]][[2]])))
 
 chr15.76191353geno_dose_full=data.frame(cbind(chr15.76191353geno_anno, chr15.76191353geno_dose))
 
 gen=chr15.76191353geno_dose_full[which(chr15.76191353geno_dose_full$POS==76191353),]
 gen</code></pre>
-<pre><code>   CHROM      POS         sid REF ALT QUAL FILTER
+<pre><code>   CHROM      POS       snpID REF ALT QUAL FILTER
 84    15 76191353 15:76191353   C   T    .   PASS
                                 INFO   FORMAT NA18486 NA18505 NA18508
 84 AF=0.08407;MAF=0.08407;R2=0.99998 GT:DS:GP       0       0       1
@@ -1518,7 +1552,9 @@ gen</code></pre>
 84       0       0       0       0       0       0       0       0       0
    NA19238 NA19239 NA19257
 84       0       0       0</code></pre>
-<pre class="r"><code>in_both_perm= tot.res %&gt;% semi_join(chr15.76191353geno_dose_full, by=&quot;sid&quot;)
+<pre class="r"><code>snps=chr15.76191353geno_dose_full$snpID
+in_both_nom= nom_tot %&gt;% filter(snpID %in% snps)
+
 
 mylist=list(annotations=tot.res,genotypes=chr15.76191353geno_dose_full )
 
@@ -1527,6 +1563,34 @@ end=76191353 + 25000
 
 
 #plot_locuszoom(mylist, gen, start, end)</code></pre>
+<p>I actually need to do this with the nominal snps.</p>
+<p>The most sig. in the nominal total is 4:186328829:186328922:NM_018359.3_-_peak260565, 4:186325141</p>
+<p>I want to run the python genotype filter.</p>
+<pre class="bash"><code>python filter_geno.py  4 186325141 /project2/gilad/briana/threeprimeseq/data/filtered_geno/chrom4pos186325141.vcf</code></pre>
+<pre class="r"><code>chrom4pos18632514=read.table(&quot;../data/nom_QTL/chrom4pos186325141.vcf&quot;, col.names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;snpID&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;), stringsAsFactors = F) %&gt;% select(one_of(samples))
+
+chrom4pos18632514_anno=read.table(&quot;../data/nom_QTL/chrom4pos186325141.vcf&quot;, col.names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;snpID&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;), stringsAsFactors = F) %&gt;% select(CHROM, POS, snpID, REF, ALT, QUAL, FILTER, INFO, FORMAT)
+chrom4pos18632514_dose=apply(chrom4pos18632514, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,&quot;:&quot;)[[1]][[2]])))
+
+chrom4pos18632514_dose_full=data.frame(cbind(chrom4pos18632514_anno, chrom4pos18632514_dose))
+
+
+snps=chrom4pos18632514_dose_full$snpID
+in_both_nom= nom_tot %&gt;% filter(snpID %in% snps)
+
+
+gen=chrom4pos18632514_dose_full[which(chrom4pos18632514_dose_full$POS==186325141),]
+
+
+mylist=list(annotations=in_both_nom,genotypes=chrom4pos18632514_dose_full)
+
+
+start=18632514- 25000
+end=18632514 + 25000
+
+#plot_locuszoom(mylist, gen, start, end)
+
+#problem: the in_both_nom has more values because snps can be associated with more than one peak  w</code></pre>
 <p>Try to make a boxplot:</p>
 <p>FIrst for the strongest total pval.</p>
 <pre class="r"><code>geno=chr15.76191353geno_dose_full[which(chr15.76191353geno_dose_full$POS==76191353),10:33]
@@ -1541,38 +1605,7 @@ for_plot$Genotype=as.factor(for_plot$Genotype)
 
 
 ggplot(for_plot, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x=&quot;Genotype&quot;, title=&quot;15:76234771:76234852:NM_138573.3_-_peak118132 QTL&quot;) + geom_jitter( aes(x=Genotype, y=PAS))</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-28-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/886dc9ad76de9047aa1ad906bd11cd22a27bb678/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-28-1.png" target="_blank">886dc9a</a>
-</td>
-<td style="text-align:left;">
-brimittleman
-</td>
-<td style="text-align:left;">
-2018-08-23
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<p>Generally I will need to grep the correct line from the geno and pheno file then make the plot like this.</p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /> Generally I will need to grep the correct line from the geno and pheno file then make the plot like this.</p>
 <p>Next I will run for the top Nuc QTL.</p>
 <p>peak: 12:9092958:9093051:NM_004426.2_+_peak67056 SNP: 12:9049821</p>
 <pre class="r"><code>#grep -F &quot;12:9092958:9093051:NM_004426.2_+_peak67056&quot; filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.phen_chr12 &gt; ../qtl_example/nuc_peak67056
@@ -1593,8 +1626,8 @@ colnames(top_nuc_plot)=c(&quot;Genotype&quot;, &quot;PAS&quot;)
 top_nuc_plot$Genotype=as.factor(top_nuc_plot$Genotype)
 
 ggplot(top_nuc_plot, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x=&quot;Genotype&quot;, title=&quot;12:9092958:9093051:NM_004426.2_+_peak67056&quot;) + geom_jitter( aes(x=Genotype, y=PAS))</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-29-1.png:</em></summary>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-31-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
 <thead>
 <tr>
@@ -1612,7 +1645,7 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/886dc9ad76de9047aa1ad906bd11cd22a27bb678/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-29-1.png" target="_blank">886dc9a</a>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b33443c60c0bd42e7b003489770307bad95a9ad9/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-31-1.png" target="_blank">b33443c</a>
 </td>
 <td style="text-align:left;">
 brimittleman
@@ -1644,7 +1677,7 @@ colnames(top_nuc_plot2)=c(&quot;Genotype&quot;, &quot;PAS&quot;)
 top_nuc_plot2$Genotype=as.factor(top_nuc_plot2$Genotype)
 
 ggplot(top_nuc_plot2, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x=&quot;Genotype&quot;, title=&quot;12:9092958:9093051:NM_004426.2_+_peak67056&quot;) + geom_jitter( aes(x=Genotype, y=PAS))</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="characteristics-of-the-qtls" class="section level4">
 <h4>Characteristics of the QTLs</h4>
 <p>I want to look at the distance to the snp for the QTLS</p>
@@ -1656,7 +1689,7 @@ nuc.res = nuc.res %&gt;% mutate(QTL=ifelse(bh&lt;.15, &quot;Yes&quot;, &quot;No&
 <pre class="r"><code>tot.dist=ggplot(tot.res, aes(x=log10(abs(dist)+1), group=QTL, fill=QTL)) + geom_density(alpha=.4) + labs(title=&quot;Distribtuion of density in Total QTLS&quot;, x=&quot;Log 10 abs. values distance from SNP to peaks&quot;)
 nuc.dist=ggplot(nuc.res, aes(x=log10(abs(dist)+1), group=QTL, fill=QTL)) + geom_density(alpha=.4) + labs(title=&quot;Distribtuion of density in Nuclear QTLS&quot;,x=&quot;Log 10 abs. values distance from SNP to peaks&quot;)
 plot_grid(tot.dist, nuc.dist)</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>I want to assess the number of QTLs we get at different cutoffs. To do this I will wrap a drplyr function in a for look that goes from .05 to .5.</p>
 <pre class="r"><code>nQTL_tot=c()
 FDR=seq(.05, .5, .01)
@@ -1676,7 +1709,7 @@ nQTL=as.data.frame(cbind(FDR, Total=nQTL_tot, Nuclear=nQTL_nuc))
 nQTL_long=melt(nQTL, id.vars = &quot;FDR&quot;)
 
 ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y=&quot;Number of Significant QTLs&quot;, title=&quot;APAqtls detected by FDR cuttoff&quot;, color=&quot;Fraction&quot;) </code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="session-information" class="section level2">
