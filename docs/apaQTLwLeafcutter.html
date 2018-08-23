@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/dd07e10cdb16919eb06e59fe14083cef31b49fa5" target="_blank">dd07e10</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c1f8d60cea58fda6cfc80bba454436ef2f2283b1" target="_blank">c1f8d60</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -433,6 +433,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c1f8d60cea58fda6cfc80bba454436ef2f2283b1/analysis/apaQTLwLeafcutter.Rmd" target="_blank">c1f8d60</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-23
+</td>
+<td style="text-align:left;">
+add qtc characteristics
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/886dc9ad76de9047aa1ad906bd11cd22a27bb678/docs/apaQTLwLeafcutter.html" target="_blank">886dc9a</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-23
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1286,6 +1320,12 @@ brimittleman
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
 <pre class="r"><code>library(cowplot)</code></pre>
 <pre><code>
 Attaching package: &#39;cowplot&#39;</code></pre>
@@ -1501,7 +1541,38 @@ for_plot$Genotype=as.factor(for_plot$Genotype)
 
 
 ggplot(for_plot, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x=&quot;Genotype&quot;, title=&quot;15:76234771:76234852:NM_138573.3_-_peak118132 QTL&quot;) + geom_jitter( aes(x=Genotype, y=PAS))</code></pre>
-<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /> Generally I will need to grep the correct line from the geno and pheno file then make the plot like this.</p>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-28-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/886dc9ad76de9047aa1ad906bd11cd22a27bb678/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-28-1.png" target="_blank">886dc9a</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-23
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Generally I will need to grep the correct line from the geno and pheno file then make the plot like this.</p>
 <p>Next I will run for the top Nuc QTL.</p>
 <p>peak: 12:9092958:9093051:NM_004426.2_+_peak67056 SNP: 12:9049821</p>
 <pre class="r"><code>#grep -F &quot;12:9092958:9093051:NM_004426.2_+_peak67056&quot; filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.phen_chr12 &gt; ../qtl_example/nuc_peak67056
@@ -1523,6 +1594,90 @@ top_nuc_plot$Genotype=as.factor(top_nuc_plot$Genotype)
 
 ggplot(top_nuc_plot, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x=&quot;Genotype&quot;, title=&quot;12:9092958:9093051:NM_004426.2_+_peak67056&quot;) + geom_jitter( aes(x=Genotype, y=PAS))</code></pre>
 <p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-29-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/886dc9ad76de9047aa1ad906bd11cd22a27bb678/docs/figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-29-1.png" target="_blank">886dc9a</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-23
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>3:119242427:119242509:NM_016589.3_+_peak233134</p>
+<p>3:119211867</p>
+<pre class="bash"><code>grep -F &quot;3:119242427:119242509:NM_016589.3_+_peak233134&quot; filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.phen_chr3 &gt; ../qtl_example/nuc_peak233134
+
+YRI_geno_hg19]$ less chr3.dose.filt.vcf.gz | grep   &quot;3:119211867&quot; &gt; ../threeprimeseq/data/qtl_example/genotype3:199211867
+</code></pre>
+<pre class="r"><code>top_nuc_geno2=read.table(&quot;../data/perm_QTL/genotype3:199211867&quot;, stringsAsFactors = F, col.names = geno_names) %&gt;%  select(one_of(samples))
+
+top_nuc_geno2_dose=apply(top_nuc_geno2, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,&quot;:&quot;)[[1]][[2]])))
+
+
+top_nuc_pheo2=read.table(&quot;../data/perm_QTL/nuc_peak233134&quot;, stringsAsFactors = F, col.names = pheno_names) %&gt;% select(one_of(samples))
+
+
+
+top_nuc_plot2=data.frame(bind_rows(top_nuc_geno2_dose, top_nuc_pheo2) %&gt;% t)
+colnames(top_nuc_plot2)=c(&quot;Genotype&quot;, &quot;PAS&quot;)
+top_nuc_plot2$Genotype=as.factor(top_nuc_plot2$Genotype)
+
+ggplot(top_nuc_plot2, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x=&quot;Genotype&quot;, title=&quot;12:9092958:9093051:NM_004426.2_+_peak67056&quot;) + geom_jitter( aes(x=Genotype, y=PAS))</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="characteristics-of-the-qtls" class="section level4">
+<h4>Characteristics of the QTLs</h4>
+<p>I want to look at the distance to the snp for the QTLS</p>
+<pre class="r"><code>tot_QTL=tot.res %&gt;% filter(bh &lt; .15 )
+nuc_QTL= nuc.res %&gt;% filter(bh&lt; .15)</code></pre>
+<pre class="r"><code>tot.res = tot.res %&gt;% mutate(QTL=ifelse(bh&lt;.15, &quot;Yes&quot;, &quot;No&quot;) )
+nuc.res = nuc.res %&gt;% mutate(QTL=ifelse(bh&lt;.15, &quot;Yes&quot;, &quot;No&quot;) )</code></pre>
+<p>Now I can look at caharacteristics of those that pass the cutoff.</p>
+<pre class="r"><code>tot.dist=ggplot(tot.res, aes(x=log10(abs(dist)+1), group=QTL, fill=QTL)) + geom_density(alpha=.4) + labs(title=&quot;Distribtuion of density in Total QTLS&quot;, x=&quot;Log 10 abs. values distance from SNP to peaks&quot;)
+nuc.dist=ggplot(nuc.res, aes(x=log10(abs(dist)+1), group=QTL, fill=QTL)) + geom_density(alpha=.4) + labs(title=&quot;Distribtuion of density in Nuclear QTLS&quot;,x=&quot;Log 10 abs. values distance from SNP to peaks&quot;)
+plot_grid(tot.dist, nuc.dist)</code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I want to assess the number of QTLs we get at different cutoffs. To do this I will wrap a drplyr function in a for look that goes from .05 to .5.</p>
+<pre class="r"><code>nQTL_tot=c()
+FDR=seq(.05, .5, .01)
+for (i in FDR){
+  x=tot.res %&gt;% filter(bh &lt; i ) %&gt;% nrow()
+  nQTL_tot=c(nQTL_tot, x)
+}
+
+FDR=seq(.05, .5, .01)
+nQTL_nuc=c()
+for (i in FDR){
+  x=nuc.res %&gt;% filter(bh &lt; i ) %&gt;% nrow()
+  nQTL_nuc=c(nQTL_nuc, x)
+}
+
+nQTL=as.data.frame(cbind(FDR, Total=nQTL_tot, Nuclear=nQTL_nuc))
+nQTL_long=melt(nQTL, id.vars = &quot;FDR&quot;)
+
+ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y=&quot;Number of Significant QTLs&quot;, title=&quot;APAqtls detected by FDR cuttoff&quot;, color=&quot;Fraction&quot;) </code></pre>
+<p><img src="figure/apaQTLwLeafcutter.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -1542,9 +1697,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  cowplot_0.9.3   workflowr_1.1.1 forcats_0.3.0  
- [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
- [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+ [1] bindrcpp_0.2.2  cowplot_0.9.3   reshape2_1.4.3  workflowr_1.1.1
+ [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5    
+ [9] readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0  
+[13] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
