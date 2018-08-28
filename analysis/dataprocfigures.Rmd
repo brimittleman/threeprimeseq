@@ -1,0 +1,71 @@
+---
+title: "Data Processing Figures"
+author: "Briana Mittleman"
+date: "8/28/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this analysis to work on vizualising some of the processing steps of this analysis.  
+
+##Peaks per gene  
+
+I want to create a figure similar to the one I created in https://brimittleman.github.io/comparative_threeprime/characterize.ortho.peaks.html. I will use the count distinct function from bedtools map. For this I am using the RefSeq mRNA annotations.  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=refseq_countdistinct
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=refseq_countdistinct.out
+#SBATCH --error=refseq_countdistinct.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+
+bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed -b   > /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
+
+
+```
+
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(reshape2)
+library(cowplot)
+```
+
+
+```{r}
+names=c("Chr", "Start", "End", "Name", "Score", "Strand", "numPeaks")
+peakpergene=read.table("../data/peakPerRefSeqGene/filtered_APApeaks_perRefseqGene.txt", stringsAsFactors = F, header = F, col.names = names) %>% mutate(onePeak=ifelse(numPeaks==1, 1, 0 )) %>%  mutate(multPeaks=ifelse(numPeaks > 1, 1, 0 ))
+```
+
+```{r}
+genes1peak=sum(peakpergene$onePeak)/nrow(peakpergene) 
+genesMultpeak=sum(peakpergene$multPeaks)/nrow(peakpergene)
+genes0peak= 1- genes1peak - genesMultpeak
+
+perPeak= c(round(genes0peak,digits = 3), round(genes1peak,digits = 3),round(genesMultpeak, digits = 3))
+Category=c("Zero", "One", "Multiple")
+perPeakdf=as.data.frame(cbind(Category,as.numeric(perPeak)))
+```
+
+Plot these proportions:  
+
+```{r}
+lab1=paste("Genes =", genes0peak*nrow(peakpergene), sep=" ")
+lab2=paste("Genes =", sum(peakpergene$onePeak), sep=" ")
+lab3=paste("Genes =", sum(peakpergene$multPeaks), sep=" ")
+
+genepeakplot=ggplot(perPeakdf, aes(x="", y=perPeak, fill=Category)) + geom_bar(stat="identity")+ labs(title="Characterize genes by number of PAS", y="Proportion of Protein Coding gene", x="")+ scale_fill_brewer(palette="Paired") + coord_cartesian(ylim=c(0,1)) + annotate("text", x="", y= .35, label=lab1) + annotate("text", x="", y= .78, label=lab2) + annotate("text", x="", y= .92, label=lab3)
+genepeakplot
+```
+
