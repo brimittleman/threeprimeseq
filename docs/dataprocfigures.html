@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-28</p>
+<p><strong>Last updated:</strong> 2018-08-29</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/fa818a13d8591ac31fd9f6c63a86af3af565def7" target="_blank">fa818a1</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6b818cbdefc857eb57e9a522483fa63b60b7fb60" target="_blank">6b818cb</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -439,6 +439,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6b818cbdefc857eb57e9a522483fa63b60b7fb60/analysis/dataprocfigures.Rmd" target="_blank">6b818cb</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-29
+</td>
+<td style="text-align:left;">
+try gencode anno
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/c6dc97bf8c0353ab9179b44a1f9ed8210f4c0adb/docs/dataprocfigures.html" target="_blank">c6dc97b</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-28
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/fa818a13d8591ac31fd9f6c63a86af3af565def7/analysis/dataprocfigures.Rmd" target="_blank">fa818a1</a>
 </td>
 <td style="text-align:left;">
@@ -473,7 +507,7 @@ first processing figure
 
 
 
-bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed -b   &gt; /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
+bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.fullchroms.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  &gt; /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
 </code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
@@ -516,6 +550,121 @@ lab3=paste(&quot;Genes =&quot;, sum(peakpergene$multPeaks), sep=&quot; &quot;)
 genepeakplot=ggplot(perPeakdf, aes(x=&quot;&quot;, y=perPeak, fill=Category)) + geom_bar(stat=&quot;identity&quot;)+ labs(title=&quot;Characterize genes by number of PAS&quot;, y=&quot;Proportion of Protein Coding gene&quot;, x=&quot;&quot;)+ scale_fill_brewer(palette=&quot;Paired&quot;) + coord_cartesian(ylim=c(0,1)) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .35, label=lab1) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .78, label=lab2) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .92, label=lab3)
 genepeakplot</code></pre>
 <p><img src="figure/dataprocfigures.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-5-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c6dc97bf8c0353ab9179b44a1f9ed8210f4c0adb/docs/figure/dataprocfigures.Rmd/unnamed-chunk-5-1.png" target="_blank">c6dc97b</a>
+</td>
+<td style="text-align:left;">
+brimittleman
+</td>
+<td style="text-align:left;">
+2018-08-28
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>This includes for than 1 isoform for different genes. I am going to go back to the original refseq file and resegment it. Column 13 is the gene name. Column 2 needs to start with NM because that is mRNA.</p>
+<pre class="bash"><code>grep  &quot;NM&quot; ncbiRefSeq.txt | awk &#39;{print $3 &quot;\t&quot; $5 &quot;\t&quot; $6 &quot;\t&quot; $2 &quot;\t&quot; $13 &quot;\t&quot; $4}&#39; &gt; ncbiRefSeq.mRNA.named.bed</code></pre>
+<p>I can write a script that writes only the longest isoform for each gene.</p>
+<pre class="bash"><code>
+outfile=open(&quot;refseq.ProteinCoding.bed&quot;, &quot;w&quot;)
+
+
+
+
+infile=open(&quot;ncbiRefSeq.mRNA.named.bed&quot;, &quot;r&quot;)
+
+lines=infile.readlines()
+lot_lines=len(lines)
+for n,ln in enumerate(lines):
+    chrom, start, end, mRNA, gene, strand = ln.split()
+    #if first line
+    if n == 0:
+        #first line condition
+        SE_list=[]
+        cur_gene=gene
+        SE_list.append(int(start))   
+        SE_list.append(int(end)) 
+    elif n == lot_lines-1:
+        #last line condition
+        if gene == cur_gene:
+            SE_list.append(int(start))   
+            SE_list.append(int(end))
+            SE_list.sort()
+            outfile.write(&quot;%s\t%d\t%d\t%s\t.\t%s\n&quot;%(chrom, SE_list[0], SE_list[-1], gene, strand))
+        else: 
+           outfile.write(&quot;%s\t%d\t%d\t%s\t.\t%s\n&quot;%(chrom, int(start), int(end), gene, strand))
+    elif gene == cur_gene:
+        SE_list.append(int(start))   
+        SE_list.append(int(end))
+    elif gene != cur_gene:
+        #write out the last line but with the start end from the SE list
+        prevline=lines[n-1]
+        chrom2, start2, end2, mRNA2, gene2, strand2 = prevline.split()
+        outfile.write(&quot;%s\t%d\t%d\t%s\t.\t%s\n&quot;%(chrom2, SE_list[0], SE_list[-1], gene2, strand2))
+        cur_gene=gene
+        SE_list=[int(start), int(end)]
+
+
+outfile.close()
+</code></pre>
+<p>I can check this by maknig sure there is 1 line for all of the unique names in the in file.</p>
+<pre class="bash"><code>awk &#39;{print $5}&#39; ncbiRefSeq.mRNA.named.bed | sort | uniq | wc -l
+#19243
+wc -l refseq.ProteinCoding.bed 
+#20298
+sed &#39;s/^chr//&#39; refseq.ProteinCoding.bed &gt; refseq.ProteinCoding.noCHR.bed</code></pre>
+<p>There is still a problem with the script. The problem is when the same gene name is on extra haplotypes. I could remove all of the lines in the file that have _ in the first column. These are on contigs or specfic haplotypes. They will not map to our peaks anyway. I also need to remove the chr.</p>
+<p>This still seems lower than previos APA estimates. I had used gencode estimates before. I am gonig to run this analysis again with those gene.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=gencode_countdistinct
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=gencode_countdistinct.out
+#SBATCH --error=gencode_countdistinct.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+
+bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.sort.bed   -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  &gt;
+</code></pre>
+<pre class="r"><code>Gpeakpergene=read.table(&quot;../data/peakPerRefSeqGene/filtered_APApeaks_perGencodeGene.txt&quot;, stringsAsFactors = F, header = F, col.names = names) %&gt;% mutate(onePeak=ifelse(numPeaks==1, 1, 0 )) %&gt;%  mutate(multPeaks=ifelse(numPeaks &gt; 1, 1, 0 ))</code></pre>
+<pre class="r"><code>Ggenes1peak=sum(Gpeakpergene$onePeak)/nrow(Gpeakpergene) 
+GgenesMultpeak=sum(Gpeakpergene$multPeaks)/nrow(Gpeakpergene)
+Ggenes0peak= 1- Ggenes1peak - GgenesMultpeak
+
+GperPeak= c(round(Ggenes0peak,digits = 3), round(Ggenes1peak,digits = 3),round(GgenesMultpeak, digits = 3))
+
+GperPeakdf=as.data.frame(cbind(Category,as.numeric(GperPeak)))</code></pre>
+<p>Plot these proportions:</p>
+<pre class="r"><code>Glab1=paste(&quot;Genes =&quot;, Ggenes0peak*nrow(Gpeakpergene), sep=&quot; &quot;)
+Glab2=paste(&quot;Genes =&quot;, sum(Gpeakpergene$onePeak), sep=&quot; &quot;)
+Glab3=paste(&quot;Genes =&quot;, sum(Gpeakpergene$multPeaks), sep=&quot; &quot;)
+
+Ggenepeakplot=ggplot(GperPeakdf, aes(x=&quot;&quot;, y=perPeak, fill=Category)) + geom_bar(stat=&quot;identity&quot;)+ labs(title=&quot;Characterize Gencode genes by number of PAS&quot;, y=&quot;Proportion of Protein Coding gene&quot;, x=&quot;&quot;)+ scale_fill_brewer(palette=&quot;Paired&quot;) + coord_cartesian(ylim=c(0,1)) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .35, label=Glab1) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .78, label=Glab2) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .92, label=Glab3)
+Ggenepeakplot</code></pre>
+<p><img src="figure/dataprocfigures.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>These results are still lower than expected. This is because all of my previous analysis mapped the genes to the peaks as which were closest in the upstream direction. Here I am saying the peak must overlap the gene.</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
