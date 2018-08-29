@@ -29,7 +29,7 @@ I want to create a figure similar to the one I created in https://brimittleman.g
 
 
 
-bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed -b   > /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
+bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.fullchroms.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  > /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
 
 
 ```
@@ -68,4 +68,119 @@ lab3=paste("Genes =", sum(peakpergene$multPeaks), sep=" ")
 genepeakplot=ggplot(perPeakdf, aes(x="", y=perPeak, fill=Category)) + geom_bar(stat="identity")+ labs(title="Characterize genes by number of PAS", y="Proportion of Protein Coding gene", x="")+ scale_fill_brewer(palette="Paired") + coord_cartesian(ylim=c(0,1)) + annotate("text", x="", y= .35, label=lab1) + annotate("text", x="", y= .78, label=lab2) + annotate("text", x="", y= .92, label=lab3)
 genepeakplot
 ```
+This includes for than 1 isoform for different genes. I am going to go back to the original refseq file and resegment it.  Column 13 is the gene name.  Column 2 needs to start with NM because that is mRNA.
+
+```{bash, eval=F}
+grep  "NM" ncbiRefSeq.txt | awk '{print $3 "\t" $5 "\t" $6 "\t" $2 "\t" $13 "\t" $4}' > ncbiRefSeq.mRNA.named.bed
+```
+
+I can write a script that writes only the longest isoform for each gene.
+
+```{bash,eval=F}
+
+outfile=open("refseq.ProteinCoding.bed", "w")
+
+
+
+
+infile=open("ncbiRefSeq.mRNA.named.bed", "r")
+
+lines=infile.readlines()
+lot_lines=len(lines)
+for n,ln in enumerate(lines):
+    chrom, start, end, mRNA, gene, strand = ln.split()
+    #if first line
+    if n == 0:
+        #first line condition
+        SE_list=[]
+        cur_gene=gene
+        SE_list.append(int(start))   
+        SE_list.append(int(end)) 
+    elif n == lot_lines-1:
+        #last line condition
+        if gene == cur_gene:
+            SE_list.append(int(start))   
+            SE_list.append(int(end))
+            SE_list.sort()
+            outfile.write("%s\t%d\t%d\t%s\t.\t%s\n"%(chrom, SE_list[0], SE_list[-1], gene, strand))
+        else: 
+           outfile.write("%s\t%d\t%d\t%s\t.\t%s\n"%(chrom, int(start), int(end), gene, strand))
+    elif gene == cur_gene:
+        SE_list.append(int(start))   
+        SE_list.append(int(end))
+    elif gene != cur_gene:
+        #write out the last line but with the start end from the SE list
+        prevline=lines[n-1]
+        chrom2, start2, end2, mRNA2, gene2, strand2 = prevline.split()
+        outfile.write("%s\t%d\t%d\t%s\t.\t%s\n"%(chrom2, SE_list[0], SE_list[-1], gene2, strand2))
+        cur_gene=gene
+        SE_list=[int(start), int(end)]
+
+
+outfile.close()
+
+```
+
+I can check this by maknig sure there is 1 line for all of the unique names in the in file.  
+
+```{bash,eval=F}
+awk '{print $5}' ncbiRefSeq.mRNA.named.bed | sort | uniq | wc -l
+#19243
+wc -l refseq.ProteinCoding.bed 
+#20298
+sed 's/^chr//' refseq.ProteinCoding.bed > refseq.ProteinCoding.noCHR.bed
+```
+
+There is still a problem with the script. The problem is when the same gene name is on extra haplotypes. I could remove all of the lines in the file that have _ in the first column. These are on contigs or specfic haplotypes. They will not map to our peaks anyway. I also need to remove the chr. 
+
+This still seems lower than previos APA estimates. I had used gencode estimates before. I am gonig to run this analysis again with those gene.  
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=gencode_countdistinct
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=gencode_countdistinct.out
+#SBATCH --error=gencode_countdistinct.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+
+bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/gencode.v19.annotation.proteincodinggene.sort.bed   -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  >
+
+
+```
+
+```{r}
+
+Gpeakpergene=read.table("../data/peakPerRefSeqGene/filtered_APApeaks_perGencodeGene.txt", stringsAsFactors = F, header = F, col.names = names) %>% mutate(onePeak=ifelse(numPeaks==1, 1, 0 )) %>%  mutate(multPeaks=ifelse(numPeaks > 1, 1, 0 ))
+```
+
+```{r}
+Ggenes1peak=sum(Gpeakpergene$onePeak)/nrow(Gpeakpergene) 
+GgenesMultpeak=sum(Gpeakpergene$multPeaks)/nrow(Gpeakpergene)
+Ggenes0peak= 1- Ggenes1peak - GgenesMultpeak
+
+GperPeak= c(round(Ggenes0peak,digits = 3), round(Ggenes1peak,digits = 3),round(GgenesMultpeak, digits = 3))
+
+GperPeakdf=as.data.frame(cbind(Category,as.numeric(GperPeak)))
+```
+
+Plot these proportions:  
+
+```{r}
+Glab1=paste("Genes =", Ggenes0peak*nrow(Gpeakpergene), sep=" ")
+Glab2=paste("Genes =", sum(Gpeakpergene$onePeak), sep=" ")
+Glab3=paste("Genes =", sum(Gpeakpergene$multPeaks), sep=" ")
+
+Ggenepeakplot=ggplot(GperPeakdf, aes(x="", y=perPeak, fill=Category)) + geom_bar(stat="identity")+ labs(title="Characterize Gencode genes by number of PAS", y="Proportion of Protein Coding gene", x="")+ scale_fill_brewer(palette="Paired") + coord_cartesian(ylim=c(0,1)) + annotate("text", x="", y= .35, label=Glab1) + annotate("text", x="", y= .78, label=Glab2) + annotate("text", x="", y= .92, label=Glab3)
+Ggenepeakplot
+```
+
+
+These results are still lower than expected. This is because all of my previous analysis mapped the genes to the peaks as which were closest in the upstream direction. Here I am saying the peak must overlap the gene.  
 
