@@ -45,9 +45,12 @@ Peak calling:
 * [Data Processing Figure design](dataprocfigures.html)  
 
 
-Peak coverage/Nominal QTLs:  
+Peak coverage/Nominal QTLs/Diff iso:  
 
 * [Start evaluating peak quantificaiton](28ind.peak.explore.html)  
 * [Prepare the data for leafcutter QTL calling](pheno.leaf.comb.html)
-* [Call nominal QTLs](apaQTLwLeafcutter.html)
+* [Call nominal QTLs](apaQTLwLeafcutter.html)  
+* [Differential Isoform pipeline](diff_iso_pipeline.html)  
+
+
 

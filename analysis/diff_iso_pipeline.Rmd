@@ -1,0 +1,73 @@
+---
+title: "Leafcutter Differential Isoforma Analysis"
+author: "Briana Mittleman"
+date: "8/30/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In my early analysis of the first 32 libraries I ran the leafcutter differential isoform tool. I am now going to rerun this with the peaks called from the 28 individuals. These peaks have been created with the Peak pipeline in https://brimittleman.github.io/threeprimeseq/peak.cov.pipeline.html. These are also the peaks used for the initial QTL analysis. https://brimittleman.github.io/threeprimeseq/apaQTLwLeafcutter.html. I can use the same phenotype and genotype files from this analysis. 
+
+
+To run the differential isoform analysis I need a file with the lines numbers and the fraction. This is similar to the sample.txt file from the QTL analysis.  
+
+The phenotype file is filtered_APApeaks_merged_allchrom_refseqGenes_pheno.txt. I can use the header of this to create the sample form. I will work in the directory: /project2/gilad/briana/threeprimeseq/data/diff_iso/  
+
+
+make_samplegroups.py
+```{bash, eval=F}
+
+outfile=open("/project2/gilad/briana/threeprimeseq/data/diff_iso/sample_groups.txt", "w")
+infile=open("/project2/gilad/briana/threeprimeseq/data/diff_iso/filtered_APApeaks_merged_allchrom_refseqGenes_pheno.txt", "r")
+
+for ln, i in enumerate(infile):
+    if ln==0:
+        header=i.split()
+        lines=header[1:]
+        for l in lines:
+            if l[-1] == "T":
+                outfile.write("%s\tTotal\n"%(l))
+            else:
+
+                outfile.write("%s\tNuclear\n"%(l))
+                
+outfile.close()
+                
+
+```
+
+I can now run the leafcutter_ds.R file.  
+
+run_leafcutter_ds.sh
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=diff_isoTN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=diff_isoTN.out
+#SBATCH --error=diff_isoTN.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+module load R  
+
+
+Rscript /project2/gilad/briana/threeprimeseq/data/diff_iso/leafcutter_ds.R /project2/gilad/briana/threeprimeseq/data/diff_iso/filtered_APApeaks_merged_allchrom_refseqGenes_pheno.txt /project2/gilad/briana/threeprimeseq/data/diff_iso/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso/TN_diff_isoform
+```
+
+
+
+Error in dimnames(x) <- dn : 
+  length of 'dimnames' [2] not equal to array extent
+Calls: differential_splicing -> get_intron_meta -> colnames<-
+Execution halted
+
+
+Problem may be due to the phenotype file. It looks like the header does not need a PeakID column.   
