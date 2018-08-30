@@ -29,8 +29,11 @@ I want to create a figure similar to the one I created in https://brimittleman.g
 
 
 
-bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.fullchroms.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  > /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
+bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  > /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
 
+
+#try opp strand 
+bedtools map -c 4 -S -o count_distinct -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  > /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene_oppStrand.txt 
 
 ```
 
@@ -183,4 +186,155 @@ Ggenepeakplot
 
 
 These results are still lower than expected. This is because all of my previous analysis mapped the genes to the peaks as which were closest in the upstream direction. Here I am saying the peak must overlap the gene.  
+
+
+I should again look at some of the genes with the top counts in RNA seq and the 0 peaks.  
+
+I am going to run feaureCounts on 18486 guevardis with the refseq annotation with the named genes. I need to make this a SAF file.  
+
+```{bash, eval=F}
+from misc_helper import *
+
+fout = file("/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.SAF",'w')
+fout.write("GeneID\tChr\tStart\tEnd\tStrand\n")
+for ln in open("/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed"):
+    chrom, start, end, gene, score, strand = ln.split()
+    start_i=int(start)
+    end_i=int(end)
+    fout.write("%s\t%s\t%d\t%d\t%s\n"%(gene, chrom, start_i, end_i, strand))
+fout.close()
+```
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=fc_RNAseq_refseq
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=fc_RNAseq_refseq.out
+#SBATCH --error=fc_RNAseq_refseq.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+# outdir: /project2/gilad/briana/comparitive_threeprime/data/PeakwGene_quant
+
+featureCounts -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/refseq18486exp.quant /project2/yangili1/LCL/RNAseqGeuvadisBams/RNAseqGeuvadis_STAR_18486.final.bam -s 1
+```
+
+Now I can upload the results and compare them to the peak counts in these genes.  
+
+
+```{r}
+namesRNA=c("Name", "Chr", "Start", "End", "Strand", "Length", "RNAseq")
+RNAseqrefseq=read.table("../data/peakPerRefSeqGene/refseq18486exp.quant", header=T, stringsAsFactors = F, col.names = namesRNA)
+RNAseqrefseq$Start=as.integer(RNAseqrefseq$Start)
+RNAseqrefseq$End=as.integer(RNAseqrefseq$End)
+```
+Join the peakpergene dataframe with this dataframe.  
+
+```{r}
+refPeakandRNA=peakpergene %>% inner_join(RNAseqrefseq, by=c("Name", "Chr", "Start", "End", "Strand")) 
+
+refPeakandRNA_noPeak=refPeakandRNA %>% filter(RNAseq!=0) %>% filter(numPeaks==0) %>% arrange(desc(RNAseq)) %>% select(Name, Start, End, Chr, RNAseq, numPeaks)
+
+```
+
+This doesnt make much sense. Seems like the peaks are on the opposite strand for the top genes. I am gonig to force opposite strandedness and see what happens.  
+
+```{r}
+
+Opeakpergene=read.table("../data/peakPerRefSeqGene/filtered_APApeaks_perRefseqGene_oppStrand.txt", stringsAsFactors = F, header = F, col.names = names) %>% mutate(onePeak=ifelse(numPeaks==1, 1, 0 )) %>%  mutate(multPeaks=ifelse(numPeaks > 1, 1, 0 ))
+```
+
+```{r}
+Ogenes1peak=sum(Opeakpergene$onePeak)/nrow(Opeakpergene) 
+OgenesMultpeak=sum(Opeakpergene$multPeaks)/nrow(Opeakpergene)
+Ogenes0peak= 1- Ogenes1peak - OgenesMultpeak
+
+
+OperPeak= c(round(Ogenes0peak,digits = 3), round(Ogenes1peak,digits = 3),round(OgenesMultpeak, digits = 3))
+
+OperPeakdf=as.data.frame(cbind(Category,OperPeak))
+
+OperPeakdf$OperPeak=as.numeric(as.character(OperPeakdf$OperPeak))
+```
+
+Plot these proportions:  
+
+```{r}
+Olab1=paste("Genes =", Ogenes0peak*nrow(Opeakpergene), sep=" ")
+Olab2=paste("Genes =", sum(Opeakpergene$onePeak), sep=" ")
+Olab3=paste("Genes =", sum(Opeakpergene$multPeaks), sep=" ")
+
+Ogenepeakplot=ggplot(OperPeakdf, aes(x="", y=OperPeak, by=Category, fill=Category)) + geom_bar(stat="identity")+ labs(title="Characterize Refseq genes by number of PAS- Oppstrand", y="Proportion of Protein Coding gene", x="")+ scale_fill_brewer(palette="Paired") + coord_cartesian(ylim=c(0,1)) + annotate("text", x="", y= .2, label=Olab1) + annotate("text", x="", y= .4, label=Olab2) + annotate("text", x="", y= .9, label=Olab3)
+Ogenepeakplot
+```
+This makes more sense now. 
+
+
+```{r}
+refPeakandRNA_withO=Opeakpergene %>% inner_join(RNAseqrefseq, by=c("Name", "Chr", "Start", "End", "Strand")) 
+refPeakandRNA_noPeakw_withO=refPeakandRNA_withO %>% filter(RNAseq!=0) %>% filter(numPeaks==0) %>% arrange(desc(RNAseq)) %>% select(Name, Start, End, Chr, RNAseq, numPeaks)
+
+
+```
+
+```{r}
+
+
+plot(sort(log10(refPeakandRNA_withO$RNAseq), decreasing = T), main="Distribution of RNA expression counts 18486", ylab="log10 Gene count", xlab="Refseq Gene")
+points(sort(log10(refPeakandRNA_noPeakw_withO$RNAseq), decreasing = T), col="Red")
+legend("topright", legend=c("All Gene", "Gene without Peak"), col=c("black", "red"),pch=19)
+```
+Run Kalisto on the this RNA seq line and look at this plot with the kalisto output expression TPM.  I added Kallisto to the three-prime-env.  
+
+
+Kallisto step:  
+
+* make index:  kallisto_index18486.sh  
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=kallisto_index18486
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=kallisto_index18486.out
+#SBATCH --error=kallisto_index18486.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+kallisto index  --make-unique -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_index /project2/yangili1/LCL/RNAseq/RNA.18486_1.fastq.gz /project2/yangili1/LCL/RNAseq/RNA.18486_2.fastq.gz
+```
+
+* quantify: kallisto_quant18467.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=kallisto_quant18486
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=kallisto_quant18486.out
+#SBATCH --error=kallisto_quant18486.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+kallisto quant -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_index -o /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/ /project2/yangili1/LCL/RNAseq/RNA.18486_1.fastq.gz /project2/yangili1/LCL/RNAseq/RNA.18486_2.fastq.gz
+```
 
