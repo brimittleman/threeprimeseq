@@ -77,7 +77,7 @@ module load Anaconda3
 source activate three-prime-env
 
 
-featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.fc /project2/gilad/briana/threeprimeseq/data/sort/*-sort.bam -s 1
+featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.fc /project2/gilad/briana/threeprimeseq/data/sort/*-sort.bam -s 2
 
 ```
 
@@ -98,10 +98,17 @@ Also do this for total and nuclear seperately.
 module load Anaconda3
 source activate three-prime-env
 
-featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 1
+featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
 
-featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 1
+featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
 ```
+
+Results of this: Most of these are unassigned unmapped reads. I need to map to the opposite strands.  
+
+
+
+
+
 
 Fix the headers:  
 
