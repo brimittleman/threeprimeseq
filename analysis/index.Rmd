@@ -53,4 +53,8 @@ Peak coverage/Nominal QTLs/Diff iso:
 * [Differential Isoform pipeline](diff_iso_pipeline.html)  
 
 
+Rerun analysis opp strand:  
+
+* [Rerun QTL analysis with off strand](peakOverlap_oppstrand.html)  
+
 
