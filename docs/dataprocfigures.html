@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-29</p>
+<p><strong>Last updated:</strong> 2018-08-30</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6b818cbdefc857eb57e9a522483fa63b60b7fb60" target="_blank">6b818cb</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a2a7cd9bb204a1c4f22f57125a72d05f36a44697" target="_blank">a2a7cd9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -439,6 +439,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a2a7cd9bb204a1c4f22f57125a72d05f36a44697/analysis/dataprocfigures.Rmd" target="_blank">a2a7cd9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+add kalisto code
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/cbec2f6eb084a5f22386c61b8e6d872d238c3c05/docs/dataprocfigures.html" target="_blank">cbec2f6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/6b818cbdefc857eb57e9a522483fa63b60b7fb60/analysis/dataprocfigures.Rmd" target="_blank">6b818cb</a>
 </td>
 <td style="text-align:left;">
@@ -507,15 +541,19 @@ first processing figure
 
 
 
-bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.fullchroms.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  &gt; /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
+bedtools map -c 4 -s -o count_distinct -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  &gt; /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene.txt 
+
+
+#try opp strand 
+bedtools map -c 4 -S -o count_distinct -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed  &gt; /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/filtered_APApeaks_perRefseqGene_oppStrand.txt 
 </code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -566,6 +604,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/cbec2f6eb084a5f22386c61b8e6d872d238c3c05/docs/figure/dataprocfigures.Rmd/unnamed-chunk-5-1.png" target="_blank">cbec2f6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-29
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c6dc97bf8c0353ab9179b44a1f9ed8210f4c0adb/docs/figure/dataprocfigures.Rmd/unnamed-chunk-5-1.png" target="_blank">c6dc97b</a>
@@ -664,7 +713,144 @@ Glab3=paste(&quot;Genes =&quot;, sum(Gpeakpergene$multPeaks), sep=&quot; &quot;)
 Ggenepeakplot=ggplot(GperPeakdf, aes(x=&quot;&quot;, y=perPeak, fill=Category)) + geom_bar(stat=&quot;identity&quot;)+ labs(title=&quot;Characterize Gencode genes by number of PAS&quot;, y=&quot;Proportion of Protein Coding gene&quot;, x=&quot;&quot;)+ scale_fill_brewer(palette=&quot;Paired&quot;) + coord_cartesian(ylim=c(0,1)) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .35, label=Glab1) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .78, label=Glab2) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .92, label=Glab3)
 Ggenepeakplot</code></pre>
 <p><img src="figure/dataprocfigures.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/cbec2f6eb084a5f22386c61b8e6d872d238c3c05/docs/figure/dataprocfigures.Rmd/unnamed-chunk-12-1.png" target="_blank">cbec2f6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>These results are still lower than expected. This is because all of my previous analysis mapped the genes to the peaks as which were closest in the upstream direction. Here I am saying the peak must overlap the gene.</p>
+<p>I should again look at some of the genes with the top counts in RNA seq and the 0 peaks.</p>
+<p>I am going to run feaureCounts on 18486 guevardis with the refseq annotation with the named genes. I need to make this a SAF file.</p>
+<pre class="bash"><code>from misc_helper import *
+
+fout = file(&quot;/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.SAF&quot;,&#39;w&#39;)
+fout.write(&quot;GeneID\tChr\tStart\tEnd\tStrand\n&quot;)
+for ln in open(&quot;/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed&quot;):
+    chrom, start, end, gene, score, strand = ln.split()
+    start_i=int(start)
+    end_i=int(end)
+    fout.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(gene, chrom, start_i, end_i, strand))
+fout.close()</code></pre>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=fc_RNAseq_refseq
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=fc_RNAseq_refseq.out
+#SBATCH --error=fc_RNAseq_refseq.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+# outdir: /project2/gilad/briana/comparitive_threeprime/data/PeakwGene_quant
+
+featureCounts -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/peakPerRefseqGene/refseq18486exp.quant /project2/yangili1/LCL/RNAseqGeuvadisBams/RNAseqGeuvadis_STAR_18486.final.bam -s 1</code></pre>
+<p>Now I can upload the results and compare them to the peak counts in these genes.</p>
+<pre class="r"><code>namesRNA=c(&quot;Name&quot;, &quot;Chr&quot;, &quot;Start&quot;, &quot;End&quot;, &quot;Strand&quot;, &quot;Length&quot;, &quot;RNAseq&quot;)
+RNAseqrefseq=read.table(&quot;../data/peakPerRefSeqGene/refseq18486exp.quant&quot;, header=T, stringsAsFactors = F, col.names = namesRNA)
+RNAseqrefseq$Start=as.integer(RNAseqrefseq$Start)</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>RNAseqrefseq$End=as.integer(RNAseqrefseq$End)</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+<p>Join the peakpergene dataframe with this dataframe.</p>
+<pre class="r"><code>refPeakandRNA=peakpergene %&gt;% inner_join(RNAseqrefseq, by=c(&quot;Name&quot;, &quot;Chr&quot;, &quot;Start&quot;, &quot;End&quot;, &quot;Strand&quot;)) 
+
+refPeakandRNA_noPeak=refPeakandRNA %&gt;% filter(RNAseq!=0) %&gt;% filter(numPeaks==0) %&gt;% arrange(desc(RNAseq)) %&gt;% select(Name, Start, End, Chr, RNAseq, numPeaks)</code></pre>
+<p>This doesnt make much sense. Seems like the peaks are on the opposite strand for the top genes. I am gonig to force opposite strandedness and see what happens.</p>
+<pre class="r"><code>Opeakpergene=read.table(&quot;../data/peakPerRefSeqGene/filtered_APApeaks_perRefseqGene_oppStrand.txt&quot;, stringsAsFactors = F, header = F, col.names = names) %&gt;% mutate(onePeak=ifelse(numPeaks==1, 1, 0 )) %&gt;%  mutate(multPeaks=ifelse(numPeaks &gt; 1, 1, 0 ))</code></pre>
+<pre class="r"><code>Ogenes1peak=sum(Opeakpergene$onePeak)/nrow(Opeakpergene) 
+OgenesMultpeak=sum(Opeakpergene$multPeaks)/nrow(Opeakpergene)
+Ogenes0peak= 1- Ogenes1peak - OgenesMultpeak
+
+
+OperPeak= c(round(Ogenes0peak,digits = 3), round(Ogenes1peak,digits = 3),round(OgenesMultpeak, digits = 3))
+
+OperPeakdf=as.data.frame(cbind(Category,OperPeak))
+
+OperPeakdf$OperPeak=as.numeric(as.character(OperPeakdf$OperPeak))</code></pre>
+<p>Plot these proportions:</p>
+<pre class="r"><code>Olab1=paste(&quot;Genes =&quot;, Ogenes0peak*nrow(Opeakpergene), sep=&quot; &quot;)
+Olab2=paste(&quot;Genes =&quot;, sum(Opeakpergene$onePeak), sep=&quot; &quot;)
+Olab3=paste(&quot;Genes =&quot;, sum(Opeakpergene$multPeaks), sep=&quot; &quot;)
+
+Ogenepeakplot=ggplot(OperPeakdf, aes(x=&quot;&quot;, y=OperPeak, by=Category, fill=Category)) + geom_bar(stat=&quot;identity&quot;)+ labs(title=&quot;Characterize Refseq genes by number of PAS- Oppstrand&quot;, y=&quot;Proportion of Protein Coding gene&quot;, x=&quot;&quot;)+ scale_fill_brewer(palette=&quot;Paired&quot;) + coord_cartesian(ylim=c(0,1)) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .2, label=Olab1) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .4, label=Olab2) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .9, label=Olab3)
+Ogenepeakplot</code></pre>
+<p><img src="figure/dataprocfigures.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /> This makes more sense now.</p>
+<pre class="r"><code>refPeakandRNA_withO=Opeakpergene %&gt;% inner_join(RNAseqrefseq, by=c(&quot;Name&quot;, &quot;Chr&quot;, &quot;Start&quot;, &quot;End&quot;, &quot;Strand&quot;)) 
+refPeakandRNA_noPeakw_withO=refPeakandRNA_withO %&gt;% filter(RNAseq!=0) %&gt;% filter(numPeaks==0) %&gt;% arrange(desc(RNAseq)) %&gt;% select(Name, Start, End, Chr, RNAseq, numPeaks)</code></pre>
+<pre class="r"><code>plot(sort(log10(refPeakandRNA_withO$RNAseq), decreasing = T), main=&quot;Distribution of RNA expression counts 18486&quot;, ylab=&quot;log10 Gene count&quot;, xlab=&quot;Refseq Gene&quot;)
+points(sort(log10(refPeakandRNA_noPeakw_withO$RNAseq), decreasing = T), col=&quot;Red&quot;)
+legend(&quot;topright&quot;, legend=c(&quot;All Gene&quot;, &quot;Gene without Peak&quot;), col=c(&quot;black&quot;, &quot;red&quot;),pch=19)</code></pre>
+<p><img src="figure/dataprocfigures.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /> Run Kalisto on the this RNA seq line and look at this plot with the kalisto output expression TPM. I added Kallisto to the three-prime-env.</p>
+<p>Kallisto step:</p>
+<ul>
+<li>make index: kallisto_index18486.sh</li>
+</ul>
+<pre class="bash"><code>
+#!/bin/bash
+
+#SBATCH --job-name=kallisto_index18486
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=kallisto_index18486.out
+#SBATCH --error=kallisto_index18486.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+kallisto index  --make-unique -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_index /project2/yangili1/LCL/RNAseq/RNA.18486_1.fastq.gz /project2/yangili1/LCL/RNAseq/RNA.18486_2.fastq.gz</code></pre>
+<ul>
+<li>quantify: kallisto_quant18467.sh</li>
+</ul>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=kallisto_quant18486
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=kallisto_quant18486.out
+#SBATCH --error=kallisto_quant18486.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+kallisto quant -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_index -o /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/ /project2/yangili1/LCL/RNAseq/RNA.18486_1.fastq.gz /project2/yangili1/LCL/RNAseq/RNA.18486_2.fastq.gz</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
