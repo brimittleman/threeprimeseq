@@ -98,9 +98,9 @@ Also do this for total and nuclear seperately.
 module load Anaconda3
 source activate three-prime-env
 
-featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
 
-featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
 ```
 
 
@@ -646,6 +646,7 @@ nuc.perm$bh=p.adjust(nuc.perm$bpval, method="fdr")
 plot(-log10(nuc.perm$bh), main="Nuclear BH corrected pval")
 abline(h=1,col="Red")
 ```
+
 ```{r}
 nuc_qtl_10= nuc.perm %>% filter(-log10(bh) > 1) %>% nrow()
 nuc_qtl_10
@@ -679,5 +680,29 @@ nQTL=as.data.frame(cbind(FDR, Total=nQTL_tot, Nuclear=nQTL_nuc))
 nQTL_long=melt(nQTL, id.vars = "FDR")
 
 ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y="Number of Significant QTLs", title="APAqtls detected by FDR cuttoff", color="Fraction")
+```
+
+##COndition on QTLs from CEU   
+
+```{r}
+ceu_QTL=read.table("../data/nom_QTL/ceu.apaqtl.txt.gz.bh.txt", header = T, stringsAsFactors = F)
+nuc.nom=read.table("../data/nom_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_nominalRes.txt",head=F , stringsAsFactors = F,  col.names = c("peakID", "snpID", "dist", "nuc_pval", "slope"))
+
+ceu_QTL_snp=ceu_QTL %>% filter(grepl("snp", dummy2)) %>% separate(dummy2, c("type", "chr", "loc"), sep="_") %>% unite(snpID, c("chr", "loc"), sep=":")
+
+
+ceuAndNuc= ceu_QTL_snp %>% inner_join(nuc.nom, by="snpID") %>% select(snpID, bpval, nuc_pval)
+nuc_ceuSNPS=runif(nrow(ceuAndNuc))
+```
+
+
+
+```{r}
+#plot qqplot
+
+qqplot(-log10(runif(nrow(nuc.nom))), -log10(nuc.nom$nuc_pval),ylab="-log10 Total nominal pvalue", xlab="Uniform expectation", main="Nuclear Nominal pvalues for all snps")
+points(sort(-log10(nuc_ceuSNPS)), sort(-log10(ceuAndNuc$nuc_pval)), col="Red")
+abline(0,1)
+legend("topleft", legend=c("All SNPs", "SNP in CEU APAqtls"), col=c("black", "red"), pch=19)
 ```
 
