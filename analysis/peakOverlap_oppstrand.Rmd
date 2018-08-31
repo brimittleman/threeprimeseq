@@ -579,7 +579,7 @@ done
 
 
 
-for i in 2
+for i in 22
 do
 /home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt
 done
@@ -588,4 +588,96 @@ done
 
 
  https://brimittleman.github.io/threeprimeseq/apaQTLwLeafcutter.html  
+
+##Evaluate Permuted results 
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+library(reshape2)
+```
+
+
+###Total:
+
+```{r}
+tot.perm= read.table("../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.PermutedRes.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+
+plot(tot.perm$ppval, tot.perm$bpval, xlab="Direct method", ylab="Beta approximation", main="Total Check plot")
+abline(0, 1, col="red")
+```
+
+Correct with Benjamini Hochberg:  
+
+```{r}
+tot.perm$bh=p.adjust(tot.perm$bpval, method="fdr")
+plot(-log10(tot.perm$bh), main="Total BH corrected pval")
+abline(h=1,col="Red")
+```
+QQ plot: 
+
+```{r}
+qqplot(-log10(runif(nrow(tot.perm))), -log10(tot.perm$bpval),ylab="-log10 Total permuted pvalue", xlab="Uniform expectation", main="Total permuted pvalues for all snps")
+abline(0,1)
+
+```
+
+```{r}
+tot_qtl_10= tot.perm %>% filter(-log10(bh) > 1) %>% nrow()
+tot_qtl_10
+```
+
+###Nuclear:  
+
+```{r}
+nuc.perm= read.table("../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.Permuted.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+
+plot(nuc.perm$ppval, nuc.perm$bpval, xlab="Direct method", ylab="Beta approximation", main="Nuclear Check plot")
+abline(0, 1, col="red")
+```
+
+Correct with Benjamini Hochberg:  
+
+```{r}
+nuc.perm$bh=p.adjust(nuc.perm$bpval, method="fdr")
+plot(-log10(nuc.perm$bh), main="Nuclear BH corrected pval")
+abline(h=1,col="Red")
+```
+```{r}
+nuc_qtl_10= nuc.perm %>% filter(-log10(bh) > 1) %>% nrow()
+nuc_qtl_10
+```
+
+
+QQ plot: 
+
+```{r}
+qqplot(-log10(runif(nrow(nuc.perm))), -log10(nuc.perm$bpval),ylab="-log10 Total permuted pvalue", xlab="Uniform expectation", main="Nuclear permuted pvalues for all snps")
+abline(0,1)
+```
+###Compare number  
+
+```{r}
+nQTL_tot=c()
+FDR=seq(.05, .5, .01)
+for (i in FDR){
+  x=tot.perm %>% filter(bh < i ) %>% nrow()
+  nQTL_tot=c(nQTL_tot, x)
+}
+
+FDR=seq(.05, .5, .01)
+nQTL_nuc=c()
+for (i in FDR){
+  x=nuc.perm %>% filter(bh < i ) %>% nrow()
+  nQTL_nuc=c(nQTL_nuc, x)
+}
+
+nQTL=as.data.frame(cbind(FDR, Total=nQTL_tot, Nuclear=nQTL_nuc))
+nQTL_long=melt(nQTL, id.vars = "FDR")
+
+ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y="Number of Significant QTLs", title="APAqtls detected by FDR cuttoff", color="Fraction")
+```
 
