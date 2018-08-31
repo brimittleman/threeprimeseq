@@ -103,10 +103,6 @@ featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filt
 featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
 ```
 
-Results of this: Most of these are unassigned unmapped reads. I need to map to the opposite strands.  
-
-
-
 
 
 
@@ -263,8 +259,14 @@ for line, i in enumerate(count_file):
         
 
 fout=open("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt","w")
-peak=["PeakID"]
-fout.write(" ".join(peak + inds) + '\n' )
+peak=["chrom"]
+inds_noL=[]
+for each in inds:
+    indsNA= "NA" + each[:-2]
+    inds_noL.append(indsNA) 
+fout.write(" ".join(peak + inds_noL) + '\n' )
+
+
 count_file=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total_fixed.fc", "r")
 for line , i in enumerate(count_file):
     if line > 1:
@@ -272,7 +274,10 @@ for line , i in enumerate(count_file):
         id=i_list[0]
         id_list=id.split(":")
         gene=id_list[5]
-        buff=[id]
+        start=int(id_list[2])
+        end=int(id_list[3])
+        buff=[]
+        buff.append("%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
         for x,y in zip(i_list[6:], inds):
             b=int(dic_dub[gene][y])
             t=int(x)
@@ -347,8 +352,12 @@ for line, i in enumerate(count_file):
         
 
 fout=open("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt","w")
-peak=["PeakID"]
-fout.write(" ".join(peak + inds) + '\n' )
+peak=["chrom"]
+inds_noL=[]
+for each in inds:
+    indsNA= "NA" + each[:-2]
+    inds_noL.append(indsNA)  
+fout.write(" ".join(peak + inds_noL) + '\n' )
 count_file=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear_fixed.fc", "r")
 for line , i in enumerate(count_file):
     if line > 1:
@@ -356,7 +365,10 @@ for line , i in enumerate(count_file):
         id=i_list[0]
         id_list=id.split(":")
         gene=id_list[5]
-        buff=[id]
+        start=int(id_list[2])
+        end=int(id_list[3])
+        buff=[]
+        buff.append("%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
         for x,y in zip(i_list[6:], inds):
             b=int(dic_dub[gene][y])
             t=int(x)
@@ -414,20 +426,21 @@ python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filt
 #load anaconda and env. 
 sh filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz_prepare.sh
 
+
 #filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.PCs
 #filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.PCs
 ```
 
 
-Make a sample list.  
+Make a sample list.  ls
 
 * makeSampleList_opp.py  
 ```{bash,eval=F}
 #make a sample list  
 
-fout = file("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt",'w')
+fout = open("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt",'w')
 
-for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_nuclear.txt"", "r"):
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_nuclear.txt", "r"):
     bam, sample = ln.split()
     line=sample[:-2]
     fout.write("NA"+line + "\n")
@@ -506,7 +519,73 @@ done
 
 
 ```
+Make sure to create directory for out before running this.  
 
 
-Run the normalversion if there are certain chromosome dont work.  https://brimittleman.github.io/threeprimeseq/apaQTLwLeafcutter.html  
+Run normal version for: 
+
+* total 4/15
+* nuclear 4/15 
+
+APAqtl_nominal_norm_opp.sh  
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_norm_opp
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_norm_opp.out
+#SBATCH --error=APAqtl_nominal__nrom_opp.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 4 15
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt
+done
+
+
+for i in 4 15 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt
+done
+
+```
+Error in some of the permutations due to need for normal condition. Running these with :  
+
+APAqtl_perm_norm_opp.sh 
+```{bash, eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_perm_opp
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_perm_opp.out
+#SBATCH --error=APAqtl_perm_opp.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+for i in  1 15 4  
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt
+done
+
+
+
+for i in 2
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt
+done
+
+```
+
+
+ https://brimittleman.github.io/threeprimeseq/apaQTLwLeafcutter.html  
 
