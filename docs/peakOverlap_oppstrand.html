@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1bc39533c1cce529df5f516bd1a90683aa2e2046" target="_blank">1bc3953</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c4d943690857b4622955e1ba5648af513d34a3a2" target="_blank">c4d9436</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -380,6 +380,7 @@ Untracked files:
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
     Untracked:  data/nom_QTL/
+    Untracked:  data/nom_QTL_opp/
     Untracked:  data/nuc6up/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
@@ -436,6 +437,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c4d943690857b4622955e1ba5648af513d34a3a2/analysis/peakOverlap_oppstrand.Rmd" target="_blank">c4d9436</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+<td style="text-align:left;">
+add results and compare to ceu
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/10c20cd9fae6b4433f499232ef22a1e0f0c24763/docs/peakOverlap_oppstrand.html" target="_blank">10c20cd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -631,9 +666,9 @@ featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filt
 module load Anaconda3
 source activate three-prime-env
 
-featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
 
-featureCounts -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2</code></pre>
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2</code></pre>
 <p>Fix the headers:</p>
 <ul>
 <li>fix_head_fc_opp_tot.py</li>
@@ -1104,14 +1139,105 @@ Attaching package: &#39;reshape2&#39;</code></pre>
 plot(tot.perm$ppval, tot.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/10c20cd9fae6b4433f499232ef22a1e0f0c24763/docs/figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-20-1.png" target="_blank">10c20cd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Correct with Benjamini Hochberg:</p>
 <pre class="r"><code>tot.perm$bh=p.adjust(tot.perm$bpval, method=&quot;fdr&quot;)
 plot(-log10(tot.perm$bh), main=&quot;Total BH corrected pval&quot;)
 abline(h=1,col=&quot;Red&quot;)</code></pre>
-<p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /> QQ plot:</p>
+<p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/10c20cd9fae6b4433f499232ef22a1e0f0c24763/docs/figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-21-1.png" target="_blank">10c20cd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>QQ plot:</p>
 <pre class="r"><code>qqplot(-log10(runif(nrow(tot.perm))), -log10(tot.perm$bpval),ylab=&quot;-log10 Total permuted pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Total permuted pvalues for all snps&quot;)
 abline(0,1)</code></pre>
 <p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/10c20cd9fae6b4433f499232ef22a1e0f0c24763/docs/figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-22-1.png" target="_blank">10c20cd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>tot_qtl_10= tot.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
 tot_qtl_10</code></pre>
 <pre><code>[1] 3</code></pre>
@@ -1124,18 +1250,111 @@ tot_qtl_10</code></pre>
 plot(nuc.perm$ppval, nuc.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-24-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/10c20cd9fae6b4433f499232ef22a1e0f0c24763/docs/figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-24-1.png" target="_blank">10c20cd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Correct with Benjamini Hochberg:</p>
 <pre class="r"><code>nuc.perm$bh=p.adjust(nuc.perm$bpval, method=&quot;fdr&quot;)
 plot(-log10(nuc.perm$bh), main=&quot;Nuclear BH corrected pval&quot;)
 abline(h=1,col=&quot;Red&quot;)</code></pre>
 <p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-25-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/10c20cd9fae6b4433f499232ef22a1e0f0c24763/docs/figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-25-1.png" target="_blank">10c20cd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>nuc_qtl_10= nuc.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
 nuc_qtl_10</code></pre>
 <pre><code>[1] 187</code></pre>
 <p>QQ plot:</p>
 <pre class="r"><code>qqplot(-log10(runif(nrow(nuc.perm))), -log10(nuc.perm$bpval),ylab=&quot;-log10 Total permuted pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear permuted pvalues for all snps&quot;)
 abline(0,1)</code></pre>
-<p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /> ###Compare number</p>
+<p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-27-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/10c20cd9fae6b4433f499232ef22a1e0f0c24763/docs/figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-27-1.png" target="_blank">10c20cd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="compare-number" class="section level3">
+<h3>Compare number</h3>
 <pre class="r"><code>nQTL_tot=c()
 FDR=seq(.05, .5, .01)
 for (i in FDR){
@@ -1155,7 +1374,55 @@ nQTL_long=melt(nQTL, id.vars = &quot;FDR&quot;)
 
 ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y=&quot;Number of Significant QTLs&quot;, title=&quot;APAqtls detected by FDR cuttoff&quot;, color=&quot;Fraction&quot;)</code></pre>
 <p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-28-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/10c20cd9fae6b4433f499232ef22a1e0f0c24763/docs/figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-28-1.png" target="_blank">10c20cd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
+</div>
+<div id="condition-on-qtls-from-ceu" class="section level2">
+<h2>COndition on QTLs from CEU</h2>
+<pre class="r"><code>ceu_QTL=read.table(&quot;../data/nom_QTL/ceu.apaqtl.txt.gz.bh.txt&quot;, header = T, stringsAsFactors = F)
+nuc.nom=read.table(&quot;../data/nom_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_nominalRes.txt&quot;,head=F , stringsAsFactors = F,  col.names = c(&quot;peakID&quot;, &quot;snpID&quot;, &quot;dist&quot;, &quot;nuc_pval&quot;, &quot;slope&quot;))
+
+ceu_QTL_snp=ceu_QTL %&gt;% filter(grepl(&quot;snp&quot;, dummy2)) %&gt;% separate(dummy2, c(&quot;type&quot;, &quot;chr&quot;, &quot;loc&quot;), sep=&quot;_&quot;) %&gt;% unite(snpID, c(&quot;chr&quot;, &quot;loc&quot;), sep=&quot;:&quot;)
+
+
+ceuAndNuc= ceu_QTL_snp %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, bpval, nuc_pval)
+nuc_ceuSNPS=runif(nrow(ceuAndNuc))</code></pre>
+<pre class="r"><code>#plot qqplot
+
+qqplot(-log10(runif(nrow(nuc.nom))), -log10(nuc.nom$nuc_pval),ylab=&quot;-log10 Total nominal pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear Nominal pvalues for all snps&quot;)
+points(sort(-log10(nuc_ceuSNPS)), sort(-log10(ceuAndNuc$nuc_pval)), col=&quot;Red&quot;)
+abline(0,1)
+legend(&quot;topleft&quot;, legend=c(&quot;All SNPs&quot;, &quot;SNP in CEU APAqtls&quot;), col=c(&quot;black&quot;, &quot;red&quot;), pch=19)</code></pre>
+<p><img src="figure/peakOverlap_oppstrand.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
