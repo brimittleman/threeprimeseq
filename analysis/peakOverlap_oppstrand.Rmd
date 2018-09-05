@@ -205,7 +205,7 @@ dic_IND = {}
 dic_BAM = {}
 
 for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_total.txt"):
-    bam, IND = ln.split()
+    bam, IND = ln.split("\t")
     IND = IND.strip()
     dic_IND[bam] = IND
     if IND not in dic_BAM:
@@ -277,7 +277,7 @@ for line , i in enumerate(count_file):
         start=int(id_list[2])
         end=int(id_list[3])
         buff=[]
-        buff.append("%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
         for x,y in zip(i_list[6:], inds):
             b=int(dic_dub[gene][y])
             t=int(x)
@@ -298,7 +298,7 @@ dic_IND = {}
 dic_BAM = {}
 
 for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_nuclear.txt"):
-    bam, IND = ln.split()
+    bam, IND = ln.split("\t")
     IND = IND.strip()
     dic_IND[bam] = IND
     if IND not in dic_BAM:
@@ -368,7 +368,7 @@ for line , i in enumerate(count_file):
         start=int(id_list[2])
         end=int(id_list[3])
         buff=[]
-        buff.append("%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
         for x,y in zip(i_list[6:], inds):
             b=int(dic_dub[gene][y])
             t=int(x)
@@ -427,6 +427,8 @@ python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filt
 sh filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz_prepare.sh
 
 
+
+#keep only 2 PCs
 #filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.PCs
 #filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.PCs
 ```
@@ -572,14 +574,14 @@ APAqtl_perm_norm_opp.sh
 #SBATCH --mail-type=END
 
 
-for i in  1 15 4  
-do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt
-done
+#for i in  1 15 4  
+#do
+#/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt
+#done
 
 
 
-for i in 22
+for i in 21
 do
 /home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/SAMPLE.txt
 done
@@ -602,7 +604,7 @@ library(reshape2)
 ###Total:
 
 ```{r}
-tot.perm= read.table("../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total.PermutedRes.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+tot.perm= read.table("../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permRes.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
 
 
 plot(tot.perm$ppval, tot.perm$bpval, xlab="Direct method", ylab="Beta approximation", main="Total Check plot")
@@ -627,12 +629,13 @@ abline(0,1)
 ```{r}
 tot_qtl_10= tot.perm %>% filter(-log10(bh) > 1) %>% nrow()
 tot_qtl_10
+
 ```
 
 ###Nuclear:  
 
 ```{r}
-nuc.perm= read.table("../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear.Permuted.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+nuc.perm= read.table("../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permRes.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
 
 
 plot(nuc.perm$ppval, nuc.perm$bpval, xlab="Direct method", ylab="Beta approximation", main="Nuclear Check plot")
@@ -682,11 +685,19 @@ nQTL_long=melt(nQTL, id.vars = "FDR")
 ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y="Number of Significant QTLs", title="APAqtls detected by FDR cuttoff", color="Fraction")
 ```
 
-##COndition on QTLs from CEU   
+##Condition on QTLs from CEU   
+
+The nominal results is super big. I am going to sort it by pvalue and keep only 1 in 10.  
+
+```{bash, eval=F}
+sort -k 4 -n -r filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt | awk 'NR == 1 || NR % 10 == 0' > filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes_onetenth.txt
+```
 
 ```{r}
 ceu_QTL=read.table("../data/nom_QTL/ceu.apaqtl.txt.gz.bh.txt", header = T, stringsAsFactors = F)
-nuc.nom=read.table("../data/nom_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_nominalRes.txt",head=F , stringsAsFactors = F,  col.names = c("peakID", "snpID", "dist", "nuc_pval", "slope"))
+nuc.nom=read.table("../data/nom_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes_onetenth.txt", stringsAsFactors = F)
+colnames(nuc.nom)= c("peakID", "snpID", "dist", "nuc_pval", "slope")
+
 
 ceu_QTL_snp=ceu_QTL %>% filter(grepl("snp", dummy2)) %>% separate(dummy2, c("type", "chr", "loc"), sep="_") %>% unite(snpID, c("chr", "loc"), sep=":")
 
@@ -705,4 +716,112 @@ points(sort(-log10(nuc_ceuSNPS)), sort(-log10(ceuAndNuc$nuc_pval)), col="Red")
 abline(0,1)
 legend("topleft", legend=c("All SNPs", "SNP in CEU APAqtls"), col=c("black", "red"), pch=19)
 ```
+Unique snp QTLs  
+
+```{r}
+nuc.perm %>% filter(-log10(bh) > 1) %>%  summarise(n_distinct(sid)) 
+```
+
+
+
+##Plot QTL examples  
+
+I will make boxplots of the most significant Qtls in the nuclear fraction. I can use the python script I created for https://brimittleman.github.io/threeprimeseq/apaQTLwLeafcutter.html called filter_geno.py.  
+
+```{r}
+nuc.perm %>% filter(-log10(bh) > 1) %>% mutate(neglogBH=-log10(bh)) %>% arrange(desc(neglogBH)) %>% select(pid,sid, neglogBH) %>% top_n(10) 
+```
+The top QTLs are really one in multiple genes.
+
+
+```{bash, eval=F}
+#unzip the chrom 20 vcf 
+gunzip /project2/gilad/briana/YRI_geno_hg19/chr20.dose.filt.vcf.gz
+python filter_geno.py  20 42285456 /project2/gilad/briana/threeprimeseq/data/filtered_geno/chrom20pos42285456.vcf
+#rezip bgzip- load three-prime-env
+```
+
+```{r}
+samples=c("NA18486","NA18505", 'NA18508','NA18511','NA18519','NA18520','NA18853','NA18858','NA18861','NA18870','NA18909','NA18916','NA19119','NA19128','NA19130','NA19141','NA19160','NA19209','NA19210','NA19223','NA19225','NA19238','NA19239','NA19257')
+geno_names=c('CHROM', 'POS', 'snpID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT', 'NA18486', 'NA18487', 'NA18488', 'NA18489', 'NA18498', 'NA18499', 'NA18501', 'NA18502', 'NA18504', 'NA18505', 'NA18507', 'NA18508', 'NA18510', 'NA18511', 'NA18516', 'NA18517', 'NA18519', 'NA18520', 'NA18522', 'NA18523', 'NA18852', 'NA18853', 'NA18855', 'NA18856', 'NA18858', 'NA18859', 'NA18861', 'NA18862', 'NA18867', 'NA18868', 'NA18870', 'NA18871', 'NA18873', 'NA18874', 'NA18907', 'NA18909', 'NA18910', 'NA18912', 'NA18913', 'NA18916', 'NA18917', 'NA18923', 'NA18924', 'NA18933', 'NA18934', 'NA19093', 'NA19095', 'NA19096', 'NA19098', 'NA19099', 'NA19101', 'NA19102', 'NA19107', 'NA19108', 'NA19113', 'NA19114', 'NA19116', 'NA19117', 'NA19118', 'NA19119', 'NA19121', 'NA19122', 'NA19127', 'NA19128', 'NA19129', 'NA19130', 'NA19131', 'NA19137', 'NA19138', 'NA19140', 'NA19141', 'NA19143', 'NA19144', 'NA19146', 'NA19147', 'NA19149', 'NA19150', 'NA19152', 'NA19153', 'NA19159', 'NA19160', 'NA19171', 'NA19172', 'NA19175', 'NA19176', 'NA19184', 'NA19185', 'NA19189', 'NA19190', 'NA19197', 'NA19198', 'NA19200', 'NA19201', 'NA19203', 'NA19204', 'NA19206', 'NA19207', 'NA19209', 'NA19210', 'NA19213', 'NA19214', 'NA19222', 'NA19223', 'NA19225', 'NA19226', 'NA19235', 'NA19236', 'NA19238', 'NA19239', 'NA19247', 'NA19248', 'NA19256', 'NA19257')
+
+chr20.42285456geno=read.table("../data/perm_QTL_opp/chrom20pos42285456.vcf", col.names=geno_names, stringsAsFactors = F) %>% select(one_of(samples))
+
+chr20.42285456geno_anno=read.table("../data/perm_QTL_opp/chrom20pos42285456.vcf", col.names=geno_names, stringsAsFactors = F) %>% select(CHROM, POS, snpID, REF, ALT, QUAL, FILTER, INFO, FORMAT)
+
+chr20.42285456geno_dose=apply(chr20.42285456geno, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,":")[[1]][[2]])))
+
+
+chr20.42285456geno_dose_full=data.frame(cbind(chr20.42285456geno_anno, chr20.42285456geno_dose))
+
+
+```
+
+Grep the pheno type:  
+
+```{r}
+# find the phentpye values for 20:42274422:42274503:NM_001303459.2_+_peak206560
+#grep -F "20:42274422:42274503:NM_001303459.2_+_peak206560" filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.phen_chr20 > ../qtl_example/nuc_peak206560
+
+pheno206560= read.table("../data/perm_QTL_opp/nuc_peak206560", stringsAsFactors = F, col.names = c('Chr',  'start',    'end',  'ID',   'NA18486',  'NA18497',  'NA18500',  'NA18505','NA18508' ,'NA18511', 'NA18519',  'NA18520',  'NA18853',  'NA18858',  'NA18861'   ,'NA18870', 'NA18909',  'NA18916',  'NA19092',  'NA19119',  'NA19128'   ,'NA19130', 'NA19141'   ,'NA19160', 'NA19193',  'NA19209'   ,'NA19210', 'NA19223'   ,'NA19225', 'NA19238',  'NA19239'   , 'NA19257'))
+
+pheno206560= pheno206560 %>% select(one_of(samples))
+
+
+geno206560=chr20.42285456geno_dose_full[which(chr20.42285456geno_dose_full$POS==42285456),10:33]
+
+
+for_plot206560=data.frame(bind_rows(geno206560,pheno206560) %>% t)
+colnames(for_plot206560)=c("Genotype", "PAS")
+for_plot206560$Genotype=as.factor(for_plot206560$Genotype)
+
+
+ggplot(for_plot206560, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x="Genotype", title="20:42274422:42274503:NM_001303459.2_+_peak206560 QTL") + geom_jitter( aes(x=Genotype, y=PAS))
+```
+
+6:11210211:11210296:NM_001271033.1_-_peak282900	6:11212754
+
+```{bash, eval=F}
+#unzip the chrom 6 vcf 
+gunzip /project2/gilad/briana/YRI_geno_hg19/chr6.dose.filt.vcf.gz
+python filter_geno.py  6 11212754 /project2/gilad/briana/threeprimeseq/data/filtered_geno/chrom6pos11212754.vcf
+#rezip bgzip- load three-prime-env
+```
+
+Prepare genotypes  
+```{r}
+chr6.11212754geno=read.table("../data/perm_QTL_opp/chrom6pos11212754.vcf", col.names=geno_names, stringsAsFactors = F) %>% select(one_of(samples))
+
+chr6.11212754geno_anno=read.table("../data/perm_QTL_opp/chrom6pos11212754.vcf", col.names=geno_names, stringsAsFactors = F) %>% select(CHROM, POS, snpID, REF, ALT, QUAL, FILTER, INFO, FORMAT)
+
+chr6.11212754geno_dose=apply(chr6.11212754geno, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,":")[[1]][[2]])))
+
+
+chr6.11212754geno_dose_full=data.frame(cbind(chr6.11212754geno_anno, chr6.11212754geno_dose))
+
+geno282900=chr6.11212754geno_dose_full[which(chr6.11212754geno_dose_full$POS==11212754),10:33]
+```
+
+Prepare Phenotypes  
+
+```{r}
+# find the phentpye values for 6:11210211:11210296:NM_001271033.1_-_peak282900
+#grep -F "6:11210211:11210296:NM_001271033.1_-_peak282900" filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Nuclear.pheno_fixed.txt.gz.phen_chr6 > ../qtl_example/nuc_peak282900
+
+phen_names= c('Chr',  'start',    'end',  'ID',   'NA18486',  'NA18497',  'NA18500',  'NA18505','NA18508' ,'NA18511', 'NA18519',  'NA18520',  'NA18853',  'NA18858',  'NA18861'   ,'NA18870', 'NA18909',  'NA18916',  'NA19092',  'NA19119',  'NA19128'   ,'NA19130', 'NA19141'   ,'NA19160', 'NA19193',  'NA19209'   ,'NA19210', 'NA19223'   ,'NA19225', 'NA19238',  'NA19239'   , 'NA19257')
+
+pheno282900= read.table("../data/perm_QTL_opp/nuc_peak282900", stringsAsFactors = F, col.names = phen_names)
+
+pheno282900= pheno282900 %>% select(one_of(samples))
+
+
+
+for_plot282900=data.frame(bind_rows(geno282900,pheno282900) %>% t)
+colnames(for_plot282900)=c("Genotype", "PAS")
+for_plot282900$Genotype=as.factor(for_plot282900$Genotype)
+
+
+ggplot(for_plot282900, aes(x=Genotype, y=PAS, fill=Genotype, group=Genotype)) + geom_boxplot() + labs(x="Genotype", title="6:11210211:11210296:NM_001271033.1_-_peak282900 QTL") + geom_jitter( aes(x=Genotype, y=PAS))
+```
+
 
