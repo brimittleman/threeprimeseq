@@ -298,6 +298,10 @@ Run Kalisto on the this RNA seq line and look at this plot with the kalisto outp
 Kallisto step:  
 
 * make index:  kallisto_index18486.sh  
+
+This needs to be based on a transcriptome. I will use the protein coding transcripts from https://www.gencodegenes.org/releases/28lift37.html.  
+
+
 ```{bash,eval=F}
 
 #!/bin/bash
@@ -315,7 +319,7 @@ module load Anaconda3
 source activate three-prime-env 
 
 
-kallisto index  --make-unique -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_index /project2/yangili1/LCL/RNAseq/RNA.18486_1.fastq.gz /project2/yangili1/LCL/RNAseq/RNA.18486_2.fastq.gz
+kallisto index  --make-unique -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_index /project2/gilad/briana/genome_anotation_data/gencode.v28lift37.pc_transcripts.fa
 ```
 
 * quantify: kallisto_quant18467.sh  
@@ -337,4 +341,128 @@ source activate three-prime-env
 
 kallisto quant -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_index -o /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/ /project2/yangili1/LCL/RNAseq/RNA.18486_1.fastq.gz /project2/yangili1/LCL/RNAseq/RNA.18486_2.fastq.gz
 ```
+
+
+Convert to readable with TPM:  
+
+```{bash, eval=F}
+ kallisto h5dump abundance.h5 -o /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto
+```
+
+This is the gencode annotation. I want to do this with the refseq transcriptome.  https://www.ncbi.nlm.nih.gov/projects/genome/guide/human/  
+
+kallisto_refseqindex18486.sh  
+
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=kallisto_refseqindex18486
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=kallisto_refseqindex18486.out
+#SBATCH --error=kallisto_refseqindex18486.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+kallisto index  --make-unique -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_refseq_index /project2/gilad/briana/genome_anotation_data/GRCh37_latest_rna.fna
+
+```
+
+
+* quantify: kallisto_refseq_quant18467.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=kallisto_refseq_quant18486
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=kallisto_refseq_quant18486.out
+#SBATCH --error=kallisto_refseq_quant18486.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+kallisto quant -i /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/RNA18486_refseq_index -o /project2/gilad/briana/threeprimeseq/data/RNAseqKallisto/refseq/project2/yangili1/LCL/RNAseq/RNA.18486_1.fastq.gz /project2/yangili1/LCL/RNAseq/RNA.18486_2.fastq.gz
+```
+
+
+I will use tximport to convert from the transcripts that are quantified in kalisto.  
+
+```{r}
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("tximport")
+#biocLite("TxDb.Hsapiens.UCSC.hg19.knownGene")
+library(tximport)
+library("TxDb.Hsapiens.UCSC.hg19.knownGene")
+
+
+```
+
+
+Import Kalisto resutls:  
+
+```{r}
+
+#I need to make a gene to transcript ID with the transcript id and gene id columns
+tx2gene=read.table("../data/RNAkalisto/ncbiRefSeq.txn2gene.txt" ,header= F, sep="\t", stringsAsFactors = F)
+
+txi.kallisto.tsv <- tximport("../data/RNAkalisto/abundance.tsv", type = "kallisto", tx2gene = tx2gene)
+txi.kallisto.tsv$abundance= as.data.frame(txi.kallisto.tsv$abundance) %>% rownames_to_column(var="Name")
+colnames(txi.kallisto.tsv$abundance)= c("Name", "TPM")
+```
+
+Now I want to join this with the RNA seq data so I am looking at the expression tpm rather than counts.  
+
+
+```{r}
+refPeakandRNA_withO_TPM=refPeakandRNA_withO %>% inner_join(txi.kallisto.tsv$abundance, by="Name") %>% filter(TPM>0)
+
+
+refPeakandRNA_noPeakw_withO_TPM=refPeakandRNA_noPeakw_withO %>% inner_join(txi.kallisto.tsv$abundance, by="Name") %>% filter(TPM >0)
+```
+I can now replot the genes without peaks by TPM for the RNA seq rather than count.  
+
+
+```{r}
+plot(sort(log10(refPeakandRNA_withO_TPM$TPM), decreasing = T), main="Distribution of RNA expression 18486", ylab="log10 TPM", xlab="Refseq Gene")
+points(sort(log10(refPeakandRNA_noPeakw_withO_TPM$TPM), decreasing = T), col="Red")
+legend("topright", legend=c("All Genes", "Genes without Peak"), col=c("black", "red"),pch=19)
+```
+
+
+
+
+I can use this to look at some of the highest expressed genes that we do not have peaks for.
+
+* HIST2H2AA4: no coverage at location
+
+* HIST1H2AC: no coverage at location
+
+* BOP1: Not in the protein coding gene file. Are 2 peaks.  
+
+* GSTM1: no coverage at location  
+
+* NPIPA1: no coverage at location  
+
+* SLX1A: difficult to interpret due to overlapping genes in the region  
+
+* HIST1H2BJ: no coverage at location  
+
+* MTX1: peak in the original filtered peaks, not in the refseq gene  - lost due to direction, the peak goes the same was as the gene. probably noise
+
+* GALE - looks like there is a peak but we are not detecting it. May be too close to the next peak at the 3' end of LYPLA2 gene.  
+
+* HGH1: no coverage at location  
+
+* MSMP: difficult to interpret due to overlapping genes in the region  
 
