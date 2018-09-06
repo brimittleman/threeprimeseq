@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 I will use this to overlap my QTLs with the other molecular QTLs already identified in the same individuals. First pass I will subset my nuclear and total nomial qtls by the snps with pvals less than .05 in each of the sets and make a qqplot. 
 
+##Create reg QTL files   
+
 I want to create a python script that takes in which type of qtl and a pvalue and subsets the full file for snps that pass that filter.  
 
 subset_qtls.py 
@@ -38,7 +40,7 @@ def main(inFile, outFile, qtl, cutoff):
     for num,ln in enumerate(ifile):
         if num > 0 :
             line_list = ln.split()
-            chrom=line_list[0]
+            chrom=line_list[0][3:]
             pos=line_list[1]
             rsid=line_list[2]
             geneID=line_list[3]
@@ -48,7 +50,7 @@ def main(inFile, outFile, qtl, cutoff):
             else:
                 val = float(val)
                 if val <= cutoff:
-                    fout.write("%s\t%s\t%s\t%s\t%f\n"%(chrom, pos, rsid, geneID,val))
+                    fout.write("%s:%s\t%s\t%s\t%f\n"%(chrom, pos, rsid, geneID,val))
     
 
 
@@ -91,5 +93,85 @@ done
 
 
 
+```
+
+
+###Load data
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(reshape2)
+library(readr)
+```
+
+
+```{r}
+
+nuc.nom=read.table("../data/nom_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes_onetenth.txt", header = F, stringsAsFactors = F)
+colnames(nuc.nom)= c("peakID", "snpID", "dist", "nuc_pval", "slope")
+
+QTL_names=c("snpID", "snpid2","Gene", "pval")
+
+fourSU30= read.table("../data/other_qtls/summary_betas_ste_100kb.4su_30.05.txt", header=F, stringsAsFactors = F, col.names = QTL_names)
+
+fourSU60=read.table("../data/other_qtls/summary_betas_ste_100kb.4su_60.05.txt", header=F, stringsAsFactors = F, col.names = QTL_names)
+
+RNAseq=read.table("../data/other_qtls/summary_betas_ste_100kb.RNAseq.05.txt", header=F, stringsAsFactors = F, col.names = QTL_names)
+
+guevardis=read.table("../data/other_qtls/summary_betas_ste_100kb.RNAseqGeuvadis.05.txt", header=F, stringsAsFactors = F, col.names = QTL_names)
+
+ribo=read.table("../data/other_qtls/summary_betas_ste_100kb.ribo.05.txt", header=F, stringsAsFactors = F, col.names = QTL_names)
+
+prot=read.table("../data/other_qtls/summary_betas_ste_100kb.prot.05.txt", header=F, stringsAsFactors = F, col.names = QTL_names)
+
+
+```
+
+##Filter nuc by other QTLs  
+Overlap the files:  
+
+```{r}
+fourSU30AndNuc= fourSU30 %>% inner_join(nuc.nom, by="snpID") %>% select(snpID, nuc_pval)
+fourSU30_unif=runif(nrow(fourSU30AndNuc))
+
+fourSU60AndNuc= fourSU60 %>% inner_join(nuc.nom, by="snpID") %>% select(snpID, nuc_pval)
+fourSU60_unif=runif(nrow(fourSU60AndNuc))
+
+
+RNAAndNuc= RNAseq %>% inner_join(nuc.nom, by="snpID") %>% select(snpID, nuc_pval)
+RNAseq_unif=runif(nrow(RNAAndNuc))
+
+
+GuevAndNuc= guevardis %>% inner_join(nuc.nom, by="snpID") %>% select(snpID, nuc_pval)
+guev_unif=runif(nrow(GuevAndNuc))
+
+
+riboAndNuc= ribo %>% inner_join(nuc.nom, by="snpID") %>% select(snpID, nuc_pval)
+ribo_unif=runif(nrow(riboAndNuc))
+
+protAndNuc= prot %>% inner_join(nuc.nom, by="snpID") %>% select(snpID, nuc_pval)
+prot_unif=runif(nrow(protAndNuc))
+
+
+```
+
+
+##Plot overlapping QTLs  
+
+Plot results:  
+
+```{r}
+qqplot(-log10(runif(nrow(nuc.nom))), -log10(nuc.nom$nuc_pval),ylab="-log10 Nuclear nominal pvalue", xlab="Uniform expectation", main="Nuclear Nominal pvalues for all snps")
+points(sort(-log10(fourSU30_unif)), sort(-log10(fourSU30AndNuc$nuc_pval)), col="Red")
+points(sort(-log10(fourSU60_unif)), sort(-log10(fourSU60AndNuc$nuc_pval)), col="Orange")
+points(sort(-log10(RNAseq_unif)), sort(-log10(RNAAndNuc$nuc_pval)), col="Yellow")
+points(sort(-log10(guev_unif)), sort(-log10(GuevAndNuc$nuc_pval)), col="Green")
+points(sort(-log10(ribo_unif)), sort(-log10(riboAndNuc$nuc_pval)), col="Blue")
+points(sort(-log10(prot_unif)), sort(-log10(protAndNuc$nuc_pval)), col="Purple")
+abline(0,1)
+
+
+legend("topleft", legend=c("All SNPs", "4su 30", "4su 60", "RNAseq", "Guevadis RNA", "Ribo", "Col"), col=c("black", "red", "orange", "yellow", "green", "blue", "purple"), pch=19)
 ```
 
