@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-30</p>
+<p><strong>Last updated:</strong> 2018-09-06</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a5f527674983b1420a3c82e09ac39e69218d690b" target="_blank">a5f5276</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/29a41095234435f7e89df1eb665852e3e6d146d1" target="_blank">29a4109</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -360,6 +360,7 @@ Untracked files:
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/RNAkalisto/
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
@@ -380,9 +381,11 @@ Untracked files:
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
     Untracked:  data/nom_QTL/
+    Untracked:  data/nom_QTL_opp/
     Untracked:  data/nuc6up/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_opp/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -400,10 +403,10 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
-    Modified:   analysis/dataprocfigures.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/peak.cov.pipeline.Rmd
+    Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/test.max2.Rmd
     Modified:   code/Snakefile
@@ -440,6 +443,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/29a41095234435f7e89df1eb665852e3e6d146d1/analysis/diff_iso_pipeline.Rmd" target="_blank">29a4109</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-06
+</td>
+<td style="text-align:left;">
+prepare diff iso pheno, run leaf
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e000583e8d094de80cd8cb12bc6cb3933f15a645/docs/diff_iso_pipeline.html" target="_blank">e000583</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a5f527674983b1420a3c82e09ac39e69218d690b/analysis/diff_iso_pipeline.Rmd" target="_blank">a5f5276</a>
 </td>
 <td style="text-align:left;">
@@ -459,7 +496,7 @@ initialize diff iso pipeline
 <hr />
 <p>In my early analysis of the first 32 libraries I ran the leafcutter differential isoform tool. I am now going to rerun this with the peaks called from the 28 individuals. These peaks have been created with the Peak pipeline in <a href="https://brimittleman.github.io/threeprimeseq/peak.cov.pipeline.html" class="uri">https://brimittleman.github.io/threeprimeseq/peak.cov.pipeline.html</a>. These are also the peaks used for the initial QTL analysis. <a href="https://brimittleman.github.io/threeprimeseq/apaQTLwLeafcutter.html" class="uri">https://brimittleman.github.io/threeprimeseq/apaQTLwLeafcutter.html</a>. I can use the same phenotype and genotype files from this analysis.</p>
 <p>To run the differential isoform analysis I need a file with the lines numbers and the fraction. This is similar to the sample.txt file from the QTL analysis.</p>
-<p>The phenotype file is filtered_APApeaks_merged_allchrom_refseqGenes_pheno.txt. I can use the header of this to create the sample form. I will work in the directory: /project2/gilad/briana/threeprimeseq/data/diff_iso/</p>
+<p>I will work in the directory: /project2/gilad/briana/threeprimeseq/data/diff_iso/</p>
 <p>make_samplegroups.py</p>
 <pre class="bash"><code>
 outfile=open(&quot;/project2/gilad/briana/threeprimeseq/data/diff_iso/sample_groups.txt&quot;, &quot;w&quot;)
@@ -479,8 +516,134 @@ for ln, i in enumerate(infile):
 outfile.close()
                 
 </code></pre>
+<p>I need to create a phenotype file with all of the libraries (total/nuclear). I want the header to have the line then fraction like this:</p>
+<ul>
+<li>18486_N<br />
+</li>
+<li>18486_T</li>
+</ul>
+<p>To do this I need to run feature counts on all of the bam files, fix the header, then update the makePhenoRefSeqPeaks_opp_Total.py file to account for all libraries.</p>
+<p>The fc code is in ref_gene_peakOppStrand_fc.sh. I wrote this script in the peakOverlap_oppstrand analysis. The results will be in filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.fc. I can update the fix_head_fc.py for the opposite strand results.</p>
+<p>fix_head_oppstrand_fc.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.fc&quot;, &quot;r&quot;)
+fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant_fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39; )
+    else:
+        fout.write(i)
+fout.close()</code></pre>
+<p>Make a the file_id_mapping</p>
+<p>makePhenoRefSeqPeaks_opp.py</p>
+<pre class="bash"><code>dic_IND = {}
+dic_BAM = {}
+
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping.txt&quot;):
+    bam, IND = ln.split(&quot;\t&quot;)
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#list of genes   
+
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant_fixed.fc&quot;, &quot;r&quot;)
+genes=[]
+for line , i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant_fixed.fc&quot;, &quot;r&quot;)
+for line, i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.ALL.pheno_fixed.txt&quot;,&quot;w&quot;)
+peak=[&quot;chrom&quot;]
+inds_noL=[]
+for each in inds:
+    inds_noL.append(each)  
+fout.write(&quot; &quot;.join(peak + inds_noL) + &#39;\n&#39; )
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant_fixed.fc&quot;, &quot;r&quot;)
+for line , i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        gene=id_list[5]
+        start=int(id_list[2])
+        end=int(id_list[3])
+        buff=[]
+        buff.append(&quot;chr%s:%d:%d:%s_%s_%s&quot;%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append(&quot;%d/%d&quot;%(t,b))
+        fout.write(&quot; &quot;.join(buff)+ &#39;\n&#39;)
+        
+fout.close()</code></pre>
+<p>run_makePhen_all.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_makepheno_all
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_makepheno_all.out
+#SBATCH --error=run_makepheno_all.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python makePhenoRefSeqPeaks_opp.py </code></pre>
 <p>I can now run the leafcutter_ds.R file.</p>
 <p>run_leafcutter_ds.sh</p>
+<p>Remove the chrom part of the header.</p>
 <pre class="bash"><code>#!/bin/bash
 
 #SBATCH --job-name=diff_isoTN
@@ -496,9 +659,7 @@ outfile.close()
 module load R  
 
 
-Rscript /project2/gilad/briana/threeprimeseq/data/diff_iso/leafcutter_ds.R /project2/gilad/briana/threeprimeseq/data/diff_iso/filtered_APApeaks_merged_allchrom_refseqGenes_pheno.txt /project2/gilad/briana/threeprimeseq/data/diff_iso/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso/TN_diff_isoform</code></pre>
-<p>Error in dimnames(x) &lt;- dn : length of ‘dimnames’ [2] not equal to array extent Calls: differential_splicing -&gt; get_intron_meta -&gt; colnames&lt;- Execution halted</p>
-<p>Problem may be due to the phenotype file. It looks like the header does not need a PeakID column.</p>
+Rscript /project2/gilad/briana/threeprimeseq/data/diff_iso/leafcutter_ds.R /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.ALL.pheno_fixed_nochrom.txt /project2/gilad/briana/threeprimeseq/data/diff_iso/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso/TN_diff_isoform</code></pre>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
