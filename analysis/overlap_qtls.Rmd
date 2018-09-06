@@ -25,7 +25,7 @@ def main(inFile, outFile, qtl, cutoff):
          raise NameError("QTL arg must be 4su_30, 4su_60, RNAseq, RNAseqGeuvadis, ribo, or prot") 
     elif qtl=="4su_30":
         target=4
-    elif qtl=="4su60":
+    elif qtl=="4su_60":
         target=5
     elif qtl=="RNAseq":
         target=6
@@ -42,9 +42,13 @@ def main(inFile, outFile, qtl, cutoff):
             pos=line_list[1]
             rsid=line_list[2]
             geneID=line_list[3]
-            val = float(line_list[target].split(":")[0])
-            if val <= cutoff:
-                fout.write("%s\t%s\t%s\t%s\t%f\n"%(chrom, pos, rsid, geneID,val))
+            val = line_list[target].split(":")[0]
+            if val == "NA":
+              continue
+            else:
+                val = float(val)
+                if val <= cutoff:
+                    fout.write("%s\t%s\t%s\t%s\t%f\n"%(chrom, pos, rsid, geneID,val))
     
 
 
@@ -67,20 +71,20 @@ run_subsetQTLs05.sh
 #!/bin/bash
 
 #SBATCH --job-name=run_subsetqtl05
-#SBATCH --account=pi-yangili1
+#SBATCH --account=pi-gilad
 #SBATCH --time=24:00:00
 #SBATCH --output=run_subsetqtl05.out
 #SBATCH --error=run_subsetqtl05.err
-#SBATCH --partition=broadwl
+#SBATCH --partition=gilad
 #SBATCH --mem=12G
 #SBATCH --mail-type=END
 
 module load Anaconda3
 source activate three-prime-env
 
-qtls=('4su_30', '4su_60', 'RNAseq', 'RNAseqGeuvadis', 'ribo', 'prot')  
+#qtls=('4su_30', '4su_60', 'RNAseq', 'RNAseqGeuvadis', 'ribo', 'prot')  
 
-for i in ${qtls[@]}; do
+for i in 4su_30 4su_60 RNAseq RNAseqGeuvadis ribo prot; do
     python subset_qtls.py $i .05 
 done
 
