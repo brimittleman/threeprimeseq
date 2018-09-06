@@ -14,7 +14,7 @@ In my early analysis of the first 32 libraries I ran the leafcutter differential
 
 To run the differential isoform analysis I need a file with the lines numbers and the fraction. This is similar to the sample.txt file from the QTL analysis.  
 
-The phenotype file is filtered_APApeaks_merged_allchrom_refseqGenes_pheno.txt. I can use the header of this to create the sample form. I will work in the directory: /project2/gilad/briana/threeprimeseq/data/diff_iso/  
+I will work in the directory: /project2/gilad/briana/threeprimeseq/data/diff_iso/  
 
 
 make_samplegroups.py
@@ -39,10 +39,155 @@ outfile.close()
 
 ```
 
+I need to create a phenotype file with all of the libraries (total/nuclear). I want the header to have the line then fraction like this:  
+
+* 18486_N	
+* 18486_T	
+
+To do this I need to run feature counts on all of the bam files, fix the header, then update the makePhenoRefSeqPeaks_opp_Total.py file to account for all libraries.  
+
+
+The fc code is in ref_gene_peakOppStrand_fc.sh. I wrote this script in the peakOverlap_oppstrand analysis. The results will be in filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.fc.  I can update the fix_head_fc.py for the opposite strand results.  
+
+
+fix_head_oppstrand_fc.py
+
+```{bash,eval=F}
+infile= open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.fc", "r")
+fout = file("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant_fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n' )
+    else:
+        fout.write(i)
+fout.close()
+```
+
+Make a the file_id_mapping 
+
+ 
+makePhenoRefSeqPeaks_opp.py 
+
+```{bash, eval=F}
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filt_peak_refGene_cov/file_id_mapping.txt"):
+    bam, IND = ln.split("\t")
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#list of genes   
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant_fixed.fc", "r")
+genes=[]
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant_fixed.fc", "r")
+for line, i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.ALL.pheno_fixed.txt","w")
+peak=["chrom"]
+inds_noL=[]
+for each in inds:
+    inds_noL.append(each)  
+fout.write(" ".join(peak + inds_noL) + '\n' )
+count_file=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant_fixed.fc", "r")
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        start=int(id_list[2])
+        end=int(id_list[3])
+        buff=[]
+        buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append("%d/%d"%(t,b))
+        fout.write(" ".join(buff)+ '\n')
+        
+fout.close()
+```
+
+
+run_makePhen_all.sh  
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_makepheno_all
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_makepheno_all.out
+#SBATCH --error=run_makepheno_all.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python makePhenoRefSeqPeaks_opp.py 
+```
+
+
 I can now run the leafcutter_ds.R file.  
 
 run_leafcutter_ds.sh
 
+
+Remove the chrom part of the header.  
 ```{bash, eval=F}
 #!/bin/bash
 
@@ -59,15 +204,8 @@ run_leafcutter_ds.sh
 module load R  
 
 
-Rscript /project2/gilad/briana/threeprimeseq/data/diff_iso/leafcutter_ds.R /project2/gilad/briana/threeprimeseq/data/diff_iso/filtered_APApeaks_merged_allchrom_refseqGenes_pheno.txt /project2/gilad/briana/threeprimeseq/data/diff_iso/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso/TN_diff_isoform
+Rscript /project2/gilad/briana/threeprimeseq/data/diff_iso/leafcutter_ds.R /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakOppstrand/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.ALL.pheno_fixed_nochrom.txt /project2/gilad/briana/threeprimeseq/data/diff_iso/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso/TN_diff_isoform
 ```
 
 
 
-Error in dimnames(x) <- dn : 
-  length of 'dimnames' [2] not equal to array extent
-Calls: differential_splicing -> get_intron_meta -> colnames<-
-Execution halted
-
-
-Problem may be due to the phenotype file. It looks like the header does not need a PeakID column.   
