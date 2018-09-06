@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e2f5e81e3b22268fff587df5d91e004f1b86fa8f" target="_blank">e2f5e81</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/57005d9a3a823729291b1fcebf59e26f89408ac0" target="_blank">57005d9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -444,6 +444,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/57005d9a3a823729291b1fcebf59e26f89408ac0/analysis/overlap_qtls.Rmd" target="_blank">57005d9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-06
+</td>
+<td style="text-align:left;">
+make qqplot
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/584548c7a5fe67b1ef4f442ca9ba5cf372fb2028/docs/overlap_qtls.html" target="_blank">584548c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/e2f5e81e3b22268fff587df5d91e004f1b86fa8f/analysis/overlap_qtls.Rmd" target="_blank">e2f5e81</a>
 </td>
 <td style="text-align:left;">
@@ -496,6 +530,8 @@ add overlap analysis with code to subset
 <p></details></p>
 <hr />
 <p>I will use this to overlap my QTLs with the other molecular QTLs already identified in the same individuals. First pass I will subset my nuclear and total nomial qtls by the snps with pvals less than .05 in each of the sets and make a qqplot.</p>
+<div id="create-reg-qtl-files" class="section level2">
+<h2>Create reg QTL files</h2>
 <p>I want to create a python script that takes in which type of qtl and a pvalue and subsets the full file for snps that pass that filter.</p>
 <p>subset_qtls.py</p>
 <pre class="bash"><code>
@@ -521,7 +557,7 @@ def main(inFile, outFile, qtl, cutoff):
     for num,ln in enumerate(ifile):
         if num &gt; 0 :
             line_list = ln.split()
-            chrom=line_list[0]
+            chrom=line_list[0][3:]
             pos=line_list[1]
             rsid=line_list[2]
             geneID=line_list[3]
@@ -531,7 +567,7 @@ def main(inFile, outFile, qtl, cutoff):
             else:
                 val = float(val)
                 if val &lt;= cutoff:
-                    fout.write(&quot;%s\t%s\t%s\t%s\t%f\n&quot;%(chrom, pos, rsid, geneID,val))
+                    fout.write(&quot;%s:%s\t%s\t%s\t%f\n&quot;%(chrom, pos, rsid, geneID,val))
     
 
 
@@ -566,6 +602,85 @@ for i in 4su_30 4su_60 RNAseq RNAseqGeuvadis ribo prot; do
     python subset_qtls.py $i .05 
 done
 </code></pre>
+<div id="load-data" class="section level3">
+<h3>Load data</h3>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+<pre class="r"><code>library(readr)</code></pre>
+<pre class="r"><code>nuc.nom=read.table(&quot;../data/nom_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes_onetenth.txt&quot;, header = F, stringsAsFactors = F)
+colnames(nuc.nom)= c(&quot;peakID&quot;, &quot;snpID&quot;, &quot;dist&quot;, &quot;nuc_pval&quot;, &quot;slope&quot;)
+
+QTL_names=c(&quot;snpID&quot;, &quot;snpid2&quot;,&quot;Gene&quot;, &quot;pval&quot;)
+
+fourSU30= read.table(&quot;../data/other_qtls/summary_betas_ste_100kb.4su_30.05.txt&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+fourSU60=read.table(&quot;../data/other_qtls/summary_betas_ste_100kb.4su_60.05.txt&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+RNAseq=read.table(&quot;../data/other_qtls/summary_betas_ste_100kb.RNAseq.05.txt&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+guevardis=read.table(&quot;../data/other_qtls/summary_betas_ste_100kb.RNAseqGeuvadis.05.txt&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+ribo=read.table(&quot;../data/other_qtls/summary_betas_ste_100kb.ribo.05.txt&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+prot=read.table(&quot;../data/other_qtls/summary_betas_ste_100kb.prot.05.txt&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)</code></pre>
+</div>
+</div>
+<div id="filter-nuc-by-other-qtls" class="section level2">
+<h2>Filter nuc by other QTLs</h2>
+<p>Overlap the files:</p>
+<pre class="r"><code>fourSU30AndNuc= fourSU30 %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, nuc_pval)
+fourSU30_unif=runif(nrow(fourSU30AndNuc))
+
+fourSU60AndNuc= fourSU60 %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, nuc_pval)
+fourSU60_unif=runif(nrow(fourSU60AndNuc))
+
+
+RNAAndNuc= RNAseq %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, nuc_pval)
+RNAseq_unif=runif(nrow(RNAAndNuc))
+
+
+GuevAndNuc= guevardis %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, nuc_pval)
+guev_unif=runif(nrow(GuevAndNuc))
+
+
+riboAndNuc= ribo %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, nuc_pval)
+ribo_unif=runif(nrow(riboAndNuc))
+
+protAndNuc= prot %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, nuc_pval)
+prot_unif=runif(nrow(protAndNuc))</code></pre>
+</div>
+<div id="plot-overlapping-qtls" class="section level2">
+<h2>Plot overlapping QTLs</h2>
+<p>Plot results:</p>
+<pre class="r"><code>qqplot(-log10(runif(nrow(nuc.nom))), -log10(nuc.nom$nuc_pval),ylab=&quot;-log10 Nuclear nominal pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear Nominal pvalues for all snps&quot;)
+points(sort(-log10(fourSU30_unif)), sort(-log10(fourSU30AndNuc$nuc_pval)), col=&quot;Red&quot;)
+points(sort(-log10(fourSU60_unif)), sort(-log10(fourSU60AndNuc$nuc_pval)), col=&quot;Orange&quot;)
+points(sort(-log10(RNAseq_unif)), sort(-log10(RNAAndNuc$nuc_pval)), col=&quot;Yellow&quot;)
+points(sort(-log10(guev_unif)), sort(-log10(GuevAndNuc$nuc_pval)), col=&quot;Green&quot;)
+points(sort(-log10(ribo_unif)), sort(-log10(riboAndNuc$nuc_pval)), col=&quot;Blue&quot;)
+points(sort(-log10(prot_unif)), sort(-log10(protAndNuc$nuc_pval)), col=&quot;Purple&quot;)
+abline(0,1)
+
+
+legend(&quot;topleft&quot;, legend=c(&quot;All SNPs&quot;, &quot;4su 30&quot;, &quot;4su 60&quot;, &quot;RNAseq&quot;, &quot;Guevadis RNA&quot;, &quot;Ribo&quot;, &quot;Col&quot;), col=c(&quot;black&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;), pch=19)</code></pre>
+<p><img src="figure/overlap_qtls.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -583,14 +698,29 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] reshape2_1.4.3  workflowr_1.1.1 forcats_0.3.0   stringr_1.3.1  
+ [5] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
+ [9] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.1.1   Rcpp_0.12.18      digest_0.6.16    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.23.0      magrittr_1.5      evaluate_0.11    
-[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.7.0     rmarkdown_1.10    tools_3.5.1      
-[16] stringr_1.3.1     yaml_2.2.0        compiler_3.5.1   
-[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindrcpp_0.2.2   
+[16] bindr_0.1.1       plyr_1.8.4        munsell_0.5.0    
+[19] gtable_0.2.0      cellranger_1.1.0  rvest_0.3.2      
+[22] R.methodsS3_1.7.1 evaluate_0.11     knitr_1.20       
+[25] broom_0.5.0       Rcpp_0.12.18      scales_1.0.0     
+[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[31] digest_0.6.16     stringi_1.2.4     grid_3.5.1       
+[34] rprojroot_1.3-2   cli_1.0.0         tools_3.5.1      
+[37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[40] whisker_0.3-2     pkgconfig_2.0.2   xml2_1.2.0       
+[43] lubridate_1.7.4   assertthat_0.2.0  rmarkdown_1.10   
+[46] httr_1.3.1        rstudioapi_0.7    R6_2.2.2         
+[49] nlme_3.1-137      git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
