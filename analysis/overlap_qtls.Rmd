@@ -1,0 +1,91 @@
+---
+title: "Overlap Molecular QTLs"
+author: "Briana Mittleman"
+date: "9/6/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this to overlap my QTLs with the other molecular QTLs already identified in the same individuals. First pass I will subset my nuclear and total nomial qtls by the snps with pvals less than .05 in each of the sets and make a qqplot. 
+
+I want to create a python script that takes in which type of qtl and a pvalue and subsets the full file for snps that pass that filter.  
+
+subset_qtls.py 
+```{bash,eval=F}
+
+def main(inFile, outFile, qtl, cutoff):
+    fout=open(outFile, "w")
+    ifile=open(inFile, "r")
+    cutoff=float(cutoff)
+    qtl_types= ['4su_30', '4su_60', 'RNAseq', 'RNAseqGeuvadis', 'ribo', 'prot']
+    if qtl not in qtl_types:
+         raise NameError("QTL arg must be 4su_30, 4su_60, RNAseq, RNAseqGeuvadis, ribo, or prot") 
+    elif qtl=="4su_30":
+        target=4
+    elif qtl=="4su60":
+        target=5
+    elif qtl=="RNAseq":
+        target=6
+    elif qtl=="RNAseqGeuvadis":
+        target=7
+    elif qtl=="ribo":
+        target =8
+    elif qtl=="prot":
+        target=9
+    for num,ln in enumerate(ifile):
+        if num > 0 :
+            line_list = ln.split()
+            chrom=line_list[0]
+            pos=line_list[1]
+            rsid=line_list[2]
+            geneID=line_list[3]
+            val = float(line_list[target].split(":")[0])
+            if val <= cutoff:
+                fout.write("%s\t%s\t%s\t%s\t%f\n"%(chrom, pos, rsid, geneID,val))
+    
+
+
+if __name__ == "__main__":
+    import sys
+
+    qtl = sys.argv[1]
+    cutoff= sys.argv[2]
+    
+    inFile = "/project2/gilad/briana/threeprimeseq/data/otherQTL/summary_betas_ste_100kb.txt"
+    outFile = "/project2/gilad/briana/threeprimeseq/data/otherQTL/summary_betas_ste_100kb.%s%s.txt"%(qtl, cutoff)
+    main(inFile, outFile, qtl, cutoff)
+```
+
+I can run this to subset by each qtl at .05  
+
+run_subsetQTLs05.sh  
+
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_subsetqtl05
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_subsetqtl05.out
+#SBATCH --error=run_subsetqtl05.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+qtls=('4su_30', '4su_60', 'RNAseq', 'RNAseqGeuvadis', 'ribo', 'prot')  
+
+for i in ${qtls[@]}; do
+    python subset_qtls.py $i .05 
+done
+
+
+
+
+```
+
