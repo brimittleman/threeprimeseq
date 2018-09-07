@@ -163,15 +163,15 @@ Plot results:
 
 ```{r}
 qqplot(-log10(runif(nrow(nuc.nom))), -log10(nuc.nom$nuc_pval),ylab="-log10 Nuclear nominal pvalue", xlab="Uniform expectation", main="Nuclear Nominal pvalues for all snps")
-points(sort(-log10(fourSU30_unif)), sort(-log10(fourSU30AndNuc$nuc_pval)), col="Red")
-points(sort(-log10(fourSU60_unif)), sort(-log10(fourSU60AndNuc$nuc_pval)), col="Orange")
-points(sort(-log10(RNAseq_unif)), sort(-log10(RNAAndNuc$nuc_pval)), col="Yellow")
-points(sort(-log10(guev_unif)), sort(-log10(GuevAndNuc$nuc_pval)), col="Green")
-points(sort(-log10(ribo_unif)), sort(-log10(riboAndNuc$nuc_pval)), col="Blue")
-points(sort(-log10(prot_unif)), sort(-log10(protAndNuc$nuc_pval)), col="Purple")
+points(sort(-log10(fourSU30_unif)), sort(-log10(fourSU30AndNuc$nuc_pval)), col="Red", alpha=.3)
+points(sort(-log10(fourSU60_unif)), sort(-log10(fourSU60AndNuc$nuc_pval)), col="Orange",alpha=.3)
+points(sort(-log10(RNAseq_unif)), sort(-log10(RNAAndNuc$nuc_pval)), col="Yellow",alpha=.3)
+points(sort(-log10(guev_unif)), sort(-log10(GuevAndNuc$nuc_pval)), col="Green",alpha=.3)
+points(sort(-log10(ribo_unif)), sort(-log10(riboAndNuc$nuc_pval)), col="Blue",alpha=.3)
+points(sort(-log10(prot_unif)), sort(-log10(protAndNuc$nuc_pval)), col="Purple",alpha=.3)
 abline(0,1)
 
 
-legend("topleft", legend=c("All SNPs", "4su 30", "4su 60", "RNAseq", "Guevadis RNA", "Ribo", "Col"), col=c("black", "red", "orange", "yellow", "green", "blue", "purple"), pch=19)
+legend("topleft", legend=c("All SNPs", "4su 30", "4su 60", "RNAseq", "Guevadis RNA", "Ribo", "Protein"), col=c("black", "red", "orange", "yellow", "green", "blue", "purple"), pch=19)
 ```
 
