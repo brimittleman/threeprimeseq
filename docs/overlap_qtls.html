@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/57005d9a3a823729291b1fcebf59e26f89408ac0" target="_blank">57005d9</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/98159a7f49e9f0df9e39987662668632cdb73042" target="_blank">98159a7</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -439,6 +439,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/98159a7f49e9f0df9e39987662668632cdb73042/analysis/overlap_qtls.Rmd" target="_blank">98159a7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-06
+</td>
+<td style="text-align:left;">
+alpha .3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/febabe42bfbbd0ad4b39bd501cd11dc1434e995d/docs/overlap_qtls.html" target="_blank">febabe4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -669,17 +703,59 @@ prot_unif=runif(nrow(protAndNuc))</code></pre>
 <h2>Plot overlapping QTLs</h2>
 <p>Plot results:</p>
 <pre class="r"><code>qqplot(-log10(runif(nrow(nuc.nom))), -log10(nuc.nom$nuc_pval),ylab=&quot;-log10 Nuclear nominal pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear Nominal pvalues for all snps&quot;)
-points(sort(-log10(fourSU30_unif)), sort(-log10(fourSU30AndNuc$nuc_pval)), col=&quot;Red&quot;)
-points(sort(-log10(fourSU60_unif)), sort(-log10(fourSU60AndNuc$nuc_pval)), col=&quot;Orange&quot;)
-points(sort(-log10(RNAseq_unif)), sort(-log10(RNAAndNuc$nuc_pval)), col=&quot;Yellow&quot;)
-points(sort(-log10(guev_unif)), sort(-log10(GuevAndNuc$nuc_pval)), col=&quot;Green&quot;)
-points(sort(-log10(ribo_unif)), sort(-log10(riboAndNuc$nuc_pval)), col=&quot;Blue&quot;)
-points(sort(-log10(prot_unif)), sort(-log10(protAndNuc$nuc_pval)), col=&quot;Purple&quot;)
-abline(0,1)
+points(sort(-log10(fourSU30_unif)), sort(-log10(fourSU30AndNuc$nuc_pval)), col=&quot;Red&quot;, alpha=.3)</code></pre>
+<pre><code>Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;alpha&quot; is not a
+graphical parameter</code></pre>
+<pre class="r"><code>points(sort(-log10(fourSU60_unif)), sort(-log10(fourSU60AndNuc$nuc_pval)), col=&quot;Orange&quot;,alpha=.3)</code></pre>
+<pre><code>Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;alpha&quot; is not a
+graphical parameter</code></pre>
+<pre class="r"><code>points(sort(-log10(RNAseq_unif)), sort(-log10(RNAAndNuc$nuc_pval)), col=&quot;Yellow&quot;,alpha=.3)</code></pre>
+<pre><code>Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;alpha&quot; is not a
+graphical parameter</code></pre>
+<pre class="r"><code>points(sort(-log10(guev_unif)), sort(-log10(GuevAndNuc$nuc_pval)), col=&quot;Green&quot;,alpha=.3)</code></pre>
+<pre><code>Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;alpha&quot; is not a
+graphical parameter</code></pre>
+<pre class="r"><code>points(sort(-log10(ribo_unif)), sort(-log10(riboAndNuc$nuc_pval)), col=&quot;Blue&quot;,alpha=.3)</code></pre>
+<pre><code>Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;alpha&quot; is not a
+graphical parameter</code></pre>
+<pre class="r"><code>points(sort(-log10(prot_unif)), sort(-log10(protAndNuc$nuc_pval)), col=&quot;Purple&quot;,alpha=.3)</code></pre>
+<pre><code>Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;alpha&quot; is not a
+graphical parameter</code></pre>
+<pre class="r"><code>abline(0,1)
 
 
-legend(&quot;topleft&quot;, legend=c(&quot;All SNPs&quot;, &quot;4su 30&quot;, &quot;4su 60&quot;, &quot;RNAseq&quot;, &quot;Guevadis RNA&quot;, &quot;Ribo&quot;, &quot;Col&quot;), col=c(&quot;black&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;), pch=19)</code></pre>
+legend(&quot;topleft&quot;, legend=c(&quot;All SNPs&quot;, &quot;4su 30&quot;, &quot;4su 60&quot;, &quot;RNAseq&quot;, &quot;Guevadis RNA&quot;, &quot;Ribo&quot;, &quot;Protein&quot;), col=c(&quot;black&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;), pch=19)</code></pre>
 <p><img src="figure/overlap_qtls.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-6-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/febabe42bfbbd0ad4b39bd501cd11dc1434e995d/docs/figure/overlap_qtls.Rmd/unnamed-chunk-6-1.png" target="_blank">febabe4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
