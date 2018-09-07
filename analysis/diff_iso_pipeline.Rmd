@@ -1,5 +1,5 @@
 ---
-title: "Leafcutter Differential Isoforma Analysis"
+title: "Leafcutter Differential Isoform Analysis"
 author: "Briana Mittleman"
 date: "8/30/2018"
 output: html_document
