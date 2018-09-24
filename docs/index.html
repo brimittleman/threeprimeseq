@@ -221,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-09-06</p>
+<p><strong>Last updated:</strong> 2018-09-24</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/46b7343493337a9c20b5ce490b66cbb942467169" target="_blank">46b7343</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f7934ce5afa448c50043b68c5920186b0c66f460" target="_blank">f7934ce</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -242,9 +242,12 @@ Ignored files:
 Untracked files:
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
+    Untracked:  analysis/verifyBAM.Rmd
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/RNAkalisto/
+    Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
@@ -255,6 +258,7 @@ Untracked files:
     Untracked:  data/clean_peaks/
     Untracked:  data/comb_map_stats.csv
     Untracked:  data/comb_map_stats.xlsx
+    Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
     Untracked:  data/gencov.test.csv
     Untracked:  data/gencov.test.txt
@@ -289,8 +293,9 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explore.filters.Rmd
-    Modified:   analysis/peak.cov.pipeline.Rmd
+    Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/test.max2.Rmd
@@ -323,6 +328,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f7934ce5afa448c50043b68c5920186b0c66f460/analysis/index.Rmd" target="_blank">f7934ce</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-24
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“index.Rmd”, “39indQC.Rmd”))
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f92a58fb8dd5bf15e528a9d1762e34ae3c25e005/docs/index.html" target="_blank">f92a58f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1291,6 +1330,10 @@ Start workflowr project.
 <p>Evaluate and learn from QTLs:</p>
 <ul>
 <li><a href="overlap_qtls.html">Overlap QTLs with other molecular QTLs</a></li>
+</ul>
+<p>Analysis for all 39 indivduals:</p>
+<ul>
+<li><a href="39indQC.html">Read and peak QC plots</a></li>
 </ul>
 
 <hr>
