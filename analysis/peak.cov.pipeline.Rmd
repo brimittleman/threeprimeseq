@@ -636,6 +636,7 @@ paste /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApea
 awk '{print $1 "\t" $2 "\t" $3 "\t" $7  "\t"  $4 "\t"  $5 "\t" $6}' /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/temp >   /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.bed
 
 ```
+* if no cleanning:  
 
 *  cleanup_comb.sh  
 
