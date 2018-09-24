@@ -62,3 +62,6 @@ Evaluate and learn from QTLs:
 * [Overlap QTLs with other molecular QTLs](overlap_qtls.html)
 
 
+Analysis for all 39 indivduals:  
+
+* [Read and peak QC plots](39indQC.html)

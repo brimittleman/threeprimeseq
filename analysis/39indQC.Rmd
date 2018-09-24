@@ -1,0 +1,49 @@
+---
+title: "39indQC"
+author: "Briana Mittleman "
+date: "2018-09-24"
+output: workflowr::wflow_html
+---
+
+I will use this to look at the map stats and peak stats for the full set of 39 ind.  
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(reshape2)
+library(cowplot)
+```
+
+
+
+```{r}
+mapstats= read.csv("../data/comb_map_stats_39ind.csv", header = T, stringsAsFactors = F)
+mapstats$line=as.factor(mapstats$line)
+mapstats$fraction=as.factor(mapstats$fraction)
+map_melt=melt(mapstats, id.vars=c("line", "fraction"), measure.vars = c("comb_reads", "comb_mapped", "comb_prop_mapped"))
+
+prop_mapped= map_melt %>% filter(variable=="comb_prop_mapped")
+mapped_reads= map_melt %>% filter(variable=="comb_mapped")
+
+
+mapplot_prop=ggplot(prop_mapped, aes(y=value, x=line, fill=fraction)) + geom_bar(stat="identity",position="dodge") + labs( title="Proportion of reads mapped") + ylab("Proportion mapped")
+
+
+mapplot_mapped=ggplot(mapped_reads, aes(y=value, x=line, fill=fraction)) + geom_bar(stat="identity",position="dodge") + labs( title="Number of Mapped reads") + ylab("Mapped")
+
+plot_grid(mapplot_prop, mapplot_mapped)
+```
+
+Plot boxplots for total vs nuclear.  
+
+```{r}
+box_mapprop=ggplot(prop_mapped, aes(y=value, x=fraction, fill=fraction)) + geom_boxplot() + geom_jitter(position = position_jitter(.3)) + labs( title="Map Proportion") + ylab("Mapped Proportion")
+
+box_map=ggplot(mapped_reads, aes(y=value, x=fraction, fill=fraction)) + geom_boxplot() + geom_jitter(position = position_jitter(.3)) + labs( title="Number of Mapped reads") + ylab("Mapped")
+
+
+plot_grid(box_map, box_mapprop)
+
+
+```
+
