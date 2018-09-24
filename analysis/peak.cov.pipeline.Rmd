@@ -609,11 +609,13 @@ featureCounts -a /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APAp
 
 ##Full pipeline of scripts:  
 
+Should make this a snake file!!!
+
 *  mergeBW.sh   
 
 * run_bgtocov.sh  
 
-* sort -k1,1 -k2,2n merged_combined_YL-SP-threeprimeseq.coverage.txt > merged_combined_YL-SP-threeprimeseq.coverage.sort.txt   
+* sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.txt > /project2/gilad/briana/threeprimeseq/data/mergedBW/merged_combined_YL-SP-threeprimeseq.coverage.sort.txt   
 
 * w_getpeakYLGEN.sh   
 
@@ -623,13 +625,15 @@ featureCounts -a /project2/gilad/briana/threeprimeseq/data/clean.peaks_comb/APAp
 
 * peak_fc.sh    
 
+* run_filterPeak.sh  
+
 ```{bash, eval=F}
 x = wc -l /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.bed 
 
-seq 1 x > peak.num.txt
+seq 1 x > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/peak.num.txt
 
-paste /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.bed peak.num.txt | column -s $'\t' -t > temp
-awk '{print $1 "\t" $2 "\t" $3 "\t" $7  "\t"  $4 "\t"  $5 "\t" $6}' temp >   /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.bed
+paste /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.bed /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/peak.num.txt | column -s $'\t' -t > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/temp
+awk '{print $1 "\t" $2 "\t" $3 "\t" $7  "\t"  $4 "\t"  $5 "\t" $6}' /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/temp >   /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.bed
 
 ```
 
