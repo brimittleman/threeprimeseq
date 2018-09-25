@@ -1,0 +1,94 @@
+---
+title: "ApaQTLs with all individuals"
+author: "Briana Mittleman"
+date: "9/25/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+I am using the code from peakOverlap_oppstrand.Rmd analysis to call QTLs on the full set of individuals. (still missing 4 due to genotype issues- Remove 18500, 19092 and 19193, 18497 - at 35).   
+
+Scripts:  
+* APAqtl_nominal_oppstrand.sh   
+
+* APAqtl_perm_Opp.sh    
+
+
+Write a script to ad the BH correction of the permuted QTL pvalues. I will write the plots to 
+
+
+APAqtlpermCorrectQQplot.R
+
+
+```{r, eval=F}
+
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+library(reshape2)
+
+##total results
+tot.perm= read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permRes.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+#BH correction
+tot.perm$bh=p.adjust(tot.perm$bpval, method="fdr")
+
+#plot qqplot
+pdf("/project2/gilad/briana/threeprimeseq/output/plots/qqplot_total_APAperm.pdf") 
+qqplot_total= qqplot(-log10(runif(nrow(tot.perm))), -log10(tot.perm$bpval),ylab="-log10 Total permuted pvalue", xlab="Uniform expectation", main="Total permuted pvalues for all snps")
+abline(0,1)
+dev.off()
+
+#write df with BH  
+
+write.table(tot.perm, file = "/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permResBH.txt", col.names = T, row.names = F, quote = F)
+
+##nuclear results  
+
+
+nuc.perm= read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permRes.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+nuc.perm$bh=p.adjust(nuc.perm$bpval, method="fdr")
+
+
+#plot qqplot
+pdf("/project2/gilad/briana/threeprimeseq/output/plots/qqplot_nuclear_APAperm.pdf") 
+qqplot(-log10(runif(nrow(nuc.perm))), -log10(nuc.perm$bpval),ylab="-log10 Nuclear permuted pvalue", xlab="Uniform expectation", main="Nuclear permuted pvalues for all snps")
+abline(0,1)
+dev.off()
+
+# write df with BH
+write.table(nuc.perm, file = "/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permResBH.txt", col.names = T, row.names = F, quote = F)
+
+
+
+```
+
+
+Write a script to run this:  
+
+run_APAqtlpermCorrectQQplot.sh
+
+```{bash, eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_APAqtlpermCorrectQQplot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_APAqtlpermCorrectQQplot.out
+#SBATCH --error=run_APAqtlpermCorrectQQplot.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript APAqtlpermCorrectQQplot.R
+```
+

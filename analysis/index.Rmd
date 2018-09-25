@@ -65,3 +65,5 @@ Evaluate and learn from QTLs:
 Analysis for all 39 indivduals:  
 
 * [Read and peak QC plots](39indQC.html)
+
+* [APAqtl for full ind set](apaQTLsAllInd.html)
