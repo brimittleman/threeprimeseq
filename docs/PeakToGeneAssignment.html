@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/aaed5fd02287453b28ab53c96adb5d51b5c385dd" target="_blank">aaed5fd</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/dd2b07d906fd854647d2704b2cb869f8992fd11c" target="_blank">dd2b07d</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -377,6 +377,7 @@ Untracked files:
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/gencov.test.csv
     Untracked:  data/gencov.test.txt
     Untracked:  data/gencov_zero.test.csv
@@ -446,6 +447,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/dd2b07d906fd854647d2704b2cb869f8992fd11c/analysis/PeakToGeneAssignment.Rmd" target="_blank">dd2b07d</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+<td style="text-align:left;">
+account for ties
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/149d033c96899a702b4c0a7320484cb980e3fb56/docs/PeakToGeneAssignment.html" target="_blank">149d033</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -617,6 +652,25 @@ nrow(peak2transDist200)</code></pre>
 <pre class="r"><code>summary(peak2transDist$Distance)</code></pre>
 <pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 -5523243   -57698   -12830   -23711     3373  5592124 </code></pre>
+<p>try adding the no ties flag -t first.</p>
+<pre class="r"><code>peak2transDist_noties=read.table(&quot;../data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed&quot;, col.names = names, stringsAsFactors = F, header=F)
+ggplot(peak2transDist_noties, aes(x=abs(Distance)))+ geom_density() + scale_x_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
+<pre><code>Warning: Removed 2044 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>peak2transDist0_noT=peak2transDist_noties%&gt;% filter(Distance==0)
+nrow(peak2transDist0_noT)</code></pre>
+<pre><code>[1] 2044</code></pre>
+<pre class="r"><code>peak2transDist200_noT=peak2transDist_noties %&gt;% filter(abs(Distance)&lt;200)
+nrow(peak2transDist200_noT)</code></pre>
+<pre><code>[1] 10488</code></pre>
+<pre class="r"><code>summary(peak2transDist$Distance)</code></pre>
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+-5523243   -57698   -12830   -23711     3373  5592124 </code></pre>
+<pre class="r"><code>ggplot(peak2transDist_noties, aes(x=abs(Distance)))+ geom_histogram(binwidth = .5) + scale_x_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
+<pre><code>Warning: Removed 2044 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
