@@ -68,6 +68,8 @@ Analysis for all 39 indivduals:
 
 * [APAqtl for full ind set](apaQTLsAllInd.html)
 
+* [Rethink Peak to Gene assignment](PeakToGeneAssignment.html)
+
 
 Molecular QTL analysis and Overlap:
 

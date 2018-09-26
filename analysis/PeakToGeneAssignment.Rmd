@@ -1,0 +1,130 @@
+---
+title: "Peak To Gene Assignment"
+author: "Briana Mittleman"
+date: "9/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(workflowr)
+```
+
+I will use this analysis to investigate further the best way to assign the peaks to a gene. Right now I am using  
+
+##Prepare referece 
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=intGenes_combfilterPeaksOppStrand
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=intGenes_combfilterPeaksOppStrand.out
+#SBATCH --error=intGenes_combfilterPeaksOppStrand.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools intersect -wa -wb -sorted -S -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed -b /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand.bed
+```
+
+
+This results in peaks being mapped to multiple genes. I want to use a method where I look for the closest end of transcript to each peak then use that gene for the assignment. This would mean each peak is assigned to one gene. 
+
+
+Create a python script to process  the NCBI file. I want protien coding transcript ends with the associated gene names.
+Original file: ncbiRefSeq.txt  
+
+* Column 2 transcript name
+* Column 13 gene name 
+* NM is protein coding 
+
+EndOfProCodTrans.py  
+```{bash, eval=F}
+def main(inF, outF):
+  infile= open(inF, "r")
+  fout = open(outF,'w')
+  for line in infile:
+      linelist=line.split()
+      transcript=linelist[1]
+      transcript_id=transcript.split("_")[0]
+      if transcript_id=="NM":
+          chr=linelist[2][3:]
+          strand=linelist[3] 
+          gene= linelist[12]
+          if strand == "+" :
+              end = int(linelist[7])
+              end2= end - 1
+              fout.write("%s\t%d\t%d\t%s:%s\t.\t%s\n"%(chr, end2, end, transcript,gene, strand))
+          if strand == "-":
+              end= int(linelist[4])
+              end2= end + 1
+              fout.write("%s\t%d\t%d\t%s:%s\t.\t%s\n"%(chr, end, end2, transcript,gene, strand))
+
+
+if __name__ == "__main__":
+    inF = "/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.txt"
+    outF= "/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes.txt"
+    main(inF, outF)
+```
+
+##Find closest gene to each peak  
+
+bedtools closest 
+
+-A peaks /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed
+-B transcript file  /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes_sort.txt
+-S (opposite strand)
+-D b (give distance wrt to gene strand)
+
+
+
+
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=TransClosest2End
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=TransClosest2End.out
+#SBATCH --error=TransClosest2End.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3 
+
+source activate three-prime-env
+
+
+bedtools closest -S -D b -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom.named.fixed.bed -b  /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes_sort.txt > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+```
+
+I will take a look at this file in R then I will process the file in python.  
+
+```{r}
+names=c("PeakChr", "PeakStart", "PeakEnd", "PeakName","PeakScore", "PeakStrand", "GeneChr", "GeneStart", "GeneEnd", "Transcript", "GeneScore", "GeneStrand", "Distance" )
+peak2transDist=read.table("../data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed", col.names = names, stringsAsFactors = F, header=F)
+```
+
+```{r}
+ggplot(peak2transDist, aes(x=abs(Distance)))+ geom_density() + scale_x_log10()
+```
+
+```{r}
+peak2transDist0=peak2transDist %>% filter(Distance==0)
+nrow(peak2transDist0)
+peak2transDist200=peak2transDist %>% filter(abs(Distance)<200)
+nrow(peak2transDist200)
+summary(peak2transDist$Distance)
+```
+
