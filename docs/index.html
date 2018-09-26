@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/fa7f707ffc6afe782fe6a2d7e7092a17d475a892" target="_blank">fa7f707</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/eda266ec447da55ce6a5e62e907e634cbc547a20" target="_blank">eda266e</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -240,7 +240,6 @@ Ignored files:
     Ignored:    output/.DS_Store
 
 Untracked files:
-    Untracked:  analysis/PeakToGeneAssignment.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -261,6 +260,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/gencov.test.csv
     Untracked:  data/gencov.test.txt
     Untracked:  data/gencov_zero.test.csv
@@ -292,6 +292,7 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/callMolQTLS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
@@ -329,6 +330,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eda266ec447da55ce6a5e62e907e634cbc547a20/analysis/index.Rmd" target="_blank">eda266e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+<td style="text-align:left;">
+test peak to gene transcript dist
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/47cd4bf7e1f277a76f2c44c6869c62f2211868e9/docs/index.html" target="_blank">47cd4bf</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -1370,6 +1405,7 @@ Start workflowr project.
 <ul>
 <li><p><a href="39indQC.html">Read and peak QC plots</a></p></li>
 <li><p><a href="apaQTLsAllInd.html">APAqtl for full ind set</a></p></li>
+<li><p><a href="PeakToGeneAssignment.html">Rethink Peak to Gene assignment</a></p></li>
 </ul>
 <p>Molecular QTL analysis and Overlap:</p>
 <ul>
