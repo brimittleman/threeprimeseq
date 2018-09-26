@@ -67,3 +67,8 @@ Analysis for all 39 indivduals:
 * [Read and peak QC plots](39indQC.html)
 
 * [APAqtl for full ind set](apaQTLsAllInd.html)
+
+
+Molecular QTL analysis and Overlap:
+
+* [Rerun molecular QTLs](callMolQTLS.html)
