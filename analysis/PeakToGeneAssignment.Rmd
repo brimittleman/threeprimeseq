@@ -128,3 +128,25 @@ nrow(peak2transDist200)
 summary(peak2transDist$Distance)
 ```
 
+
+try adding the no ties flag -t first.  
+
+```{r}
+
+peak2transDist_noties=read.table("../data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed", col.names = names, stringsAsFactors = F, header=F)
+ggplot(peak2transDist_noties, aes(x=abs(Distance)))+ geom_density() + scale_x_log10()
+
+
+peak2transDist0_noT=peak2transDist_noties%>% filter(Distance==0)
+nrow(peak2transDist0_noT)
+peak2transDist200_noT=peak2transDist_noties %>% filter(abs(Distance)<200)
+nrow(peak2transDist200_noT)
+summary(peak2transDist$Distance)
+
+```
+
+```{r}
+ggplot(peak2transDist_noties, aes(x=abs(Distance)))+ geom_histogram(binwidth = .5) + scale_x_log10()
+
+```
+
