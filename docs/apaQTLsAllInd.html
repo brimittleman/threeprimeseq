@@ -346,14 +346,13 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/529ace6295d7874d425999c9df32f64c8a7e143f" target="_blank">529ace6</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1c62f0b2dcbc05977c49cd9cf195f914a3e835fa" target="_blank">1c62f0b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -446,6 +445,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1c62f0b2dcbc05977c49cd9cf195f914a3e835fa/analysis/apaQTLsAllInd.Rmd" target="_blank">1c62f0b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+<td style="text-align:left;">
+add distribution of distance
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/cd3bdf842c0ab92ebb019ce969a73c61036b0fce/docs/apaQTLsAllInd.html" target="_blank">cd3bdf8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -592,12 +625,72 @@ Rscript APAqtlpermCorrectQQplot.R</code></pre>
 <pre class="r"><code>plot(tot_permBH$ppval, tot_permBH$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-6-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/cd3bdf842c0ab92ebb019ce969a73c61036b0fce/docs/figure/apaQTLsAllInd.Rmd/unnamed-chunk-6-1.png" target="_blank">cd3bdf8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot(-log10(tot_permBH$bh), main=&quot;Total BH corrected pval&quot;)
 abline(h=1,col=&quot;Red&quot;)</code></pre>
 <p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/cd3bdf842c0ab92ebb019ce969a73c61036b0fce/docs/figure/apaQTLsAllInd.Rmd/unnamed-chunk-7-1.png" target="_blank">cd3bdf8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I am going to look how many variants pass the 10% FDR.</p>
-<pre class="r"><code>tot_qtl_10= tot_permBH %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
-tot_qtl_10</code></pre>
+<pre class="r"><code>tot_qtl_10= tot_permBH %&gt;% filter(-log10(bh) &gt; 1)
+nrow(tot_qtl_10)</code></pre>
 <pre><code>[1] 1468</code></pre>
 <p>This is not accounting for the same peak in multiple genes. I want to look at the number of unique snps that are significant.</p>
 <pre class="r"><code>tot_qtl_10uniq= tot_permBH %&gt;% filter(-log10(bh) &gt; 1)  %&gt;% summarise(n_distinct(sid)) 
@@ -612,12 +705,72 @@ tot_qtl_10uniq</code></pre>
 <pre class="r"><code>plot(nuc_permBH$ppval, nuc_permBH$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/cd3bdf842c0ab92ebb019ce969a73c61036b0fce/docs/figure/apaQTLsAllInd.Rmd/unnamed-chunk-11-1.png" target="_blank">cd3bdf8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot(-log10(nuc_permBH$bh), main=&quot;Nuclear BH corrected pval&quot;)
 abline(h=1,col=&quot;Red&quot;)</code></pre>
 <p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/cd3bdf842c0ab92ebb019ce969a73c61036b0fce/docs/figure/apaQTLsAllInd.Rmd/unnamed-chunk-12-1.png" target="_blank">cd3bdf8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I am going to look how many variants pass the 10% FDR.</p>
-<pre class="r"><code>nuc_qtl_10= nuc_permBH %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
-nuc_qtl_10</code></pre>
+<pre class="r"><code>nuc_qtl_10= nuc_permBH %&gt;% filter(-log10(bh) &gt; 1)
+nrow(nuc_qtl_10)</code></pre>
 <pre><code>[1] 7025</code></pre>
 <p>This is not accounting for the same peak in multiple genes. I want to look at the number of unique snps that are significant.</p>
 <pre class="r"><code>nuc_qtl_10uniq= nuc_permBH %&gt;% filter(-log10(bh) &gt; 1)  %&gt;% summarise(n_distinct(sid)) 
@@ -646,6 +799,44 @@ nQTL_long=melt(nQTL, id.vars = &quot;FDR&quot;)
 
 ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y=&quot;Number of Significant QTLs&quot;, title=&quot;APAqtls detected by FDR cuttoff&quot;, color=&quot;Fraction&quot;)</code></pre>
 <p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/cd3bdf842c0ab92ebb019ce969a73c61036b0fce/docs/figure/apaQTLsAllInd.Rmd/unnamed-chunk-15-1.png" target="_blank">cd3bdf8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="explore-qtls" class="section level3">
+<h3>Explore QTLs</h3>
+<p>Look at distribution of SNP to peak in each fraction:</p>
+<pre class="r"><code>ggplot(nuc_qtl_10, aes(x=log10(abs(dist) + 1)) )+ geom_histogram(binwidth=.15, alpha=.5 ) + geom_histogram(data=tot_qtl_10, aes(x=log10(abs(dist) + 1)),fill=&quot;Red&quot;, alpha=.5,binwidth=.15)  +  annotate(&quot;text&quot;, x=1, y=950, col=&quot;Red&quot;, label=&quot;Total&quot;) + annotate(&quot;text&quot;, x=1, y=900, col=&quot;Black&quot;, label=&quot;Nuclear&quot;) + geom_rect(linetype=1, xmin=.5, xmax=1.5, ymin=850, ymax=1000, color=&quot;Black&quot;, alpha=0)</code></pre>
+<p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(nuc_qtl_10, aes(x=log10(abs(dist) + 1)) )+ geom_density( alpha=.25 ,fill=&quot;Black&quot;) + geom_density(data=tot_qtl_10, aes(x=log10(abs(dist) + 1)),fill=&quot;Red&quot;, alpha=.25)  + annotate(&quot;text&quot;, x=1, y=.77, col=&quot;Red&quot;, label=&quot;Total&quot;) + annotate(&quot;text&quot;, x=1, y=.72, col=&quot;Black&quot;, label=&quot;Nuclear&quot;) + geom_rect(linetype=1, xmin=.5, xmax=1.5, ymin=.69, ymax=.8, color=&quot;Black&quot;, alpha=0)</code></pre>
+<p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
