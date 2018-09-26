@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-09-25</p>
+<p><strong>Last updated:</strong> 2018-09-26</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,13 +346,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f4e1942a363f8a1683d49f28c4b36001bb8043e9" target="_blank">f4e1942</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/529ace6295d7874d425999c9df32f64c8a7e143f" target="_blank">529ace6</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -450,6 +451,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/529ace6295d7874d425999c9df32f64c8a7e143f/analysis/apaQTLsAllInd.Rmd" target="_blank">529ace6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+<td style="text-align:left;">
+add QTL res
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b1bcf9916b400de7a1ae40bb2335c8ef064c9048/docs/apaQTLsAllInd.html" target="_blank">b1bcf99</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-25
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/f4e1942a363f8a1683d49f28c4b36001bb8043e9/analysis/apaQTLsAllInd.Rmd" target="_blank">f4e1942</a>
 </td>
 <td style="text-align:left;">
@@ -467,18 +502,38 @@ initiate all ind QTL analysis
 </ul>
 <p></details></p>
 <hr />
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
 <p>I am using the code from peakOverlap_oppstrand.Rmd analysis to call QTLs on the full set of individuals. (still missing 4 due to genotype issues- Remove 18500, 19092 and 19193, 18497 - at 35).</p>
 <p>Scripts:<br />
 * APAqtl_nominal_oppstrand.sh</p>
 <ul>
 <li>APAqtl_perm_Opp.sh</li>
 </ul>
+<pre class="bash"><code>cat /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total* &gt; /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permRes.txt
+
+cat /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear* &gt; /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permRes.txt
+</code></pre>
 <p>Write a script to ad the BH correction of the permuted QTL pvalues. I will write the plots to</p>
 <p>APAqtlpermCorrectQQplot.R</p>
-<pre class="r"><code>library(tidyverse)
-library(workflowr)
-library(cowplot)
-library(reshape2)
+<pre class="r"><code>library(dplyr)
+
 
 ##total results
 tot.perm= read.table(&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permRes.txt&quot;,head=F, stringsAsFactors=F, col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
@@ -530,6 +585,68 @@ source activate three-prime-env
 
 
 Rscript APAqtlpermCorrectQQplot.R</code></pre>
+<div id="total-results" class="section level3">
+<h3>Total results</h3>
+<pre class="r"><code>tot_permBH=read.table(&quot;../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permResBH.txt&quot;, header=T, stringsAsFactors = F)</code></pre>
+<p>Check to quality of the tests:</p>
+<pre class="r"><code>plot(tot_permBH$ppval, tot_permBH$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
+abline(0, 1, col=&quot;red&quot;)</code></pre>
+<p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(-log10(tot_permBH$bh), main=&quot;Total BH corrected pval&quot;)
+abline(h=1,col=&quot;Red&quot;)</code></pre>
+<p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I am going to look how many variants pass the 10% FDR.</p>
+<pre class="r"><code>tot_qtl_10= tot_permBH %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
+tot_qtl_10</code></pre>
+<pre><code>[1] 1468</code></pre>
+<p>This is not accounting for the same peak in multiple genes. I want to look at the number of unique snps that are significant.</p>
+<pre class="r"><code>tot_qtl_10uniq= tot_permBH %&gt;% filter(-log10(bh) &gt; 1)  %&gt;% summarise(n_distinct(sid)) 
+tot_qtl_10uniq</code></pre>
+<pre><code>  n_distinct(sid)
+1             568</code></pre>
+</div>
+<div id="nuclear-results" class="section level3">
+<h3>Nuclear results</h3>
+<pre class="r"><code>nuc_permBH=read.table(&quot;../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permResBH.txt&quot;, header=T, stringsAsFactors = F)</code></pre>
+<p>Check to quality of the tests:</p>
+<pre class="r"><code>plot(nuc_permBH$ppval, nuc_permBH$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
+abline(0, 1, col=&quot;red&quot;)</code></pre>
+<p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(-log10(nuc_permBH$bh), main=&quot;Nuclear BH corrected pval&quot;)
+abline(h=1,col=&quot;Red&quot;)</code></pre>
+<p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I am going to look how many variants pass the 10% FDR.</p>
+<pre class="r"><code>nuc_qtl_10= nuc_permBH %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
+nuc_qtl_10</code></pre>
+<pre><code>[1] 7025</code></pre>
+<p>This is not accounting for the same peak in multiple genes. I want to look at the number of unique snps that are significant.</p>
+<pre class="r"><code>nuc_qtl_10uniq= nuc_permBH %&gt;% filter(-log10(bh) &gt; 1)  %&gt;% summarise(n_distinct(sid)) 
+nuc_qtl_10uniq</code></pre>
+<pre><code>  n_distinct(sid)
+1            2736</code></pre>
+</div>
+<div id="compare-number-of-sig-qtls-by-fdr-cuttoff" class="section level3">
+<h3>Compare number of sig QTLs by FDR cuttoff</h3>
+<pre class="r"><code>nQTL_tot=c()
+FDR=seq(.05, .5, .01)
+for (i in FDR){
+  x=tot_permBH %&gt;% filter(bh &lt; i ) %&gt;% nrow()
+  nQTL_tot=c(nQTL_tot, x)
+}
+
+FDR=seq(.05, .5, .01)
+nQTL_nuc=c()
+for (i in FDR){
+  x=nuc_permBH %&gt;% filter(bh &lt; i ) %&gt;% nrow()
+  nQTL_nuc=c(nQTL_nuc, x)
+}
+
+nQTL=as.data.frame(cbind(FDR, Total=nQTL_tot, Nuclear=nQTL_nuc))
+nQTL_long=melt(nQTL, id.vars = &quot;FDR&quot;)
+
+ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y=&quot;Number of Significant QTLs&quot;, title=&quot;APAqtls detected by FDR cuttoff&quot;, color=&quot;Fraction&quot;)</code></pre>
+<p><img src="figure/apaQTLsAllInd.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -547,14 +664,29 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] bindrcpp_0.2.2  workflowr_1.1.1 reshape2_1.4.3  forcats_0.3.0  
+ [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
+ [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.1.1   Rcpp_0.12.18      digest_0.6.16    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.23.0      magrittr_1.5      evaluate_0.11    
-[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.7.0     rmarkdown_1.10    tools_3.5.1      
-[16] stringr_1.3.1     yaml_2.2.0        compiler_3.5.1   
-[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] evaluate_0.11     labeling_0.3      knitr_1.20       
+[25] broom_0.5.0       Rcpp_0.12.18      scales_1.0.0     
+[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[31] digest_0.6.16     stringi_1.2.4     grid_3.5.1       
+[34] rprojroot_1.3-2   cli_1.0.0         tools_3.5.1      
+[37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[40] whisker_0.3-2     pkgconfig_2.0.2   xml2_1.2.0       
+[43] lubridate_1.7.4   assertthat_0.2.0  rmarkdown_1.10   
+[46] httr_1.3.1        rstudioapi_0.7    R6_2.2.2         
+[49] nlme_3.1-137      git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
