@@ -9,6 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(tidyverse)
+library(reshape2)
+library(workflowr)
+```
+
 
 I am using the code from peakOverlap_oppstrand.Rmd analysis to call QTLs on the full set of individuals. (still missing 4 due to genotype issues- Remove 18500, 19092 and 19193, 18497 - at 35).   
 
@@ -16,6 +22,16 @@ Scripts:
 * APAqtl_nominal_oppstrand.sh   
 
 * APAqtl_perm_Opp.sh    
+
+```{bash, eval=F}
+cat /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total* > /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permRes.txt
+
+cat /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear* > /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permRes.txt
+
+```
+
+
+
 
 
 Write a script to ad the BH correction of the permuted QTL pvalues. I will write the plots to 
@@ -26,10 +42,8 @@ APAqtlpermCorrectQQplot.R
 
 ```{r, eval=F}
 
-library(tidyverse)
-library(workflowr)
-library(cowplot)
-library(reshape2)
+library(dplyr)
+
 
 ##total results
 tot.perm= read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permRes.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
@@ -92,3 +106,100 @@ source activate three-prime-env
 Rscript APAqtlpermCorrectQQplot.R
 ```
 
+
+###Total results  
+
+
+```{r}
+tot_permBH=read.table("../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_permResBH.txt", header=T, stringsAsFactors = F)
+```
+
+
+Check to quality of the tests:  
+
+```{r}
+plot(tot_permBH$ppval, tot_permBH$bpval, xlab="Direct method", ylab="Beta approximation", main="Total Check plot")
+abline(0, 1, col="red")
+```
+
+```{r}
+plot(-log10(tot_permBH$bh), main="Total BH corrected pval")
+abline(h=1,col="Red")
+```
+
+
+I am going to look how many variants pass the 10% FDR.
+
+
+```{r}
+tot_qtl_10= tot_permBH %>% filter(-log10(bh) > 1) %>% nrow()
+tot_qtl_10
+```
+
+This is not accounting for the same peak in multiple genes. I want to look at the number of unique snps that are significant.  
+
+
+```{r}
+tot_qtl_10uniq= tot_permBH %>% filter(-log10(bh) > 1)  %>% summarise(n_distinct(sid)) 
+tot_qtl_10uniq
+```
+###Nuclear results  
+
+
+```{r}
+nuc_permBH=read.table("../data/perm_QTL_opp/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_permResBH.txt", header=T, stringsAsFactors = F)
+```
+
+
+Check to quality of the tests:  
+
+```{r}
+plot(nuc_permBH$ppval, nuc_permBH$bpval, xlab="Direct method", ylab="Beta approximation", main="Nuclear Check plot")
+abline(0, 1, col="red")
+```
+
+```{r}
+plot(-log10(nuc_permBH$bh), main="Nuclear BH corrected pval")
+abline(h=1,col="Red")
+```
+
+
+I am going to look how many variants pass the 10% FDR.
+
+
+```{r}
+nuc_qtl_10= nuc_permBH %>% filter(-log10(bh) > 1) %>% nrow()
+nuc_qtl_10
+```
+
+This is not accounting for the same peak in multiple genes. I want to look at the number of unique snps that are significant.  
+
+
+```{r}
+nuc_qtl_10uniq= nuc_permBH %>% filter(-log10(bh) > 1)  %>% summarise(n_distinct(sid)) 
+nuc_qtl_10uniq
+```
+
+
+###Compare number of sig QTLs by FDR cuttoff
+
+```{r}
+nQTL_tot=c()
+FDR=seq(.05, .5, .01)
+for (i in FDR){
+  x=tot_permBH %>% filter(bh < i ) %>% nrow()
+  nQTL_tot=c(nQTL_tot, x)
+}
+
+FDR=seq(.05, .5, .01)
+nQTL_nuc=c()
+for (i in FDR){
+  x=nuc_permBH %>% filter(bh < i ) %>% nrow()
+  nQTL_nuc=c(nQTL_nuc, x)
+}
+
+nQTL=as.data.frame(cbind(FDR, Total=nQTL_tot, Nuclear=nQTL_nuc))
+nQTL_long=melt(nQTL, id.vars = "FDR")
+
+ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y="Number of Significant QTLs", title="APAqtls detected by FDR cuttoff", color="Fraction")
+```
