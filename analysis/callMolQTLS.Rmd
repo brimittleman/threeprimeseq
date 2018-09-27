@@ -27,6 +27,10 @@ I am download the processed data from http://eqtl.uchicago.edu/jointLCL/ and put
 
 The protein file is already in the format needed for fastQTL. I need to change the headers to include the NA before the individuals.I will need to use:
 
+
+`export PATH=/project/gilad/software/midway1/qtltools-1.0:$PATH`
+
+###RiboQTL
 ```bgzip phenotypes.bed && tabix -p bed phenotypes.bed.gz```
 
 To index the file for the program.  
@@ -135,3 +139,184 @@ done
 ```
 
 
+I can process these to by generalizing my script from the apaQTLsAllInd.Rmd 
+
+
+###Eqtl  
+
+I need to remove the Chr and add the NA.  
+
+fastqtl_qqnorm_RNAseq_phase2.txt
+```{bash,eval=F}
+python addNAphenohead.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.txt /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.txt
+
+sed 's/^chr//'  /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.txt > /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt
+
+bgzip /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt
+tabix /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt.gz
+
+
+#midway1 
+QTLtools pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt.gz --scale --center --out /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.PC.txt
+
+#keep top 5 PCs for analysis
+head -n 6 fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.PC.txt.pca > fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.5PC.txt.pca 
+
+less fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.5PC.txt.pca | tr " " "\t" > fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.5PC_tab.txt.pca
+```
+
+I want to create a script that checks the samples in the file and then makes a samples.txt file if they are in the VCF.  
+
+First create a file with the names of the individuals in the vcf files.  /project2/gilad/briana/YRI_geno_hg19/vcf.samples.txt
+
+create_molQTLSamplefile.py
+```{bash, eval=F}
+
+#infile is the pheno PCA file (because it is not zipped)
+#outfile is the samples for that pheno if they are in the vcf samples
+def main(inF, outF):
+    vcf_samp=open("/project2/gilad/briana/YRI_geno_hg19/vcf.samples.txt", "r")
+    for line in vcf_samp:
+        vcf_list=line.split()
+    infile= open(inF, "r")
+    fout = open(outF,'w')
+    for i, line in enumerate(infile):
+        if i ==0: 
+            mol_samples=line.split()[1:]
+            final_samps=[]
+            for i in mol_samples:
+                if i in vcf_list:
+                    final_samps.append(i)
+            fout.write("\n".join(final_samps))
+
+
+if __name__ == "__main__":
+    import sys
+    inF = sys.argv[1]
+    outF= sys.argv[2]
+    main(inF, outF)
+    
+```
+
+Run in the code dir:  
+
+```{bash,eval=F}
+python create_molQTLSamplefile.py ../data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.5PC_tab.txt.pca ../data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.Samples.txt
+
+```
+
+rnaQTL.nom.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=rnaQTL.nom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=rnaQTL.nom.out
+#SBATCH --error=rnaQTL.nom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.Samples.txt
+done
+
+```
+
+rnaQTL.perm.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=rnaQTL.perm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=rnaQTL.perm.out
+#SBATCH --error=rnaQTL.perm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/perm/fastqtl_qqnorm_RNAseq_phase2.fixed.perm.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.Samples.txt
+done
+
+```
+
+
+###ProteinQTL
+
+http://eqtl.uchicago.edu/jointLCL/fastqtl_qqnorm_prot.txt.gz
+
+```{bash,eval=F}
+python /project2/gilad/briana/threeprimeseq/code/addNAphenohead.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.txt /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.txt
+
+sed 's/^chr//'  /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.txt > /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.txt
+
+bgzip /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.txt
+tabix -p bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.txt.gz
+
+
+#midway1 
+QTLtools pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.txt.gz --scale --center --out /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.PC.txt
+
+#keep top 5 PCs for analysis
+head -n 6 /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.PC.txt.pca > /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.5PC.txt.pca
+
+
+less /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.5PC.txt.pca | tr " " "\t" > /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.5PC_tab.txt.pca
+```
+
+```{bash,eval=F}
+python create_molQTLSamplefile.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.5PC_tab.txt.pca /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.SAMP.txt
+
+```
+
+
+protQTL.nom.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=protQTL.nom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=protQTL.nom.out
+#SBATCH --error=protQTL.nom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.SAMP.txt
+done
+
+```
+
+
+protQTL.perm.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=protQTL.perm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=protQTL.perm.out
+#SBATCH --error=protQTL.perm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/perm/fastqtl_qqnorm_prot.fixed.nominal.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.SAMP.txt
+done
+
+```
