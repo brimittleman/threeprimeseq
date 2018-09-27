@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(workflowr)
+library(cowplot)
 ```
 
 I will use this analysis to investigate further the best way to assign the peaks to a gene. Right now I am using  
@@ -148,5 +149,38 @@ summary(peak2transDist$Distance)
 ```{r}
 ggplot(peak2transDist_noties, aes(x=abs(Distance)))+ geom_histogram(binwidth = .5) + scale_x_log10()
 
+```
+
+Looking at this visually suggests that we have way too many peaks. I want to compare the peak score which is related to the coverage to the abs(distace)  
+
+```{r}
+ggplot(peak2transDist_noties, aes(y=PeakScore, x=abs(Distance + 1))) + geom_point() + scale_x_log10() + scale_y_log10() + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+```
+
+
+Alternatively let me try to remove low peak score values.  
+
+```{r}
+allPeakplot=ggplot(peak2transDist_noties, aes(x=abs(Distance + 1)))+ geom_density() + scale_x_log10() + labs(title="Distance all peaks to gene end") + annotate("text", label=nrow(peak2transDist_noties), x=10, y=.4)
+
+peak2transDist_score500=peak2transDist_noties%>% filter(PeakScore>500)
+score500plot=ggplot(peak2transDist_score500, aes(x=abs(Distance + 1)))+ geom_density() + scale_x_log10() + labs(title="Peak Score > 500") + annotate("text", label=nrow(peak2transDist_score500), x=10, y=.4)
+
+
+peak2transDist_score200=peak2transDist_noties%>% filter(PeakScore>200)
+score200plot=ggplot(peak2transDist_score200, aes(x=abs(Distance + 1)))+ geom_density() + scale_x_log10() + labs(title="Peak Score > 200") + annotate("text", label=nrow(peak2transDist_score200), x=10, y=.4)
+
+
+peak2transDist_score100=peak2transDist_noties%>% filter(PeakScore>100)
+score100plot=ggplot(peak2transDist_score100, aes(x=abs(Distance + 1)))+ geom_density() + scale_x_log10() + labs(title="Peak Score > 100") + annotate("text", label=nrow(peak2transDist_score100), x=10, y=.4)
+
+peak2transDist_score50=peak2transDist_noties%>% filter(PeakScore>50)
+score50plot=ggplot(peak2transDist_score50, aes(x=abs(Distance + 1)))+ geom_density() + scale_x_log10() + labs(title="Peak Score > 50")+ annotate("text", label=nrow(peak2transDist_score50), x=10, y=.4)
+
+peak2transDist_score20=peak2transDist_noties%>% filter(PeakScore>20)
+score20plot=ggplot(peak2transDist_score20, aes(x=abs(Distance + 1)))+ geom_density() + scale_x_log10() + labs(title="Peak Score > 10")+ annotate("text", label=nrow(peak2transDist_score20), x=10, y=.4)
+
+plot_grid(allPeakplot,score20plot,score50plot,score100plot,score200plot, score500plot)
 ```
 
