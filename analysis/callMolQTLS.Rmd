@@ -13,7 +13,7 @@ I will use this analysis file to recall the other molecular QTLs using the same 
 
 * processed (WASP+normalized) 4sU-seq (30m)  
 
-* processed (WASP+normalized) 4sU-seq (60m)  
+* **processed (WASP+normalized) 4sU-seq (60m) **
 
 * **processed (WASP+normalized) RNA-seq (Pickrell)**   
 
@@ -461,5 +461,76 @@ do
 done
 ```
 
+
+
+
+##4su 30 
+
+
+```{bash,eval=F}
+python addNAphenohead.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.txt /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.txt
+
+sed 's/^chr//'  /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.txt > /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.txt
+
+bgzip /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.txt
+
+tabix -p bed -f /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.txt.gz
+
+
+#midway1 
+QTLtools pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.txt.gz --scale --center --out /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.PC.txt
+
+#keep top 5 PCs for analysis
+head -n 6 /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.PC.txt.pca > /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.5PC.txt.pca
+
+less /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.5PC.txt.pca | tr " " "\t" > /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.5PC_tab.txt.pca
+```
+
+```{bash,eval=F}
+python create_molQTLSamplefile.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.5PC_tab.txt.pca /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.SAMP.txt
+```
+
+4su30QTL_nom.sh   
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=4su30QTL_nom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=4su30QTL_nom.out
+#SBATCH --error=4su30QTL_nom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.SAMP.txt  
+done
+```
+
+
+4su30QTL_perm.sh   
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=4su30QTL_perm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=4su30QTL_perm.out
+#SBATCH --error=4su30QTL_perm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/perm/fastqtl_qqnorm_4su30.fixed.perm.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_30_phase2.fixed.noChr.SAMP.txt  
+done
+```
 
 
