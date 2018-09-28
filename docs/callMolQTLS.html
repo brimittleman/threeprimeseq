@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-09-27</p>
+<p><strong>Last updated:</strong> 2018-09-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/48be5d3e73cea10b88dab7a0b65818fe632dcd78" target="_blank">48be5d3</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/39149884c0d4b3738e0b43a9f34b0bcf76e3c0de" target="_blank">3914988</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -448,6 +448,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/39149884c0d4b3738e0b43a9f34b0bcf76e3c0de/analysis/callMolQTLS.Rmd" target="_blank">3914988</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-28
+</td>
+<td style="text-align:left;">
+4su60qtl code
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a6038b1655601c074764dddd52c5890fa3863eba/docs/callMolQTLS.html" target="_blank">a6038b1</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-27
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -567,8 +601,8 @@ ribo QTL code
 <p>I am download the processed data from <a href="http://eqtl.uchicago.edu/jointLCL/" class="uri">http://eqtl.uchicago.edu/jointLCL/</a> and putting it in /project2/gilad/briana/threeprimeseq/data/molecular_phenos.</p>
 <p>The protein file is already in the format needed for fastQTL. I need to change the headers to include the NA before the individuals.I will need to use:</p>
 <p><code>export PATH=/project/gilad/software/midway1/qtltools-1.0:$PATH</code></p>
-<div id="riboqtl" class="section level3">
-<h3>RiboQTL</h3>
+<div id="riboqtl" class="section level2">
+<h2>RiboQTL</h2>
 <p><code>bgzip phenotypes.bed &amp;&amp; tabix -p bed phenotypes.bed.gz</code></p>
 <p>To index the file for the program.</p>
 <p>I will create a python script that adds the NA to the individuals.</p>
@@ -645,8 +679,8 @@ do
 done</code></pre>
 <p>I can process these to by generalizing my script from the apaQTLsAllInd.Rmd</p>
 </div>
-<div id="eqtl" class="section level3">
-<h3>Eqtl</h3>
+<div id="eqtl" class="section level2">
+<h2>eqtl</h2>
 <p>I need to remove the Chr and add the NA.</p>
 <p>fastqtl_qqnorm_RNAseq_phase2.txt</p>
 <pre class="bash"><code>python addNAphenohead.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.txt /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.txt
@@ -732,8 +766,8 @@ do
 done
 </code></pre>
 </div>
-<div id="proteinqtl" class="section level3">
-<h3>ProteinQTL</h3>
+<div id="proteinqtl" class="section level2">
+<h2>ProteinQTL</h2>
 <p><a href="http://eqtl.uchicago.edu/jointLCL/fastqtl_qqnorm_prot.txt.gz" class="uri">http://eqtl.uchicago.edu/jointLCL/fastqtl_qqnorm_prot.txt.gz</a></p>
 <pre class="bash"><code>python /project2/gilad/briana/threeprimeseq/code/addNAphenohead.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.txt /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.txt
 
@@ -790,8 +824,8 @@ do
 done
 </code></pre>
 </div>
-<div id="rnagqtl" class="section level3">
-<h3>RNAgQTL</h3>
+<div id="rnagqtl" class="section level2">
+<h2>RNAgQTL</h2>
 <p>fastqtl_qqnorm_RNAseqGeuvadis_phase2.txt.gz</p>
 <pre class="bash"><code>python addNAphenohead.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseqGeuvadis_phase2.txt /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseqGeuvadis_phase2.fixed.txt
 
@@ -846,9 +880,8 @@ do
 done
 </code></pre>
 </div>
-<div id="su-60" class="section level3">
-<h3>4su 60</h3>
-<p>fastqtl_qqnorm_RNAseqGeuvadis_phase2.txt.gz</p>
+<div id="su-60" class="section level2">
+<h2>4su 60</h2>
 <pre class="bash"><code>python addNAphenohead.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.txt /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.txt
 
 sed &#39;s/^chr//&#39;  /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.txt &gt; /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.txt
@@ -865,6 +898,40 @@ head -n 6 /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqn
 
 less /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC.txt.pca | tr &quot; &quot; &quot;\t&quot; &gt; /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC_tab.txt.pca</code></pre>
 <pre class="bash"><code>python create_molQTLSamplefile.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC_tab.txt.pca /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.SAMP.txt</code></pre>
+<p>4su60QTL_nom.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=4su60QTL_nom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=4su60QTL_nom.out
+#SBATCH --error=4su60QTL_nom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.SAMP.txt  
+done</code></pre>
+<p>4su60QTL_perm.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=4su60QTL_perm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=4su60QTL_perm.out
+#SBATCH --error=4su60QTL_perm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/perm/fastqtl_qqnorm_4su60.fixed.perm.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.SAMP.txt  
+done</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
