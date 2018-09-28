@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 I will use this analysis file to recall the other molecular QTLs using the same VCF files I am using for the APAqtls. This is important because we want to overlap QTLs called with the same genotype information.  
 
-* processed (WASP+normalized) 4sU-seq (30m)  
+* **processed (WASP+normalized) 4sU-seq (30m)**  
 
 * **processed (WASP+normalized) 4sU-seq (60m) **
 
