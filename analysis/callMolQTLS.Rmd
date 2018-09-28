@@ -30,7 +30,7 @@ The protein file is already in the format needed for fastQTL. I need to change t
 
 `export PATH=/project/gilad/software/midway1/qtltools-1.0:$PATH`
 
-###RiboQTL
+##RiboQTL
 ```bgzip phenotypes.bed && tabix -p bed phenotypes.bed.gz```
 
 To index the file for the program.  
@@ -142,7 +142,7 @@ done
 I can process these to by generalizing my script from the apaQTLsAllInd.Rmd 
 
 
-###Eqtl  
+##eqtl  
 
 I need to remove the Chr and add the NA.  
 
@@ -249,7 +249,7 @@ done
 ```
 
 
-###ProteinQTL
+##ProteinQTL
 
 http://eqtl.uchicago.edu/jointLCL/fastqtl_qqnorm_prot.txt.gz
 
@@ -322,7 +322,7 @@ done
 ```
 
 
-###RNAgQTL  
+##RNAgQTL  
 fastqtl_qqnorm_RNAseqGeuvadis_phase2.txt.gz  
 
 
@@ -393,10 +393,7 @@ done
 ```
 
 
-###4su 60  
-
-
-fastqtl_qqnorm_RNAseqGeuvadis_phase2.txt.gz  
+##4su 60  
 
 
 ```{bash,eval=F}
@@ -420,5 +417,49 @@ less /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4
 ```{bash,eval=F}
 python create_molQTLSamplefile.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC_tab.txt.pca /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.SAMP.txt
 ```
+
+4su60QTL_nom.sh   
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=4su60QTL_nom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=4su60QTL_nom.out
+#SBATCH --error=4su60QTL_nom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.SAMP.txt  
+done
+```
+
+
+4su60QTL_perm.sh   
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=4su60QTL_perm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=4su60QTL_perm.out
+#SBATCH --error=4su60QTL_perm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC_tab.txt.pca --bed /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.txt.gz --out /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/perm/fastqtl_qqnorm_4su60.fixed.perm.chunk$i.out --chunk $i 30  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.SAMP.txt  
+done
+```
+
 
 
