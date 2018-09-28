@@ -420,3 +420,5 @@ less /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4
 ```{bash,eval=F}
 python create_molQTLSamplefile.py /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.5PC_tab.txt.pca /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_4su_60_phase2.fixed.noChr.SAMP.txt
 ```
+
+
