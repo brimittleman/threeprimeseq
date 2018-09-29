@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-09-27</p>
+<p><strong>Last updated:</strong> 2018-09-29</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,13 +346,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/43c3f5bdf5e9049d9badc5394644f5beefb145d9" target="_blank">43c3f5b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f3779bc75e35b959e47c51dd4d6837c1b87ebcf8" target="_blank">f3779bc</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -394,6 +395,7 @@ Untracked files:
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_opp/
+    Untracked:  data/perm_QTL_trans/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -447,6 +449,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f3779bc75e35b959e47c51dd4d6837c1b87ebcf8/analysis/PeakToGeneAssignment.Rmd" target="_blank">f3779bc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-29
+</td>
+<td style="text-align:left;">
+evaluate number of qtls
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/1cd047d30de769397ea1af496056cff84d614d3f/docs/PeakToGeneAssignment.html" target="_blank">1cd047d</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-27
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -606,6 +642,12 @@ Attaching package: &#39;cowplot&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:ggplot2&#39;:
 
     ggsave</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
 <p>I will use this analysis to investigate further the best way to assign the peaks to a gene. Right now I am using</p>
 <div id="prepare-referece" class="section level2">
 <h2>Prepare referece</h2>
@@ -969,7 +1011,8 @@ for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/
     name_i=int(name)
     start_i=int(start)
     end_i=int(end)
-    ID = &quot;peak%d:%s:%d:%d:%s:%s&quot;%(name_i, chrom, start_i, end_i, strand, gene)
+    gene_only=gene.split(&quot;-&quot;)[1]
+    ID = &quot;peak%d:%s:%d:%d:%s:%s&quot;%(name_i, chrom, start_i, end_i, strand, gene_only)
     fout.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
 fout.close()</code></pre>
 <p>Run feature counts:<br />
@@ -1338,7 +1381,7 @@ fout.close()</code></pre>
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
 done
 
 
@@ -1367,7 +1410,7 @@ done
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
 done
 
 
@@ -1376,18 +1419,35 @@ do
 /home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
 done
 </code></pre>
+<p>APAqtl_permuted_transcript_3norm.sh The nuclear chrom 3 file did not run. I will try the –normal condition.</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_permuted_transcript_3norm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_permuted_transcript3norm.out
+#SBATCH --error=APAqtl_permuted_transcript3norm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 3
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done</code></pre>
 <p>APAqtlpermCorrectQQplot_trans.R</p>
 <pre class="r"><code>library(dplyr)
 
 
 ##total results
-tot.perm= read.table(&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permRes.txt&quot;,head=F, stringsAsFactors=F, col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
+tot.perm= read.table(&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permRes.txt&quot;,head=F, stringsAsFactors=F, col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
 
 #BH correction
 tot.perm$bh=p.adjust(tot.perm$bpval, method=&quot;fdr&quot;)
 
 #plot qqplot
-pdf(&quot;/project2/gilad/briana/threeprimeseq/output/plots/qqplot_total_APAperm_transcript.pdf&quot;) 
+png(&quot;/project2/gilad/briana/threeprimeseq/output/plots/qqplot_total_APAperm_transcript.png&quot;) 
 qqplot_total= qqplot(-log10(runif(nrow(tot.perm))), -log10(tot.perm$bpval),ylab=&quot;-log10 Total permuted pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Total permuted pvalues for all snps&quot;)
 abline(0,1)
 dev.off()
@@ -1404,7 +1464,7 @@ nuc.perm$bh=p.adjust(nuc.perm$bpval, method=&quot;fdr&quot;)
 
 
 #plot qqplot
-pdf(&quot;/project2/gilad/briana/threeprimeseq/output/plots/qqplot_nuclear_APAperm_transcript.pdf&quot;) 
+png(&quot;/project2/gilad/briana/threeprimeseq/output/plots/qqplot_nuclear_APAperm_transcript.png&quot;) 
 qqplot(-log10(runif(nrow(nuc.perm))), -log10(nuc.perm$bpval),ylab=&quot;-log10 Nuclear permuted pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear permuted pvalues for all snps&quot;)
 abline(0,1)
 dev.off()
@@ -1429,7 +1489,226 @@ module load Anaconda3
 source activate three-prime-env
 
 
-Rscript APAqtlpermCorrectQQplot_trans.R</code></pre>
+Rscript APAqtlpermCorrectQQplot_trans.R </code></pre>
+<p>I may want to change this to not use the transcript ID but use the gene ID. I will look at these results then decide.</p>
+</div>
+</div>
+<div id="genes-with-mult-peaks-new-annotation" class="section level2">
+<h2>Genes with mult peaks-New annotation</h2>
+<pre class="r"><code>peak2transDist_noties_gene = peak2transDist_noties %&gt;% separate(Transcript, c(&quot;OnlyTranscript&quot;, &quot;Gene&quot;), sep=&quot;:&quot;) %&gt;% select(PeakName, Gene) %&gt;% group_by(Gene) %&gt;% tally() %&gt;% mutate(onePeak=ifelse(n==1, 1, 0 )) %&gt;%  mutate(multPeaks=ifelse(n &gt; 1, 1, 0 ))
+
+sum(peak2transDist_noties_gene$onePeak==1)</code></pre>
+<pre><code>[1] 1591</code></pre>
+<pre class="r"><code>sum(peak2transDist_noties_gene$multPeaks==1)</code></pre>
+<pre><code>[1] 13923</code></pre>
+<ul>
+<li><p>1591 Genes have 1 peak. 13923 genes have multiple, 3717 with 0</p></li>
+<li><p>In total there are 19231 genes in the annotation.</p></li>
+</ul>
+<p>Plot this:</p>
+<pre class="r"><code>PeakCategory=c(&quot;Zero&quot;, &quot;One&quot;, &quot;Multiple&quot;) 
+NumGenes=c(round((19231-sum(peak2transDist_noties_gene$onePeak==1)-sum(peak2transDist_noties_gene$multPeaks==1))/19231, digits = 3), round(sum(peak2transDist_noties_gene$onePeak==1)/19231,digits=3), round(sum(peak2transDist_noties_gene$multPeaks==1)/19231,digits = 3))
+GenePeakNumTable=as.data.frame(cbind(PeakCategory,NumGenes))
+
+GenePeakNumTable$NumGenes=as.numeric(as.character(GenePeakNumTable$NumGenes))
+
+lab0=paste(&quot;Genes = &quot;, 19231-sum(peak2transDist_noties_gene$onePeak==1)-sum(peak2transDist_noties_gene$multPeaks==1), sep=&quot; &quot;)
+lab1=paste(&quot;Genes = &quot;, sum(peak2transDist_noties_gene$onePeak==1), sep=&quot; &quot;)
+labmult=paste(&quot;Genes = &quot;, sum(peak2transDist_noties_gene$multPeaks==1), sep=&quot; &quot;)
+
+
+GenePeakNumPlot=ggplot(GenePeakNumTable, aes(x=&quot;&quot;, y=NumGenes, by=PeakCategory, fill=PeakCategory)) + geom_bar(stat=&quot;identity&quot;,position = &quot;stack&quot;) + labs(title=&quot;Characterize Protein Coding Genes \n by number of PAS&quot;, y=&quot;Proportion of genes&quot;, x=&quot;&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)  + annotate(&quot;text&quot;, x=&quot;&quot;, y= .1, label=lab0) + annotate(&quot;text&quot;, x=&quot;&quot;, y= .24, label=lab1)+ annotate(&quot;text&quot;, x=&quot;&quot;, y= .6, label=labmult)
+GenePeakNumPlot</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Try this at transcript level:</p>
+<pre class="r"><code>peak2transDist_noties_transcript = peak2transDist_noties %&gt;% separate(Transcript, c(&quot;OnlyTranscript&quot;, &quot;Gene&quot;), sep=&quot;:&quot;) %&gt;% select(PeakName, OnlyTranscript) %&gt;% group_by(OnlyTranscript) %&gt;% tally() %&gt;% mutate(onePeak=ifelse(n==1, 1, 0 )) %&gt;%  mutate(multPeaks=ifelse(n &gt; 1, 1, 0 ))
+
+sum(peak2transDist_noties_transcript$onePeak==1)</code></pre>
+<pre><code>[1] 2065</code></pre>
+<pre class="r"><code>sum(peak2transDist_noties_transcript$multPeaks==1)</code></pre>
+<pre><code>[1] 15614</code></pre>
+<p>total transcripts: 45024</p>
+</div>
+<div id="evaluate-permuted-results" class="section level2">
+<h2>Evaluate permuted results</h2>
+<pre class="r"><code>tot.perm= read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt&quot;,head=T, stringsAsFactors=F)
+
+
+plot(tot.perm$ppval, tot.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
+abline(0, 1, col=&quot;red&quot;)</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>tot_qtl_10= tot.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
+tot_qtl_10</code></pre>
+<pre><code>[1] 677</code></pre>
+<pre class="r"><code>tot.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;%  summarise(n_distinct(sid)) </code></pre>
+<pre><code>  n_distinct(sid)
+1             656</code></pre>
+<pre class="r"><code>nuc.perm= read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt&quot;,head=T, stringsAsFactors=F)
+
+
+plot(nuc.perm$ppval, nuc.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
+abline(0, 1, col=&quot;red&quot;)</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>nuc_qtl_10= nuc.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
+nuc_qtl_10</code></pre>
+<pre><code>[1] 3049</code></pre>
+<pre class="r"><code>nuc.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;%  summarise(n_distinct(sid)) </code></pre>
+<pre><code>  n_distinct(sid)
+1            2978</code></pre>
+<div id="compare-number" class="section level3">
+<h3>Compare number</h3>
+<pre class="r"><code>nQTL_tot=c()
+FDR=seq(.05, .5, .01)
+for (i in FDR){
+  x=tot.perm %&gt;% filter(bh &lt; i ) %&gt;% nrow()
+  nQTL_tot=c(nQTL_tot, x)
+}
+
+FDR=seq(.05, .5, .01)
+nQTL_nuc=c()
+for (i in FDR){
+  x=nuc.perm %&gt;% filter(bh &lt; i ) %&gt;% nrow()
+  nQTL_nuc=c(nQTL_nuc, x)
+}
+
+nQTL=as.data.frame(cbind(FDR, Total=nQTL_tot, Nuclear=nQTL_nuc))
+nQTL_long=melt(nQTL, id.vars = &quot;FDR&quot;)
+
+ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y=&quot;Number of Significant QTLs&quot;, title=&quot;APAqtls detected by FDR cuttoff&quot;, color=&quot;Fraction&quot;)</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="overlap-with-results-from-other-mol-qtls" class="section level3">
+<h3>Overlap with results from other mol QTLs</h3>
+<p>I am going to perform this analysis on midway. I need condition QTLs on being other types of QTLs and plot the results. For this I use the nominal pvalues.</p>
+<p>overlap_QTLplots_Trans.R</p>
+<pre class="r"><code>#!/bin/rscripts
+
+
+#this script has no arguments, it will take the nuclear and total results then output qqplots of these results overlaped with the other molecular QTLs 
+
+library(dplyr)
+library(scales)
+
+
+#import other QTLs  
+
+QTL_names=c(&quot;gene&quot;, &quot;snpid&quot;,&quot;distance&quot;, &quot;pval&quot;, &quot;slope&quot;)
+
+fourSU30= read.table(&quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.out&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+fourSU60=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.out&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+RNAseq=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+guevardis=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+ribo=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+prot=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out&quot;, header=F, stringsAsFactors = F, col.names = QTL_names)
+
+
+#import nuc and tot results  
+res_names=c(&quot;peakID&quot;, &quot;snpID&quot;, &quot;dist&quot;, &quot;res.pval&quot;, &quot;slope&quot;)
+
+nuc.nom=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt&quot;, header = F, col.names = res_names, stringsAsFactors = F)
+
+
+tot.nom=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt&quot;, header = F, col.names = res_names, stringsAsFactors = F)
+
+
+
+#subset total  
+
+fourSU30AndTot= fourSU30 %&gt;% inner_join(tot.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+fourSU30_unif_T=runif(nrow(fourSU30AndTot))
+
+fourSU60AndTot= fourSU60 %&gt;% inner_join(tot.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+fourSU60_unif_T=runif(nrow(fourSU60AndTot))
+
+
+RNAAndTot= RNAseq %&gt;% inner_join(tot.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+RNAseq_unif_T=runif(nrow(RNAAndTot))
+
+
+GuevAndTot= guevardis %&gt;% inner_join(tot.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+guev_unif_T=runif(nrow(GuevAndTot))
+
+
+riboAndTot= ribo %&gt;% inner_join(tot.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+ribo_unif_T=runif(nrow(riboAndTot))
+
+protAndTot= prot %&gt;% inner_join(tot.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+prot_unif_T=runif(nrow(protAndTot))
+
+#subset nuc
+
+fourSU30AndNuc= fourSU30 %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+fourSU30_unif_N=runif(nrow(fourSU30AndNuc))
+
+fourSU60AndNuc= fourSU60 %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+fourSU60_unif_N=runif(nrow(fourSU60AndNuc))
+
+
+RNAAndNuc= RNAseq %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+RNAseq_unif_N=runif(nrow(RNAAndNuc))
+
+
+GuevAndNuc= guevardis %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+guev_unif_N=runif(nrow(GuevAndNuc))
+
+
+riboAndNuc= ribo %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+ribo_unif_N=runif(nrow(riboAndNuc))
+
+protAndNuc= prot %&gt;% inner_join(nuc.nom, by=&quot;snpID&quot;) %&gt;% select(snpID, res.pval)
+prot_unif_N=runif(nrow(protAndNuc))
+
+
+#plot res
+##nuclear
+png(&#39;/project2/gilad/briana/threeprimeseq/output/nuc.allQTLs.png&#39;)
+qqplot(-log10(runif(nrow(nuc.nom))), -log10(nuc.nom$res.pval),ylab=&quot;-log10 Nuclear nominal pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear Nominal pvalues for all snps&quot;)
+points(sort(-log10(fourSU30_unif_N)), sort(-log10(fourSU30AndNuc$res.pval)), col= alpha(&quot;Red&quot;, 0.3))
+points(sort(-log10(fourSU60_unif_N)), sort(-log10(fourSU60AndNuc$res.pval)), col=alpha(&quot;Orange&quot;,.3))
+points(sort(-log10(RNAseq_unif_N)), sort(-log10(RNAAndNuc$res.pval)), col=alpha(&quot;Yellow&quot;,.3))
+points(sort(-log10(guev_unif_N)), sort(-log10(GuevAndNuc$res.pval)), col=alpha(&quot;Green&quot;,.3))
+points(sort(-log10(ribo_unif_N)), sort(-log10(riboAndNuc$res.pval)), col=alpha(&quot;Blue&quot;, .3))
+points(sort(-log10(prot_unif_N)), sort(-log10(protAndNuc$res.pval)), col=alpha(&quot;Purple&quot;,.3))
+abline(0,1)
+legend(&quot;topleft&quot;, legend=c(&quot;All SNPs&quot;, &quot;4su 30&quot;, &quot;4su 60&quot;, &quot;RNAseq&quot;, &quot;Guevadis RNA&quot;, &quot;Ribo&quot;, &quot;Protein&quot;), col=c(&quot;black&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;), pch=19)
+dev.off()
+
+
+##total
+png(&#39;/project2/gilad/briana/threeprimeseq/output/tot.allQTLs.png&#39;)
+qqplot(-log10(runif(nrow(tot.nom))), -log10(tot.nom$res.pval),ylab=&quot;-log10 Total nominal pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Total Nominal pvalues for all snps&quot;)
+points(sort(-log10(fourSU30_unif_T)), sort(-log10(fourSU30AndTot$res.pval)), col= alpha(&quot;Red&quot;, 0.3))
+points(sort(-log10(fourSU60_unif_T)), sort(-log10(fourSU60AndTot$res.pval)), col=alpha(&quot;Orange&quot;,.3))
+points(sort(-log10(RNAseq_unif_T)), sort(-log10(RNAAndTot$res.pval)), col=alpha(&quot;Yellow&quot;,.3))
+points(sort(-log10(guev_unif_T)), sort(-log10(GuevAndTot$res.pval)), col=alpha(&quot;Green&quot;,.3))
+points(sort(-log10(ribo_unif_T)), sort(-log10(riboAndTot$res.pval)), col=alpha(&quot;Blue&quot;, .3))
+points(sort(-log10(prot_unif_T)), sort(-log10(protAndTot$res.pval)), col=alpha(&quot;Purple&quot;,.3))
+abline(0,1)
+legend(&quot;topleft&quot;, legend=c(&quot;All SNPs&quot;, &quot;4su 30&quot;, &quot;4su 60&quot;, &quot;RNAseq&quot;, &quot;Guevadis RNA&quot;, &quot;Ribo&quot;, &quot;Protein&quot;), col=c(&quot;black&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;), pch=19)
+dev.off()</code></pre>
+<p>Bash script to run this:</p>
+<p>run_overlap_QTLplots_transcript.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_overlapQTL_transcript
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_overlapQTL_transcript.out
+#SBATCH --error=run_overlapQTL_transcript.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+Rscript overlap_QTLplots_Trans.R 
+</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -1450,29 +1729,30 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  cowplot_0.9.3   workflowr_1.1.1 forcats_0.3.0  
- [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
- [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+ [1] bindrcpp_0.2.2  reshape2_1.4.3  cowplot_0.9.3   workflowr_1.1.1
+ [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5    
+ [9] readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0  
+[13] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
-[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
-[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
-[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
-[22] evaluate_0.11     labeling_0.3      knitr_1.20       
-[25] broom_0.5.0       Rcpp_0.12.18      scales_1.0.0     
-[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
-[31] digest_0.6.16     stringi_1.2.4     grid_3.5.1       
-[34] rprojroot_1.3-2   cli_1.0.0         tools_3.5.1      
-[37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
-[40] whisker_0.3-2     pkgconfig_2.0.2   MASS_7.3-50      
-[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
-[46] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.7   
-[49] R6_2.2.2          nlme_3.1-137      git2r_0.23.0     
-[52] compiler_3.5.1   </code></pre>
+ [1] tidyselect_0.2.4   haven_1.1.2        lattice_0.20-35   
+ [4] colorspace_1.3-2   htmltools_0.3.6    yaml_2.2.0        
+ [7] rlang_0.2.2        R.oo_1.22.0        pillar_1.3.0      
+[10] glue_1.3.0         withr_2.1.2        R.utils_2.7.0     
+[13] RColorBrewer_1.1-2 modelr_0.1.2       readxl_1.1.0      
+[16] bindr_0.1.1        plyr_1.8.4         munsell_0.5.0     
+[19] gtable_0.2.0       cellranger_1.1.0   rvest_0.3.2       
+[22] R.methodsS3_1.7.1  evaluate_0.11      labeling_0.3      
+[25] knitr_1.20         broom_0.5.0        Rcpp_0.12.18      
+[28] scales_1.0.0       backports_1.1.2    jsonlite_1.5      
+[31] hms_0.4.2          digest_0.6.16      stringi_1.2.4     
+[34] grid_3.5.1         rprojroot_1.3-2    cli_1.0.0         
+[37] tools_3.5.1        magrittr_1.5       lazyeval_0.2.1    
+[40] crayon_1.3.4       whisker_0.3-2      pkgconfig_2.0.2   
+[43] MASS_7.3-50        xml2_1.2.0         lubridate_1.7.4   
+[46] assertthat_0.2.0   rmarkdown_1.10     httr_1.3.1        
+[49] rstudioapi_0.7     R6_2.2.2           nlme_3.1-137      
+[52] git2r_0.23.0       compiler_3.5.1    </code></pre>
 </div>
 
 <hr>
