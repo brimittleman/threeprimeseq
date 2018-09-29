@@ -15,6 +15,7 @@ library(tidyverse)
 library(workflowr)
 library(cowplot)
 library(reshape2)
+library(VennDiagram)
 ```
 
 I will use this analysis to investigate further the best way to assign the peaks to a gene. Right now I am using  
@@ -898,7 +899,7 @@ library(scales)
 
 #import other QTLs  
 
-QTL_names=c("gene", "snpid","distance", "pval", "slope")
+QTL_names=c("gene", "snpID","distance", "pval", "slope")
 
 fourSU30= read.table("/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.out", header=F, stringsAsFactors = F, col.names = QTL_names)
 
@@ -1021,3 +1022,51 @@ source activate three-prime-env
 Rscript overlap_QTLplots_Trans.R 
 
 ```
+
+
+###Evaluate Results  
+
+```{r}
+tot.perm= tot.perm %>% mutate(sig=ifelse( -log10(bh) >= 1 , "Yes", "No"))
+tot.perm$sig=as.factor(tot.perm$sig)
+
+totQTLdist_plot= ggplot(tot.perm, aes(x=log10(abs(dist)), by=sig, fill=sig)) + geom_density(alpha=.5) + labs(title="Distance between snp and peak\n Total fraction")
+```
+```{r}
+nuc.perm= nuc.perm %>% mutate(sig=ifelse( -log10(bh) >= 1 , "Yes", "No"))
+nuc.perm$sig=as.factor(nuc.perm$sig)
+
+nucQTLdist_plot= ggplot(nuc.perm, aes(x=log10(abs(dist)), by=sig, fill=sig)) + geom_density(alpha=.5) + labs(title="Distance between snp and peak\n Nuclear fraction")
+```
+```{r}
+plot_grid(totQTLdist_plot, nucQTLdist_plot )
+```
+
+How many of the significant snps are the same.  
+
+```{r}
+tot.perm_sigOnly=tot.perm %>% filter(sig=="Yes")
+nuc.perm_sigOnly=nuc.perm %>% filter(sig=="Yes")
+```
+
+I want to know how many overlap. I can use and innner join by the sid.  
+
+```{r}
+#nuc in total 
+nuc.perm_sigOnly_inT= nuc.perm_sigOnly %>% semi_join(tot.perm_sigOnly, by=c("sid", "pid")) 
+nrow(nuc.perm_sigOnly_inT)
+nuc.perm_sigOnly_notT= nuc.perm_sigOnly %>% anti_join(tot.perm_sigOnly, by=c("sid", "pid"))
+nrow(nuc.perm_sigOnly_notT)
+#total in nuc 
+tot.perm_sigOnly_inT= tot.perm_sigOnly %>% semi_join(nuc.perm_sigOnly,  by=c("sid", "pid"))
+nrow(tot.perm_sigOnly_inT)
+tot.perm_sigOnly_notT= tot.perm_sigOnly %>% anti_join(nuc.perm_sigOnly,  by=c("sid", "pid"))
+nrow(tot.perm_sigOnly_notT)
+```
+
+```{r}
+grid.newpage()
+qtloverlap=draw.pairwise.venn(area1 = 2901, area2 = 529, cross.area = 148, category = c("Nuclear: QTLs", "Total: QTLs"), lty = rep("solid", 2), fill = c("light blue", "pink"), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2))
+
+```
+
