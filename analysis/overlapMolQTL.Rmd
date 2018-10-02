@@ -1,0 +1,205 @@
+---
+title: "Overlap Molecular QTLs"
+author: "Briana Mittleman"
+date: "10/1/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this script to overlap the molQTLs found in [Call molQTL](callMolQTLS.html) analysis with the APA QTLs I found using the [transcript level annotations](PeakToGeneAssignment.html) . 
+
+I want to ask if APA QTLs effect other molecular QTLs. The first step is to find the top snp-gene pair. The permuted value is giving me 1 snp for each peak. I need to find the top snp/peak in this file for each gene. I will then test these snps for significance at 10% fdr.  
+
+Overlap: Use the permulted molecular QTL pvalues to find the significant QTLs for each molecular phenotype I tested. Find each of these snps in the APA permuted file. Take the most stignficant pair and multiple the pvalue by the number of peaks the snp is associated with for that same gene. As a baseline for this test I will randomly choose the same number of snps from molecular QTL and test these in the APA permuted files. I can run this for the total and nuclear.
+
+I want to do this for each of the molecular QTLs, therefore it would be best to upload the necessary files then create a script that can take any of them and create the QQplot.  
+
+##Upload Data:  
+
+Library
+```{r}
+library(workflowr)
+library(reshape2)
+library(tidyverse)
+```
+
+
+Permuted Results from APA:
+
+```{r}
+nuclearAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", stringsAsFactors = F, header = T)
+totalAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt", stringsAsFactors = F, header=T)  
+```
+
+
+Permuted results for other QTLs  
+
+```{r}
+
+perm_names=c("pid" ,"nvar","shape1" ,"shape2", "dummy","sid" ,"dist","npval", "slope" , "ppval" ,"bpval")
+su30=read.table("../data/other_qtls/fastqtl_qqnorm_4su30.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
+su60=read.table("../data/other_qtls/fastqtl_qqnorm_4su60.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
+
+rna=read.table("../data/other_qtls/fastqtl_qqnorm_RNAseq_phase2.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
+rib=read.table("../data/other_qtls/fastqtl_qqnorm_ribo_phase2.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
+prot=read.table("../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
+```
+
+##Create overlap plot  
+
+I will write this in multiple functions and put them together. The first function will take in the permuted results and return the significant snps at a given FDR.  
+
+```{r, eval=F}
+#returns significant snps given a file and a cutoff 
+sigsnp=function(file, cutoff){
+  file$bh=p.adjust(file$bpval, method="fdr")
+  file_sig=file %>% filter(-log10(bh)> cutoff) %>% select(sid)
+  return(file_sig)
+}
+
+testsigsnp=sigsnp(rna,1 )
+
+```
+
+Next step is to choose a random subset with the same number of snps as were found significant.  
+
+```{r,eval=F}
+
+#takes the file and the list of sig snps, returns a df with the same number of random snps  
+randomsnps=function(file, SigSnpList){
+  nsnp=nrow(SigSnpList)
+  randomSnpDF= file %>% sample_n(nsnp) %>% arrange(sid) %>% select(sid)
+  return(randomSnpDF)
+}
+testrandomsnps=randomsnps(rna, testsigsnp)
+```
+
+The next step is to filter permuted file by the snp id. To do this I will join on the snpIDs then group by the snp ids. I should then be able to take the lowest Pvalue from each group and count how many are in each group to multiply by the number of tests. I will practice this with a small set then make the general function.   
+
+```{r,eval=F}
+#filter and fix pvals
+filt_tot= totalAPA %>% semi_join(testrandomsnps, by="sid") %>% group_by(sid) %>% add_tally() %>% ungroup() %>% mutate(corrPval=bpval * n)
+#take top snp
+filt_tot_top= filt_tot %>% group_by(sid) %>% top_n(-1, corrPval)
+```
+
+Make this into a function for the total and nuclear:  
+
+```{r,eval=F}
+#takes a list of snps and filters the top corrected snp for each one, returns df
+top_Total=function(snp_list){
+  filt_tot=totalAPA %>% semi_join(snp_list, by="sid") %>% group_by(sid) %>% add_tally() %>% ungroup() %>% mutate(corrPval=bpval)
+  filt_tot_top= filt_tot %>% group_by(sid) %>% top_n(-1, corrPval)
+  return(filt_tot_top)
+}
+
+#same for nuclear:  
+top_Nuclear=function(snp_list){
+  filt_nuc=nuclearAPA %>% semi_join(snp_list, by="sid") %>% group_by(sid) %>% add_tally() %>% ungroup() %>% mutate(corrPval=bpval)
+  filt_nuc_top= filt_nuc %>% group_by(sid) %>% top_n(-1, corrPval)
+  return(filt_nuc_top)
+}
+
+```
+
+In the full script I will run this on the real QTLs and the random snps. 
+
+The next function will make the plots. I will make one that takes the results of the top_total or top_Nuclear snps.  
+
+```{r,eval=F}
+#function returns a QQplot when given the results of the top_X functions. One will be the test set (real QTLs) and 1 will be the baseline snps.
+
+makeQQ=function(test, baseline, Mol, Fraction){
+  plot=qqplot(-log10(runif(nrow(baseline))), -log10(baseline$corrPval), ylab="Observed", xlab="Expected", main=paste("Overlap QTLs:", Mol, "with APA", Fraction, sep=" "))
+  points(sort(-log10(runif(nrow(test)))), sort(-log10(test$corrPval)), col= alpha("Red"))
+  abline(0,1)
+  return(plot)
+}
+```
+Put these together in a function: I want to give the function the molQTL file and it will make the total and nuclear plots. This means I need to give it the file to write the png files to.  
+
+```{r}
+overlapQTLplot=function(mol_file, cut, mol_type, totQQfile, nucQQfile){
+
+    #helper functions  
+    sigsnp=function(file, cutoff){
+      file$bh=p.adjust(file$bpval, method="fdr")
+      file_sig=file %>% filter(-log10(bh)> cutoff) %>% select(sid)
+      print(paste("Sig snps=", nrow(file_sig), sep=" "))
+      return(file_sig)
+    }
+    randomsnps=function(file, SigSnpList){
+      nsnp=nrow(SigSnpList)
+      randomSnpDF= file %>% sample_n(nsnp) %>% arrange(sid) %>% select(sid)
+      return(randomSnpDF)
+    }
+    top_Total=function(snp_list){
+      filt_tot=totalAPA %>% semi_join(snp_list, by="sid") %>% group_by(sid) %>% add_tally() %>% ungroup() %>% mutate(corrPval=bpval)
+      filt_tot_top= filt_tot %>% group_by(sid) %>% top_n(-1, corrPval)
+      print(paste("Total overlap=", nrow(filt_tot_top), sep=" "))
+      return(filt_tot_top)
+    }
+    top_Nuclear=function(snp_list){
+      filt_nuc=nuclearAPA %>% semi_join(snp_list, by="sid") %>% group_by(sid) %>% add_tally() %>% ungroup() %>% mutate(corrPval=bpval)
+      filt_nuc_top= filt_nuc %>% group_by(sid) %>% top_n(-1, corrPval)
+      print(paste("Nuclear overlap=", nrow(filt_nuc_top), sep=" "))
+      return(filt_nuc_top)
+    }
+    makeQQ=function(test, baseline, Mol, Fraction){
+      plot=qqplot(-log10(runif(nrow(baseline))), -log10(baseline$corrPval), ylab="Observed", xlab="Expected", main=paste("Overlap QTLs:", Mol, "with APA", Fraction, sep=" "))
+      points(sort(-log10(runif(nrow(test)))), sort(-log10(test$corrPval)), col= alpha("Red"))
+      abline(0,1)
+      return(plot)
+    }
+    TL=sigsnp(mol_file, cut)
+    BL=randomsnps(mol_file, TL)
+    #top snps test and base total
+    topT_T=top_Total(TL)
+    topT_B=top_Total(BL)
+    #top snps test and base total
+    topN_T=top_Nuclear(TL)
+    topN_B=top_Nuclear(BL)
+    
+    #plot Total
+    png(totQQfile)
+    totalPlot=makeQQ(topT_T,topT_B, mol_type, "Total")
+    dev.off()
+    #plot Nuc
+    png(nucQQfile)
+    totalPlot=makeQQ(topN_T,topN_B, mol_type, "Nuclear")
+
+}
+
+overlapQTLplot(su30, 1, "4su 30", "../output/plots/APAoverlap4su30_Total.png","../output/plots/APAoverlap4su30_Nuclear.png")
+
+overlapQTLplot(su60, 1, "4su 60", "../output/plots/APAoverlap4su60_Total.png","../output/plots/APAoverlap4su60_Nuclear.png")
+
+overlapQTLplot(rna, 1, "RNAseq", "../output/plots/APAoverlapRNA_Total.png","../output/plots/APAoverlapRNA_Nuclear.png")
+
+overlapQTLplot(rib, 1, "RiboSeq", "../output/plots/APAoverlapRibo_Total.png","../output/plots/APAoverlapRibo_Nuclear.png")
+
+overlapQTLplot(rib, 1, "Protein", "../output/plots/APAoverlapProtein_Total.png","../output/plots/APAoverlapProtein_Nuclear.png")
+
+```
+
+
+##Insert plots   
+
+###RNA
+![RNA Nuclear](../output/plots/APAoverlapRNA_Nuclear.png)
+![RNA Total](../output/plots/APAoverlapRNA_Total.png)
+
+
+###Ribo  
+
+![Ribo Nuclear](../output/plots/APAoverlapRibo_Nuclear.png)
+![Ribo Total](../output/plots/APAoverlapRibo_Total.png)
+
+
+###Protein  
+
+![Protein Nuclear](../output/plots/APAoverlapProtein_Nuclear.png)
+![Protein Total](../output/plots/APAoverlapProtein_Total.png)

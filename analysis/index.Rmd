@@ -74,3 +74,5 @@ Analysis for all 39 indivduals:
 Molecular QTL analysis and Overlap:
 
 * [Rerun molecular QTLs](callMolQTLS.html)
+
+* [Make overlap QTL plots](overlap_qtls.html)
