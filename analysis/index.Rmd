@@ -70,6 +70,8 @@ Analysis for all 39 indivduals:
 
 * [Rethink Peak to Gene assignment](PeakToGeneAssignment.html)
 
+* [Condition Total and Nuclear QTLs on each other](conditionAPAqtlFraction.html)
+
 
 Molecular QTL analysis and Overlap:
 
