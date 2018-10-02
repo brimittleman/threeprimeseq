@@ -75,4 +75,4 @@ Molecular QTL analysis and Overlap:
 
 * [Rerun molecular QTLs](callMolQTLS.html)
 
-* [Make overlap QTL plots](overlap_qtls.html)
+* [Make overlap QTL plots](overlapMolQTL.html)
