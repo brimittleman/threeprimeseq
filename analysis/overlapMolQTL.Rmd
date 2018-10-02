@@ -188,6 +188,17 @@ overlapQTLplot(rib, 1, "Protein", "../output/plots/APAoverlapProtein_Total.png",
 
 ##Insert plots   
 
+
+###4su 30 
+![4su30 Nuclear](../output/plots/APAoverlap4su30_Nuclear.png)
+![4su30 Total](../output/plots/APAoverlap4su30_Total.png)
+
+
+###4su 60 
+![4su60 Nuclear](../output/plots/APAoverlap4su60_Nuclear.png)
+![4su60 Total](../output/plots/APAoverlap4su60_Total.png)
+
+
 ###RNA
 ![RNA Nuclear](../output/plots/APAoverlapRNA_Nuclear.png)
 ![RNA Total](../output/plots/APAoverlapRNA_Total.png)
