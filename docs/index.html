@@ -221,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-09-26</p>
+<p><strong>Last updated:</strong> 2018-10-01</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/aaed5fd02287453b28ab53c96adb5d51b5c385dd" target="_blank">aaed5fd</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/35142fb308209cce516f74504f2f1a3abcfdff51" target="_blank">35142fb</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -240,6 +240,7 @@ Ignored files:
     Ignored:    output/.DS_Store
 
 Untracked files:
+    Untracked:  analysis/genometrack_figs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -261,6 +262,8 @@ Untracked files:
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
+    Untracked:  data/first50lines_closest.txt
     Untracked:  data/gencov.test.csv
     Untracked:  data/gencov.test.txt
     Untracked:  data/gencov_zero.test.csv
@@ -276,6 +279,7 @@ Untracked files:
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_opp/
+    Untracked:  data/perm_QTL_trans/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -292,6 +296,7 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/PeakToGeneAssignment.Rmd
     Modified:   analysis/callMolQTLS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
@@ -330,6 +335,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/35142fb308209cce516f74504f2f1a3abcfdff51/analysis/index.Rmd" target="_blank">35142fb</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-01
+</td>
+<td style="text-align:left;">
+overlap QTL plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/149d033c96899a702b4c0a7320484cb980e3fb56/docs/index.html" target="_blank">149d033</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-09-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -1426,7 +1465,8 @@ Start workflowr project.
 </ul>
 <p>Molecular QTL analysis and Overlap:</p>
 <ul>
-<li><a href="callMolQTLS.html">Rerun molecular QTLs</a></li>
+<li><p><a href="callMolQTLS.html">Rerun molecular QTLs</a></p></li>
+<li><p><a href="overlap_qtls.html">Make overlap QTL plots</a></p></li>
 </ul>
 
 <hr>

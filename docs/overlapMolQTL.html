@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Briana Mittleman" />
+
+
+<title>Overlap Molecular QTLs</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Three Prime Sequencing in Human LCLs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brimittleman/threeprimeseq">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Overlap Molecular QTLs</h1>
+<h4 class="author"><em>Briana Mittleman</em></h4>
+<h4 class="date"><em>10/1/2018</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-10-01</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/35142fb308209cce516f74504f2f1a3abcfdff51" target="_blank">35142fb</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    output/.DS_Store
+
+Untracked files:
+    Untracked:  analysis/genometrack_figs.Rmd
+    Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
+    Untracked:  analysis/snake.config.notes.Rmd
+    Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  data/18486.genecov.txt
+    Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/RNAkalisto/
+    Untracked:  data/TotalApaQTLs.txt
+    Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/YL-SP-18486-T-combined-genecov.txt
+    Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/bedgraph_peaks/
+    Untracked:  data/bin200.5.T.nuccov.bed
+    Untracked:  data/bin200.Anuccov.bed
+    Untracked:  data/bin200.nuccov.bed
+    Untracked:  data/clean_peaks/
+    Untracked:  data/comb_map_stats.csv
+    Untracked:  data/comb_map_stats.xlsx
+    Untracked:  data/comb_map_stats_39ind.csv
+    Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
+    Untracked:  data/first50lines_closest.txt
+    Untracked:  data/gencov.test.csv
+    Untracked:  data/gencov.test.txt
+    Untracked:  data/gencov_zero.test.csv
+    Untracked:  data/gencov_zero.test.txt
+    Untracked:  data/gene_cov/
+    Untracked:  data/joined
+    Untracked:  data/leafcutter/
+    Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/nom_QTL/
+    Untracked:  data/nom_QTL_opp/
+    Untracked:  data/nuc6up/
+    Untracked:  data/other_qtls/
+    Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_opp/
+    Untracked:  data/perm_QTL_trans/
+    Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  data/smash.cov.results.bed
+    Untracked:  data/smash.cov.results.csv
+    Untracked:  data/smash.cov.results.txt
+    Untracked:  data/smash_testregion/
+    Untracked:  data/ssFC200.cov.bed
+    Untracked:  data/temp.file1
+    Untracked:  data/temp.file2
+    Untracked:  data/temp.gencov.test.txt
+    Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  output/picard/
+    Untracked:  output/plots/
+    Untracked:  output/qual.fig2.pdf
+
+Unstaged changes:
+    Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/PeakToGeneAssignment.Rmd
+    Modified:   analysis/callMolQTLS.Rmd
+    Modified:   analysis/cleanupdtseq.internalpriming.Rmd
+    Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/overlap_qtls.Rmd
+    Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/test.max2.Rmd
+    Modified:   code/Snakefile
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/35142fb308209cce516f74504f2f1a3abcfdff51/analysis/overlapMolQTL.Rmd" target="_blank">35142fb</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-01
+</td>
+<td style="text-align:left;">
+overlap QTL plots
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<p>I will use this script to overlap the molQTLs found in <a href="callMolQTLS.html">Call molQTL</a> analysis with the APA QTLs I found using the <a href="PeakToGeneAssignment.html">transcript level annotations</a> .</p>
+<p>I want to ask if APA QTLs effect other molecular QTLs. The first step is to find the top snp-gene pair. The permuted value is giving me 1 snp for each peak. I need to find the top snp/peak in this file for each gene. I will then test these snps for significance at 10% fdr.</p>
+<p>Overlap: Use the permulted molecular QTL pvalues to find the significant QTLs for each molecular phenotype I tested. Find each of these snps in the APA permuted file. Take the most stignficant pair and multiple the pvalue by the number of peaks the snp is associated with for that same gene. As a baseline for this test I will randomly choose the same number of snps from molecular QTL and test these in the APA permuted files. I can run this for the total and nuclear.</p>
+<p>I want to do this for each of the molecular QTLs, therefore it would be best to upload the necessary files then create a script that can take any of them and create the QQplot.</p>
+<div id="upload-data" class="section level2">
+<h2>Upload Data:</h2>
+<p>Library</p>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(reshape2)
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<p>Permuted Results from APA:</p>
+<pre class="r"><code>nuclearAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt&quot;, stringsAsFactors = F, header = T)
+totalAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt&quot;, stringsAsFactors = F, header=T)  </code></pre>
+<p>Permuted results for other QTLs</p>
+<pre class="r"><code>perm_names=c(&quot;pid&quot; ,&quot;nvar&quot;,&quot;shape1&quot; ,&quot;shape2&quot;, &quot;dummy&quot;,&quot;sid&quot; ,&quot;dist&quot;,&quot;npval&quot;, &quot;slope&quot; , &quot;ppval&quot; ,&quot;bpval&quot;)
+su30=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_4su30.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
+su60=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_4su60.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
+
+rna=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_RNAseq_phase2.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
+rib=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_ribo_phase2.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
+prot=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)</code></pre>
+</div>
+<div id="create-overlap-plot" class="section level2">
+<h2>Create overlap plot</h2>
+<p>I will write this in multiple functions and put them together. The first function will take in the permuted results and return the significant snps at a given FDR.</p>
+<pre class="r"><code>#returns significant snps given a file and a cutoff 
+sigsnp=function(file, cutoff){
+  file$bh=p.adjust(file$bpval, method=&quot;fdr&quot;)
+  file_sig=file %&gt;% filter(-log10(bh)&gt; cutoff) %&gt;% select(sid)
+  return(file_sig)
+}
+
+testsigsnp=sigsnp(rna,1 )</code></pre>
+<p>Next step is to choose a random subset with the same number of snps as were found significant.</p>
+<pre class="r"><code>#takes the file and the list of sig snps, returns a df with the same number of random snps  
+randomsnps=function(file, SigSnpList){
+  nsnp=nrow(SigSnpList)
+  randomSnpDF= file %&gt;% sample_n(nsnp) %&gt;% arrange(sid) %&gt;% select(sid)
+  return(randomSnpDF)
+}
+testrandomsnps=randomsnps(rna, testsigsnp)</code></pre>
+<p>The next step is to filter permuted file by the snp id. To do this I will join on the snpIDs then group by the snp ids. I should then be able to take the lowest Pvalue from each group and count how many are in each group to multiply by the number of tests. I will practice this with a small set then make the general function.</p>
+<pre class="r"><code>#filter and fix pvals
+filt_tot= totalAPA %&gt;% semi_join(testrandomsnps, by=&quot;sid&quot;) %&gt;% group_by(sid) %&gt;% add_tally() %&gt;% ungroup() %&gt;% mutate(corrPval=bpval * n)
+#take top snp
+filt_tot_top= filt_tot %&gt;% group_by(sid) %&gt;% top_n(-1, corrPval)</code></pre>
+<p>Make this into a function for the total and nuclear:</p>
+<pre class="r"><code>#takes a list of snps and filters the top corrected snp for each one, returns df
+top_Total=function(snp_list){
+  filt_tot=totalAPA %&gt;% semi_join(snp_list, by=&quot;sid&quot;) %&gt;% group_by(sid) %&gt;% add_tally() %&gt;% ungroup() %&gt;% mutate(corrPval=bpval)
+  filt_tot_top= filt_tot %&gt;% group_by(sid) %&gt;% top_n(-1, corrPval)
+  return(filt_tot_top)
+}
+
+#same for nuclear:  
+top_Nuclear=function(snp_list){
+  filt_nuc=nuclearAPA %&gt;% semi_join(snp_list, by=&quot;sid&quot;) %&gt;% group_by(sid) %&gt;% add_tally() %&gt;% ungroup() %&gt;% mutate(corrPval=bpval)
+  filt_nuc_top= filt_nuc %&gt;% group_by(sid) %&gt;% top_n(-1, corrPval)
+  return(filt_nuc_top)
+}</code></pre>
+<p>In the full script I will run this on the real QTLs and the random snps.</p>
+<p>The next function will make the plots. I will make one that takes the results of the top_total or top_Nuclear snps.</p>
+<pre class="r"><code>#function returns a QQplot when given the results of the top_X functions. One will be the test set (real QTLs) and 1 will be the baseline snps.
+
+makeQQ=function(test, baseline, Mol, Fraction){
+  plot=qqplot(-log10(runif(nrow(baseline))), -log10(baseline$corrPval), ylab=&quot;Observed&quot;, xlab=&quot;Expected&quot;, main=paste(&quot;Overlap QTLs:&quot;, Mol, &quot;with APA&quot;, Fraction, sep=&quot; &quot;))
+  points(sort(-log10(runif(nrow(test)))), sort(-log10(test$corrPval)), col= alpha(&quot;Red&quot;))
+  abline(0,1)
+  return(plot)
+}</code></pre>
+<p>Put these together in a function: I want to give the function the molQTL file and it will make the total and nuclear plots. This means I need to give it the file to write the png files to.</p>
+<pre class="r"><code>overlapQTLplot=function(mol_file, cut, mol_type, totQQfile, nucQQfile){
+
+    #helper functions  
+    sigsnp=function(file, cutoff){
+      file$bh=p.adjust(file$bpval, method=&quot;fdr&quot;)
+      file_sig=file %&gt;% filter(-log10(bh)&gt; cutoff) %&gt;% select(sid)
+      print(paste(&quot;Sig snps=&quot;, nrow(file_sig), sep=&quot; &quot;))
+      return(file_sig)
+    }
+    randomsnps=function(file, SigSnpList){
+      nsnp=nrow(SigSnpList)
+      randomSnpDF= file %&gt;% sample_n(nsnp) %&gt;% arrange(sid) %&gt;% select(sid)
+      return(randomSnpDF)
+    }
+    top_Total=function(snp_list){
+      filt_tot=totalAPA %&gt;% semi_join(snp_list, by=&quot;sid&quot;) %&gt;% group_by(sid) %&gt;% add_tally() %&gt;% ungroup() %&gt;% mutate(corrPval=bpval)
+      filt_tot_top= filt_tot %&gt;% group_by(sid) %&gt;% top_n(-1, corrPval)
+      print(paste(&quot;Total overlap=&quot;, nrow(filt_tot_top), sep=&quot; &quot;))
+      return(filt_tot_top)
+    }
+    top_Nuclear=function(snp_list){
+      filt_nuc=nuclearAPA %&gt;% semi_join(snp_list, by=&quot;sid&quot;) %&gt;% group_by(sid) %&gt;% add_tally() %&gt;% ungroup() %&gt;% mutate(corrPval=bpval)
+      filt_nuc_top= filt_nuc %&gt;% group_by(sid) %&gt;% top_n(-1, corrPval)
+      print(paste(&quot;Nuclear overlap=&quot;, nrow(filt_nuc_top), sep=&quot; &quot;))
+      return(filt_nuc_top)
+    }
+    makeQQ=function(test, baseline, Mol, Fraction){
+      plot=qqplot(-log10(runif(nrow(baseline))), -log10(baseline$corrPval), ylab=&quot;Observed&quot;, xlab=&quot;Expected&quot;, main=paste(&quot;Overlap QTLs:&quot;, Mol, &quot;with APA&quot;, Fraction, sep=&quot; &quot;))
+      points(sort(-log10(runif(nrow(test)))), sort(-log10(test$corrPval)), col= alpha(&quot;Red&quot;))
+      abline(0,1)
+      return(plot)
+    }
+    TL=sigsnp(mol_file, cut)
+    BL=randomsnps(mol_file, TL)
+    #top snps test and base total
+    topT_T=top_Total(TL)
+    topT_B=top_Total(BL)
+    #top snps test and base total
+    topN_T=top_Nuclear(TL)
+    topN_B=top_Nuclear(BL)
+    
+    #plot Total
+    png(totQQfile)
+    totalPlot=makeQQ(topT_T,topT_B, mol_type, &quot;Total&quot;)
+    dev.off()
+    #plot Nuc
+    png(nucQQfile)
+    totalPlot=makeQQ(topN_T,topN_B, mol_type, &quot;Nuclear&quot;)
+
+}
+
+overlapQTLplot(su30, 1, &quot;4su 30&quot;, &quot;../output/plots/APAoverlap4su30_Total.png&quot;,&quot;../output/plots/APAoverlap4su30_Nuclear.png&quot;)</code></pre>
+<pre><code>[1] &quot;Sig snps= 711&quot;
+[1] &quot;Total overlap= 85&quot;
+[1] &quot;Total overlap= 112&quot;
+[1] &quot;Nuclear overlap= 87&quot;
+[1] &quot;Nuclear overlap= 100&quot;</code></pre>
+<pre class="r"><code>overlapQTLplot(su60, 1, &quot;4su 60&quot;, &quot;../output/plots/APAoverlap4su60_Total.png&quot;,&quot;../output/plots/APAoverlap4su60_Nuclear.png&quot;)</code></pre>
+<pre><code>[1] &quot;Sig snps= 666&quot;
+[1] &quot;Total overlap= 91&quot;
+[1] &quot;Total overlap= 90&quot;
+[1] &quot;Nuclear overlap= 76&quot;
+[1] &quot;Nuclear overlap= 104&quot;</code></pre>
+<pre class="r"><code>overlapQTLplot(rna, 1, &quot;RNAseq&quot;, &quot;../output/plots/APAoverlapRNA_Total.png&quot;,&quot;../output/plots/APAoverlapRNA_Nuclear.png&quot;)</code></pre>
+<pre><code>[1] &quot;Sig snps= 847&quot;
+[1] &quot;Total overlap= 107&quot;
+[1] &quot;Total overlap= 116&quot;
+[1] &quot;Nuclear overlap= 109&quot;
+[1] &quot;Nuclear overlap= 142&quot;</code></pre>
+<pre class="r"><code>overlapQTLplot(rib, 1, &quot;RiboSeq&quot;, &quot;../output/plots/APAoverlapRibo_Total.png&quot;,&quot;../output/plots/APAoverlapRibo_Nuclear.png&quot;)</code></pre>
+<pre><code>[1] &quot;Sig snps= 483&quot;
+[1] &quot;Total overlap= 57&quot;
+[1] &quot;Total overlap= 72&quot;
+[1] &quot;Nuclear overlap= 61&quot;
+[1] &quot;Nuclear overlap= 79&quot;</code></pre>
+<pre class="r"><code>overlapQTLplot(rib, 1, &quot;Protein&quot;, &quot;../output/plots/APAoverlapProtein_Total.png&quot;,&quot;../output/plots/APAoverlapProtein_Nuclear.png&quot;)</code></pre>
+<pre><code>[1] &quot;Sig snps= 483&quot;
+[1] &quot;Total overlap= 57&quot;
+[1] &quot;Total overlap= 67&quot;
+[1] &quot;Nuclear overlap= 61&quot;
+[1] &quot;Nuclear overlap= 77&quot;</code></pre>
+</div>
+<div id="insert-plots" class="section level2">
+<h2>Insert plots</h2>
+<div id="rna" class="section level3">
+<h3>RNA</h3>
+<p><img src="../output/plots/APAoverlapRNA_Nuclear.png" alt="RNA Nuclear" /> <img src="../output/plots/APAoverlapRNA_Total.png" alt="RNA Total" /></p>
+</div>
+<div id="ribo" class="section level3">
+<h3>Ribo</h3>
+<p><img src="../output/plots/APAoverlapRibo_Nuclear.png" alt="Ribo Nuclear" /> <img src="../output/plots/APAoverlapRibo_Total.png" alt="Ribo Total" /></p>
+</div>
+<div id="protein" class="section level3">
+<h3>Protein</h3>
+<p><img src="../output/plots/APAoverlapProtein_Nuclear.png" alt="Protein Nuclear" /> <img src="../output/plots/APAoverlapProtein_Total.png" alt="Protein Total" /></p>
+</div>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] bindrcpp_0.2.2  forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
+ [5] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
+ [9] ggplot2_3.0.0   tidyverse_1.2.1 reshape2_1.4.3  workflowr_1.1.1
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] evaluate_0.11     knitr_1.20        broom_0.5.0      
+[25] Rcpp_0.12.18      backports_1.1.2   scales_1.0.0     
+[28] jsonlite_1.5      hms_0.4.2         digest_0.6.16    
+[31] stringi_1.2.4     grid_3.5.1        rprojroot_1.3-2  
+[34] cli_1.0.0         tools_3.5.1       magrittr_1.5     
+[37] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
+[40] pkgconfig_2.0.2   xml2_1.2.0        lubridate_1.7.4  
+[43] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
+[46] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
+[49] git2r_0.23.0      compiler_3.5.1   </code></pre>
+</div>
+
+<hr>
+<p>
+    
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
