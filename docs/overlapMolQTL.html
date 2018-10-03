@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-01</p>
+<p><strong>Last updated:</strong> 2018-10-03</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9d6ee033c3a681f38437f2a0cee61cef97ac51da" target="_blank">9d6ee03</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/8314135355662a52bc4ec2d37593a62c3a8019b3" target="_blank">8314135</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -356,6 +356,7 @@ Ignored files:
     Ignored:    output/.DS_Store
 
 Untracked files:
+    Untracked:  KalistoAbundance18486.txt
     Untracked:  analysis/genometrack_figs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -390,6 +391,7 @@ Untracked files:
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
     Untracked:  data/nom_QTL/
     Untracked:  data/nom_QTL_opp/
+    Untracked:  data/nom_QTL_trans/
     Untracked:  data/nuc6up/
     Untracked:  data/other_qtls/
     Untracked:  data/peakPerRefSeqGene/
@@ -412,6 +414,7 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/39indQC.Rmd
     Modified:   analysis/PeakToGeneAssignment.Rmd
     Modified:   analysis/callMolQTLS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
@@ -451,6 +454,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8314135355662a52bc4ec2d37593a62c3a8019b3/analysis/overlapMolQTL.Rmd" target="_blank">8314135</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-03
+</td>
+<td style="text-align:left;">
+RNA gene vendiagram
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2e0d959a51368bcfa9ebc00b54b6b86195e8835a/docs/overlapMolQTL.html" target="_blank">2e0d959</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-01
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -527,6 +564,9 @@ library(tidyverse)</code></pre>
 <pre><code>── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(VennDiagram)</code></pre>
+<pre><code>Loading required package: grid</code></pre>
+<pre><code>Loading required package: futile.logger</code></pre>
 <p>Permuted Results from APA:</p>
 <pre class="r"><code>nuclearAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt&quot;, stringsAsFactors = F, header = T)
 totalAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt&quot;, stringsAsFactors = F, header=T)  </code></pre>
@@ -692,6 +732,77 @@ overlapQTLplot(su30, 1, &quot;4su 30&quot;, &quot;../output/plots/APAoverlap4su3
 <h3>Protein</h3>
 <p><img src="../output/plots/APAoverlapProtein_Nuclear.png" alt="Protein Nuclear" /> <img src="../output/plots/APAoverlapProtein_Total.png" alt="Protein Total" /></p>
 </div>
+<div id="change-gene-ids" class="section level3">
+<h3>Change gene IDs</h3>
+<pre class="r"><code>library(&quot;biomaRt&quot;)
+ensembl&lt;-  useMart(&quot;ensembl&quot;, dataset=&quot;hsapiens_gene_ensembl&quot;)
+attributes &lt;- listAttributes(ensembl)
+filters &lt;- listFilters(ensembl)
+genes=getBM(attributes=c(&quot;ensembl_gene_id&quot;, &quot;hgnc_symbol&quot;,&quot;refseq_mrna&quot;, &quot;external_gene_name&quot;, &quot;entrezgene&quot;),filters=&quot;ensembl_gene_id&quot;, values = prot$pid, mart= ensembl)</code></pre>
+<pre class="r"><code>genesAPA=nuclearAPA %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene_name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% dplyr::select(gene_name) %&gt;% distinct(gene_name) %&gt;% rename(&quot;hgnc_symbol&quot;= gene_name)
+
+
+overlapGenes= genesAPA %&gt;% inner_join(genes, by=c(&quot;hgnc_symbol&quot;)) %&gt;% distinct(external_gene_name)</code></pre>
+<p>Make a full list of the genes used in all of the mol phenoytpe files and use this as the input for the getBM.</p>
+<pre class="r"><code>allMolQTL=su30 %&gt;% dplyr::select(pid) %&gt;% full_join(su60, by=&quot;pid&quot;) %&gt;%  dplyr::select(pid)  %&gt;%  full_join(rna, by=&quot;pid&quot;) %&gt;% dplyr::select(pid) %&gt;% full_join(rib, by=&quot;pid&quot;) %&gt;%  dplyr::select(pid) %&gt;% full_join(prot, by=&quot;pid&quot;) %&gt;%  dplyr::select(pid) %&gt;% distinct(pid)
+
+
+allMolgenes=getBM(attributes=c(&quot;ensembl_gene_id&quot;,&quot;refseq_mrna&quot;, &quot;hgnc_symbol&quot;),filters=&quot;ensembl_gene_id&quot;, values = allMolQTL$pid, mart= ensembl) %&gt;% rename(&quot;geneID&quot;= hgnc_symbol)
+
+ 
+su30_geneID=su30 %&gt;% separate(pid, into=c(&quot;ensembl_gene_id&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(allMolgenes, by=&quot;ensembl_gene_id&quot;) %&gt;% dplyr::select(&quot;geneID&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
+
+su60_geneID=su60 %&gt;% separate(pid, into=c(&quot;ensembl_gene_id&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(allMolgenes, by=&quot;ensembl_gene_id&quot;) %&gt;% dplyr::select(&quot;geneID&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
+
+
+rna_geneID=rna %&gt;% separate(pid, into=c(&quot;ensembl_gene_id&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(allMolgenes, by=&quot;ensembl_gene_id&quot;) %&gt;% dplyr::select(&quot;geneID&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
+
+
+rib_geneID=rib %&gt;% separate(pid, into=c(&quot;ensembl_gene_id&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(allMolgenes, by=&quot;ensembl_gene_id&quot;) %&gt;% dplyr::select(&quot;geneID&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
+
+
+prot_geneID=prot %&gt;% rename(&quot;ensembl_gene_id&quot;=pid) %&gt;%  inner_join(allMolgenes, by=&quot;ensembl_gene_id&quot;) %&gt;% dplyr::select(&quot;geneID&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()</code></pre>
+</div>
+</div>
+<div id="egenes-vs-apagenes" class="section level2">
+<h2>Egenes vs ApaGenes</h2>
+<p>I want to look at the overlap of Egenes with the APAgene in both fractions. The difference in annotations is a bit of a problem here so I need to keep this in mind.</p>
+<pre class="r"><code>totalAPA_siggenes= totalAPA %&gt;% filter(-log10(bh)&gt; 1) %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene_name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% dplyr::select(gene_name)
+
+
+nuclearAPA_siggenes= nuclearAPA %&gt;% filter(-log10(bh)&gt; 1) %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene_name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% dplyr::select(gene_name)
+
+
+rna_geneID_siggenes= rna_geneID %&gt;% mutate( bh=p.adjust(rna_geneID$bpval, method=&quot;fdr&quot;)) %&gt;% filter(-log10(bh)&gt; 1) %&gt;% dplyr::select(geneID)  %&gt;% rename(&quot;gene_name&quot;= geneID)</code></pre>
+<p>Look at overlap with filter join</p>
+<pre class="r"><code>TotalandNuclearandRNA=totalAPA_siggenes %&gt;% semi_join(nuclearAPA_siggenes, by=&quot;gene_name&quot;)  %&gt;% semi_join(rna_geneID_siggenes, by=&quot;gene_name&quot;) %&gt;% nrow()
+paste(&quot;in all:&quot;, TotalandNuclearandRNA, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;in all: 13&quot;</code></pre>
+<pre class="r"><code>TotalandNuclear=totalAPA_siggenes %&gt;% semi_join(nuclearAPA_siggenes, by=&quot;gene_name&quot;)  %&gt;% nrow()
+paste(&quot;in T and N:&quot;, TotalandNuclear, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;in T and N: 463&quot;</code></pre>
+<pre class="r"><code>TotalandRNA=totalAPA_siggenes %&gt;% semi_join(rna_geneID_siggenes, by=&quot;gene_name&quot;)   %&gt;% nrow()
+paste(&quot;in T and RNA:&quot;, TotalandRNA, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;in T and RNA: 20&quot;</code></pre>
+<pre class="r"><code>NuclearandRNA=nuclearAPA_siggenes %&gt;% semi_join(rna_geneID_siggenes, by=&quot;gene_name&quot;)   %&gt;% nrow()
+paste(&quot;in N and RNA:&quot;, NuclearandRNA, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;in N and RNA: 80&quot;</code></pre>
+<pre class="r"><code>onlyRNA= rna_geneID_siggenes %&gt;% anti_join(nuclearAPA_siggenes, by=&quot;gene_name&quot;) %&gt;%  anti_join(totalAPA_siggenes, by=&quot;gene_name&quot;) %&gt;% nrow()
+paste(&quot;onlyRNA&quot;, onlyRNA, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;onlyRNA 168&quot;</code></pre>
+<pre class="r"><code>onlyTotal=totalAPA_siggenes %&gt;% anti_join(nuclearAPA_siggenes, by=&quot;gene_name&quot;) %&gt;%  anti_join(rna_geneID_siggenes, by=&quot;gene_name&quot;) %&gt;% nrow()
+paste(&quot;only Total&quot;, onlyTotal, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;only Total 207&quot;</code></pre>
+<pre class="r"><code>onlyNuc=nuclearAPA_siggenes %&gt;% anti_join(totalAPA_siggenes, by=&quot;gene_name&quot;) %&gt;%  anti_join(rna_geneID_siggenes, by=&quot;gene_name&quot;) %&gt;% nrow()
+paste(&quot;only Nuclear&quot;, onlyNuc, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;only Nuclear 2319&quot;</code></pre>
+<pre class="r"><code>png(&quot;../output/plots/geneswithQTL_Tot_Nuc_RNA.ven.png&quot;)
+grid.newpage()
+draw.triple.venn(677,3049,235,463,80,20,13, category = c(&quot;Total APA&quot;, &quot;Nuclear APA&quot;, &quot;Expression&quot;), fill = c(&quot;light blue&quot;, &quot; purple&quot;, &quot;red&quot;),alpha = rep(0.25, 3))</code></pre>
+<pre><code>(polygon[GRID.polygon.11], polygon[GRID.polygon.12], polygon[GRID.polygon.13], polygon[GRID.polygon.14], polygon[GRID.polygon.15], polygon[GRID.polygon.16], text[GRID.text.17], text[GRID.text.18], text[GRID.text.19], text[GRID.text.20], text[GRID.text.21], text[GRID.text.22], text[GRID.text.23], text[GRID.text.24], text[GRID.text.25], text[GRID.text.26]) </code></pre>
+<pre class="r"><code>dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -708,31 +819,41 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] grid      stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
- [5] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
- [9] ggplot2_3.0.0   tidyverse_1.2.1 reshape2_1.4.3  workflowr_1.1.1
+ [1] biomaRt_2.36.1      bindrcpp_0.2.2      VennDiagram_1.6.20 
+ [4] futile.logger_1.4.3 forcats_0.3.0       stringr_1.3.1      
+ [7] dplyr_0.7.6         purrr_0.2.5         readr_1.1.1        
+[10] tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0      
+[13] tidyverse_1.2.1     reshape2_1.4.3      workflowr_1.1.1    
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
-[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
-[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
-[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
-[22] evaluate_0.11     knitr_1.20        broom_0.5.0      
-[25] Rcpp_0.12.18      backports_1.1.2   scales_1.0.0     
-[28] jsonlite_1.5      hms_0.4.2         digest_0.6.16    
-[31] stringi_1.2.4     grid_3.5.1        rprojroot_1.3-2  
-[34] cli_1.0.0         tools_3.5.1       magrittr_1.5     
-[37] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
-[40] pkgconfig_2.0.2   xml2_1.2.0        lubridate_1.7.4  
-[43] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
-[46] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
-[49] git2r_0.23.0      compiler_3.5.1   </code></pre>
+ [1] Biobase_2.40.0       httr_1.3.1           bit64_0.9-7         
+ [4] jsonlite_1.5         R.utils_2.7.0        modelr_0.1.2        
+ [7] assertthat_0.2.0     stats4_3.5.1         blob_1.1.1          
+[10] cellranger_1.1.0     yaml_2.2.0           progress_1.2.0      
+[13] pillar_1.3.0         RSQLite_2.1.1        backports_1.1.2     
+[16] lattice_0.20-35      glue_1.3.0           digest_0.6.16       
+[19] rvest_0.3.2          colorspace_1.3-2     htmltools_0.3.6     
+[22] R.oo_1.22.0          plyr_1.8.4           XML_3.98-1.16       
+[25] pkgconfig_2.0.2      broom_0.5.0          haven_1.1.2         
+[28] scales_1.0.0         whisker_0.3-2        git2r_0.23.0        
+[31] IRanges_2.14.11      withr_2.1.2          BiocGenerics_0.26.0 
+[34] lazyeval_0.2.1       cli_1.0.0            magrittr_1.5        
+[37] crayon_1.3.4         readxl_1.1.0         memoise_1.1.0       
+[40] evaluate_0.11        R.methodsS3_1.7.1    nlme_3.1-137        
+[43] xml2_1.2.0           prettyunits_1.0.2    tools_3.5.1         
+[46] hms_0.4.2            formatR_1.5          S4Vectors_0.18.3    
+[49] munsell_0.5.0        AnnotationDbi_1.42.1 lambda.r_1.2.3      
+[52] compiler_3.5.1       rlang_0.2.2          RCurl_1.95-4.11     
+[55] rstudioapi_0.7       bitops_1.0-6         rmarkdown_1.10      
+[58] gtable_0.2.0         curl_3.2             DBI_1.0.0           
+[61] R6_2.2.2             lubridate_1.7.4      knitr_1.20          
+[64] bit_1.1-14           bindr_0.1.1          rprojroot_1.3-2     
+[67] futile.options_1.0.1 stringi_1.2.4        parallel_3.5.1      
+[70] Rcpp_0.12.18         tidyselect_0.2.4    </code></pre>
 </div>
 
 <hr>
