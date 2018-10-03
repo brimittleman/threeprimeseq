@@ -24,6 +24,7 @@ Library
 library(workflowr)
 library(reshape2)
 library(tidyverse)
+library(VennDiagram)
 ```
 
 
@@ -214,3 +215,100 @@ overlapQTLplot(rib, 1, "Protein", "../output/plots/APAoverlapProtein_Total.png",
 
 ![Protein Nuclear](../output/plots/APAoverlapProtein_Nuclear.png)
 ![Protein Total](../output/plots/APAoverlapProtein_Total.png)
+
+
+###Change gene IDs  
+
+```{r}
+library("biomaRt")
+ensembl<-  useMart("ensembl", dataset="hsapiens_gene_ensembl")
+attributes <- listAttributes(ensembl)
+filters <- listFilters(ensembl)
+genes=getBM(attributes=c("ensembl_gene_id", "hgnc_symbol","refseq_mrna", "external_gene_name", "entrezgene"),filters="ensembl_gene_id", values = prot$pid, mart= ensembl)
+
+```
+
+```{r}
+genesAPA=nuclearAPA %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene_name", "strand", "peaknum"), sep="_") %>% dplyr::select(gene_name) %>% distinct(gene_name) %>% rename("hgnc_symbol"= gene_name)
+
+
+overlapGenes= genesAPA %>% inner_join(genes, by=c("hgnc_symbol")) %>% distinct(external_gene_name)
+```
+
+Make a full list of the genes used in all of the mol phenoytpe files and use this as the input for the getBM.  
+
+```{r}
+allMolQTL=su30 %>% dplyr::select(pid) %>% full_join(su60, by="pid") %>%  dplyr::select(pid)  %>%  full_join(rna, by="pid") %>% dplyr::select(pid) %>% full_join(rib, by="pid") %>%  dplyr::select(pid) %>% full_join(prot, by="pid") %>%  dplyr::select(pid) %>% distinct(pid)
+
+
+allMolgenes=getBM(attributes=c("ensembl_gene_id","refseq_mrna", "hgnc_symbol"),filters="ensembl_gene_id", values = allMolQTL$pid, mart= ensembl) %>% rename("geneID"= hgnc_symbol)
+
+ 
+su30_geneID=su30 %>% separate(pid, into=c("ensembl_gene_id", "ver"), sep ="[.]") %>% inner_join(allMolgenes, by="ensembl_gene_id") %>% dplyr::select("geneID", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+
+su60_geneID=su60 %>% separate(pid, into=c("ensembl_gene_id", "ver"), sep ="[.]") %>% inner_join(allMolgenes, by="ensembl_gene_id") %>% dplyr::select("geneID", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+
+
+rna_geneID=rna %>% separate(pid, into=c("ensembl_gene_id", "ver"), sep ="[.]") %>% inner_join(allMolgenes, by="ensembl_gene_id") %>% dplyr::select("geneID", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+
+
+rib_geneID=rib %>% separate(pid, into=c("ensembl_gene_id", "ver"), sep ="[.]") %>% inner_join(allMolgenes, by="ensembl_gene_id") %>% dplyr::select("geneID", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+
+
+prot_geneID=prot %>% rename("ensembl_gene_id"=pid) %>%  inner_join(allMolgenes, by="ensembl_gene_id") %>% dplyr::select("geneID", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+
+
+
+```
+##Egenes vs ApaGenes
+
+I want to look at the overlap of Egenes with the APAgene in both fractions. The difference in annotations is a bit of a problem here so I need to keep this in mind. 
+
+
+
+
+```{r}
+totalAPA_siggenes= totalAPA %>% filter(-log10(bh)> 1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene_name", "strand", "peaknum"), sep="_") %>% dplyr::select(gene_name)
+
+
+nuclearAPA_siggenes= nuclearAPA %>% filter(-log10(bh)> 1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene_name", "strand", "peaknum"), sep="_") %>% dplyr::select(gene_name)
+
+
+rna_geneID_siggenes= rna_geneID %>% mutate( bh=p.adjust(rna_geneID$bpval, method="fdr")) %>% filter(-log10(bh)> 1) %>% dplyr::select(geneID)  %>% rename("gene_name"= geneID)
+```
+
+Look at overlap with filter join
+
+```{r}
+TotalandNuclearandRNA=totalAPA_siggenes %>% semi_join(nuclearAPA_siggenes, by="gene_name")  %>% semi_join(rna_geneID_siggenes, by="gene_name") %>% nrow()
+paste("in all:", TotalandNuclearandRNA, sep=" ")
+
+TotalandNuclear=totalAPA_siggenes %>% semi_join(nuclearAPA_siggenes, by="gene_name")  %>% nrow()
+paste("in T and N:", TotalandNuclear, sep=" ")
+
+TotalandRNA=totalAPA_siggenes %>% semi_join(rna_geneID_siggenes, by="gene_name")   %>% nrow()
+paste("in T and RNA:", TotalandRNA, sep=" ")
+
+NuclearandRNA=nuclearAPA_siggenes %>% semi_join(rna_geneID_siggenes, by="gene_name")   %>% nrow()
+paste("in N and RNA:", NuclearandRNA, sep=" ")
+
+onlyRNA= rna_geneID_siggenes %>% anti_join(nuclearAPA_siggenes, by="gene_name") %>%  anti_join(totalAPA_siggenes, by="gene_name") %>% nrow()
+paste("onlyRNA", onlyRNA, sep=" ")
+
+
+onlyTotal=totalAPA_siggenes %>% anti_join(nuclearAPA_siggenes, by="gene_name") %>%  anti_join(rna_geneID_siggenes, by="gene_name") %>% nrow()
+paste("only Total", onlyTotal, sep=" ")
+
+onlyNuc=nuclearAPA_siggenes %>% anti_join(totalAPA_siggenes, by="gene_name") %>%  anti_join(rna_geneID_siggenes, by="gene_name") %>% nrow()
+paste("only Nuclear", onlyNuc, sep=" ")
+
+```
+
+
+```{r}
+png("../output/plots/geneswithQTL_Tot_Nuc_RNA.ven.png")
+grid.newpage()
+draw.triple.venn(677,3049,235,463,80,20,13, category = c("Total APA", "Nuclear APA", "Expression"), fill = c("light blue", " purple", "red"),alpha = rep(0.25, 3))
+dev.off()
+```
+
