@@ -379,6 +379,20 @@ for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/
     
 inds=list(dic_BAM.keys()) #list of ind libraries  
 
+#gene start and end dictionaries: 
+dic_geneS = {}
+dic_geneE = {}
+for ln in open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes_sort.txt"):
+    chrom, start, end, geneID, score, strand = ln.split('\t')
+    gene= geneID.split(":")[1]
+    if "-" in gene:
+        gene=gene.split("-")[0]
+    if gene not in dic_geneS:
+        dic_geneS[gene]=int(start)
+        dic_geneE[gene]=int(end)
+        
+
+
 #list of genes   
 
 count_file=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", "r")
@@ -419,7 +433,7 @@ for line, i in enumerate(count_file):
 #write the file by acessing the dictionary and putting values in the table ver the value in the dic 
         
 
-fout=open("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscriptfiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt","w")
+fout=open("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt","w")
 peak=["chrom"]
 inds_noL=[]
 for each in inds:
@@ -435,8 +449,8 @@ for line , i in enumerate(count_file):
         id=i_list[0]
         id_list=id.split(":")
         gene=id_list[5]
-        start=int(id_list[2])
-        end=int(id_list[3])
+        start=dic_geneS[id_list[5]]
+        end=dic_geneE[id_list[5]]
         buff=[]
         buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
         for x,y in zip(i_list[6:], inds):
@@ -471,6 +485,18 @@ for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/
 #I also have a bam dic with ind as the keys and bam as the values  
     
 inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#gene start and end dictionaries: 
+dic_geneS = {}
+dic_geneE = {}
+for ln in open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes_sort.txt"):
+    chrom, start, end, geneID, score, strand = ln.split('\t')
+    gene= geneID.split(":")[1]
+    if "-" in gene:
+        gene=gene.split("-")[0]
+    if gene not in dic_geneS:
+        dic_geneS[gene]=int(start)
+        dic_geneE[gene]=int(end)
 
 #list of genes   
 
@@ -526,8 +552,8 @@ for line , i in enumerate(count_file):
         id=i_list[0]
         id_list=id.split(":")
         gene=id_list[5]
-        start=int(id_list[2])
-        end=int(id_list[3])
+        start=dic_geneS[id_list[5]]
+        end=dic_geneE[id_list[5]]
         buff=[]
         buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
         for x,y in zip(i_list[6:], inds):
@@ -636,13 +662,13 @@ fout.close()
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
 done
 
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
 done
 
 
@@ -671,13 +697,13 @@ done
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
 done
 
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
 done
 
 
@@ -705,7 +731,7 @@ do
 done
 ```
 
-
+**If needed**  
 
 APAqtlpermCorrectQQplot_trans.R
 
@@ -805,9 +831,7 @@ labmult=paste("Genes = ", sum(peak2transDist_noties_gene$multPeaks==1), sep=" ")
 
 
 GenePeakNumPlot=ggplot(GenePeakNumTable, aes(x="", y=NumGenes, by=PeakCategory, fill=PeakCategory)) + geom_bar(stat="identity",position = "stack") + labs(title="Characterize Protein Coding Genes \n by number of PAS", y="Proportion of genes", x="") + scale_fill_brewer(palette="Paired")  + annotate("text", x="", y= .1, label=lab0) + annotate("text", x="", y= .24, label=lab1)+ annotate("text", x="", y= .6, label=labmult)
-GenePeakNumPlot
-
-
+#ggsave(GenePeakNumPlot,filename = "../output/plots/PasPerProteinCodingGene.png")
 ```
 
 
@@ -1092,7 +1116,11 @@ tot.perm_sigOnly_gene %>% anti_join(nuc.perm_sigOnly_gene, by="gene") %>% nrow()
 
 ```{r}
 grid.newpage()
-qtloverlap_gene=draw.pairwise.venn(area1 = 2272, area2 = 602, cross.area = 398, category = c("Nuclear: QTL genes", "Total: QTL genes"), lty = rep("solid", 2), fill = c("light blue", "pink"), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2))
+png("../output/plots/geneswithAPAQTL.ven.png")
+qtloverlap_gene=draw.pairwise.venn(area1 = 2272, area2 = 602, cross.area = 398, category = c("Genes with APAqtls\n Nuclear", "Genes with APAqtls\n Total"), lty = rep("solid", 2), fill = c("light blue", " purple"), alpha = rep(0.5, 2), cat.pos = c(0, 26), cat.dist = c(0.03, 0.03))
+dev.off()
+
+
 
 ```
 ##Use these phenotypes for Diff Iso Analysis  
@@ -1266,6 +1294,8 @@ for line, i in enumerate(infile):
 outfile.close()
 ```
 
+
+*try zipping the phenos*  
 run_leafcutter_ds_bychrom_tr.sh  
 ```{bash, eval=F}
 #!/bin/bash
@@ -1283,7 +1313,12 @@ module load R
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-Rscript /project2/gilad/briana/threeprimeseq/data/diff_iso/leafcutter_ds.R /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_transcript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.ALL.pheno_fixed_${i}.txt /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/TN_diff_isoform_chr${i}.txt  
+Rscript /project2/gilad/briana/threeprimeseq/data/diff_iso/leafcutter_ds.R --num_threads 4 /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_transcript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.ALL.pheno_fixed_${i}.txt.gz /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/TN_diff_isoform_chr${i}.txt  
 done
 ```
+
+Error:  
+Evaluation error: object 'perturbed' not found.
+
+
 
