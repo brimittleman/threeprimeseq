@@ -710,28 +710,6 @@ done
 ```
 
 
-APAqtl_permuted_transcript_3norm.sh 
-The nuclear chrom 3 file did not run. I will try the --normal condition.  
-```{bash,eval=F}
-#!/bin/bash
-
-
-#SBATCH --job-name=APAqtl_permuted_transcript_3norm
-#SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
-#SBATCH --output=APAqtl_permuted_transcript3norm.out
-#SBATCH --error=APAqtl_permuted_transcript3norm.err
-#SBATCH --partition=broadwl
-#SBATCH --mem=12G
-#SBATCH --mail-type=END
-
-for i in 3
-do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --normal  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e4 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
-done
-```
-
-**If needed**  
 
 APAqtlpermCorrectQQplot_trans.R
 
@@ -898,8 +876,8 @@ for (i in FDR){
 nQTL=as.data.frame(cbind(FDR, Total=nQTL_tot, Nuclear=nQTL_nuc))
 nQTL_long=melt(nQTL, id.vars = "FDR")
 
-ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y="Number of Significant QTLs", title="APAqtls detected by FDR cuttoff", color="Fraction")
-
+sigQTLbyFDR=ggplot(nQTL_long, aes(x=FDR, y=value, by=variable, col=variable)) + geom_line(size=1.5) + labs(y="Number of Significant QTLs", title="APAqtls detected by FDR cuttoff", color="Fraction")+  scale_color_manual(values=c("#5D478B", "#87CEFF"))
+ggsave(plot = sigQTLbyFDR,filename =  "../output/plots/SigQTLbyFDR.png")
 ```
 
 
@@ -1313,7 +1291,6 @@ module load R
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-Rscript /project2/gilad/briana/threeprimeseq/data/diff_iso/leafcutter_ds.R --num_threads 4 /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_transcript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.ALL.pheno_fixed_${i}.txt.gz /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/TN_diff_isoform_chr${i}.txt  
 done
 ```
 
