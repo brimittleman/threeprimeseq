@@ -346,14 +346,13 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/10483d977b1bfadb739a1e76ea13d99710d08589" target="_blank">10483d9</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2a0b2557e22d781e3b341435a3e921909f7f3fff" target="_blank">2a0b255</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -456,6 +455,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2a0b2557e22d781e3b341435a3e921909f7f3fff/analysis/overlapMolQTL.Rmd" target="_blank">2a0b255</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+<td style="text-align:left;">
+add barplot for overlap
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/overlapMolQTL.html" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -610,10 +643,10 @@ totalAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchr
 <pre class="r"><code>perm_names=c(&quot;pid&quot; ,&quot;nvar&quot;,&quot;shape1&quot; ,&quot;shape2&quot;, &quot;dummy&quot;,&quot;sid&quot; ,&quot;dist&quot;,&quot;npval&quot;, &quot;slope&quot; , &quot;ppval&quot; ,&quot;bpval&quot;)
 su30=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_4su30.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
 su60=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_4su60.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
-
 rna=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_RNAseq_phase2.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
+rnaG=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_RNAseqGeuvadis.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
 rib=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_ribo_phase2.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)
-prot=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out&quot;, stringsAsFactors = F,col.names = perm_names)</code></pre>
+prot=read.table(&quot;../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out&quot;, stringsAsFactors = F,col.names = c(&quot;Gene.stable.ID&quot; ,&quot;nvar&quot;,&quot;shape1&quot; ,&quot;shape2&quot;, &quot;dummy&quot;,&quot;sid&quot; ,&quot;dist&quot;,&quot;npval&quot;, &quot;slope&quot; , &quot;ppval&quot; ,&quot;bpval&quot;))</code></pre>
 </div>
 <div id="create-overlap-plot" class="section level2">
 <h2>Create overlap plot</h2>
@@ -946,37 +979,487 @@ done</code></pre>
 <h4>RNA</h4>
 <pre class="r"><code>rna_total_plot=makeQQ(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt&quot;, &quot;../data/mol_overlap/base/SigRNAseqQTL_overlapAPA_Total.base.txt&quot;, &quot;RNAseq&quot;, &quot;Total&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-20-1.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>rna_nuc_plot=makeQQ(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt&quot;, &quot;../data/mol_overlap/base/SigRNAseqQTL_overlapAPA_Nuclear.base.txt&quot;, &quot;RNAseq&quot;, &quot;Nuclear&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-20-2.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="rna-g" class="section level3">
 <h3>RNA G</h3>
 <pre class="r"><code>rna_total_plot=makeQQ(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt&quot;, &quot;../data/mol_overlap/base/SigRNAseqGeuvadisQTL_overlapAPA_Total.base.txt&quot;, &quot;RNAseq Geu&quot;, &quot;Total&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-21-1.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>rna_nuc_plot=makeQQ(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt&quot;, &quot;../data/mol_overlap/base/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.base.txt&quot;, &quot;RNAseq Geu&quot;, &quot;Nuclear&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-21-2.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="su30" class="section level3">
 <h3>4su30</h3>
 <pre class="r"><code>rna_total_plot=makeQQ(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt&quot;, &quot;../data/mol_overlap/base/Sig4su30QTL_overlapAPA_Total.base.txt&quot;, &quot;4su 30&quot;, &quot;Total&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-22-1.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>rna_nuc_plot=makeQQ(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt&quot;, &quot;../data/mol_overlap/base/Sig4su30QTL_overlapAPA_Nuclear.base.txt&quot;, &quot;4su 30&quot;, &quot;Nuclear&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-22-2.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="su60" class="section level3">
 <h3>4su60</h3>
 <pre class="r"><code>rna_total_plot=makeQQ(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt&quot;, &quot;../data/mol_overlap/base/Sig4su60QTL_overlapAPA_Total.base.txt&quot;, &quot;4su 60&quot;, &quot;Total&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-23-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-23-1.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>rna_nuc_plot=makeQQ(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt&quot;, &quot;../data/mol_overlap/base/Sig4su60QTL_overlapAPA_Nuclear.base.txt&quot;, &quot;4su 60&quot;, &quot;Nuclear&quot;)</code></pre>
-<p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-23-2.png" width="672" style="display: block; margin: auto;" /> ###Protein</p>
+<p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-23-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-23-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-23-2.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="protein" class="section level3">
+<h3>Protein</h3>
 <pre class="r"><code>rna_total_plot=makeQQ(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt&quot;, &quot;../data/mol_overlap/base/SigProteinQTL_overlapAPA_Total.base.txt&quot;, &quot;Protein&quot;, &quot;Total&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-24-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-24-1.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>rna_nuc_plot=makeQQ(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt&quot;, &quot;../data/mol_overlap/base/SigProteinQTL_overlapAPA_Nuclear.base.txt&quot;, &quot;Protein&quot;, &quot;Nuclear&quot;)</code></pre>
-<p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /> ###Ribo</p>
+<p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-24-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-24-2.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="ribo" class="section level3">
+<h3>Ribo</h3>
 <pre class="r"><code>rna_total_plot=makeQQ(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt&quot;, &quot;../data/mol_overlap/base/SigriboQTL_overlapAPA_Total.base.txt&quot;, &quot;Ribo&quot;, &quot;Total&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-25-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-25-1.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>rna_nuc_plot=makeQQ(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt&quot;, &quot;../data/mol_overlap/base/SigriboQTL_overlapAPA_Nuclear.base.txt&quot;, &quot;Ribo&quot;, &quot;Nuclear&quot;)</code></pre>
 <p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-25-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-25-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b32f50b1c3ca9b0dec598801204ecc39400777eb/docs/figure/overlapMolQTL.Rmd/unnamed-chunk-25-2.png" target="_blank">b32f50b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>I want to plot the proportion of QTLs that overlap with APA per pheno type:</p>
+<p>Fix names and look at number of significant:</p>
+<pre class="r"><code>geneNames=read.table(&quot;../data/ensemble_to_genename.txt&quot;, sep=&quot;\t&quot;, header=T,stringsAsFactors = F)
+
+#su30
+su30.name=su30 %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;)
+su30.name$bh=p.adjust(su30.name$bpval, method=&quot;fdr&quot;)
+su30.name_sig=su30.name %&gt;% filter(-log10(bh)&gt; 1) %&gt;% nrow()
+su30.name_sig</code></pre>
+<pre><code>[1] 384</code></pre>
+<pre class="r"><code>su60.name=su60 %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;)
+su60.name$bh=p.adjust(su60.name$bpval, method=&quot;fdr&quot;)
+su60.name_sig=su60.name %&gt;% filter(-log10(bh)&gt; 1) %&gt;% nrow()
+su60.name_sig</code></pre>
+<pre><code>[1] 360</code></pre>
+<pre class="r"><code>rna.name=rna %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;)
+rna.name$bh=p.adjust(rna.name$bpval, method=&quot;fdr&quot;)
+rna.name_sig=rna.name %&gt;% filter(-log10(bh)&gt; 1) %&gt;% nrow()
+rna.name_sig</code></pre>
+<pre><code>[1] 447</code></pre>
+<pre class="r"><code>rnaG.name=rnaG %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;)
+rnaG.name$bh=p.adjust(rnaG.name$bpval, method=&quot;fdr&quot;)
+rnaG.name_sig=rnaG.name %&gt;% filter(-log10(bh)&gt; 1) %&gt;% nrow()
+rnaG.name_sig</code></pre>
+<pre><code>[1] 1361</code></pre>
+<pre class="r"><code>rib.name=rib %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;)
+rib.name$bh=p.adjust(rib.name$bpval, method=&quot;fdr&quot;)
+rib.name_sig=rib.name %&gt;% filter(-log10(bh)&gt; 1) %&gt;% nrow()
+rib.name_sig</code></pre>
+<pre><code>[1] 285</code></pre>
+<pre class="r"><code>prot.name=prot %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;)
+prot.name$bh=p.adjust(prot.name$bpval, method=&quot;fdr&quot;)
+prot.name_sig=prot.name %&gt;% filter(-log10(bh)&gt; 1) %&gt;% nrow()
+prot.name_sig</code></pre>
+<pre><code>[1] 54</code></pre>
+<pre class="r"><code>phenos=c(&quot;4su30&quot;, &quot;4su60&quot;, &quot;RNA&quot;, &quot;RNAG&quot;, &quot;Ribo&quot;, &quot;Protein&quot;)
+sig=c(su30.name_sig, su60.name_sig, rna.name_sig, rnaG.name_sig, rib.name_sig, prot.name_sig)</code></pre>
+<p>Get the Total overlap numbers</p>
+<pre class="r"><code>names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;Gene.name&quot;, &quot;strand&quot; ,&quot;peaknum&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;, &quot;n&quot; ,&quot;corrPval&quot;)
+
+
+su30_overT=read.table(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+su60_overT=read.table(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+rna_overT=read.table(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+rnaG_overT=read.table(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+ribo_overT=read.table(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+prot_overT=read.table(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+
+overlap_total=c(su30_overT,su60_overT, rna_overT,rnaG_overT,ribo_overT,prot_overT)</code></pre>
+<p>Get nuclear overlap</p>
+<pre class="r"><code>su30_overN=read.table(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+su60_overN=read.table(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+rna_overN=read.table(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+rnaG_overN=read.table(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+ribo_overN=read.table(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+prot_overN=read.table(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+
+
+overlap_nuclear=c(su30_overN,su60_overN, rna_overN,rnaG_overN,ribo_overN,prot_overN)</code></pre>
+<p>Make this a dataframe:</p>
+<pre class="r"><code>overlapDF=as.data.frame(cbind(phenos,sig, overlap_total, overlap_nuclear)) 
+
+overlapDF$sig=as.numeric(as.character(overlapDF$sig))
+overlapDF$overlap_total=as.numeric(as.character(overlapDF$overlap_total))
+overlapDF$overlap_nuclear=as.numeric(as.character(overlapDF$overlap_nuclear))
+overlapDF=overlapDF%&gt;% mutate(Total=overlap_total/sig) %&gt;% mutate(Nuclear=(overlap_nuclear/sig)) %&gt;% dplyr::select(phenos, Total, Nuclear)
+
+
+overlapDF_melt=melt(overlapDF,id.vars=&quot;phenos&quot;,variable.name = &quot;Fraction&quot;, 
+  value.name = &quot;Percent_QTL_Overlap&quot;)</code></pre>
+<pre class="r"><code>ggplot(overlapDF_melt, aes(x=phenos, y=Percent_QTL_Overlap, by=Fraction, fill=Fraction)) +geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + scale_fill_manual(values=c(&quot;#5D478B&quot;, &quot;#87CEFF&quot;)) + labs(title=&quot;Percent of Molecular QTLs sharing an APAqtl&quot;, x=&quot;Molecular Phenotype&quot;, y=&quot;Percent QTLs at FDR 10%&quot;)</code></pre>
+<p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="did-not-use-this-on-terminal" class="section level3">
+<h3>Did not use this on terminal</h3>
 <p>I will need to concatinate all of the test and base files for each phenotype befre running the code to create the QQ plots.</p>
 <p>Make QQplots</p>
 <pre class="r"><code>makeQQ=function(test, baseline, Mol, Fraction, plot_name){
@@ -1013,21 +1496,21 @@ makeQQ(&quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/test/Si
 <div id="change-gene-ids" class="section level3">
 <h3>Change gene IDs</h3>
 <p><strong>test for name changes </strong> <a href="http://useast.ensembl.org/biomart/martview/79ab6e7b92009b7da70ce6306b5efb93" class="uri">http://useast.ensembl.org/biomart/martview/79ab6e7b92009b7da70ce6306b5efb93</a></p>
-<pre class="r"><code>geneNames=read.table(&quot;../data/ensemble_to_genename.txt&quot;, sep=&quot;\t&quot;, header=T,stringsAsFactors = F)</code></pre>
-<pre class="r"><code>genesAPA=nuclearAPA %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;Gene.name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% dplyr::select(Gene.name) %&gt;% distinct(Gene.name)  %&gt;% distinct()</code></pre>
+<pre class="r"><code>#geneNames=read.table(&quot;../data/ensemble_to_genename.txt&quot;, sep=&quot;\t&quot;, header=T,stringsAsFactors = F)</code></pre>
+<pre class="r"><code>#genesAPA=nuclearAPA %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;Gene.name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% dplyr::select(Gene.name) %&gt;% distinct(Gene.name)  %&gt;% distinct()</code></pre>
 <p>Make a full list of the genes used in all of the mol phenoytpe files and use this as the input for the getBM.</p>
-<pre class="r"><code>su30_geneID=su30 %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
+<pre class="r"><code>#su30_geneID=su30 %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
 
-su60_geneID=su60 %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
-
-
-rna_geneID=rna %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
+#su60_geneID=su60 %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
 
 
-rib_geneID=rib %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
+#rna_geneID=rna %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
 
 
-prot_geneID=prot %&gt;% rename(&quot;Gene.stable.ID&quot;=pid) %&gt;%  inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()</code></pre>
+#rib_geneID=rib %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;% inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()
+
+
+#prot_geneID=prot %&gt;% rename(&quot;Gene.stable.ID&quot;=pid) %&gt;%  inner_join(geneNames, by=&quot;Gene.stable.ID&quot;) %&gt;% dplyr::select(&quot;Gene.name&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;) %&gt;% distinct()</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -1049,11 +1532,11 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] VennDiagram_1.6.20  futile.logger_1.4.3 forcats_0.3.0      
- [4] stringr_1.3.1       dplyr_0.7.6         purrr_0.2.5        
- [7] readr_1.1.1         tidyr_0.8.1         tibble_1.4.2       
-[10] ggplot2_3.0.0       tidyverse_1.2.1     reshape2_1.4.3     
-[13] workflowr_1.1.1    
+ [1] bindrcpp_0.2.2      VennDiagram_1.6.20  futile.logger_1.4.3
+ [4] forcats_0.3.0       stringr_1.3.1       dplyr_0.7.6        
+ [7] purrr_0.2.5         readr_1.1.1         tidyr_0.8.1        
+[10] tibble_1.4.2        ggplot2_3.0.0       tidyverse_1.2.1    
+[13] reshape2_1.4.3      workflowr_1.1.1    
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4     haven_1.1.2          lattice_0.20-35     
@@ -1061,9 +1544,9 @@ loaded via a namespace (and not attached):
  [7] rlang_0.2.2          R.oo_1.22.0          pillar_1.3.0        
 [10] glue_1.3.0           withr_2.1.2          R.utils_2.7.0       
 [13] lambda.r_1.2.3       modelr_0.1.2         readxl_1.1.0        
-[16] bindrcpp_0.2.2       bindr_0.1.1          plyr_1.8.4          
-[19] munsell_0.5.0        gtable_0.2.0         cellranger_1.1.0    
-[22] rvest_0.3.2          R.methodsS3_1.7.1    evaluate_0.11       
+[16] bindr_0.1.1          plyr_1.8.4           munsell_0.5.0       
+[19] gtable_0.2.0         cellranger_1.1.0     rvest_0.3.2         
+[22] R.methodsS3_1.7.1    evaluate_0.11        labeling_0.3        
 [25] knitr_1.20           broom_0.5.0          Rcpp_0.12.18        
 [28] formatR_1.5          backports_1.1.2      scales_1.0.0        
 [31] jsonlite_1.5         hms_0.4.2            digest_0.6.16       
