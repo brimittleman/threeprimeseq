@@ -43,10 +43,10 @@ Permuted results for other QTLs
 perm_names=c("pid" ,"nvar","shape1" ,"shape2", "dummy","sid" ,"dist","npval", "slope" , "ppval" ,"bpval")
 su30=read.table("../data/other_qtls/fastqtl_qqnorm_4su30.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
 su60=read.table("../data/other_qtls/fastqtl_qqnorm_4su60.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
-
 rna=read.table("../data/other_qtls/fastqtl_qqnorm_RNAseq_phase2.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
+rnaG=read.table("../data/other_qtls/fastqtl_qqnorm_RNAseqGeuvadis.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
 rib=read.table("../data/other_qtls/fastqtl_qqnorm_ribo_phase2.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
-prot=read.table("../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out", stringsAsFactors = F,col.names = perm_names)
+prot=read.table("../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out", stringsAsFactors = F,col.names = c("Gene.stable.ID" ,"nvar","shape1" ,"shape2", "dummy","sid" ,"dist","npval", "slope" , "ppval" ,"bpval"))
 ```
 
 ##Create overlap plot  
@@ -516,7 +516,115 @@ rna_nuc_plot=makeQQ("../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test
 
 ```
 
+I want to plot the proportion of QTLs that overlap with APA per pheno type:  
 
+Fix names and look at number of significant:  
+
+```{r}
+
+geneNames=read.table("../data/ensemble_to_genename.txt", sep="\t", header=T,stringsAsFactors = F)
+
+#su30
+su30.name=su30 %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID")
+su30.name$bh=p.adjust(su30.name$bpval, method="fdr")
+su30.name_sig=su30.name %>% filter(-log10(bh)> 1) %>% nrow()
+su30.name_sig
+
+su60.name=su60 %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID")
+su60.name$bh=p.adjust(su60.name$bpval, method="fdr")
+su60.name_sig=su60.name %>% filter(-log10(bh)> 1) %>% nrow()
+su60.name_sig
+
+rna.name=rna %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID")
+rna.name$bh=p.adjust(rna.name$bpval, method="fdr")
+rna.name_sig=rna.name %>% filter(-log10(bh)> 1) %>% nrow()
+rna.name_sig
+
+rnaG.name=rnaG %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID")
+rnaG.name$bh=p.adjust(rnaG.name$bpval, method="fdr")
+rnaG.name_sig=rnaG.name %>% filter(-log10(bh)> 1) %>% nrow()
+rnaG.name_sig
+
+
+rib.name=rib %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID")
+rib.name$bh=p.adjust(rib.name$bpval, method="fdr")
+rib.name_sig=rib.name %>% filter(-log10(bh)> 1) %>% nrow()
+rib.name_sig
+
+
+prot.name=prot %>% inner_join(geneNames, by="Gene.stable.ID")
+prot.name$bh=p.adjust(prot.name$bpval, method="fdr")
+prot.name_sig=prot.name %>% filter(-log10(bh)> 1) %>% nrow()
+prot.name_sig
+
+
+
+phenos=c("4su30", "4su60", "RNA", "RNAG", "Ribo", "Protein")
+sig=c(su30.name_sig, su60.name_sig, rna.name_sig, rnaG.name_sig, rib.name_sig, prot.name_sig)
+
+```
+Get the Total overlap numbers 
+```{r}
+names=c("chr", "start", "end", "Gene.name", "strand" ,"peaknum", "sid", "dist", "pval", "slope", "n" ,"corrPval")
+
+
+su30_overT=read.table("../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+su60_overT=read.table("../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+rna_overT=read.table("../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+rnaG_overT=read.table("../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+ribo_overT=read.table("../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+prot_overT=read.table("../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+
+overlap_total=c(su30_overT,su60_overT, rna_overT,rnaG_overT,ribo_overT,prot_overT)
+```
+Get nuclear overlap  
+```{r}
+
+
+su30_overN=read.table("../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+su60_overN=read.table("../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+rna_overN=read.table("../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+rnaG_overN=read.table("../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+ribo_overN=read.table("../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+prot_overN=read.table("../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+
+
+overlap_nuclear=c(su30_overN,su60_overN, rna_overN,rnaG_overN,ribo_overN,prot_overN)
+```
+
+Make this a dataframe:  
+
+```{r}
+overlapDF=as.data.frame(cbind(phenos,sig, overlap_total, overlap_nuclear)) 
+
+overlapDF$sig=as.numeric(as.character(overlapDF$sig))
+overlapDF$overlap_total=as.numeric(as.character(overlapDF$overlap_total))
+overlapDF$overlap_nuclear=as.numeric(as.character(overlapDF$overlap_nuclear))
+overlapDF=overlapDF%>% mutate(Total=overlap_total/sig) %>% mutate(Nuclear=(overlap_nuclear/sig)) %>% dplyr::select(phenos, Total, Nuclear)
+
+
+overlapDF_melt=melt(overlapDF,id.vars="phenos",variable.name = "Fraction", 
+  value.name = "Percent_QTL_Overlap")
+```
+
+
+```{r}
+ggplot(overlapDF_melt, aes(x=phenos, y=Percent_QTL_Overlap, by=Fraction, fill=Fraction)) +geom_bar(stat="identity", position="dodge") + scale_fill_manual(values=c("#5D478B", "#87CEFF")) + labs(title="Percent of Molecular QTLs sharing an APAqtl", x="Molecular Phenotype", y="Percent QTLs at FDR 10%")
+```
+
+
+
+
+###Did not use this on terminal 
 
 I will need to concatinate all of the test and base files for each phenotype befre running the code to create the QQ plots.  
 
@@ -567,11 +675,11 @@ http://useast.ensembl.org/biomart/martview/79ab6e7b92009b7da70ce6306b5efb93
 
 
 ```{r}
-geneNames=read.table("../data/ensemble_to_genename.txt", sep="\t", header=T,stringsAsFactors = F)
+#geneNames=read.table("../data/ensemble_to_genename.txt", sep="\t", header=T,stringsAsFactors = F)
 ```
 
 ```{r}
-genesAPA=nuclearAPA %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name) %>% distinct(Gene.name)  %>% distinct()
+#genesAPA=nuclearAPA %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name) %>% distinct(Gene.name)  %>% distinct()
 
 ```
 
@@ -581,18 +689,18 @@ Make a full list of the genes used in all of the mol phenoytpe files and use thi
 
 
  
-su30_geneID=su30 %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+#su30_geneID=su30 %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
 
-su60_geneID=su60 %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
-
-
-rna_geneID=rna %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+#su60_geneID=su60 %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
 
 
-rib_geneID=rib %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+#rna_geneID=rna %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
 
 
-prot_geneID=prot %>% rename("Gene.stable.ID"=pid) %>%  inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+#rib_geneID=rib %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
+
+
+#prot_geneID=prot %>% rename("Gene.stable.ID"=pid) %>%  inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval") %>% distinct()
 
 
 
