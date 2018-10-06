@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-05</p>
+<p><strong>Last updated:</strong> 2018-10-06</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2a0b2557e22d781e3b341435a3e921909f7f3fff" target="_blank">2a0b255</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2e2c69596afe9f411d88bf153cf1366497ac2bd7" target="_blank">2e2c695</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -417,7 +417,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/39indQC.Rmd
-    Modified:   analysis/PeakToGeneAssignment.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
@@ -455,6 +454,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2e2c69596afe9f411d88bf153cf1366497ac2bd7/analysis/overlapMolQTL.Rmd" target="_blank">2e2c695</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-06
+</td>
+<td style="text-align:left;">
+histogram for APA cond on mol pheno
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/11e79ea68b415897a023c9d023c1e6ce771b67db/docs/overlapMolQTL.html" target="_blank">11e79ea</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -625,17 +658,29 @@ overlap QTL plots
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
 <pre><code>Loading required package: grid</code></pre>
 <pre><code>Loading required package: futile.logger</code></pre>
+<pre class="r"><code>library(data.table)</code></pre>
+<pre><code>
+Attaching package: &#39;data.table&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:dplyr&#39;:
+
+    between, first, last</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    transpose</code></pre>
+<pre><code>The following objects are masked from &#39;package:reshape2&#39;:
+
+    dcast, melt</code></pre>
 <p>Permuted Results from APA:</p>
 <pre class="r"><code>nuclearAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt&quot;, stringsAsFactors = F, header = T)
 totalAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt&quot;, stringsAsFactors = F, header=T)  </code></pre>
@@ -771,15 +816,15 @@ file_newNames=in_file %&gt;% separate(pid, into=c(&quot;Gene.stable.ID&quot;, &q
 #takes a list of snps and filters the top corrected snp for each one, returns df
     top_Total=function(snp_list,optB=optA,nom_name1=nom_nameA){
       apaTotNom=read.table(optB$file_Total, col.names=nom_name1,stringsAsFactors=F)
-      filt_tot=apaTotNom %&gt;% separate(peakID, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;Gene.name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% semi_join(snp_list, by=c(&quot;sid&quot;, &quot;Gene.name&quot;)) %&gt;% group_by(sid, Gene.name) %&gt;% add_tally() %&gt;% ungroup() %&gt;% mutate(corrPval= pval * n)
-      filt_tot_top= filt_tot %&gt;% group_by(sid, Gene.name) %&gt;% top_n(-1, corrPval)
+      filt_tot=apaTotNom %&gt;% separate(peakID, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;Gene.name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% semi_join(snp_list, by=c(&quot;sid&quot;, &quot;Gene.name&quot;)) %&gt;% group_by(sid, Gene.name) %&gt;% add_tally() %&gt;% ungroup() %&gt;%  mutate(corrPvalx=pval* n) %&gt;% mutate(corrPval=ifelse(as.numeric(corrPvalx)&gt;1, &quot;1&quot;, corrPvalx))
+      filt_tot_top= filt_tot %&gt;% group_by(sid, Gene.name) %&gt;% top_n(-1, corrPvalx)
       return(as.data.frame(filt_tot_top))
     }
     #same for nuclear:  
     top_Nuclear=function(snp_list,optC=optA, nom_name2=nom_nameA){
       apaNucNom=read.table(optC$file_Nuclear, col.names=nom_name2,stringsAsFactors=F)
-      filt_nuc=apaNucNom  %&gt;% separate(peakID, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;Gene.name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% semi_join(snp_list, by=c(&quot;sid&quot;, &quot;Gene.name&quot;)) %&gt;% group_by(sid, Gene.name) %&gt;% add_tally() %&gt;% ungroup() %&gt;% mutate(corrPval=pval* n)
-      filt_nuc_top= filt_nuc %&gt;% group_by(sid, Gene.name) %&gt;% top_n(-1, corrPval)
+      filt_nuc=apaNucNom  %&gt;% separate(peakID, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;Gene.name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% semi_join(snp_list, by=c(&quot;sid&quot;, &quot;Gene.name&quot;)) %&gt;% group_by(sid, Gene.name) %&gt;% add_tally() %&gt;% ungroup() %&gt;% mutate(corrPvalx=pval* n) %&gt;% mutate(corrPval=ifelse(as.numeric(corrPvalx)&gt;1, &quot;1&quot;, corrPvalx))
+      filt_nuc_top= filt_nuc %&gt;% group_by(sid, Gene.name) %&gt;% top_n(-1, corrPvalx)
       return(as.data.frame(filt_nuc_top))
     }
     TL=sigsnp(file_newNames, cut)
@@ -965,7 +1010,7 @@ awk &#39;{if (NR!=1) {print}}&#39; ${i} &gt; ../test_nohead/${i}
 done</code></pre>
 <p>The results are not large. I will transfer them to my computer and run the analysis here.</p>
 <pre class="r"><code>makeQQ=function(test, baseline, Mol, Fraction){
-  names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;Gene.name&quot;, &quot;strand&quot; ,&quot;peaknum&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;, &quot;n&quot; ,&quot;corrPval&quot;)
+  names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;Gene.name&quot;, &quot;strand&quot; ,&quot;peaknum&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;, &quot;n&quot; ,&quot;corrPvalX&quot;, &quot;corrPval&quot;)
   t=read.table(test,stringsAsFactors = F, col.names = names)
   t$corrPval=as.numeric(t$corrPval)
   b=read.table(baseline,stringsAsFactors = F,col.names = names)
@@ -1414,33 +1459,33 @@ prot.name_sig</code></pre>
 <pre class="r"><code>phenos=c(&quot;4su30&quot;, &quot;4su60&quot;, &quot;RNA&quot;, &quot;RNAG&quot;, &quot;Ribo&quot;, &quot;Protein&quot;)
 sig=c(su30.name_sig, su60.name_sig, rna.name_sig, rnaG.name_sig, rib.name_sig, prot.name_sig)</code></pre>
 <p>Get the Total overlap numbers</p>
-<pre class="r"><code>names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;Gene.name&quot;, &quot;strand&quot; ,&quot;peaknum&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;, &quot;n&quot; ,&quot;corrPval&quot;)
+<pre class="r"><code>names=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;Gene.name&quot;, &quot;strand&quot; ,&quot;peaknum&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;, &quot;n&quot; ,&quot;corrPvalX&quot;, &quot;corrPval&quot;)
 
 
-su30_overT=read.table(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
-su60_overT=read.table(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+su30_overT=fread(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+su60_overT=fread(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
-rna_overT=read.table(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+rna_overT=fread(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
-rnaG_overT=read.table(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+rnaG_overT=fread(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
-ribo_overT=read.table(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+ribo_overT=fread(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
-prot_overT=read.table(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+prot_overT=fread(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
 
 overlap_total=c(su30_overT,su60_overT, rna_overT,rnaG_overT,ribo_overT,prot_overT)</code></pre>
 <p>Get nuclear overlap</p>
-<pre class="r"><code>su30_overN=read.table(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
-su60_overN=read.table(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+<pre class="r"><code>su30_overN=fread(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+su60_overN=fread(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
-rna_overN=read.table(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+rna_overN=fread(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
-rnaG_overN=read.table(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+rnaG_overN=fread(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
-ribo_overN=read.table(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+ribo_overN=fread(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
-prot_overN=read.table(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
+prot_overN=fread(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) %&gt;% nrow()
 
 
 overlap_nuclear=c(su30_overN,su60_overN, rna_overN,rnaG_overN,ribo_overN,prot_overN)</code></pre>
@@ -1455,8 +1500,47 @@ overlapDF=overlapDF%&gt;% mutate(Total=overlap_total/sig) %&gt;% mutate(Nuclear=
 
 overlapDF_melt=melt(overlapDF,id.vars=&quot;phenos&quot;,variable.name = &quot;Fraction&quot;, 
   value.name = &quot;Percent_QTL_Overlap&quot;)</code></pre>
-<pre class="r"><code>ggplot(overlapDF_melt, aes(x=phenos, y=Percent_QTL_Overlap, by=Fraction, fill=Fraction)) +geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + scale_fill_manual(values=c(&quot;#5D478B&quot;, &quot;#87CEFF&quot;)) + labs(title=&quot;Percent of Molecular QTLs sharing an APAqtl&quot;, x=&quot;Molecular Phenotype&quot;, y=&quot;Percent QTLs at FDR 10%&quot;)</code></pre>
-<p><img src="figure/overlapMolQTL.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>molQTLshare=ggplot(overlapDF_melt, aes(x=phenos, y=Percent_QTL_Overlap, by=Fraction, fill=Fraction)) +geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + scale_fill_manual(values=c(&quot;#5D478B&quot;, &quot;#87CEFF&quot;)) + labs(title=&quot;Percent of Molecular QTLs sharing an APAqtl&quot;, x=&quot;Molecular Phenotype&quot;, y=&quot;Percent QTLs at FDR 10%&quot;)
+ggsave(&quot;../output/plots/PercOverlapMolQTL.png&quot;, molQTLshare)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<p>This is not quite right. This is if I tested it in both. I need to look and see if we have a significant snp gene pair.</p>
+<p>Historgram of the Pvalues from the other significant snp in each phenotype:<br />
+First for the total fraction</p>
+<pre class="r"><code>su30_APApval=read.table(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+su60_APApval=read.table(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+rna_APApval=read.table(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+rnaG_APApval=read.table(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+ribo_APApval=read.table(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+prot_APApval=read.table(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt&quot;,stringsAsFactors = F, col.names = names) </code></pre>
+<p>Plot a histogram with the corrected Pvalues for each of these:</p>
+<pre class="r"><code>png(&quot;../output/plots/AllPheno_histPval_TotAPA.png&quot;,width=600, height=400)
+par(mfrow=c(2,3))
+hist(su30_APApval$corrPval, breaks=50, main=&quot;4su30 (Transcription)&quot;, xlab=&quot;APA total Pval&quot;)
+hist(su60_APApval$corrPval, breaks=50,main=&quot;4su60 (Transcription)&quot;, xlab=&quot;APA total Pval&quot;)
+hist(rna_APApval$corrPval, breaks=50, main= &quot;RNA&quot;, xlab=&quot;APA total Pval&quot;)
+hist(rnaG_APApval$corrPval, breaks=50, main=&quot;RNA Guevadis&quot;, xlab=&quot;APA total Pval&quot;)
+hist(ribo_APApval$corrPval, breaks=50, main=&quot;Ribosome (Translation)&quot;, xlab=&quot;APA total Pval&quot;)
+hist(prot_APApval$corrPval, breaks=50, main=&quot;Protein&quot;, xlab=&quot;APA total Pval&quot;)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<pre class="r"><code>su30_APApvalN=read.table(&quot;../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+su60_APApvalN=read.table(&quot;../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+rna_APApvalN=read.table(&quot;../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+rnaG_APApvalN=read.table(&quot;../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+ribo_APApvalN=read.table(&quot;../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) 
+prot_APApvalN=read.table(&quot;../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt&quot;,stringsAsFactors = F, col.names = names) </code></pre>
+<pre class="r"><code>png(&quot;../output/plots/AllPheno_histPval_NucAPA.png&quot;, width=600, height=400)
+par(mfrow=c(2,3))
+hist(su30_APApvalN$corrPval, breaks=50, main=&quot;4su30&quot;, xlab=&quot;APA Nuclear Pval&quot;)
+hist(su60_APApvalN$corrPval, breaks=50,main=&quot;4su60&quot;, xlab=&quot;APA Nuclear Pval&quot;)
+hist(rna_APApvalN$corrPval, breaks=50, main= &quot;RNA&quot;, xlab=&quot;APA Nuclear Pval&quot;)
+hist(rnaG_APApvalN$corrPval, breaks=50, main=&quot;RNA Guevadis&quot;, xlab=&quot;APA Nuclear Pval&quot;)
+hist(ribo_APApvalN$corrPval, breaks=50, main=&quot;Ribosome&quot;, xlab=&quot;APA Nuclear Pval&quot;)
+hist(prot_APApvalN$corrPval, breaks=50, main=&quot;Protein&quot;, xlab=&quot;APA Nuclear Pval&quot;)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
 </div>
 <div id="did-not-use-this-on-terminal" class="section level3">
 <h3>Did not use this on terminal</h3>
@@ -1532,11 +1616,11 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] bindrcpp_0.2.2      VennDiagram_1.6.20  futile.logger_1.4.3
- [4] forcats_0.3.0       stringr_1.3.1       dplyr_0.7.6        
- [7] purrr_0.2.5         readr_1.1.1         tidyr_0.8.1        
-[10] tibble_1.4.2        ggplot2_3.0.0       tidyverse_1.2.1    
-[13] reshape2_1.4.3      workflowr_1.1.1    
+ [1] bindrcpp_0.2.2      data.table_1.11.8   VennDiagram_1.6.20 
+ [4] futile.logger_1.4.3 forcats_0.3.0       stringr_1.3.1      
+ [7] dplyr_0.7.6         purrr_0.2.5         readr_1.1.1        
+[10] tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0      
+[13] tidyverse_1.2.1     reshape2_1.4.3      workflowr_1.1.1    
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4     haven_1.1.2          lattice_0.20-35     
