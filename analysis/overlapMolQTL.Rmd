@@ -25,6 +25,7 @@ library(workflowr)
 library(reshape2)
 library(tidyverse)
 library(VennDiagram)
+library(data.table)
 ```
 
 
@@ -209,15 +210,15 @@ file_newNames=in_file %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[
 #takes a list of snps and filters the top corrected snp for each one, returns df
     top_Total=function(snp_list,optB=optA,nom_name1=nom_nameA){
       apaTotNom=read.table(optB$file_Total, col.names=nom_name1,stringsAsFactors=F)
-      filt_tot=apaTotNom %>% separate(peakID, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% semi_join(snp_list, by=c("sid", "Gene.name")) %>% group_by(sid, Gene.name) %>% add_tally() %>% ungroup() %>% mutate(corrPval= pval * n)
-      filt_tot_top= filt_tot %>% group_by(sid, Gene.name) %>% top_n(-1, corrPval)
+      filt_tot=apaTotNom %>% separate(peakID, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% semi_join(snp_list, by=c("sid", "Gene.name")) %>% group_by(sid, Gene.name) %>% add_tally() %>% ungroup() %>%  mutate(corrPvalx=pval* n) %>% mutate(corrPval=ifelse(as.numeric(corrPvalx)>1, "1", corrPvalx))
+      filt_tot_top= filt_tot %>% group_by(sid, Gene.name) %>% top_n(-1, corrPvalx)
       return(as.data.frame(filt_tot_top))
     }
     #same for nuclear:  
     top_Nuclear=function(snp_list,optC=optA, nom_name2=nom_nameA){
       apaNucNom=read.table(optC$file_Nuclear, col.names=nom_name2,stringsAsFactors=F)
-      filt_nuc=apaNucNom  %>% separate(peakID, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% semi_join(snp_list, by=c("sid", "Gene.name")) %>% group_by(sid, Gene.name) %>% add_tally() %>% ungroup() %>% mutate(corrPval=pval* n)
-      filt_nuc_top= filt_nuc %>% group_by(sid, Gene.name) %>% top_n(-1, corrPval)
+      filt_nuc=apaNucNom  %>% separate(peakID, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% semi_join(snp_list, by=c("sid", "Gene.name")) %>% group_by(sid, Gene.name) %>% add_tally() %>% ungroup() %>% mutate(corrPvalx=pval* n) %>% mutate(corrPval=ifelse(as.numeric(corrPvalx)>1, "1", corrPvalx))
+      filt_nuc_top= filt_nuc %>% group_by(sid, Gene.name) %>% top_n(-1, corrPvalx)
       return(as.data.frame(filt_nuc_top))
     }
     TL=sigsnp(file_newNames, cut)
@@ -453,7 +454,7 @@ The results are not large. I will transfer them to my computer and run the analy
 
 ```{r}
 makeQQ=function(test, baseline, Mol, Fraction){
-  names=c("chr", "start", "end", "Gene.name", "strand" ,"peaknum", "sid", "dist", "pval", "slope", "n" ,"corrPval")
+  names=c("chr", "start", "end", "Gene.name", "strand" ,"peaknum", "sid", "dist", "pval", "slope", "n" ,"corrPvalX", "corrPval")
   t=read.table(test,stringsAsFactors = F, col.names = names)
   t$corrPval=as.numeric(t$corrPval)
   b=read.table(baseline,stringsAsFactors = F,col.names = names)
@@ -565,19 +566,19 @@ sig=c(su30.name_sig, su60.name_sig, rna.name_sig, rnaG.name_sig, rib.name_sig, p
 ```
 Get the Total overlap numbers 
 ```{r}
-names=c("chr", "start", "end", "Gene.name", "strand" ,"peaknum", "sid", "dist", "pval", "slope", "n" ,"corrPval")
+names=c("chr", "start", "end", "Gene.name", "strand" ,"peaknum", "sid", "dist", "pval", "slope", "n" ,"corrPvalX", "corrPval")
 
 
-su30_overT=read.table("../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
-su60_overT=read.table("../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+su30_overT=fread("../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+su60_overT=fread("../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
-rna_overT=read.table("../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+rna_overT=fread("../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
-rnaG_overT=read.table("../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+rnaG_overT=fread("../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
-ribo_overT=read.table("../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+ribo_overT=fread("../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
-prot_overT=read.table("../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+prot_overT=fread("../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
 
 overlap_total=c(su30_overT,su60_overT, rna_overT,rnaG_overT,ribo_overT,prot_overT)
@@ -586,16 +587,16 @@ Get nuclear overlap
 ```{r}
 
 
-su30_overN=read.table("../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
-su60_overN=read.table("../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+su30_overN=fread("../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+su60_overN=fread("../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
-rna_overN=read.table("../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+rna_overN=fread("../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
-rnaG_overN=read.table("../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+rnaG_overN=fread("../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
-ribo_overN=read.table("../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+ribo_overN=fread("../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
-prot_overN=read.table("../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
+prot_overN=fread("../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) %>% nrow()
 
 
 overlap_nuclear=c(su30_overN,su60_overN, rna_overN,rnaG_overN,ribo_overN,prot_overN)
@@ -618,10 +619,64 @@ overlapDF_melt=melt(overlapDF,id.vars="phenos",variable.name = "Fraction",
 
 
 ```{r}
-ggplot(overlapDF_melt, aes(x=phenos, y=Percent_QTL_Overlap, by=Fraction, fill=Fraction)) +geom_bar(stat="identity", position="dodge") + scale_fill_manual(values=c("#5D478B", "#87CEFF")) + labs(title="Percent of Molecular QTLs sharing an APAqtl", x="Molecular Phenotype", y="Percent QTLs at FDR 10%")
+molQTLshare=ggplot(overlapDF_melt, aes(x=phenos, y=Percent_QTL_Overlap, by=Fraction, fill=Fraction)) +geom_bar(stat="identity", position="dodge") + scale_fill_manual(values=c("#5D478B", "#87CEFF")) + labs(title="Percent of Molecular QTLs sharing an APAqtl", x="Molecular Phenotype", y="Percent QTLs at FDR 10%")
+ggsave("../output/plots/PercOverlapMolQTL.png", molQTLshare)
+```
+
+This is not quite right. This is if I tested it in both. I need to look and see if we have a significant snp gene pair. 
+
+
+Historgram of the Pvalues from the other significant snp in each phenotype:  
+First for the total fraction
+```{r}
+
+
+
+su30_APApval=read.table("../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) 
+su60_APApval=read.table("../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) 
+rna_APApval=read.table("../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) 
+rnaG_APApval=read.table("../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) 
+ribo_APApval=read.table("../data/mol_overlap/test/SigriboQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) 
+prot_APApval=read.table("../data/mol_overlap/test/SigProteinQTL_overlapAPA_Total.test.txt",stringsAsFactors = F, col.names = names) 
+```
+
+Plot a histogram with the corrected Pvalues for each of these:  
+
+```{r}
+png("../output/plots/AllPheno_histPval_TotAPA.png",width=600, height=400)
+par(mfrow=c(2,3))
+hist(su30_APApval$corrPval, breaks=50, main="4su30 (Transcription)", xlab="APA total Pval")
+hist(su60_APApval$corrPval, breaks=50,main="4su60 (Transcription)", xlab="APA total Pval")
+hist(rna_APApval$corrPval, breaks=50, main= "RNA", xlab="APA total Pval")
+hist(rnaG_APApval$corrPval, breaks=50, main="RNA Guevadis", xlab="APA total Pval")
+hist(ribo_APApval$corrPval, breaks=50, main="Ribosome (Translation)", xlab="APA total Pval")
+hist(prot_APApval$corrPval, breaks=50, main="Protein", xlab="APA total Pval")
+dev.off()
+```
+```{r}
+
+
+su30_APApvalN=read.table("../data/mol_overlap/test/Sig4su30QTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) 
+su60_APApvalN=read.table("../data/mol_overlap/test/Sig4su60QTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) 
+rna_APApvalN=read.table("../data/mol_overlap/test/SigRNAseqQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) 
+rnaG_APApvalN=read.table("../data/mol_overlap/test/SigRNAseqGeuvadisQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) 
+ribo_APApvalN=read.table("../data/mol_overlap/test/SigriboQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) 
+prot_APApvalN=read.table("../data/mol_overlap/test/SigProteinQTL_overlapAPA_Nuclear.test.txt",stringsAsFactors = F, col.names = names) 
+
 ```
 
 
+```{r}
+png("../output/plots/AllPheno_histPval_NucAPA.png", width=600, height=400)
+par(mfrow=c(2,3))
+hist(su30_APApvalN$corrPval, breaks=50, main="4su30", xlab="APA Nuclear Pval")
+hist(su60_APApvalN$corrPval, breaks=50,main="4su60", xlab="APA Nuclear Pval")
+hist(rna_APApvalN$corrPval, breaks=50, main= "RNA", xlab="APA Nuclear Pval")
+hist(rnaG_APApvalN$corrPval, breaks=50, main="RNA Guevadis", xlab="APA Nuclear Pval")
+hist(ribo_APApvalN$corrPval, breaks=50, main="Ribosome", xlab="APA Nuclear Pval")
+hist(prot_APApvalN$corrPval, breaks=50, main="Protein", xlab="APA Nuclear Pval")
+dev.off()
+```
 
 
 ###Did not use this on terminal 
