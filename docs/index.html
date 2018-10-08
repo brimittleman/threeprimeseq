@@ -221,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-02</p>
+<p><strong>Last updated:</strong> 2018-10-08</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f66679bc1d71db8c924eba94a35f4643d179ae7e" target="_blank">f66679b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/50c8b7688449816b06aaa21cc7dea3c1d5e36a2e" target="_blank">50c8b76</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -240,6 +240,7 @@ Ignored files:
     Ignored:    output/.DS_Store
 
 Untracked files:
+    Untracked:  KalistoAbundance18486.txt
     Untracked:  analysis/genometrack_figs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -252,6 +253,7 @@ Untracked files:
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/apaExamp/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
     Untracked:  data/bin200.Anuccov.bed
@@ -261,6 +263,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -272,6 +275,7 @@ Untracked files:
     Untracked:  data/joined
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/mol_overlap/
     Untracked:  data/nom_QTL/
     Untracked:  data/nom_QTL_opp/
     Untracked:  data/nom_QTL_trans/
@@ -297,8 +301,8 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/39indQC.Rmd
     Modified:   analysis/PeakToGeneAssignment.Rmd
-    Modified:   analysis/callMolQTLS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
@@ -337,6 +341,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7369f8ebf5a521bb3cd265f35ae26915f39b5bee/docs/index.html" target="_blank">7369f8e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-02
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1572,6 +1593,7 @@ Start workflowr project.
 <ul>
 <li><p><a href="callMolQTLS.html">Rerun molecular QTLs</a></p></li>
 <li><p><a href="overlapMolQTL.html">Make overlap QTL plots</a></p></li>
+<li><p><a href="swarmPlots_QTLs.html">Plot top apaQTLs in other phenotypes</a></p></li>
 </ul>
 
 <hr>
