@@ -62,7 +62,7 @@ apaphen228606_df=data.frame(apaphen228606_m) %>% rownames_to_column(var="ind")
 toplotAPA=geno3df %>% inner_join(apaphen228606_df, by="ind")
 toplotAPA$dose= as.factor(toplotAPA$dose)
 colnames(toplotAPA)= c("ind", "Genotype", "APA")
-EIF2A_APAex=ggplot(toplotAPA, aes(y=APA, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="APA phenotype", title="Total APA: Peak 228606, EIF2A")
+EIF2A_APAex=ggplot(toplotAPA, aes(y=APA, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="APA phenotype", title="Total APA: Peak 228606, EIF2A") + scale_fill_brewer(palette="RdPu")
 ggsave("../output/plots/EIF2a_APA.png", EIF2A_APAex)
 ```
 
@@ -76,7 +76,7 @@ plotRNA=geno3df %>% inner_join(RNAseqEIF2A_df, by="ind")
 plotRNA$dose= as.factor(plotRNA$dose)
 colnames(plotRNA)= c("ind", "Genotype", "Expression")
 
-EIF2A_RNAex=ggplot(plotRNA, aes(y=Expression, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Expression", title="Gene Expression: EIF2A")
+EIF2A_RNAex=ggplot(plotRNA, aes(y=Expression, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Expression", title="Gene Expression: EIF2A") + scale_fill_brewer(palette="RdPu")
 
 ggsave("../output/plots/EIF2a_RNA.png", EIF2A_RNAex)
 
@@ -92,7 +92,7 @@ plotProt=geno3df %>% inner_join(ProtEIF2A_df, by="ind")
 plotProt$dose= as.factor(plotProt$dose)
 colnames(plotProt)= c("ind", "Genotype", "Prot_level")
 
-IF2A_Protex= ggplot(plotProt, aes(y=Prot_level, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Protein Level", title="Protein Level: EIF2A")
+IF2A_Protex= ggplot(plotProt, aes(y=Prot_level, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Protein Level", title="Protein Level: EIF2A") +scale_fill_brewer(palette="RdPu")
 
 ggsave("../output/plots/EIF2a_Prot.png", IF2A_Protex)
 
@@ -118,7 +118,7 @@ plot4su60=geno3df %>% inner_join(su60_EIF2A_df, by="ind")
 plot4su60$dose= as.factor(plot4su60$dose)
 colnames(plot4su60)= c("ind", "Genotype", "su60")
 
-EIF2A_4su60ex=ggplot(plot4su60, aes(y=su60, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="4su60", title="4su 60min Value: EIF2A")
+EIF2A_4su60ex=ggplot(plot4su60, aes(y=su60, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="4su60", title="4su 60min Value: EIF2A") + scale_fill_brewer(palette="RdPu") +  theme_classic()
 
 ggsave("../output/plots/EIF2a_4su60.png", EIF2A_4su60ex)
 
@@ -135,7 +135,7 @@ plotRNAg=geno3df %>% inner_join(rnaG_EIF2A_df, by="ind")
 plotRNAg$dose= as.factor(plotRNAg$dose)
 colnames(plotRNAg)= c("ind", "Genotype", "RNAg")
 
-EIF2A_RNAgex=ggplot(plotRNAg, aes(y=RNAg, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="RNA expression", title="RNA Expression Geuvadis: EIF2A")
+EIF2A_RNAgex=ggplot(plotRNAg, aes(y=RNAg, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="RNA expression", title="RNA Expression Geuvadis: EIF2A") + scale_fill_brewer(palette="RdPu")
 
 ggsave("../output/plots/EIF2a_RNAg.png", EIF2A_RNAgex)
 
