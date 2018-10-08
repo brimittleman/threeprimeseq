@@ -1,0 +1,142 @@
+---
+title: "Top APA QTL in other phenotypes"
+author: "Briana Mittleman"
+date: "10/8/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Upload Data:  
+
+Library
+```{r}
+library(workflowr)
+library(reshape2)
+library(tidyverse)
+library(VennDiagram)
+library(data.table)
+library(cowplot)
+```
+
+
+Permuted Results from APA:
+
+```{r}
+nuclearAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", stringsAsFactors = F, header = T)
+totalAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt", stringsAsFactors = F, header=T)  
+```
+
+
+
+I want to use a buzz swarm plot to plot peak usage for some of the top QTLs. I can use the examples I gave Tony. 
+
+
+Nuclear:  
+* peak305794, sid: 7:128635754  
+
+* peak: 164036, sid: 2:3502035
+
+Total:  
+
+* **Peak: peak228606, SID 3:150302010**
+
+* Peak: peak152751, SID 19:4236475
+
+
+I need to pull out the genotypes for each snp and the corresponding phenotype. I want to make a python script that I can give a snp and a peak and it will make a table with the genotypes and phenotypes for the necessary gene snp pair.  
+
+
+
+```{r}
+geno3_m=fread("../data/apaExamp/geno3_150302010.txt", header = T) %>% dplyr::select(starts_with("NA")) %>% t
+geno3df= data.frame(geno3_m) %>% separate(geno3_m, into=c("geno", "dose", "extra"), sep=":") %>% dplyr::select(dose) %>% rownames_to_column(var="ind")
+apaphen228606_m= fread("../data/apaExamp/Total.peak228606.txt", header = T) %>% dplyr::select(starts_with("NA")) %>% t
+apaphen228606_df=data.frame(apaphen228606_m) %>% rownames_to_column(var="ind")
+
+```
+
+```{r}
+toplotAPA=geno3df %>% inner_join(apaphen228606_df, by="ind")
+toplotAPA$dose= as.factor(toplotAPA$dose)
+colnames(toplotAPA)= c("ind", "Genotype", "APA")
+EIF2A_APAex=ggplot(toplotAPA, aes(y=APA, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="APA phenotype", title="Total APA: Peak 228606, EIF2A")
+ggsave("../output/plots/EIF2a_APA.png", EIF2A_APAex)
+```
+
+This is in the gene EIF2A, I need to find this in the eQTL data. The ensg id for this gene is ENSG00000144895.  
+
+```{r}
+RNAseqEIF2A_m=read.table("../data/apaExamp/RNAseq.phenoEIF2A.txt", header=T) %>% dplyr::select(starts_with("NA")) %>% t 
+RNAseqEIF2A_df= data.frame(RNAseqEIF2A_m) %>% rownames_to_column("ind")
+
+plotRNA=geno3df %>% inner_join(RNAseqEIF2A_df, by="ind")
+plotRNA$dose= as.factor(plotRNA$dose)
+colnames(plotRNA)= c("ind", "Genotype", "Expression")
+
+EIF2A_RNAex=ggplot(plotRNA, aes(y=Expression, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Expression", title="Gene Expression: EIF2A")
+
+ggsave("../output/plots/EIF2a_RNA.png", EIF2A_RNAex)
+
+```
+
+Try this in protein:  
+
+```{r}
+ProtEIF2A_m=read.table("../data/apaExamp/ProtEIF2A.txt", header=T) %>% dplyr::select(starts_with("NA")) %>% t 
+ProtEIF2A_df= data.frame(ProtEIF2A_m) %>% rownames_to_column("ind")
+
+plotProt=geno3df %>% inner_join(ProtEIF2A_df, by="ind")
+plotProt$dose= as.factor(plotProt$dose)
+colnames(plotProt)= c("ind", "Genotype", "Prot_level")
+
+IF2A_Protex= ggplot(plotProt, aes(y=Prot_level, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Protein Level", title="Protein Level: EIF2A")
+
+ggsave("../output/plots/EIF2a_Prot.png", IF2A_Protex)
+
+```
+
+
+```{r}
+multphenoEIF2a=plot_grid(EIF2A_APAex,IF2A_Protex,EIF2A_RNAex,nrow=1)
+ggsave("../output/plots/EIF2a_multpheno.png", multphenoEIF2a, width=15, height=5)
+```
+
+
+
+Do this with 4su 60:  
+
+have to remove the #
+
+```{r}
+su60_EIF2A_m=read.table("../data/apaExamp/Foursu60EIF2A.txt", header=T) %>% dplyr::select(starts_with("NA")) %>% t 
+su60_EIF2A_df= data.frame(su60_EIF2A_m) %>% rownames_to_column("ind")
+
+plot4su60=geno3df %>% inner_join(su60_EIF2A_df, by="ind")
+plot4su60$dose= as.factor(plot4su60$dose)
+colnames(plot4su60)= c("ind", "Genotype", "su60")
+
+EIF2A_4su60ex=ggplot(plot4su60, aes(y=su60, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="4su60", title="4su 60min Value: EIF2A")
+
+ggsave("../output/plots/EIF2a_4su60.png", EIF2A_4su60ex)
+
+```
+
+
+Geuvadis RNA  
+
+```{r}
+rnaG_EIF2A_m=read.table("../data/apaExamp/RNA_GEU_EIF2A.txt", header=T) %>% dplyr::select(starts_with("NA")) %>% t 
+rnaG_EIF2A_df= data.frame(rnaG_EIF2A_m) %>% rownames_to_column("ind")
+
+plotRNAg=geno3df %>% inner_join(rnaG_EIF2A_df, by="ind")
+plotRNAg$dose= as.factor(plotRNAg$dose)
+colnames(plotRNAg)= c("ind", "Genotype", "RNAg")
+
+EIF2A_RNAgex=ggplot(plotRNAg, aes(y=RNAg, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="RNA expression", title="RNA Expression Geuvadis: EIF2A")
+
+ggsave("../output/plots/EIF2a_RNAg.png", EIF2A_RNAgex)
+
+```
