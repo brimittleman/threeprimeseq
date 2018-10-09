@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-08</p>
+<p><strong>Last updated:</strong> 2018-10-09</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/11f9dfa2e7e97a7279afc91e4f1a8f2cdb1f856e" target="_blank">11f9dfa</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/605aa2d05fffa46643d1f447ee9219f19815b6b7" target="_blank">605aa2d</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -463,6 +463,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/605aa2d05fffa46643d1f447ee9219f19815b6b7/analysis/overlapMolQTL.opposite.Rmd" target="_blank">605aa2d</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-09
+</td>
+<td style="text-align:left;">
+plot results
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/22aa0872ec0621164f376f8225f985be6112e20f/docs/overlapMolQTL.opposite.html" target="_blank">22aa087</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/11f9dfa2e7e97a7279afc91e4f1a8f2cdb1f856e/analysis/overlapMolQTL.opposite.Rmd" target="_blank">11f9dfa</a>
 </td>
 <td style="text-align:left;">
@@ -487,12 +521,12 @@ overlap molQTL opp dir
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
@@ -510,7 +544,8 @@ Attaching package: &#39;data.table&#39;</code></pre>
 <pre><code>The following objects are masked from &#39;package:reshape2&#39;:
 
     dcast, melt</code></pre>
-<pre class="r"><code>library(qvalue)</code></pre>
+<pre class="r"><code>library(qvalue)
+set.seed(327)</code></pre>
 <div id="molqtl-pvalues-for-total-apaqtls" class="section level2">
 <h2>MolQTL pvalues for Total ApaQTLs</h2>
 <p>sigTotAPAinMolPheno.R</p>
@@ -703,44 +738,126 @@ write.table(overlap, file=opt$output, quote=F, col.names = T, row.names = F)</co
 #SBATCH --time=24:00:00
 #SBATCH --output=run_sigNucAPAinMolPheno.out
 #SBATCH --error=run_sigNucAPAinMolPheno.err
-#SBATCH --partition=bigmem2
-#SBATCH --mem=64G
+#SBATCH --partition=broadwl
+#SBATCH --mem=32G
 #SBATCH --mail-type=END
 
 module load R 
 
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNA.txt&quot; 
+Rscript sigNucAPAinMolPheno.R  --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNA.txt&quot; 
 
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalProtein.txt&quot;  
+Rscript sigNucAPAinMolPheno.R  --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalProtein.txt&quot;  
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNAg.txt&quot; 
-
-
-Rscript run_sigNucAPAinMolPheno.sh --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalribo.txt&quot; 
+Rscript sigNucAPAinMolPheno.R  --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNAg.txt&quot; 
 
 
+Rscript sigNucAPAinMolPheno.R  --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalribo.txt&quot; 
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su30.txt&quot; 
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su60.txt&quot; 
+
+Rscript sigNucAPAinMolPheno.R  --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su30.txt&quot; 
+
+Rscript sigNucAPAinMolPheno.R  --molNom &quot;/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.out&quot; --output &quot;/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su60.txt&quot; 
 </code></pre>
 </div>
 <div id="create-histograms" class="section level2">
 <h2>Create Histograms</h2>
-<p>I will next estimate sharing with pi_1 and create histograms of the resulting pvalues.<br />
-* Protein</p>
+<div id="total" class="section level3">
+<h3>Total</h3>
+<p>I will next estimate sharing with pi_1 and create histograms of the resulting pvalues.</p>
+<ul>
+<li>Protein</li>
+</ul>
 <pre class="r"><code>totAPAinProt=read.table(&quot;../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalProtein.txt&quot;, header = T, stringsAsFactors = F)
-qval_prot=pi0est(totAPAinProt$pval, pi0.method = &quot;bootstrap&quot;)
-hist(totAPAinProt$pval)
-text(.8,10, paste(&quot;pi_1=&quot;, round((1-qval_prot$pi0), digit=3), sep=&quot; &quot;))</code></pre>
-<p><img src="figure/overlapMolQTL.opposite.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /> * RNA</p>
+qval_prot=pi0est(totAPAinProt$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<ul>
+<li>RNA</li>
+</ul>
 <pre class="r"><code>totAPAinRNA=read.table(&quot;../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalRNA.txt&quot;, header = T, stringsAsFactors = F)
-qval_RNA=pi0est(totAPAinRNA$pval, pi0.method = &quot;bootstrap&quot;)
-hist(totAPAinRNA$pval)
-text(.8,18, paste(&quot;pi_1=&quot;, round((1-qval_RNA$pi0), digit=3), sep=&quot; &quot;))</code></pre>
-<p><img src="figure/overlapMolQTL.opposite.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+qval_RNA=pi0est(totAPAinRNA$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<ul>
+<li>RNA Geuvadis</li>
+</ul>
+<pre class="r"><code>totAPAinRNAg=read.table(&quot;../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalRNAg.txt&quot;, header = T, stringsAsFactors = F)
+qval_RNAg=pi0est(totAPAinRNAg$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<p>*Ribo</p>
+<pre class="r"><code>totAPAinRibo=read.table(&quot;../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalribo.txt&quot;, header = T, stringsAsFactors = F)
+qval_Ribo=pi0est(totAPAinRibo$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<ul>
+<li>4su30</li>
+</ul>
+<pre class="r"><code>totAPAinsu30=read.table(&quot;../data/mol_overlap/APA2molTotal/TotAPAqtlsPval4su30.txt&quot;, header = T, stringsAsFactors = F)
+qval_su30=pi0est(totAPAinsu30$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<ul>
+<li>4su60</li>
+</ul>
+<pre class="r"><code>totAPAinsu60=read.table(&quot;../data/mol_overlap/APA2molTotal/TotAPAqtlsPval4su60.txt&quot;, header = T, stringsAsFactors = F)
+qval_su60=pi0est(totAPAinsu60$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<p>All plots:</p>
+<pre class="r"><code>par(mfrow=c(2,3))
+hist(totAPAinsu30$pval, xlab=&quot;4su30 Pvalue&quot;, main=&quot;Significant Total APA QTLs \n 4su30&quot;)
+text(.6,15, paste(&quot;pi_1=&quot;, round((1-qval_su30$pi0), digit=3), sep=&quot; &quot;))
+hist(totAPAinsu60$pval, xlab=&quot;4su60 Pvalue&quot;, main=&quot;Significant Total APA QTLs \n 4su60&quot;)
+text(.6,15, paste(&quot;pi_1=&quot;, round((1-qval_su60$pi0), digit=3), sep=&quot; &quot;))
+hist(totAPAinRNA$pval,  xlab=&quot;RNAPvalue&quot;, main=&quot;Significant Total APA QTLs \n RNA&quot;)
+text(.6,18, paste(&quot;pi_1=&quot;, round((1-qval_RNA$pi0), digit=3), sep=&quot; &quot;))
+hist(totAPAinRNAg$pval, xlab=&quot;RNA Guevadis Pvalue&quot;, main=&quot;Significant Total APA QTLs \n RNA Geuvadis&quot;)
+text(.6,18, paste(&quot;pi_1=&quot;, round((1-qval_RNAg$pi0), digit=3), sep=&quot; &quot;))
+hist(totAPAinRibo$pval, xlab=&quot;Ribo (Translation) Pvalue&quot;, main=&quot;Significant Total APA QTLs \n Ribo&quot;)
+text(.6,15, paste(&quot;pi_1=&quot;, round((1-qval_Ribo$pi0), digit=3), sep=&quot; &quot;))
+hist(totAPAinProt$pval,  xlab=&quot;Protein Pvalue&quot;, main=&quot;Significant Total APA QTLs \n Protein&quot;)
+text(.6,10, paste(&quot;pi_1=&quot;, round((1-qval_prot$pi0), digit=3), sep=&quot; &quot;))</code></pre>
+<p><img src="figure/overlapMolQTL.opposite.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="nuclear" class="section level2">
+<h2>Nuclear</h2>
+<p>I will next estimate sharing with pi_1 and create histograms of the resulting pvalues.</p>
+<ul>
+<li>Protein</li>
+</ul>
+<pre class="r"><code>NucAPAinProt=read.table(&quot;../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalProtein.txt&quot;, header = T, stringsAsFactors = F)
+qval_protN=pi0est(NucAPAinProt$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<ul>
+<li>RNA</li>
+</ul>
+<pre class="r"><code>NucAPAinRNA=read.table(&quot;../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalRNA.txt&quot;, header = T, stringsAsFactors = F)
+qval_RNAN=pi0est(NucAPAinRNA$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<ul>
+<li>RNA Geuvadis</li>
+</ul>
+<pre class="r"><code>NucAPAinRNAg=read.table(&quot;../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalRNAg.txt&quot;, header = T, stringsAsFactors = F)
+qval_RNAgN=pi0est(NucAPAinRNAg$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<p>*Ribo</p>
+<pre class="r"><code>NucAPAinRibo=read.table(&quot;../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalribo.txt&quot;, header = T, stringsAsFactors = F)
+qval_RiboN=pi0est(NucAPAinRibo$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<ul>
+<li>4su30</li>
+</ul>
+<pre class="r"><code>NucAPAinsu30=read.table(&quot;../data/mol_overlap/APA2molNuclear/NucAPAqtlsPval4su30.txt&quot;, header = T, stringsAsFactors = F)
+qval_su30N=pi0est(NucAPAinsu30$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<ul>
+<li>4su60</li>
+</ul>
+<pre class="r"><code>NucAPAinsu60=read.table(&quot;../data/mol_overlap/APA2molNuclear/NucAPAqtlsPval4su60.txt&quot;, header = T, stringsAsFactors = F)
+qval_su60N=pi0est(NucAPAinsu60$pval, pi0.method = &quot;bootstrap&quot;)</code></pre>
+<p>All plots:</p>
+<pre class="r"><code>par(mfrow=c(2,3))
+hist(NucAPAinsu30$pval, xlab=&quot;4su30 Pvalue&quot;, main=&quot;Significant nuclear APA QTLs \n 4su30&quot;)
+text(.6,80, paste(&quot;pi_1=&quot;, round((1-qval_su30N$pi0), digit=3), sep=&quot; &quot;))
+hist(NucAPAinsu60$pval,xlab=&quot;4su60 Pvalue&quot;,main=&quot;Significant nuclear APA QTLs \n 4su60&quot;)
+text(.6,90, paste(&quot;pi_1=&quot;, round((1-qval_su60N$pi0), digit=3), sep=&quot; &quot;))
+hist(NucAPAinRNA$pval, xlab=&quot;RNA Pvalue&quot;,main=&quot;Significant nuclear APA QTLs \n RNA&quot;)
+text(.6,100, paste(&quot;pi_1=&quot;, round((1-qval_RNAN$pi0), digit=3), sep=&quot; &quot;))
+hist(NucAPAinRNAg$pval, xlab=&quot;RNA Guevadis Pvalue&quot;,main=&quot;Significant nuclear APA QTLs \n RNA Geuvadis&quot;)
+text(.6,100, paste(&quot;pi_1=&quot;, round((1-qval_RNAgN$pi0), digit=3), sep=&quot; &quot;))
+hist(NucAPAinRibo$pval, xlab=&quot;Ribo (translation) Pvalue&quot;,main=&quot;Significant nuclear APA QTLs \n Ribo&quot;)
+text(.6,100, paste(&quot;pi_1=&quot;, round((1-qval_RiboN$pi0), digit=3), sep=&quot; &quot;))
+hist(NucAPAinProt$pval, xlab=&quot;Protein Pvalue&quot;, main=&quot;Significant nuclear APA QTLs \n Protein&quot;)
+text(.6,40, paste(&quot;pi_1=&quot;, round((1-qval_protN$pi0), digit=3), sep=&quot; &quot;))</code></pre>
+<p><img src="figure/overlapMolQTL.opposite.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
