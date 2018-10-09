@@ -49,7 +49,7 @@ Total:
 I need to pull out the genotypes for each snp and the corresponding phenotype. I want to make a python script that I can give a snp and a peak and it will make a table with the genotypes and phenotypes for the necessary gene snp pair.  
 
 
-
+##Example Peak: peak228606, SID 3:150302010  
 ```{r}
 geno3_m=fread("../data/apaExamp/geno3_150302010.txt", header = T) %>% dplyr::select(starts_with("NA")) %>% t
 geno3df= data.frame(geno3_m) %>% separate(geno3_m, into=c("geno", "dose", "extra"), sep=":") %>% dplyr::select(dose) %>% rownames_to_column(var="ind")
@@ -62,7 +62,7 @@ apaphen228606_df=data.frame(apaphen228606_m) %>% rownames_to_column(var="ind")
 toplotAPA=geno3df %>% inner_join(apaphen228606_df, by="ind")
 toplotAPA$dose= as.factor(toplotAPA$dose)
 colnames(toplotAPA)= c("ind", "Genotype", "APA")
-EIF2A_APAex=ggplot(toplotAPA, aes(y=APA, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="APA phenotype", title="Total APA: Peak 228606, EIF2A") + scale_fill_brewer(palette="RdPu")
+EIF2A_APAex=ggplot(toplotAPA, aes(y=APA, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="APA phenotype", title="Total APA: Peak 228606, EIF2A") + scale_fill_brewer(palette="YlOrRd")
 ggsave("../output/plots/EIF2a_APA.png", EIF2A_APAex)
 ```
 
@@ -76,7 +76,7 @@ plotRNA=geno3df %>% inner_join(RNAseqEIF2A_df, by="ind")
 plotRNA$dose= as.factor(plotRNA$dose)
 colnames(plotRNA)= c("ind", "Genotype", "Expression")
 
-EIF2A_RNAex=ggplot(plotRNA, aes(y=Expression, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Expression", title="Gene Expression: EIF2A") + scale_fill_brewer(palette="RdPu")
+EIF2A_RNAex=ggplot(plotRNA, aes(y=Expression, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Expression", title="Gene Expression: EIF2A") + scale_fill_brewer(palette="YlGn")
 
 ggsave("../output/plots/EIF2a_RNA.png", EIF2A_RNAex)
 
@@ -92,7 +92,7 @@ plotProt=geno3df %>% inner_join(ProtEIF2A_df, by="ind")
 plotProt$dose= as.factor(plotProt$dose)
 colnames(plotProt)= c("ind", "Genotype", "Prot_level")
 
-IF2A_Protex= ggplot(plotProt, aes(y=Prot_level, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Protein Level", title="Protein Level: EIF2A") +scale_fill_brewer(palette="RdPu")
+IF2A_Protex= ggplot(plotProt, aes(y=Prot_level, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="Normalized Protein Level", title="Protein Level: EIF2A") +scale_fill_brewer(palette="PuBu")
 
 ggsave("../output/plots/EIF2a_Prot.png", IF2A_Protex)
 
@@ -140,3 +140,204 @@ EIF2A_RNAgex=ggplot(plotRNAg, aes(y=RNAg, x=Genotype, by=Genotype, fill=Genotype
 ggsave("../output/plots/EIF2a_RNAg.png", EIF2A_RNAgex)
 
 ```
+
+Ribo: 
+
+```{r}
+ribo_EIF2A_m=read.table("../data/apaExamp/Ribo_EIF2A.txt", header=T) %>% dplyr::select(starts_with("NA")) %>% t 
+ribo_EIF2A_df= data.frame(ribo_EIF2A_m) %>% rownames_to_column("ind")
+
+plotrib=geno3df %>% inner_join(ribo_EIF2A_df, by="ind")
+plotrib$dose= as.factor(plotrib$dose)
+colnames(plotrib)= c("ind", "Genotype", "Ribo")
+
+EIF2A_riboex=ggplot(plotrib, aes(y=Ribo, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y="RNA expression", title="Ribo Geuvadis: EIF2A") + scale_fill_brewer(palette="RdPu")
+
+ggsave("../output/plots/EIF2a_Ribo.png", EIF2A_riboex)
+
+```
+
+
+##Create a script to make the relevent files  
+
+
+Python script that take a chromosome, snp, peak#, fraction
+
+createQTLsnpAPAPhenTable.py
+```{bash,eval=F}
+def main(PhenFile, GenFile, outFile, snp, peak):
+    fout=open(outFile, "w")
+    Phen=open(PhenFile, "r")
+    Gen=open(GenFile, "r")
+    #get ind and pheno info
+    for num, ln in enumerate(Phen):
+        if num == 0:
+            indiv= ln.split()[4:]
+        else:
+            id=ln.split()[3].split(":")[3]
+            peakID=id.split("_")[2]
+            if peakID == peak:
+                pheno_list=ln.split()[4:]
+                pheno_data=list(zip(indiv,pheno_list))
+    pheno_df=pd.DataFrame(data=pheno_data,columns=["Ind", "Pheno"])
+    
+    for num, lnG in enumerate(Gen):
+        if num == 13:
+            Ind_geno=lnG.split()[9:]
+        if num >= 14: 
+            sid= lnG.split()[2]
+            if sid == snp: 
+                gen_list=lnG.split()[9:]
+                allele1=[]
+                allele2=[]
+                for i in gen_list:
+                    genotype=i.split(":")[0]
+                    allele1.append(genotype.split("|")[0])
+                    allele2.append(genotype.split("|")[1])
+          #now i have my indiv., phen, allele 1, alle 2     
+                geno_data=list(zip(Ind_geno, allele1, allele2))
+    geno_df=pd.DataFrame(data=geno_data, columns=["Ind", "Allele1", "Allele2"])
+    full_df=pd.merge(geno_df, pheno_df, how="inner", on="Ind")
+    full_df.to_csv(fout, sep="\t", encoding='utf-8', index=False)
+    fout.close()
+    
+
+if __name__ == "__main__":
+    import sys
+    import pandas as pd
+    chrom=sys.argv[1]
+    snp = sys.argv[2]
+    peak = sys.argv[3]
+    fraction=sys.argv[4]
+    
+    PhenFile = "/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.%s.pheno_fixed.txt.gz.phen_chr%s"%(fraction, chrom)
+    GenFile= "/project2/gilad/briana/YRI_geno_hg19/chr%s.dose.filt.vcf"%(chrom)
+    outFile = "/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/qtlSNP_PeakAPA%s.%s%s.txt"%(fraction, snp, peak)
+    main(PhenFile, GenFile, outFile, snp, peak)
+    
+```
+
+Use the results to plot the nuclear pheno:  
+
+```{r}
+EIF2a_APAnuc=read.table("../data/apaExamp/qtlSNP_PeakAPANuclear.3:150302010peak228606.txt", header=T, stringsAsFactors = F) %>% mutate(Geno=Allele1 + Allele2)
+
+EIF2a_APAnuc$Geno= as.factor(as.character(EIF2a_APAnuc$Geno))
+
+
+ggplot(EIF2a_APAnuc, aes(y=Pheno, x=Geno, by=Geno, fill=Geno)) + geom_boxplot() + geom_jitter() + labs(y="APA Nuc Usage", title="APA nuc: EIF2A") + scale_fill_brewer(palette="RdPu")
+```
+
+
+
+This does the total and nuclear fraction of APA. I will do this for a snp and gene and get all of the other phenotypes. This will be similar other than changing the names of the genes and seperating the name for all but protein. 
+
+createQTLsnpMolPhenTable.py  
+```{bash,eval=F}
+def main(PhenFile, GenFile, outFile, snp, gene, molPhen):
+    genenames=open("/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt", "r" )
+    for ln in genenames:
+        geneName=ln.split()[1]
+        if geneName == gene:
+            gene_ensg=ln.split()[0]
+    fout=open(outFile, "w")
+    Phen=open(PhenFile, "r")
+    Gen=open(GenFile, "r")
+    #get ind and pheno info
+    for num,ln in enumerate(Phen):
+        if num == 0:
+            indiv= ln.split()[4:]
+        else:
+            if molPhen=="Prot":
+                gene=ln.split()[3]
+                if gene == gene_ensg:
+                    pheno_list=ln.split()[4:]
+                    pheno_data= list(zip(indiv, pheno_list))
+            else:
+                full_gene=ln.split()[3]
+                gene= full_gene.split(".")[0]
+                if gene == gene_ensg:
+                    pheno_list=ln.split()[4:]
+                    pheno_data= list(zip(indiv, pheno_list))
+                    pheno_df=pd.DataFrame(data=pheno_data,columns=["Ind", "Pheno"])
+    for num, lnG in enumerate(Gen):
+        if num == 13:
+            Ind_geno=lnG.split()[9:]
+        if num >= 14: 
+            sid= lnG.split()[2]
+            if sid == snp: 
+                gen_list=lnG.split()[9:]
+                allele1=[]
+                allele2=[]
+                for i in gen_list:
+                    genotype=i.split(":")[0]
+                    allele1.append(genotype.split("|")[0])
+                    allele2.append(genotype.split("|")[1])
+          #now i have my indiv., phen, allele 1, alle 2     
+               geno_data=list(zip(Ind_geno, allele1, allele2))
+               geno_df=pd.DataFrame(data=geno_data, columns=["Ind", "Allele1", "Allele2"])
+               full_df=pd.merge(geno_df, pheno_df, how="inner", on="Ind")
+               full_df.to_csv(fout, sep="\t", encoding='utf-8', index=False)
+    fout.close()
+    
+
+if __name__ == "__main__":
+    import sys
+    import pandas as pd
+    chrom=sys.argv[1]
+    snp = sys.argv[2]
+    gene = sys.argv[3]
+    molPhen=sys.argv[4]
+    
+    PhenFile = "/project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm%sphase2.fixed.noChr.txt"%(molPhen)
+    GenFile= "/project2/gilad/briana/YRI_geno_hg19/chr%s.dose.filt.vcf"%(chrom)
+    outFile = "/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/qtlSNP_Peak%s%s%s.txt"%(molPhen, snp, gene)
+    main(PhenFile, GenFile, outFile, snp, gene,molPhen)
+    
+```
+
+
+list for phenos:  
+
+* 4su_30  
+
+* 4su_60  
+
+* RNAseqGeuvadis  
+
+* RNAseq  
+
+* prot  
+
+* ribo
+
+Create a bash script that will use a for loop to run the python script on a all of the phenotypes  
+
+run_createQTLsnpMolPhenTable.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_createQTLsnpMolPhenTable
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_createQTLsnpMolPhenTable.out
+#SBATCH --error=run_createQTLsnpMolPhenTable.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load python 
+
+
+chrom=$1
+snp=$2
+gene=$3
+
+for i in "_4su_30_" "_4su_60_" "_RNAseqGeuvadis_" "_RNAseq_" "_prot." "_ribo_"
+do
+python createQTLsnpMolPhenTable.py ${chrom} ${snp} ${gene} ${i}
+done
+
+```
+
+empty output....fix this 
