@@ -21,6 +21,7 @@ library(tidyverse)
 library(VennDiagram)
 library(data.table)
 library(qvalue)
+set.seed(327)
 ```
 
 
@@ -266,28 +267,28 @@ run_sigNucAPAinMolPheno.sh
 #SBATCH --time=24:00:00
 #SBATCH --output=run_sigNucAPAinMolPheno.out
 #SBATCH --error=run_sigNucAPAinMolPheno.err
-#SBATCH --partition=bigmem2
-#SBATCH --mem=64G
+#SBATCH --partition=broadwl
+#SBATCH --mem=32G
 #SBATCH --mail-type=END
 
 module load R 
 
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNA.txt" 
+Rscript sigNucAPAinMolPheno.R  --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNA.txt" 
 
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalProtein.txt"  
+Rscript sigNucAPAinMolPheno.R  --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalProtein.txt"  
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNAg.txt" 
-
-
-Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalribo.txt" 
+Rscript sigNucAPAinMolPheno.R  --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNAg.txt" 
 
 
+Rscript sigNucAPAinMolPheno.R  --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalribo.txt" 
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su30.txt" 
 
-Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su60.txt" 
+
+Rscript sigNucAPAinMolPheno.R  --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su30.txt" 
+
+Rscript sigNucAPAinMolPheno.R  --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su60.txt" 
 
 
 ```
@@ -297,25 +298,153 @@ Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimese
 
 
 
-##Create Histograms  
+##Create Histograms 
+
+###Total  
+
 
 I will next estimate sharing with pi_1 and create histograms of the resulting pvalues.  
+
 * Protein  
 
 ```{r}
 totAPAinProt=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalProtein.txt", header = T, stringsAsFactors = F)
 qval_prot=pi0est(totAPAinProt$pval, pi0.method = "bootstrap")
-hist(totAPAinProt$pval)
-text(.8,10, paste("pi_1=", round((1-qval_prot$pi0), digit=3), sep=" "))
-
 ```
 * RNA  
 
 ```{r}
 totAPAinRNA=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalRNA.txt", header = T, stringsAsFactors = F)
 qval_RNA=pi0est(totAPAinRNA$pval, pi0.method = "bootstrap")
-hist(totAPAinRNA$pval)
-text(.8,18, paste("pi_1=", round((1-qval_RNA$pi0), digit=3), sep=" "))
 
 ```
 
+
+
+* RNA Geuvadis  
+
+```{r}
+totAPAinRNAg=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalRNAg.txt", header = T, stringsAsFactors = F)
+qval_RNAg=pi0est(totAPAinRNAg$pval, pi0.method = "bootstrap")
+```
+
+*Ribo 
+```{r}
+totAPAinRibo=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalribo.txt", header = T, stringsAsFactors = F)
+qval_Ribo=pi0est(totAPAinRibo$pval, pi0.method = "bootstrap")
+```
+* 4su30
+
+```{r}
+totAPAinsu30=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPval4su30.txt", header = T, stringsAsFactors = F)
+qval_su30=pi0est(totAPAinsu30$pval, pi0.method = "bootstrap")
+
+```
+
+
+
+* 4su60
+
+```{r}
+totAPAinsu60=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPval4su60.txt", header = T, stringsAsFactors = F)
+qval_su60=pi0est(totAPAinsu60$pval, pi0.method = "bootstrap")
+```
+
+
+
+All plots:
+
+```{r}
+par(mfrow=c(2,3))
+hist(totAPAinsu30$pval, xlab="4su30 Pvalue", main="Significant Total APA QTLs \n 4su30")
+text(.6,15, paste("pi_1=", round((1-qval_su30$pi0), digit=3), sep=" "))
+hist(totAPAinsu60$pval, xlab="4su60 Pvalue", main="Significant Total APA QTLs \n 4su60")
+text(.6,15, paste("pi_1=", round((1-qval_su60$pi0), digit=3), sep=" "))
+hist(totAPAinRNA$pval,  xlab="RNAPvalue", main="Significant Total APA QTLs \n RNA")
+text(.6,18, paste("pi_1=", round((1-qval_RNA$pi0), digit=3), sep=" "))
+hist(totAPAinRNAg$pval, xlab="RNA Guevadis Pvalue", main="Significant Total APA QTLs \n RNA Geuvadis")
+text(.6,18, paste("pi_1=", round((1-qval_RNAg$pi0), digit=3), sep=" "))
+hist(totAPAinRibo$pval, xlab="Ribo (Translation) Pvalue", main="Significant Total APA QTLs \n Ribo")
+text(.6,15, paste("pi_1=", round((1-qval_Ribo$pi0), digit=3), sep=" "))
+hist(totAPAinProt$pval,  xlab="Protein Pvalue", main="Significant Total APA QTLs \n Protein")
+text(.6,10, paste("pi_1=", round((1-qval_prot$pi0), digit=3), sep=" "))
+```
+
+##Nuclear  
+
+
+I will next estimate sharing with pi_1 and create histograms of the resulting pvalues.  
+
+* Protein  
+
+```{r}
+NucAPAinProt=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalProtein.txt", header = T, stringsAsFactors = F)
+qval_protN=pi0est(NucAPAinProt$pval, pi0.method = "bootstrap")
+
+
+```
+* RNA  
+
+```{r}
+NucAPAinRNA=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalRNA.txt", header = T, stringsAsFactors = F)
+qval_RNAN=pi0est(NucAPAinRNA$pval, pi0.method = "bootstrap")
+
+
+```
+
+
+
+* RNA Geuvadis  
+```{r}
+NucAPAinRNAg=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalRNAg.txt", header = T, stringsAsFactors = F)
+qval_RNAgN=pi0est(NucAPAinRNAg$pval, pi0.method = "bootstrap")
+
+
+```
+
+*Ribo 
+```{r}
+NucAPAinRibo=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalribo.txt", header = T, stringsAsFactors = F)
+qval_RiboN=pi0est(NucAPAinRibo$pval, pi0.method = "bootstrap")
+
+
+```
+* 4su30
+
+```{r}
+NucAPAinsu30=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPval4su30.txt", header = T, stringsAsFactors = F)
+qval_su30N=pi0est(NucAPAinsu30$pval, pi0.method = "bootstrap")
+
+```
+
+
+
+* 4su60
+
+```{r}
+NucAPAinsu60=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPval4su60.txt", header = T, stringsAsFactors = F)
+qval_su60N=pi0est(NucAPAinsu60$pval, pi0.method = "bootstrap")
+
+```
+
+
+
+All plots:
+
+```{r}
+par(mfrow=c(2,3))
+hist(NucAPAinsu30$pval, xlab="4su30 Pvalue", main="Significant nuclear APA QTLs \n 4su30")
+text(.6,80, paste("pi_1=", round((1-qval_su30N$pi0), digit=3), sep=" "))
+hist(NucAPAinsu60$pval,xlab="4su60 Pvalue",main="Significant nuclear APA QTLs \n 4su60")
+text(.6,90, paste("pi_1=", round((1-qval_su60N$pi0), digit=3), sep=" "))
+hist(NucAPAinRNA$pval, xlab="RNA Pvalue",main="Significant nuclear APA QTLs \n RNA")
+text(.6,100, paste("pi_1=", round((1-qval_RNAN$pi0), digit=3), sep=" "))
+hist(NucAPAinRNAg$pval, xlab="RNA Guevadis Pvalue",main="Significant nuclear APA QTLs \n RNA Geuvadis")
+text(.6,100, paste("pi_1=", round((1-qval_RNAgN$pi0), digit=3), sep=" "))
+hist(NucAPAinRibo$pval, xlab="Ribo (translation) Pvalue",main="Significant nuclear APA QTLs \n Ribo")
+text(.6,100, paste("pi_1=", round((1-qval_RiboN$pi0), digit=3), sep=" "))
+hist(NucAPAinProt$pval, xlab="Protein Pvalue", main="Significant nuclear APA QTLs \n Protein")
+text(.6,40, paste("pi_1=", round((1-qval_protN$pi0), digit=3), sep=" "))
+
+
+```
