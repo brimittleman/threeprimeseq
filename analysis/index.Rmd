@@ -79,4 +79,6 @@ Molecular QTL analysis and Overlap:
 
 * [Make overlap QTL plots](overlapMolQTL.html)  
 
-* [Plot top apaQTLs in other phenotypes](swarmPlots_QTLs.html)
+* [Plot top apaQTLs in other phenotypes](swarmPlots_QTLs.html)  
+
+* [Overlap QTLs starting with APAqtls](overlapMolQTL.opposite.html)  

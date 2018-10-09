@@ -1,0 +1,321 @@
+---
+title: "Overlap molQTLs, Opposite Direction"
+author: "Briana Mittleman"
+date: "10/8/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In the [OverlapMolQTL](overlapMolQTL.html) analysis I looked at significant molecular QTLs and asked if they are also significant snp:gene pairs in the ApaQTLs. In this analysis, I will look at the significant ApaQTLs and ask if the snp:gene pairs are significant in the other molecular phenotypes. I expect enrichment of low pvalues in protQTLs but less in RNA.  
+
+I am going to complete this analysis first for the totalAPA QTLs.  
+
+
+```{r}
+library(workflowr)
+library(reshape2)
+library(tidyverse)
+library(VennDiagram)
+library(data.table)
+library(qvalue)
+```
+
+
+
+
+##MolQTL pvalues for Total ApaQTLs  
+
+sigTotAPAinMolPheno.R
+```{r,eval=F}
+#!/bin/rscripts
+
+#this script creates takes in the permuted APAQTL results for the total fraction and nominal pvalues from the molecular phenotpye  molecular phenotype 
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(optparse)
+
+geneNames=read.table("/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt", sep="\t", header=T, stringsAsFactors = F)
+
+tot_perm=read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt", header = T,stringsAsFactors=F)
+
+sigSNPgene=tot_perm %>% filter(-log10(bh)>1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name, sid, bh) %>% group_by(Gene.name) %>% top_n(-1, bh) %>% ungroup() %>% dplyr::select(Gene.name, sid)
+
+option_list = list(
+    make_option(c("-M", "--molNom"), action="store", default=NA, type='character', help="molecular Nom results"),
+    make_option(c("-O", "--output"), action="store", default=NA, type='character', help="output file for total APA sig snps in mol qtl")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+if (opt$molNom == "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out") {
+  in_file=read.table(opt$molNom, col.names = c("Gene.stable.ID", "sid", "dist", "pval", "slope"),stringsAsFactors=F)
+  file_newNames=in_file %>%  inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "sid", "pval")
+} else {
+in_file=read.table(opt$molNom, col.names = c("pid", "sid", "dist", "pval", "slope"),stringsAsFactors=F)
+file_newNames=in_file %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "sid", "pval")
+}
+
+overlap= file_newNames %>% semi_join(sigSNPgene, by=c("Gene.name", "sid")) 
+
+write.table(overlap, file=opt$output, quote=F, col.names = T, row.names = F)
+
+
+
+``` 
+
+Run this first on the rnaQTLs.  
+
+
+run_sigTotAPAinMolPhenoRNA.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigTotAPAinMolPhenoRNA
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigTotAPAinMolPhenoRNA.out
+#SBATCH --error=run_sigTotAPAinMolPhenoRNA.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load R 
+
+Rscript sigTotAPAinMolPheno.R --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molTotal/TotAPAqtlsPvalRNA.txt" 
+```
+
+
+
+
+run_sigTotAPAinMolPhenoProt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigTotAPAinMolPhenoProt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigTotAPAinMolPhenoProt.out
+#SBATCH --error=run_sigTotAPAinMolPhenoProt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load R 
+
+Rscript sigTotAPAinMolPheno.R --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molTotal/TotAPAqtlsPvalProtein.txt" 
+
+```
+
+
+
+run_sigTotAPAinMolPhenoProt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigTotAPAinMolPhenoProt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigTotAPAinMolPhenoProt.out
+#SBATCH --error=run_sigTotAPAinMolPhenoProt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load R 
+
+Rscript sigTotAPAinMolPheno.R --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molTotal/TotAPAqtlsPvalProtein.txt" 
+
+```
+
+
+
+run_sigTotAPAinMolPhenoRNAg.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigTotAPAinMolPhenoRNAg
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigTotAPAinMolPhenoRNAg.out
+#SBATCH --error=run_sigTotAPAinMolPhenoRNAg.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load R 
+
+Rscript sigTotAPAinMolPheno.R --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molTotal/TotAPAqtlsPvalRNAg.txt" 
+
+```
+
+run_sigTotAPAinMolPhenoRibo.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigTotAPAinMolPhenoRibo
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigTotAPAinMolPhenoRibo.out
+#SBATCH --error=run_sigTotAPAinMolPhenoRibo.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load R 
+
+Rscript sigTotAPAinMolPheno.R --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molTotal/TotAPAqtlsPvalribo.txt" 
+
+```
+
+run_sigTotAPAinMolPheno4su.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigTotAPAinMolPheno4su
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigTotAPAinMolPheno4su.out
+#SBATCH --error=run_sigTotAPAinMolPheno4su.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load R 
+
+Rscript sigTotAPAinMolPheno.R --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molTotal/TotAPAqtlsPval4su30.txt" 
+
+Rscript sigTotAPAinMolPheno.R --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molTotal/TotAPAqtlsPval4su60.txt" 
+```
+
+
+
+##MolQTL pvalues for Nuclear ApaQTLs    
+
+
+sigNucAPAinMolPheno.R  
+```{r,eval=F}
+#!/bin/rscripts
+
+#this script creates takes in the permuted APAQTL results for the total fraction and nominal pvalues from the molecular phenotpye  molecular phenotype 
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(optparse)
+
+geneNames=read.table("/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt", sep="\t", header=T, stringsAsFactors = F)
+
+nuc_perm=read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", header = T,stringsAsFactors=F)
+
+sigSNPgene=nuc_perm %>% filter(-log10(bh)>1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name, sid, bh) %>% group_by(Gene.name) %>% top_n(-1, bh) %>% ungroup() %>% dplyr::select(Gene.name, sid)
+
+option_list = list(
+    make_option(c("-M", "--molNom"), action="store", default=NA, type='character', help="molecular Nom results"),
+    make_option(c("-O", "--output"), action="store", default=NA, type='character', help="output file for total APA sig snps in mol qtl")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+if (opt$molNom == "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out") {
+  in_file=read.table(opt$molNom, col.names = c("Gene.stable.ID", "sid", "dist", "pval", "slope"),stringsAsFactors=F)
+  file_newNames=in_file %>%  inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "sid", "pval")
+} else {
+in_file=read.table(opt$molNom, col.names = c("pid", "sid", "dist", "pval", "slope"),stringsAsFactors=F)
+file_newNames=in_file %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "sid", "pval")
+}
+
+overlap= file_newNames %>% semi_join(sigSNPgene, by=c("Gene.name", "sid")) 
+
+write.table(overlap, file=opt$output, quote=F, col.names = T, row.names = F)
+
+``` 
+
+1 bash script for all of the phenotypes
+
+run_sigNucAPAinMolPheno.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigNucAPAinMolPheno
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigNucAPAinMolPheno.out
+#SBATCH --error=run_sigNucAPAinMolPheno.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load R 
+
+
+Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNA.txt" 
+
+
+Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalProtein.txt"  
+
+Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalRNAg.txt" 
+
+
+Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPvalribo.txt" 
+
+
+
+Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su30.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su30.txt" 
+
+Rscript run_sigNucAPAinMolPheno.sh --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_4su60.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap/APA2molNuclear/NucAPAqtlsPval4su60.txt" 
+
+
+```
+
+
+
+
+
+
+##Create Histograms  
+
+I will next estimate sharing with pi_1 and create histograms of the resulting pvalues.  
+* Protein  
+
+```{r}
+totAPAinProt=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalProtein.txt", header = T, stringsAsFactors = F)
+qval_prot=pi0est(totAPAinProt$pval, pi0.method = "bootstrap")
+hist(totAPAinProt$pval)
+text(.8,10, paste("pi_1=", round((1-qval_prot$pi0), digit=3), sep=" "))
+
+```
+* RNA  
+
+```{r}
+totAPAinRNA=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalRNA.txt", header = T, stringsAsFactors = F)
+qval_RNA=pi0est(totAPAinRNA$pval, pi0.method = "bootstrap")
+hist(totAPAinRNA$pval)
+text(.8,18, paste("pi_1=", round((1-qval_RNA$pi0), digit=3), sep=" "))
+
+```
+
