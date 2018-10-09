@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-08</p>
+<p><strong>Last updated:</strong> 2018-10-09</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/cdec3c139e3a8ff6a3868ec8acfa546212b5b176" target="_blank">cdec3c1</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2f5f071473a18c27ff4556ea72dd9356459e6cdf" target="_blank">2f5f071</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -462,6 +462,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2f5f071473a18c27ff4556ea72dd9356459e6cdf/analysis/swarmPlots_QTLs.Rmd" target="_blank">2f5f071</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-09
+</td>
+<td style="text-align:left;">
+add pheno code- not working yet
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b6d5c1987a8865f38762287c614c28a1453c438a/docs/swarmPlots_QTLs.html" target="_blank">b6d5c19</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/cdec3c139e3a8ff6a3868ec8acfa546212b5b176/analysis/swarmPlots_QTLs.Rmd" target="_blank">cdec3c1</a>
 </td>
 <td style="text-align:left;">
@@ -521,12 +555,12 @@ plots for EIF2A in mult phenos
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
@@ -565,6 +599,9 @@ totalAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchr
 <li><p>Peak: peak152751, SID 19:4236475</p></li>
 </ul>
 <p>I need to pull out the genotypes for each snp and the corresponding phenotype. I want to make a python script that I can give a snp and a peak and it will make a table with the genotypes and phenotypes for the necessary gene snp pair.</p>
+</div>
+<div id="example-peak-peak228606-sid-3150302010" class="section level2">
+<h2>Example Peak: peak228606, SID 3:150302010</h2>
 <pre class="r"><code>geno3_m=fread(&quot;../data/apaExamp/geno3_150302010.txt&quot;, header = T) %&gt;% dplyr::select(starts_with(&quot;NA&quot;)) %&gt;% t
 geno3df= data.frame(geno3_m) %&gt;% separate(geno3_m, into=c(&quot;geno&quot;, &quot;dose&quot;, &quot;extra&quot;), sep=&quot;:&quot;) %&gt;% dplyr::select(dose) %&gt;% rownames_to_column(var=&quot;ind&quot;)
 apaphen228606_m= fread(&quot;../data/apaExamp/Total.peak228606.txt&quot;, header = T) %&gt;% dplyr::select(starts_with(&quot;NA&quot;)) %&gt;% t
@@ -572,7 +609,7 @@ apaphen228606_df=data.frame(apaphen228606_m) %&gt;% rownames_to_column(var=&quot
 <pre class="r"><code>toplotAPA=geno3df %&gt;% inner_join(apaphen228606_df, by=&quot;ind&quot;)
 toplotAPA$dose= as.factor(toplotAPA$dose)
 colnames(toplotAPA)= c(&quot;ind&quot;, &quot;Genotype&quot;, &quot;APA&quot;)
-EIF2A_APAex=ggplot(toplotAPA, aes(y=APA, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y=&quot;APA phenotype&quot;, title=&quot;Total APA: Peak 228606, EIF2A&quot;) + scale_fill_brewer(palette=&quot;RdPu&quot;)
+EIF2A_APAex=ggplot(toplotAPA, aes(y=APA, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y=&quot;APA phenotype&quot;, title=&quot;Total APA: Peak 228606, EIF2A&quot;) + scale_fill_brewer(palette=&quot;YlOrRd&quot;)
 ggsave(&quot;../output/plots/EIF2a_APA.png&quot;, EIF2A_APAex)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <p>This is in the gene EIF2A, I need to find this in the eQTL data. The ensg id for this gene is ENSG00000144895.</p>
@@ -583,7 +620,7 @@ plotRNA=geno3df %&gt;% inner_join(RNAseqEIF2A_df, by=&quot;ind&quot;)
 plotRNA$dose= as.factor(plotRNA$dose)
 colnames(plotRNA)= c(&quot;ind&quot;, &quot;Genotype&quot;, &quot;Expression&quot;)
 
-EIF2A_RNAex=ggplot(plotRNA, aes(y=Expression, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y=&quot;Normalized Expression&quot;, title=&quot;Gene Expression: EIF2A&quot;) + scale_fill_brewer(palette=&quot;RdPu&quot;)
+EIF2A_RNAex=ggplot(plotRNA, aes(y=Expression, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y=&quot;Normalized Expression&quot;, title=&quot;Gene Expression: EIF2A&quot;) + scale_fill_brewer(palette=&quot;YlGn&quot;)
 
 ggsave(&quot;../output/plots/EIF2a_RNA.png&quot;, EIF2A_RNAex)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
@@ -595,7 +632,7 @@ plotProt=geno3df %&gt;% inner_join(ProtEIF2A_df, by=&quot;ind&quot;)
 plotProt$dose= as.factor(plotProt$dose)
 colnames(plotProt)= c(&quot;ind&quot;, &quot;Genotype&quot;, &quot;Prot_level&quot;)
 
-IF2A_Protex= ggplot(plotProt, aes(y=Prot_level, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y=&quot;Normalized Protein Level&quot;, title=&quot;Protein Level: EIF2A&quot;) +scale_fill_brewer(palette=&quot;RdPu&quot;)
+IF2A_Protex= ggplot(plotProt, aes(y=Prot_level, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y=&quot;Normalized Protein Level&quot;, title=&quot;Protein Level: EIF2A&quot;) +scale_fill_brewer(palette=&quot;PuBu&quot;)
 
 ggsave(&quot;../output/plots/EIF2a_Prot.png&quot;, IF2A_Protex)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
@@ -626,6 +663,178 @@ EIF2A_RNAgex=ggplot(plotRNAg, aes(y=RNAg, x=Genotype, by=Genotype, fill=Genotype
 
 ggsave(&quot;../output/plots/EIF2a_RNAg.png&quot;, EIF2A_RNAgex)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
+<p>Ribo:</p>
+<pre class="r"><code>ribo_EIF2A_m=read.table(&quot;../data/apaExamp/Ribo_EIF2A.txt&quot;, header=T) %&gt;% dplyr::select(starts_with(&quot;NA&quot;)) %&gt;% t 
+ribo_EIF2A_df= data.frame(ribo_EIF2A_m) %&gt;% rownames_to_column(&quot;ind&quot;)
+
+plotrib=geno3df %&gt;% inner_join(ribo_EIF2A_df, by=&quot;ind&quot;)
+plotrib$dose= as.factor(plotrib$dose)
+colnames(plotrib)= c(&quot;ind&quot;, &quot;Genotype&quot;, &quot;Ribo&quot;)
+
+EIF2A_riboex=ggplot(plotrib, aes(y=Ribo, x=Genotype, by=Genotype, fill=Genotype)) + geom_boxplot() + geom_jitter() + labs(y=&quot;RNA expression&quot;, title=&quot;Ribo Geuvadis: EIF2A&quot;) + scale_fill_brewer(palette=&quot;RdPu&quot;)
+
+ggsave(&quot;../output/plots/EIF2a_Ribo.png&quot;, EIF2A_riboex)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+<div id="create-a-script-to-make-the-relevent-files" class="section level2">
+<h2>Create a script to make the relevent files</h2>
+<p>Python script that take a chromosome, snp, peak#, fraction</p>
+<p>createQTLsnpAPAPhenTable.py</p>
+<pre class="bash"><code>def main(PhenFile, GenFile, outFile, snp, peak):
+    fout=open(outFile, &quot;w&quot;)
+    Phen=open(PhenFile, &quot;r&quot;)
+    Gen=open(GenFile, &quot;r&quot;)
+    #get ind and pheno info
+    for num, ln in enumerate(Phen):
+        if num == 0:
+            indiv= ln.split()[4:]
+        else:
+            id=ln.split()[3].split(&quot;:&quot;)[3]
+            peakID=id.split(&quot;_&quot;)[2]
+            if peakID == peak:
+                pheno_list=ln.split()[4:]
+                pheno_data=list(zip(indiv,pheno_list))
+    pheno_df=pd.DataFrame(data=pheno_data,columns=[&quot;Ind&quot;, &quot;Pheno&quot;])
+    
+    for num, lnG in enumerate(Gen):
+        if num == 13:
+            Ind_geno=lnG.split()[9:]
+        if num &gt;= 14: 
+            sid= lnG.split()[2]
+            if sid == snp: 
+                gen_list=lnG.split()[9:]
+                allele1=[]
+                allele2=[]
+                for i in gen_list:
+                    genotype=i.split(&quot;:&quot;)[0]
+                    allele1.append(genotype.split(&quot;|&quot;)[0])
+                    allele2.append(genotype.split(&quot;|&quot;)[1])
+          #now i have my indiv., phen, allele 1, alle 2     
+                geno_data=list(zip(Ind_geno, allele1, allele2))
+    geno_df=pd.DataFrame(data=geno_data, columns=[&quot;Ind&quot;, &quot;Allele1&quot;, &quot;Allele2&quot;])
+    full_df=pd.merge(geno_df, pheno_df, how=&quot;inner&quot;, on=&quot;Ind&quot;)
+    full_df.to_csv(fout, sep=&quot;\t&quot;, encoding=&#39;utf-8&#39;, index=False)
+    fout.close()
+    
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pandas as pd
+    chrom=sys.argv[1]
+    snp = sys.argv[2]
+    peak = sys.argv[3]
+    fraction=sys.argv[4]
+    
+    PhenFile = &quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.%s.pheno_fixed.txt.gz.phen_chr%s&quot;%(fraction, chrom)
+    GenFile= &quot;/project2/gilad/briana/YRI_geno_hg19/chr%s.dose.filt.vcf&quot;%(chrom)
+    outFile = &quot;/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/qtlSNP_PeakAPA%s.%s%s.txt&quot;%(fraction, snp, peak)
+    main(PhenFile, GenFile, outFile, snp, peak)
+    </code></pre>
+<p>Use the results to plot the nuclear pheno:</p>
+<pre class="r"><code>EIF2a_APAnuc=read.table(&quot;../data/apaExamp/qtlSNP_PeakAPANuclear.3:150302010peak228606.txt&quot;, header=T, stringsAsFactors = F) %&gt;% mutate(Geno=Allele1 + Allele2)
+
+EIF2a_APAnuc$Geno= as.factor(as.character(EIF2a_APAnuc$Geno))
+
+
+ggplot(EIF2a_APAnuc, aes(y=Pheno, x=Geno, by=Geno, fill=Geno)) + geom_boxplot() + geom_jitter() + labs(y=&quot;APA Nuc Usage&quot;, title=&quot;APA nuc: EIF2A&quot;) + scale_fill_brewer(palette=&quot;RdPu&quot;)</code></pre>
+<p><img src="figure/swarmPlots_QTLs.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This does the total and nuclear fraction of APA. I will do this for a snp and gene and get all of the other phenotypes. This will be similar other than changing the names of the genes and seperating the name for all but protein.</p>
+<p>createQTLsnpMolPhenTable.py</p>
+<pre class="bash"><code>def main(PhenFile, GenFile, outFile, snp, gene, molPhen):
+    genenames=open(&quot;/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt&quot;, &quot;r&quot; )
+    for ln in genenames:
+        geneName=ln.split()[1]
+        if geneName == gene:
+            gene_ensg=ln.split()[0]
+    fout=open(outFile, &quot;w&quot;)
+    Phen=open(PhenFile, &quot;r&quot;)
+    Gen=open(GenFile, &quot;r&quot;)
+    #get ind and pheno info
+    for num,ln in enumerate(Phen):
+        if num == 0:
+            indiv= ln.split()[4:]
+        else:
+            if molPhen==&quot;Prot&quot;:
+                gene=ln.split()[3]
+                if gene == gene_ensg:
+                    pheno_list=ln.split()[4:]
+                    pheno_data= list(zip(indiv, pheno_list))
+            else:
+                full_gene=ln.split()[3]
+                gene= full_gene.split(&quot;.&quot;)[0]
+                if gene == gene_ensg:
+                    pheno_list=ln.split()[4:]
+                    pheno_data= list(zip(indiv, pheno_list))
+                    pheno_df=pd.DataFrame(data=pheno_data,columns=[&quot;Ind&quot;, &quot;Pheno&quot;])
+    for num, lnG in enumerate(Gen):
+        if num == 13:
+            Ind_geno=lnG.split()[9:]
+        if num &gt;= 14: 
+            sid= lnG.split()[2]
+            if sid == snp: 
+                gen_list=lnG.split()[9:]
+                allele1=[]
+                allele2=[]
+                for i in gen_list:
+                    genotype=i.split(&quot;:&quot;)[0]
+                    allele1.append(genotype.split(&quot;|&quot;)[0])
+                    allele2.append(genotype.split(&quot;|&quot;)[1])
+          #now i have my indiv., phen, allele 1, alle 2     
+               geno_data=list(zip(Ind_geno, allele1, allele2))
+               geno_df=pd.DataFrame(data=geno_data, columns=[&quot;Ind&quot;, &quot;Allele1&quot;, &quot;Allele2&quot;])
+               full_df=pd.merge(geno_df, pheno_df, how=&quot;inner&quot;, on=&quot;Ind&quot;)
+               full_df.to_csv(fout, sep=&quot;\t&quot;, encoding=&#39;utf-8&#39;, index=False)
+    fout.close()
+    
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pandas as pd
+    chrom=sys.argv[1]
+    snp = sys.argv[2]
+    gene = sys.argv[3]
+    molPhen=sys.argv[4]
+    
+    PhenFile = &quot;/project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm%sphase2.fixed.noChr.txt&quot;%(molPhen)
+    GenFile= &quot;/project2/gilad/briana/YRI_geno_hg19/chr%s.dose.filt.vcf&quot;%(chrom)
+    outFile = &quot;/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/qtlSNP_Peak%s%s%s.txt&quot;%(molPhen, snp, gene)
+    main(PhenFile, GenFile, outFile, snp, gene,molPhen)
+    </code></pre>
+<p>list for phenos:</p>
+<ul>
+<li><p>4su_30</p></li>
+<li><p>4su_60</p></li>
+<li><p>RNAseqGeuvadis</p></li>
+<li><p>RNAseq</p></li>
+<li><p>prot</p></li>
+<li><p>ribo</p></li>
+</ul>
+<p>Create a bash script that will use a for loop to run the python script on a all of the phenotypes</p>
+<p>run_createQTLsnpMolPhenTable.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_createQTLsnpMolPhenTable
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_createQTLsnpMolPhenTable.out
+#SBATCH --error=run_createQTLsnpMolPhenTable.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load python 
+
+
+chrom=$1
+snp=$2
+gene=$3
+
+for i in &quot;_4su_30_&quot; &quot;_4su_60_&quot; &quot;_RNAseqGeuvadis_&quot; &quot;_RNAseq_&quot; &quot;_prot.&quot; &quot;_ribo_&quot;
+do
+python createQTLsnpMolPhenTable.py ${chrom} ${snp} ${gene} ${i}
+done
+</code></pre>
+<p>empty output….fix this</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -646,11 +855,12 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] cowplot_0.9.3       data.table_1.11.8   VennDiagram_1.6.20 
- [4] futile.logger_1.4.3 forcats_0.3.0       stringr_1.3.1      
- [7] dplyr_0.7.6         purrr_0.2.5         readr_1.1.1        
-[10] tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0      
-[13] tidyverse_1.2.1     reshape2_1.4.3      workflowr_1.1.1    
+ [1] bindrcpp_0.2.2      cowplot_0.9.3       data.table_1.11.8  
+ [4] VennDiagram_1.6.20  futile.logger_1.4.3 forcats_0.3.0      
+ [7] stringr_1.3.1       dplyr_0.7.6         purrr_0.2.5        
+[10] readr_1.1.1         tidyr_0.8.1         tibble_1.4.2       
+[13] ggplot2_3.0.0       tidyverse_1.2.1     reshape2_1.4.3     
+[16] workflowr_1.1.1    
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4     haven_1.1.2          lattice_0.20-35     
@@ -658,20 +868,19 @@ loaded via a namespace (and not attached):
  [7] rlang_0.2.2          R.oo_1.22.0          pillar_1.3.0        
 [10] glue_1.3.0           withr_2.1.2          R.utils_2.7.0       
 [13] RColorBrewer_1.1-2   lambda.r_1.2.3       modelr_0.1.2        
-[16] readxl_1.1.0         bindrcpp_0.2.2       bindr_0.1.1         
-[19] plyr_1.8.4           munsell_0.5.0        gtable_0.2.0        
-[22] cellranger_1.1.0     rvest_0.3.2          R.methodsS3_1.7.1   
-[25] evaluate_0.11        labeling_0.3         knitr_1.20          
-[28] broom_0.5.0          Rcpp_0.12.19         formatR_1.5         
-[31] backports_1.1.2      scales_1.0.0         jsonlite_1.5        
-[34] hms_0.4.2            digest_0.6.17        stringi_1.2.4       
-[37] rprojroot_1.3-2      cli_1.0.1            tools_3.5.1         
-[40] magrittr_1.5         lazyeval_0.2.1       futile.options_1.0.1
-[43] crayon_1.3.4         whisker_0.3-2        pkgconfig_2.0.2     
-[46] xml2_1.2.0           lubridate_1.7.4      assertthat_0.2.0    
-[49] rmarkdown_1.10       httr_1.3.1           rstudioapi_0.8      
-[52] R6_2.3.0             nlme_3.1-137         git2r_0.23.0        
-[55] compiler_3.5.1      </code></pre>
+[16] readxl_1.1.0         bindr_0.1.1          plyr_1.8.4          
+[19] munsell_0.5.0        gtable_0.2.0         cellranger_1.1.0    
+[22] rvest_0.3.2          R.methodsS3_1.7.1    evaluate_0.11       
+[25] labeling_0.3         knitr_1.20           broom_0.5.0         
+[28] Rcpp_0.12.19         formatR_1.5          backports_1.1.2     
+[31] scales_1.0.0         jsonlite_1.5         hms_0.4.2           
+[34] digest_0.6.17        stringi_1.2.4        rprojroot_1.3-2     
+[37] cli_1.0.1            tools_3.5.1          magrittr_1.5        
+[40] lazyeval_0.2.1       futile.options_1.0.1 crayon_1.3.4        
+[43] whisker_0.3-2        pkgconfig_2.0.2      xml2_1.2.0          
+[46] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.10      
+[49] httr_1.3.1           rstudioapi_0.8       R6_2.3.0            
+[52] nlme_3.1-137         git2r_0.23.0         compiler_3.5.1      </code></pre>
 </div>
 
 <hr>
