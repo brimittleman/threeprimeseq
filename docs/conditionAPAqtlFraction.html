@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-02</p>
+<p><strong>Last updated:</strong> 2018-10-08</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f66679bc1d71db8c924eba94a35f4643d179ae7e" target="_blank">f66679b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/0c2fffb6e699699b2bb81115e3acadeca58fa405" target="_blank">0c2fffb</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -356,6 +356,7 @@ Ignored files:
     Ignored:    output/.DS_Store
 
 Untracked files:
+    Untracked:  KalistoAbundance18486.txt
     Untracked:  analysis/genometrack_figs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -368,6 +369,7 @@ Untracked files:
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/apaExamp/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
     Untracked:  data/bin200.Anuccov.bed
@@ -377,6 +379,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -388,6 +391,7 @@ Untracked files:
     Untracked:  data/joined
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/mol_overlap/
     Untracked:  data/nom_QTL/
     Untracked:  data/nom_QTL_opp/
     Untracked:  data/nom_QTL_trans/
@@ -413,8 +417,8 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/39indQC.Rmd
     Modified:   analysis/PeakToGeneAssignment.Rmd
-    Modified:   analysis/callMolQTLS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
@@ -423,6 +427,7 @@ Unstaged changes:
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
     Modified:   code/Snakefile
 
@@ -458,6 +463,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0c2fffb6e699699b2bb81115e3acadeca58fa405/analysis/conditionAPAqtlFraction.Rmd" target="_blank">0c2fffb</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-08
+</td>
+<td style="text-align:left;">
+add p1 to plots and create histograms
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7369f8ebf5a521bb3cd265f35ae26915f39b5bee/docs/conditionAPAqtlFraction.html" target="_blank">7369f8e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-02
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/f66679bc1d71db8c924eba94a35f4643d179ae7e/analysis/conditionAPAqtlFraction.Rmd" target="_blank">f66679b</a>
 </td>
 <td style="text-align:left;">
@@ -481,12 +520,12 @@ overlap plots at peak level
 <li>Load Libraries</li>
 </ul>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
@@ -498,6 +537,7 @@ Attaching package: &#39;reshape2&#39;</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code> library(qvalue)</code></pre>
 <ul>
 <li>Load Data</li>
 </ul>
@@ -550,9 +590,9 @@ permNuc=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchro
 }
 
 overlapQTLplot_totalQTL(1, &quot;../output/plots/TotalQTLinNuclear.png&quot;)</code></pre>
-<pre><code>[1] &quot;Sig snps= 677&quot;
-[1] &quot;Nuclear overlap= 250&quot;
-[1] &quot;Nuclear overlap= 147&quot;</code></pre>
+<pre><code>[1] &quot;Sig snps= 118&quot;
+[1] &quot;Nuclear overlap= 31&quot;
+[1] &quot;Nuclear overlap= 9&quot;</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
 <pre class="r"><code>overlapQTLplot_totalQTL=function(cut, plotfile){
@@ -594,9 +634,9 @@ overlapQTLplot_totalQTL(1, &quot;../output/plots/TotalQTLinNuclear.png&quot;)</c
 
 }
 overlapQTLplot_totalQTL(1, &quot;../output/plots/NuclearQTLinTotal.png&quot;)</code></pre>
-<pre><code>[1] &quot;Sig snps= 3049&quot;
-[1] &quot;Total overlap= 689&quot;
-[1] &quot;Total overlap= 561&quot;</code></pre>
+<pre><code>[1] &quot;Sig snps= 880&quot;
+[1] &quot;Total overlap= 85&quot;
+[1] &quot;Total overlap= 48&quot;</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
 <p>I should change this to focus on peak. I can say give me the genes with significant QTLs in total or nuclear then look at the pvalues for those peaks in the other file. As I did before, I am going to work on all of the functions seperatly then put them together.</p>
@@ -639,14 +679,14 @@ plot=makeQQ_peak(Test,base)</code></pre>
 <pre class="r"><code>SigNucPeakOverlapTot=function(cutoff, plotfile){
     sigpeak=function(cutoff){
       permNuc$bh=p.adjust(permNuc$bpval, method=&quot;fdr&quot;)
-      file_sig=permNuc %&gt;% filter(-log10(bh)&gt; cutoff) %&gt;%separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% select(peak)
+      file_sig=permNuc %&gt;% filter(-log10(bh)&gt; cutoff) %&gt;%separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% dplyr::select(peak)
       print(paste(&quot;Sig peaks=&quot;, nrow(file_sig), sep=&quot; &quot;))
       return(file_sig)
       }
   
   randompeak=function(SigSnpList){
     nsnp=nrow(SigSnpList)
-    randomPeakDF= permNuc %&gt;% sample_n(nsnp) %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% select(peak)
+    randomPeakDF= permNuc %&gt;% sample_n(nsnp) %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% dplyr::select(peak)
     return(randomPeakDF)
   }
   Peak_overlap=function(snp_list){
@@ -656,9 +696,12 @@ plot=makeQQ_peak(Test,base)</code></pre>
   }
 
   makeQQ_peak=function(test, baseline){
+      p0test=pi0est(test$bpval)
+      p1test=1-p0test$pi0
       plot=qqplot(-log10(runif(nrow(baseline))), -log10(baseline$bpval), ylab=&quot;Observed&quot;, xlab=&quot;Expected&quot;, main=&quot;Peaks with Significant QTLs in Nuclear \n pvalues in Total&quot;)
       points(sort(-log10(runif(nrow(test)))), sort(-log10(test$bpval)), col= alpha(&quot;Red&quot;))
       abline(0,1)
+      text(1.5,3, paste(&quot;pi_1=&quot;, round(p1test, digit=3), sep=&quot; &quot;))
       return(plot)
   }
   
@@ -673,22 +716,22 @@ dev.off()
 }
 
 SigNucPeakOverlapTot(1, &quot;../output/plots/SigNucPeakTotpval.png&quot;)</code></pre>
-<pre><code>[1] &quot;Sig peaks= 3049&quot;
-[1] &quot;Total overlap= 2352&quot;
-[1] &quot;Total overlap= 2369&quot;</code></pre>
+<pre><code>[1] &quot;Sig peaks= 880&quot;
+[1] &quot;Total overlap= 353&quot;
+[1] &quot;Total overlap= 348&quot;</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
 <pre class="r"><code>SigTotPeakOverlapNuc=function(cutoff, plotfile){
     sigpeak=function(cutoff){
       permTot$bh=p.adjust(permTot$bpval, method=&quot;fdr&quot;)
-      file_sig=permTot %&gt;% filter(-log10(bh)&gt; cutoff) %&gt;%separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% select(peak)
+      file_sig=permTot %&gt;% filter(-log10(bh)&gt; cutoff) %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% dplyr::select(peak)
       print(paste(&quot;Sig peaks=&quot;, nrow(file_sig), sep=&quot; &quot;))
       return(file_sig)
       }
   
   randompeak=function(SigSnpList){
     nsnp=nrow(SigSnpList)
-    randomPeakDF= permTot %&gt;% sample_n(nsnp) %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% select(peak)
+    randomPeakDF= permTot %&gt;% sample_n(nsnp) %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% dplyr::select(peak)
     return(randomPeakDF)
   }
   Peak_overlap=function(snp_list){
@@ -698,9 +741,12 @@ SigNucPeakOverlapTot(1, &quot;../output/plots/SigNucPeakTotpval.png&quot;)</code
   }
 
   makeQQ_peak=function(test, baseline){
+      p0test=pi0est(test$bpval)
+      p1test=1-p0test$pi0
       plot=qqplot(-log10(runif(nrow(baseline))), -log10(baseline$bpval), ylab=&quot;Observed&quot;, xlab=&quot;Expected&quot;, main=&quot;Peaks with Significant QTLs in Total \n pvalues in Nuclear&quot;)
       points(sort(-log10(runif(nrow(test)))), sort(-log10(test$bpval)), col= alpha(&quot;Red&quot;))
       abline(0,1)
+      text(2,3, paste(&quot;pi_1=&quot;, round(p1test, digit=3), sep=&quot; &quot;))
       return(plot)
   }
   
@@ -715,12 +761,98 @@ dev.off()
 }
 
 SigTotPeakOverlapNuc(1, &quot;../output/plots/SigTotPeakNucpval.png&quot;)</code></pre>
-<pre><code>[1] &quot;Sig peaks= 677&quot;
-[1] &quot;Nuclear overlap= 574&quot;
-[1] &quot;Nuclear overlap= 527&quot;</code></pre>
+<pre><code>[1] &quot;Sig peaks= 118&quot;
+[1] &quot;Nuclear overlap= 69&quot;
+[1] &quot;Nuclear overlap= 70&quot;</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
-<p>```</p>
+<p>Try historgram:</p>
+<pre class="r"><code>SigNucPeakOverlapTot_hist=function(cutoff, plotfile){
+    sigpeak=function(cutoff){
+      permNuc$bh=p.adjust(permNuc$bpval, method=&quot;fdr&quot;)
+      file_sig=permNuc %&gt;% filter(-log10(bh)&gt; cutoff) %&gt;%separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% dplyr::select(peak)
+      print(paste(&quot;Sig peaks=&quot;, nrow(file_sig), sep=&quot; &quot;))
+      return(file_sig)
+      }
+  
+  randompeak=function(SigSnpList){
+    nsnp=nrow(SigSnpList)
+    randomPeakDF= permNuc %&gt;% sample_n(nsnp) %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% dplyr::select(peak)
+    return(randomPeakDF)
+  }
+  Peak_overlap=function(snp_list){
+        filt_tot=permTot %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% semi_join(snp_list, by=&quot;peak&quot;)
+        print(paste(&quot;Total overlap=&quot;, nrow(filt_tot), sep=&quot; &quot;))
+        return(filt_tot)
+  }
+
+  makeQQ_peak=function(test, baseline){
+      p0test=pi0est(test$bpval)
+      p1test=1-p0test$pi0
+      plot=hist(test$bpval, breaks=20, main=&quot;Peaks with Significant QTLs in Nuclear \n Pvalues in Total&quot;, xlab=&quot;Total APAqtl Pvalue&quot;)
+      text(.8,140, paste(&quot;pi_1=&quot;, round(p1test, digit=3), sep=&quot; &quot;))
+      return(plot)
+  }
+  
+  
+testPeaks=sigpeak(1)
+basePeaks=randompeak(testPeaks)
+testSet=Peak_overlap(testPeaks)
+baselineSet=Peak_overlap(basePeaks)
+png(plotfile)
+plot=makeQQ_peak(testSet,baselineSet )
+dev.off()
+}
+
+SigNucPeakOverlapTot_hist(1, &quot;../output/plots/SigNucPeakTotpval_hist.png&quot;)</code></pre>
+<pre><code>[1] &quot;Sig peaks= 880&quot;
+[1] &quot;Total overlap= 353&quot;
+[1] &quot;Total overlap= 352&quot;</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<pre class="r"><code>SigTotPeakOverlapNuc_hist=function(cutoff, plotfile){
+    sigpeak=function(cutoff){
+      permTot$bh=p.adjust(permTot$bpval, method=&quot;fdr&quot;)
+      file_sig=permTot %&gt;% filter(-log10(bh)&gt; cutoff) %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% dplyr::select(peak)
+      print(paste(&quot;Sig peaks=&quot;, nrow(file_sig), sep=&quot; &quot;))
+      return(file_sig)
+      }
+  
+  randompeak=function(SigSnpList){
+    nsnp=nrow(SigSnpList)
+    randomPeakDF= permTot %&gt;% sample_n(nsnp) %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% dplyr::select(peak)
+    return(randomPeakDF)
+  }
+  Peak_overlap=function(snp_list){
+        filt_nuc=permNuc %&gt;% separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% semi_join(snp_list, by=&quot;peak&quot;)
+        print(paste(&quot;Nuclear overlap=&quot;, nrow(filt_nuc), sep=&quot; &quot;))
+        return(filt_nuc)
+  }
+
+  makeQQ_peak=function(test, baseline){
+      p0test=pi0est(test$bpval)
+      p1test=1-p0test$pi0
+      plot=hist(test$bpval, breaks=20, main=&quot;Peaks with Significant QTLs in Total \n Pvalues in Nuclear&quot;,xlab=&quot;Nuclear APAqtl Pvalue&quot;)
+      text(.8,40, paste(&quot;pi_1=&quot;, round(p1test, digit=3), sep=&quot; &quot;))
+      return(plot)
+  }
+  
+  
+testPeaks=sigpeak(1)
+basePeaks=randompeak(testPeaks)
+testSet=Peak_overlap(testPeaks)
+baselineSet=Peak_overlap(basePeaks)
+png(plotfile)
+plot=makeQQ_peak(testSet,baselineSet )
+dev.off()
+}
+
+SigTotPeakOverlapNuc_hist(1, &quot;../output/plots/SigTotPeakNucpval_hist.png&quot;)</code></pre>
+<pre><code>[1] &quot;Sig peaks= 118&quot;
+[1] &quot;Nuclear overlap= 69&quot;
+[1] &quot;Nuclear overlap= 60&quot;</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -740,28 +872,29 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  workflowr_1.1.1 reshape2_1.4.3  forcats_0.3.0  
- [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
- [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+ [1] bindrcpp_0.2.2  qvalue_2.12.0   workflowr_1.1.1 reshape2_1.4.3 
+ [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5    
+ [9] readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0  
+[13] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
-[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
-[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
-[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
-[22] evaluate_0.11     knitr_1.20        broom_0.5.0      
-[25] Rcpp_0.12.18      scales_1.0.0      backports_1.1.2  
-[28] jsonlite_1.5      hms_0.4.2         digest_0.6.16    
-[31] stringi_1.2.4     grid_3.5.1        rprojroot_1.3-2  
-[34] cli_1.0.0         tools_3.5.1       magrittr_1.5     
-[37] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
-[40] pkgconfig_2.0.2   xml2_1.2.0        lubridate_1.7.4  
-[43] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
-[46] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
-[49] git2r_0.23.0      compiler_3.5.1   </code></pre>
+ [1] tidyselect_0.2.4  splines_3.5.1     haven_1.1.2      
+ [4] lattice_0.20-35   colorspace_1.3-2  htmltools_0.3.6  
+ [7] yaml_2.2.0        rlang_0.2.2       R.oo_1.22.0      
+[10] pillar_1.3.0      glue_1.3.0        withr_2.1.2      
+[13] R.utils_2.7.0     modelr_0.1.2      readxl_1.1.0     
+[16] bindr_0.1.1       plyr_1.8.4        munsell_0.5.0    
+[19] gtable_0.2.0      cellranger_1.1.0  rvest_0.3.2      
+[22] R.methodsS3_1.7.1 evaluate_0.11     knitr_1.20       
+[25] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
+[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[31] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
+[34] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
+[37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[40] whisker_0.3-2     pkgconfig_2.0.2   xml2_1.2.0       
+[43] lubridate_1.7.4   assertthat_0.2.0  rmarkdown_1.10   
+[46] httr_1.3.1        rstudioapi_0.8    R6_2.3.0         
+[49] nlme_3.1-137      git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
