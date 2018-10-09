@@ -20,6 +20,7 @@ Due to file size I will do this only with the permuted files.
 library(tidyverse)
 library(reshape2)
 library(workflowr)
+ library(qvalue)
 ```
 
 * Load Data 
@@ -196,14 +197,14 @@ plot=makeQQ_peak(Test,base)
 SigNucPeakOverlapTot=function(cutoff, plotfile){
     sigpeak=function(cutoff){
       permNuc$bh=p.adjust(permNuc$bpval, method="fdr")
-      file_sig=permNuc %>% filter(-log10(bh)> cutoff) %>%separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(peak)
+      file_sig=permNuc %>% filter(-log10(bh)> cutoff) %>%separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% dplyr::select(peak)
       print(paste("Sig peaks=", nrow(file_sig), sep=" "))
       return(file_sig)
       }
   
   randompeak=function(SigSnpList){
     nsnp=nrow(SigSnpList)
-    randomPeakDF= permNuc %>% sample_n(nsnp) %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(peak)
+    randomPeakDF= permNuc %>% sample_n(nsnp) %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% dplyr::select(peak)
     return(randomPeakDF)
   }
   Peak_overlap=function(snp_list){
@@ -213,9 +214,12 @@ SigNucPeakOverlapTot=function(cutoff, plotfile){
   }
 
   makeQQ_peak=function(test, baseline){
+      p0test=pi0est(test$bpval)
+      p1test=1-p0test$pi0
       plot=qqplot(-log10(runif(nrow(baseline))), -log10(baseline$bpval), ylab="Observed", xlab="Expected", main="Peaks with Significant QTLs in Nuclear \n pvalues in Total")
       points(sort(-log10(runif(nrow(test)))), sort(-log10(test$bpval)), col= alpha("Red"))
       abline(0,1)
+      text(1.5,3, paste("pi_1=", round(p1test, digit=3), sep=" "))
       return(plot)
   }
   
@@ -238,14 +242,14 @@ SigNucPeakOverlapTot(1, "../output/plots/SigNucPeakTotpval.png")
 SigTotPeakOverlapNuc=function(cutoff, plotfile){
     sigpeak=function(cutoff){
       permTot$bh=p.adjust(permTot$bpval, method="fdr")
-      file_sig=permTot %>% filter(-log10(bh)> cutoff) %>%separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(peak)
+      file_sig=permTot %>% filter(-log10(bh)> cutoff) %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% dplyr::select(peak)
       print(paste("Sig peaks=", nrow(file_sig), sep=" "))
       return(file_sig)
       }
   
   randompeak=function(SigSnpList){
     nsnp=nrow(SigSnpList)
-    randomPeakDF= permTot %>% sample_n(nsnp) %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(peak)
+    randomPeakDF= permTot %>% sample_n(nsnp) %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% dplyr::select(peak)
     return(randomPeakDF)
   }
   Peak_overlap=function(snp_list){
@@ -255,9 +259,12 @@ SigTotPeakOverlapNuc=function(cutoff, plotfile){
   }
 
   makeQQ_peak=function(test, baseline){
+      p0test=pi0est(test$bpval)
+      p1test=1-p0test$pi0
       plot=qqplot(-log10(runif(nrow(baseline))), -log10(baseline$bpval), ylab="Observed", xlab="Expected", main="Peaks with Significant QTLs in Total \n pvalues in Nuclear")
       points(sort(-log10(runif(nrow(test)))), sort(-log10(test$bpval)), col= alpha("Red"))
       abline(0,1)
+      text(2,3, paste("pi_1=", round(p1test, digit=3), sep=" "))
       return(plot)
   }
   
@@ -273,5 +280,92 @@ dev.off()
 
 SigTotPeakOverlapNuc(1, "../output/plots/SigTotPeakNucpval.png")
 ```
+
+
+
+Try historgram:   
+
+```{r}
+SigNucPeakOverlapTot_hist=function(cutoff, plotfile){
+    sigpeak=function(cutoff){
+      permNuc$bh=p.adjust(permNuc$bpval, method="fdr")
+      file_sig=permNuc %>% filter(-log10(bh)> cutoff) %>%separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% dplyr::select(peak)
+      print(paste("Sig peaks=", nrow(file_sig), sep=" "))
+      return(file_sig)
+      }
+  
+  randompeak=function(SigSnpList){
+    nsnp=nrow(SigSnpList)
+    randomPeakDF= permNuc %>% sample_n(nsnp) %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% dplyr::select(peak)
+    return(randomPeakDF)
+  }
+  Peak_overlap=function(snp_list){
+        filt_tot=permTot %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% semi_join(snp_list, by="peak")
+        print(paste("Total overlap=", nrow(filt_tot), sep=" "))
+        return(filt_tot)
+  }
+
+  makeQQ_peak=function(test, baseline){
+      p0test=pi0est(test$bpval)
+      p1test=1-p0test$pi0
+      plot=hist(test$bpval, breaks=20, main="Peaks with Significant QTLs in Nuclear \n Pvalues in Total", xlab="Total APAqtl Pvalue")
+      text(.8,140, paste("pi_1=", round(p1test, digit=3), sep=" "))
+      return(plot)
+  }
+  
+  
+testPeaks=sigpeak(1)
+basePeaks=randompeak(testPeaks)
+testSet=Peak_overlap(testPeaks)
+baselineSet=Peak_overlap(basePeaks)
+png(plotfile)
+plot=makeQQ_peak(testSet,baselineSet )
+dev.off()
+}
+
+SigNucPeakOverlapTot_hist(1, "../output/plots/SigNucPeakTotpval_hist.png")
 ```
 
+
+
+```{r}
+SigTotPeakOverlapNuc_hist=function(cutoff, plotfile){
+    sigpeak=function(cutoff){
+      permTot$bh=p.adjust(permTot$bpval, method="fdr")
+      file_sig=permTot %>% filter(-log10(bh)> cutoff) %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% dplyr::select(peak)
+      print(paste("Sig peaks=", nrow(file_sig), sep=" "))
+      return(file_sig)
+      }
+  
+  randompeak=function(SigSnpList){
+    nsnp=nrow(SigSnpList)
+    randomPeakDF= permTot %>% sample_n(nsnp) %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% dplyr::select(peak)
+    return(randomPeakDF)
+  }
+  Peak_overlap=function(snp_list){
+        filt_nuc=permNuc %>% separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% semi_join(snp_list, by="peak")
+        print(paste("Nuclear overlap=", nrow(filt_nuc), sep=" "))
+        return(filt_nuc)
+  }
+
+  makeQQ_peak=function(test, baseline){
+      p0test=pi0est(test$bpval)
+      p1test=1-p0test$pi0
+      plot=hist(test$bpval, breaks=20, main="Peaks with Significant QTLs in Total \n Pvalues in Nuclear",xlab="Nuclear APAqtl Pvalue")
+      text(.8,40, paste("pi_1=", round(p1test, digit=3), sep=" "))
+      return(plot)
+  }
+  
+  
+testPeaks=sigpeak(1)
+basePeaks=randompeak(testPeaks)
+testSet=Peak_overlap(testPeaks)
+baselineSet=Peak_overlap(basePeaks)
+png(plotfile)
+plot=makeQQ_peak(testSet,baselineSet )
+dev.off()
+}
+
+SigTotPeakOverlapNuc_hist(1, "../output/plots/SigTotPeakNucpval_hist.png")
+
+```
