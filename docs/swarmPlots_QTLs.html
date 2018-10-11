@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/373d3514820c8ca0a51e1445875468cf452f0f35" target="_blank">373d351</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9b23ee6968213faab18a363e8a9dea9039145ab3" target="_blank">9b23ee6</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -458,6 +458,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/9b23ee6968213faab18a363e8a9dea9039145ab3/analysis/swarmPlots_QTLs.Rmd" target="_blank">9b23ee6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+<td style="text-align:left;">
+add example plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/ad6a5bf0c314ec96c059415f1c6199ba1006f788/docs/swarmPlots_QTLs.html" target="_blank">ad6a5bf</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -590,12 +624,12 @@ plots for EIF2A in mult phenos
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
@@ -624,9 +658,9 @@ Attaching package: &#39;cowplot&#39;</code></pre>
 totalAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt&quot;, stringsAsFactors = F, header=T)  </code></pre>
 <p>I want to use a buzz swarm plot to plot peak usage for some of the top QTLs. I can use the examples I gave Tony.</p>
 <p>Nuclear:<br />
-* peak305794, sid: 7:128635754</p>
+* <strong>peak305794, sid: 7:128635754</strong></p>
 <ul>
-<li>peak: 164036, sid: 2:3502035</li>
+<li><strong>peak: 164036, sid: 2:3502035</strong></li>
 </ul>
 <p>Total:</p>
 <ul>
@@ -717,36 +751,45 @@ ggsave(&quot;../output/plots/EIF2a_Ribo.png&quot;, EIF2A_riboex)</code></pre>
 <p>createQTLsnpAPAPhenTable.py</p>
 <pre class="bash"><code>def main(PhenFile, GenFile, outFile, snp, peak):
     fout=open(outFile, &quot;w&quot;)
-    Phen=open(PhenFile, &quot;r&quot;)
+    #Phen=open(PhenFile, &quot;r&quot;)
     Gen=open(GenFile, &quot;r&quot;)
     #get ind and pheno info
-    for num, ln in enumerate(Phen):
-        if num == 0:
-            indiv= ln.split()[4:]
-        else:
-            id=ln.split()[3].split(&quot;:&quot;)[3]
-            peakID=id.split(&quot;_&quot;)[2]
-            if peakID == peak:
-                pheno_list=ln.split()[4:]
-                pheno_data=list(zip(indiv,pheno_list))
-    pheno_df=pd.DataFrame(data=pheno_data,columns=[&quot;Ind&quot;, &quot;Pheno&quot;])
-    
-    for num, lnG in enumerate(Gen):
-        if num == 13:
-            Ind_geno=lnG.split()[9:]
-        if num &gt;= 14: 
-            sid= lnG.split()[2]
-            if sid == snp: 
-                gen_list=lnG.split()[9:]
-                allele1=[]
-                allele2=[]
-                for i in gen_list:
-                    genotype=i.split(&quot;:&quot;)[0]
-                    allele1.append(genotype.split(&quot;|&quot;)[0])
-                    allele2.append(genotype.split(&quot;|&quot;)[1])
-          #now i have my indiv., phen, allele 1, alle 2     
-                geno_data=list(zip(Ind_geno, allele1, allele2))
-    geno_df=pd.DataFrame(data=geno_data, columns=[&quot;Ind&quot;, &quot;Allele1&quot;, &quot;Allele2&quot;])
+    def get_pheno():
+      Phen=open(PhenFile, &quot;r&quot;)
+      for num, ln in enumerate(Phen):
+          if num == 0:
+              indiv= ln.split()[4:]
+          else:
+              id=ln.split()[3].split(&quot;:&quot;)[3]
+              peakID=id.split(&quot;_&quot;)[2]
+              if peakID == peak:
+                  pheno_list=ln.split()[4:]
+                  pheno_data=list(zip(indiv,pheno_list))
+                  print(pheno_data)
+                  return(pheno_data)
+    def get_geno():
+      for num, lnG in enumerate(Gen):
+          if num == 13:
+              Ind_geno=lnG.split()[9:]
+          if num &gt;= 14: 
+              sid= lnG.split()[2]
+              if sid == snp: 
+                  gen_list=lnG.split()[9:]
+                  allele1=[]
+                  allele2=[]
+                  for i in gen_list:
+                      genotype=i.split(&quot;:&quot;)[0]
+                      allele1.append(genotype.split(&quot;|&quot;)[0])
+                      allele2.append(genotype.split(&quot;|&quot;)[1])
+            #now i have my indiv., phen, allele 1, alle 2     
+                  geno_data=list(zip(Ind_geno, allele1, allele2))
+                  print(geno_data)
+                  return(geno_data)
+
+    phenotype=get_pheno()
+    pheno_df=pd.DataFrame(data=phenotype,columns=[&quot;Ind&quot;, &quot;Pheno&quot;])
+    genotype=get_geno()
+    geno_df=pd.DataFrame(data=genotype, columns=[&quot;Ind&quot;, &quot;Allele1&quot;, &quot;Allele2&quot;])
     full_df=pd.merge(geno_df, pheno_df, how=&quot;inner&quot;, on=&quot;Ind&quot;)
     full_df.to_csv(fout, sep=&quot;\t&quot;, encoding=&#39;utf-8&#39;, index=False)
     fout.close()
@@ -806,49 +849,72 @@ Briana Mittleman
 <p>This does the total and nuclear fraction of APA. I will do this for a snp and gene and get all of the other phenotypes. This will be similar other than changing the names of the genes and seperating the name for all but protein.</p>
 <p>createQTLsnpMolPhenTable.py</p>
 <pre class="bash"><code>def main(PhenFile, GenFile, outFile, snp, gene, molPhen):
-    genenames=open(&quot;/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt&quot;, &quot;r&quot; )
-    for ln in genenames:
-        geneName=ln.split()[1]
-        if geneName == gene:
-            gene_ensg=ln.split()[0]
+    #genenames=open(&quot;/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt&quot;, &quot;r&quot; )
+    #for ln in genenames:
+     #   geneName=ln.split()[1]
+      #  if geneName == gene:
+       #gene_ensg=ln.split()[0]
+    gene_ensg=gene  
     fout=open(outFile, &quot;w&quot;)
-    Phen=open(PhenFile, &quot;r&quot;)
+    #Phen=open(PhenFile, &quot;r&quot;)
     Gen=open(GenFile, &quot;r&quot;)
-    #get ind and pheno info
-    for num,ln in enumerate(Phen):
-        if num == 0:
-            indiv= ln.split()[4:]
-        else:
-            if molPhen==&quot;Prot&quot;:
+    def getPheno(geneE=gene_ensg , mp=molPhen):
+      pheno=open(PhenFile, &quot;r&quot;)
+      #get ind and pheno info
+      mp_use=mp[1:-1]
+      if mp_use==&quot;prot&quot;:
+        for num,ln in enumerate(pheno):
+            if num == 0:
+                indiv= ln.split()[4:]
+            else:
                 gene=ln.split()[3]
-                if gene == gene_ensg:
+                if gene == str(geneE):
+                    print(&quot;x&quot;)
                     pheno_list=ln.split()[4:]
                     pheno_data= list(zip(indiv, pheno_list))
-            else:
+                    return(pheno_data)
+      else:
+        for num,ln in enumerate(pheno):
+            if num == 0:
+                indiv= ln.split()[4:]
+            else: 
                 full_gene=ln.split()[3]
                 gene= full_gene.split(&quot;.&quot;)[0]
-                if gene == gene_ensg:
+                if gene == geneE:
+                    print(gene)
                     pheno_list=ln.split()[4:]
                     pheno_data= list(zip(indiv, pheno_list))
-                    pheno_df=pd.DataFrame(data=pheno_data,columns=[&quot;Ind&quot;, &quot;Pheno&quot;])
-    for num, lnG in enumerate(Gen):
-        if num == 13:
-            Ind_geno=lnG.split()[9:]
-        if num &gt;= 14: 
-            sid= lnG.split()[2]
-            if sid == snp: 
-                gen_list=lnG.split()[9:]
-                allele1=[]
-                allele2=[]
-                for i in gen_list:
-                    genotype=i.split(&quot;:&quot;)[0]
-                    allele1.append(genotype.split(&quot;|&quot;)[0])
-                    allele2.append(genotype.split(&quot;|&quot;)[1])
-          #now i have my indiv., phen, allele 1, alle 2     
-               geno_data=list(zip(Ind_geno, allele1, allele2))
-               geno_df=pd.DataFrame(data=geno_data, columns=[&quot;Ind&quot;, &quot;Allele1&quot;, &quot;Allele2&quot;])
-               full_df=pd.merge(geno_df, pheno_df, how=&quot;inner&quot;, on=&quot;Ind&quot;)
-               full_df.to_csv(fout, sep=&quot;\t&quot;, encoding=&#39;utf-8&#39;, index=False)
+                    return(pheno_data)
+    def getGeno(geno, SNP):
+      for num, lnG in enumerate(geno):
+          if num == 13:
+              Ind_geno=lnG.split()[9:]
+          if num &gt;= 14: 
+              sid= lnG.split()[2]
+              if sid == SNP: 
+                  gen_list=lnG.split()[9:]
+                  allele1=[]
+                  allele2=[]
+                  for i in gen_list:
+                      genotype=i.split(&quot;:&quot;)[0]
+                      allele1.append(genotype.split(&quot;|&quot;)[0])
+                      allele2.append(genotype.split(&quot;|&quot;)[1])
+            #now i have my indiv., phen, allele 1, alle 2     
+                  geno_data=list(zip(Ind_geno, allele1, allele2))
+                  return(geno_data)
+    
+                      
+                  
+    phenotype_data=getPheno()
+    print(phenotype_data)
+    pheno_df=pd.DataFrame(data=phenotype_data,columns=[&quot;Ind&quot;, &quot;Pheno&quot;])  
+  
+    genotype_data=getGeno(Gen, snp)
+    print(genotype_data)
+    geno_df=pd.DataFrame(data=genotype_data, columns=[&quot;Ind&quot;, &quot;Allele1&quot;, &quot;Allele2&quot;])
+    
+    full_df=pd.merge(geno_df, pheno_df, how=&quot;inner&quot;, on=&quot;Ind&quot;)
+    full_df.to_csv(fout, sep=&quot;\t&quot;, encoding=&#39;utf-8&#39;, index=False)
     fout.close()
     
 
@@ -901,6 +967,120 @@ do
 python createQTLsnpMolPhenTable.py ${chrom} ${snp} ${gene} ${i}
 done
 </code></pre>
+</div>
+<div id="function-to-create-plots" class="section level2">
+<h2>Function to create plots:</h2>
+<p>I want to imput the files with the following structure:</p>
+<p>/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/apaExamp/qtlSNP_Peak<em>molpheno</em>.snp.peak/gene.txt</p>
+<p>I will use these to make cowplot with ggplot boxplots for each phenotypes. To do this I will create a function that takes in a snp, peak, and gene and creates each phenotype plot. It will then return the cowplot plot grid.</p>
+<pre class="r"><code>plotQTL_func= function(SNP, peak, gene){
+  apaN_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_PeakAPANuclear.&quot;, SNP, peak, &quot;.txt&quot;, sep = &quot;&quot; ), header=T)
+  apaT_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_PeakAPATotal.&quot;, SNP, peak, &quot;.txt&quot;, sep = &quot;&quot; ), header=T)
+  su30_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_4su_30_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header = T)
+  su60_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_4su_60_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header=T)
+  RNA_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_RNAseq_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;),header=T)
+  RNAg_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_RNAseqGeuvadis_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header = T)
+  ribo_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_ribo_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;),header=T)
+  prot_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_prot.&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header=T)
+  
+  ggplot_func= function(file, molPhen,GENE){
+    file = file %&gt;% mutate(genotype=Allele1 + Allele2)
+    file$genotype= as.factor(as.character(file$genotype))
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y=&quot;Phenotpye&quot;,title=paste(molPhen, GENE, sep=&quot;: &quot;)) + scale_fill_brewer(palette=&quot;Paired&quot;)
+    return(plot)
+  }
+  
+  apaNplot=ggplot_func(apaN_file, &quot;Apa Nuclear&quot;, gene)
+  apaTplot=ggplot_func(apaT_file, &quot;Apa Total&quot;, gene)
+  su30plot=ggplot_func(su30_file, &quot;4su30&quot;,gene)
+  su60plot=ggplot_func(su60_file, &quot;4su60&quot;,gene)
+  RNAplot=ggplot_func(RNA_file, &quot;RNA Seq&quot;,gene)
+  RNAgPlot=ggplot_func(RNAg_file, &quot;RNA Seq Geuvadis&quot;,gene)
+  riboPlot= ggplot_func(ribo_file, &quot;Ribo Seq&quot;,gene)
+  protplot=ggplot_func(prot_file, &quot;Protein&quot;,gene)
+  
+  full_plot= plot_grid(apaNplot,apaTplot, su30plot, su60plot, RNAplot, RNAgPlot, riboPlot, protplot,nrow=2)
+  return (full_plot)
+}</code></pre>
+<p>Try this with the EIF2A QTL:</p>
+<pre class="r"><code>eif2a_allplots=plotQTL_func(SNP=&quot;3:150302010&quot;, peak=&quot;peak228606&quot;, gene=&quot;EIF2A&quot;)
+
+ggsave(&quot;../output/plots/EIF2A_allplots.png&quot;, eif2a_allplots, height=5, width=12)</code></pre>
+</div>
+<div id="try-with-another-snp" class="section level2">
+<h2>Try with another snp:</h2>
+<ul>
+<li>peak164036, sid: 2:3502035</li>
+</ul>
+<p>Step 1: Figure out what gene the peak is in.</p>
+<pre class="bash"><code>grep peak164036 /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt</code></pre>
+<p>This peak is in ADI1</p>
+<p>Step2: Get the total and nuclear APA values by genotype with createQTLsnpAPAPhenTable.py</p>
+<pre class="bash"><code>
+python createQTLsnpAPAPhenTable.py 2 2:3502035 peak164036 Total
+
+python createQTLsnpAPAPhenTable.py 2 2:3502035 peak164036 Nuclear</code></pre>
+<p>Step 3: Get the ensg gene name:</p>
+<pre class="bash"><code>grep ADI1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt</code></pre>
+<p>Step 4: Run this on the other phenotypes with : run_createQTLsnpMolPhenTable.sh</p>
+<pre class="bash"><code>
+sbatch run_createQTLsnpMolPhenTable.sh &quot;2&quot; &quot;2:3502035&quot; &quot;ENSG00000182551&quot;
+</code></pre>
+<p>Step 4: copy files to computer:</p>
+<pre class="bash"><code>scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/qtlSNP_Peak*2:*  . </code></pre>
+<p>Step 5: plot</p>
+<pre class="r"><code>plotQTL_func(SNP=&quot;2:3502035&quot;, peak=&quot;peak164036&quot;, gene=&quot;ENSG00000182551&quot;)</code></pre>
+<p><img src="figure/swarmPlots_QTLs.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<ul>
+<li>peak305794, sid: 7:128635754</li>
+</ul>
+<pre class="bash"><code>grep peak305794 /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt
+#gene=IRF5
+grep IRF5 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000128604
+
+python createQTLsnpAPAPhenTable.py 7 7:128635754  peak305794 Total
+python createQTLsnpAPAPhenTable.py 7 7:128635754  peak305794 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh &quot;7&quot; &quot;7:128635754&quot; &quot;ENSG00000128604&quot;
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/qtlSNP_Peak_*7:* .
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/qtlSNP_PeakAPA*.7* .</code></pre>
+<pre class="r"><code>plotQTL_func(SNP=&quot;7:128635754&quot;, peak=&quot;peak305794&quot;, gene=&quot;ENSG00000128604&quot;)</code></pre>
+<p><img src="figure/swarmPlots_QTLs.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /> * Peak: peak152751, SID 19:4236475</p>
+<pre class="bash"><code>grep peak152751 /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt
+#gene=EBI3
+grep EBI3 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000105246
+
+python createQTLsnpAPAPhenTable.py 19 19:4236475  peak152751 Total
+python createQTLsnpAPAPhenTable.py 19 19:4236475  peak152751 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh &quot;19&quot; &quot;19:4236475 &quot; &quot;ENSG00000105246&quot;
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*19:4236475* .</code></pre>
+<pre class="r"><code>plotQTL_func(SNP=&quot;19:4236475&quot;, peak=&quot;peak152751&quot;, gene=&quot;ENSG00000105246&quot;)</code></pre>
+<p><img src="figure/swarmPlots_QTLs.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<ul>
+<li>4:84382181:84382182:MRPS18C_+_peak241853, snp4:84382264</li>
+</ul>
+<pre class="bash"><code>
+#gene=MRPS18C
+grep MRPS18C /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000163319
+
+python createQTLsnpAPAPhenTable.py 4 4:84382264  peak241853 Total
+python createQTLsnpAPAPhenTable.py 4 4:84382264  peak241853 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh &quot;4&quot; &quot;4:84382264 &quot; &quot;ENSG00000163319&quot;
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*4:84382264* .</code></pre>
+<p>We dont have protein information for this gene</p>
+<pre class="r"><code>plotQTL_func(SNP=&quot;4:84382264&quot;, peak=&quot;peak241853&quot;, gene=&quot;ENSG00000163319&quot;)</code></pre>
+<p><img src="figure/swarmPlots_QTLs.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
