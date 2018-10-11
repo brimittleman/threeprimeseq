@@ -297,6 +297,15 @@ if __name__ == "__main__":
 ```
 
 
+
+test this:  
+
+
+```{bash, eval=F}
+python createQTLsnpMolPhenTable.py 3 3:150302010 EIF2A _RNAseq_
+```
+
+
 list for phenos:  
 
 * 4su_30  
@@ -340,4 +349,4 @@ done
 
 ```
 
-empty output....fix this 
+ 
