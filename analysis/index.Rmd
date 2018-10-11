@@ -68,7 +68,7 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 
 * [APAqtl for full ind set](apaQTLsAllInd.html)
 
-* [Rethink Peak to Gene assignment- transcript level- final annottion for QTLs](PeakToGeneAssignment.html)
+* [QTL and Diff iso wih correct peak to gene assignment](PeakToGeneAssignment.html)
 
 * [Condition Total and Nuclear QTLs on each other](conditionAPAqtlFraction.html)
 
