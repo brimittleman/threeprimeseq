@@ -556,3 +556,93 @@ We dont have protein information for this gene
 plotQTL_func(SNP="4:84382264", peak="peak241853", gene="ENSG00000163319")
 ```
 
+* 7:66703515:66703516:TYW1_+_peak298097 7:66595366
+
+```{bash,eval=F}
+
+#gene=TYW1
+grep TYW1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000198874
+
+python createQTLsnpAPAPhenTable.py 7 7:66595366 peak298097 Total
+python createQTLsnpAPAPhenTable.py 7 7:66595366  peak298097 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh "7" "7:66595366" "ENSG00000198874"
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*7:66595366* .
+```
+
+
+
+```{r}
+plotQTL_func(SNP="7:66595366", peak="peak298097", gene="ENSG00000198874")
+```
+
+
+* 8:2792874:2792875:CSMD1_-_peak310334 8:3037787  
+
+```{bash,eval=F}
+
+#gene=CSMD1
+grep CSMD1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000183117
+
+python createQTLsnpAPAPhenTable.py 8 8:3037787   peak310334 Total
+python createQTLsnpAPAPhenTable.py 8 8:3037787    peak310334 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh "8" "8:3037787" "ENSG00000183117"
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*8:3037787* .
+```
+
+
+We do not have molecular phenotypes for this gene.  
+
+
+* 6:11183530:11183531:NEDD9_-_peak272002 6:11212754  
+
+```{bash,eval=F}
+
+#gene=NEDD9
+grep NEDD9 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000111859
+
+python createQTLsnpAPAPhenTable.py 6 6:11212754  peak272002 Total
+python createQTLsnpAPAPhenTable.py 6 6:11212754  peak272002 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh "6" "6:11212754" "ENSG00000111859"
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*6:11212754* .
+```
+
+
+```{r}
+plotQTL_func(SNP="6:11212754", peak="peak272002", gene="ENSG00000111859")
+```
+
+
+
+* 12:51453213:51453214:LETMD1_+_peak71110 12:51405335
+
+```{bash,eval=F}
+
+#gene=LETMD1
+grep LETMD1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000050426
+
+python createQTLsnpAPAPhenTable.py 12 12:51405335  peak71110 Total
+python createQTLsnpAPAPhenTable.py 12 12:51405335  peak71110 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh "12" "12:51405335" "ENSG00000050426"
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*12:51405335* .
+```
+
+
+```{r}
+plotQTL_func(SNP="12:51405335", peak="peak71110", gene="ENSG00000050426")
+```
