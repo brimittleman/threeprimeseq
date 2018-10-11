@@ -221,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-08</p>
+<p><strong>Last updated:</strong> 2018-10-11</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/11f9dfa2e7e97a7279afc91e4f1a8f2cdb1f856e" target="_blank">11f9dfa</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/89f119a4d395b475d4f3e663f1509fb0b372b973" target="_blank">89f119a</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -342,6 +342,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/89f119a4d395b475d4f3e663f1509fb0b372b973/analysis/index.Rmd" target="_blank">89f119a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+<td style="text-align:left;">
+update format
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/22aa0872ec0621164f376f8225f985be6112e20f/docs/index.html" target="_blank">22aa087</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1556,11 +1590,13 @@ Start workflowr project.
 <hr />
 <p>Briana Mittleman</p>
 <p>This is the site I will use for my human 3’ seq project. I will have my workflow and analysis here. The three prime seq protocol I am using is Lexogen, QuantSeq 3’ mRNA-Seq library kit. The first analysis will be on the total and nucleic fractions of the LCL used in the net-seq analysis found at <a href="https://brimittleman.github.io/Net-seq/" class="uri">https://brimittleman.github.io/Net-seq/</a></p>
-<p>Initial analysis on RNA seq of nuclear and total fractions:</p>
+<div id="initial-analysis-on-rna-seq-of-nuclear-and-total-fractions" class="section level2">
+<h2>Initial analysis on RNA seq of nuclear and total fractions:</h2>
 <ul>
 <li><a href="total.nuc.rnaseq.html">Initial data QC</a></li>
 </ul>
-<p>Initial analysis on first 32 3’ seq libraries:</p>
+<div id="initial-analysis-on-first-32-3-seq-libraries" class="section level3">
+<h3>Initial analysis on first 32 3’ seq libraries:</h3>
 <ul>
 <li><a href="initial_map_qc.html">Initial mapping QC</a></li>
 <li><a href="initial_gene_qc.html">Initial gene leve QC</a><br />
@@ -1577,7 +1613,10 @@ Start workflowr project.
 </li>
 <li><a href="comb.lanes.qc.html">Second Lane data</a></li>
 </ul>
-<p>Explore and filter mis-primming:</p>
+</div>
+</div>
+<div id="explore-and-filter-mis-primming" class="section level2">
+<h2>Explore and filter mis-primming:</h2>
 <ul>
 <li><a href="a.content.html">Look at number of As in bins</a><br />
 </li>
@@ -1587,7 +1626,9 @@ Start workflowr project.
 </li>
 <li><a href="peak.cov.pipeline.html">Pipeline to create peaks and clean them</a></li>
 </ul>
-<p>Peak calling:</p>
+</div>
+<div id="peak-calling" class="section level2">
+<h2>Peak calling:</h2>
 <ul>
 <li><a href="test.max2.html">Testing macs2 on 3’seq data</a><br />
 </li>
@@ -1600,7 +1641,8 @@ Start workflowr project.
 </li>
 <li><a href="dataprocfigures.html">Data Processing Figure design</a></li>
 </ul>
-<p>Peak coverage/Nominal QTLs/Diff iso:</p>
+<div id="peak-coveragenominal-qtlsdiff-iso" class="section level3">
+<h3>Peak coverage/Nominal QTLs/Diff iso:</h3>
 <ul>
 <li><a href="28ind.peak.explore.html">Start evaluating peak quantificaiton</a><br />
 </li>
@@ -1609,28 +1651,38 @@ Start workflowr project.
 </li>
 <li><a href="diff_iso_pipeline.html">Differential Isoform pipeline</a></li>
 </ul>
-<p>Rerun analysis opp strand:</p>
+</div>
+<div id="rerun-analysis-opp-strand" class="section level3">
+<h3>Rerun analysis opp strand:</h3>
 <ul>
 <li><a href="peakOverlap_oppstrand.html">Rerun QTL analysis with off strand</a></li>
 </ul>
-<p>Evaluate and learn from QTLs:</p>
+</div>
+<div id="evaluate-and-learn-from-qtls" class="section level3">
+<h3>Evaluate and learn from QTLs:</h3>
 <ul>
 <li><a href="overlap_qtls.html">Overlap QTLs with other molecular QTLs</a></li>
 </ul>
-<p>Analysis for all 39 indivduals:</p>
+</div>
+</div>
+<div id="analysis-for-all-39-indivduals" class="section level2">
+<h2>Analysis for all 39 indivduals:</h2>
 <ul>
 <li><p><a href="39indQC.html">Read and peak QC plots</a></p></li>
 <li><p><a href="apaQTLsAllInd.html">APAqtl for full ind set</a></p></li>
-<li><p><a href="PeakToGeneAssignment.html">Rethink Peak to Gene assignment</a></p></li>
+<li><p><a href="PeakToGeneAssignment.html">Rethink Peak to Gene assignment- transcript level- final annottion for QTLs</a></p></li>
 <li><p><a href="conditionAPAqtlFraction.html">Condition Total and Nuclear QTLs on each other</a></p></li>
 </ul>
-<p>Molecular QTL analysis and Overlap:</p>
+<div id="molecular-qtl-analysis-and-overlap" class="section level3">
+<h3>Molecular QTL analysis and Overlap:</h3>
 <ul>
 <li><p><a href="callMolQTLS.html">Rerun molecular QTLs</a></p></li>
 <li><p><a href="overlapMolQTL.html">Make overlap QTL plots</a></p></li>
 <li><p><a href="swarmPlots_QTLs.html">Plot top apaQTLs in other phenotypes</a></p></li>
 <li><p><a href="overlapMolQTL.opposite.html">Overlap QTLs starting with APAqtls</a></p></li>
 </ul>
+</div>
+</div>
 
 <hr>
 <p>
