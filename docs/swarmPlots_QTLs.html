@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-09</p>
+<p><strong>Last updated:</strong> 2018-10-11</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,13 +346,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2f5f071473a18c27ff4556ea72dd9356459e6cdf" target="_blank">2f5f071</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/373d3514820c8ca0a51e1445875468cf452f0f35" target="_blank">373d351</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -457,6 +458,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/373d3514820c8ca0a51e1445875468cf452f0f35/analysis/swarmPlots_QTLs.Rmd" target="_blank">373d351</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+<td style="text-align:left;">
+add pheno code- working
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e73be701f5c8832eb0aaec4c5a4d0fe3bb508b0a/docs/swarmPlots_QTLs.html" target="_blank">e73be70</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-09
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -738,6 +773,36 @@ EIF2a_APAnuc$Geno= as.factor(as.character(EIF2a_APAnuc$Geno))
 
 ggplot(EIF2a_APAnuc, aes(y=Pheno, x=Geno, by=Geno, fill=Geno)) + geom_boxplot() + geom_jitter() + labs(y=&quot;APA Nuc Usage&quot;, title=&quot;APA nuc: EIF2A&quot;) + scale_fill_brewer(palette=&quot;RdPu&quot;)</code></pre>
 <p><img src="figure/swarmPlots_QTLs.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e73be701f5c8832eb0aaec4c5a4d0fe3bb508b0a/docs/figure/swarmPlots_QTLs.Rmd/unnamed-chunk-12-1.png" target="_blank">e73be70</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This does the total and nuclear fraction of APA. I will do this for a snp and gene and get all of the other phenotypes. This will be similar other than changing the names of the genes and seperating the name for all but protein.</p>
 <p>createQTLsnpMolPhenTable.py</p>
 <pre class="bash"><code>def main(PhenFile, GenFile, outFile, snp, gene, molPhen):
@@ -800,6 +865,8 @@ if __name__ == &quot;__main__&quot;:
     outFile = &quot;/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/qtlSNP_Peak%s%s%s.txt&quot;%(molPhen, snp, gene)
     main(PhenFile, GenFile, outFile, snp, gene,molPhen)
     </code></pre>
+<p>test this:</p>
+<pre class="bash"><code>python createQTLsnpMolPhenTable.py 3 3:150302010 EIF2A _RNAseq_</code></pre>
 <p>list for phenos:</p>
 <ul>
 <li><p>4su_30</p></li>
@@ -834,7 +901,6 @@ do
 python createQTLsnpMolPhenTable.py ${chrom} ${snp} ${gene} ${i}
 done
 </code></pre>
-<p>empty output….fix this</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
