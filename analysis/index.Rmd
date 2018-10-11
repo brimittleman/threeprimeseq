@@ -11,11 +11,11 @@ Briana Mittleman
 This is the site I will use for my human 3' seq project. I will have my workflow and analysis here. The three prime seq protocol I am using is Lexogen, QuantSeq 3' mRNA-Seq library kit. The first analysis will be on the total and nucleic fractions of the LCL used in the net-seq analysis found at https://brimittleman.github.io/Net-seq/  
 
 
-Initial analysis on RNA seq of nuclear and total fractions: 
+##Initial analysis on RNA seq of nuclear and total fractions: 
 
 * [Initial data QC](total.nuc.rnaseq.html)  
 
-Initial analysis on first 32 3' seq libraries:  
+###Initial analysis on first 32 3' seq libraries:  
   
 * [Initial mapping QC](initial_map_qc.html) 
 * [Initial gene leve QC](initial_gene_qc.html)  
@@ -27,7 +27,7 @@ Initial analysis on first 32 3' seq libraries:
 * [Second Lane data](comb.lanes.qc.html)  
 
 
-Explore and filter mis-primming:  
+##Explore and filter mis-primming:  
   
 * [Look at number of As in bins](a.content.html)  
 * [Create script to filter mapped A's](filter_As.html)  
@@ -35,7 +35,7 @@ Explore and filter mis-primming:
 * [Pipeline to create peaks and clean them](peak.cov.pipeline.html)  
 
 
-Peak calling:  
+##Peak calling:  
 
 * [Testing macs2 on 3'seq data](test.max2.html)  
 * [Call peak regions de-novo](deNovopeakcalling.html)
@@ -45,7 +45,7 @@ Peak calling:
 * [Data Processing Figure design](dataprocfigures.html)  
 
 
-Peak coverage/Nominal QTLs/Diff iso:  
+###Peak coverage/Nominal QTLs/Diff iso:  
 
 * [Start evaluating peak quantificaiton](28ind.peak.explore.html)  
 * [Prepare the data for leafcutter QTL calling](pheno.leaf.comb.html)
@@ -53,27 +53,27 @@ Peak coverage/Nominal QTLs/Diff iso:
 * [Differential Isoform pipeline](diff_iso_pipeline.html)  
 
 
-Rerun analysis opp strand:  
+###Rerun analysis opp strand:  
 
 * [Rerun QTL analysis with off strand](peakOverlap_oppstrand.html)  
 
-Evaluate and learn from QTLs:  
+###Evaluate and learn from QTLs:  
 
 * [Overlap QTLs with other molecular QTLs](overlap_qtls.html)
 
 
-Analysis for all 39 indivduals:  
+##Analysis for all 39 indivduals:  
 
 * [Read and peak QC plots](39indQC.html)
 
 * [APAqtl for full ind set](apaQTLsAllInd.html)
 
-* [Rethink Peak to Gene assignment](PeakToGeneAssignment.html)
+* [Rethink Peak to Gene assignment- transcript level- final annottion for QTLs](PeakToGeneAssignment.html)
 
 * [Condition Total and Nuclear QTLs on each other](conditionAPAqtlFraction.html)
 
 
-Molecular QTL analysis and Overlap:
+###Molecular QTL analysis and Overlap:
 
 * [Rerun molecular QTLs](callMolQTLS.html)
 
