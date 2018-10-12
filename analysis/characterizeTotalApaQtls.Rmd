@@ -232,5 +232,64 @@ The totalAPA_peakdist data frame has the information I need for this.
 ```{r}
 ggplot(totalAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title="Peak score by significance") 
 ```
-This is expected. It makes sense that we have more power to detect qtls in higher expressed peaks. This leads me to beleive that filtering out low peaks may add power but will not mitigate the effect. 
+This is expected. It makes sense that we have more power to detect qtls in higher expressed peaks. This leads me to believe that filtering out low peaks may add power but will not mitigate the effect. 
+
+##Where are the snps:  
+
+Download the GM12878 chromHMM annotation. I downleaded this from uscs and put it in:  
+
+* /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/GM12878.chromHMM.txt    
+* /project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.txt  
+
+Column:  
+
+* bin  
+* chrom  
+* chromstart  
+* chromend  
+* name  
+* score  
+* strand  
+* thich start  
+* thick end  
+* item rgb  
+
+
+I can make this a bedfile to use a bedtools pipeline:  
+
+* chrom (nochr)  
+
+* start  
+
+* end  
+
+* name (txn hetero ect)   
+
+* score  
+
+* strand  
+
+
+```{bash,eval=F}
+fout = open("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.bed",'w')
+for ln in open("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.txt", "r"):
+    bin, chrom, start, end, name, score, strand, thSt, thE, rgb = ln.split()
+    chrom=chrom[3:]
+    fout.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom, start, end, name, score, strand))
+fout.close()
+```
+
+
+```{bash,eval=F}
+fout = open("/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/GM12878.chromHMM.bed",'w')
+for ln in open("/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/GM12878.chromHMM.txt", "r"):
+    bin, chrom, start, end, name, score, strand, thSt, thE, rgb = ln.split()
+    chrom=chrom[3:]
+    fout.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom, start, end, name, score, strand))
+fout.close()
+```
+
+I am gonig to try to use pybedtooksinstead for bedtools for this analysis. First I can add it to my conda environment.  
+
+
 
