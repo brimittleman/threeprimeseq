@@ -165,4 +165,62 @@ totalAPA_peakdist_sig %>% filter(abs(DisttoPeak) < 100000) %>% nrow()
 ##Expression metrics  
 
 
+Next I want to pull in the expression values and compare the expression of genes with a total APA qtl in comparison to genes without one.  I will also need to pull in the gene names file to add in the gene names from the ensg ID.   
+
+Remove the # from the file. 
+
+```{r}
+expression=read.table("../data/mol_pheno/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt", header = T,stringsAsFactors = F)
+expression_mean=apply(expression[,5:73],1,mean,na.rm=TRUE)
+expression_var=apply(expression[,5:73],1,var,na.rm=TRUE)
+expression$exp.mean= expression_mean 
+expression$exp.var=expression_var
+expression= expression %>% separate(ID, into=c("Gene.stable.ID", "ver"), sep ="[.]")
+```
+
+
+Now I can pull in the names and join the dataframes.  
+
+```{r}
+geneNames=read.table("../data/ensemble_to_genename.txt", sep="\t", header=T,stringsAsFactors = F) 
+
+
+
+expression=expression %>% inner_join(geneNames,by="Gene.stable.ID") 
+
+expression=expression %>% select(Chr, start, end, Gene.name, exp.mean,exp.var) %>%  rename("gene"=Gene.name)
+```
+
+
+Now I can join this with the qtls.  
+
+```{r}
+totalAPA_wExp=totalAPA %>% inner_join(expression, by="gene") 
+```
+
+```{r}
+ggplot(totalAPA_wExp, aes(x=exp.mean, by=sig, fill=sig)) + geom_density(alpha=.3)
+```
+
+This is not exactly what I want because there are multiple peaks in a gene so some genes are plotted multiple times.  I want to group the QTLs by gene and see if there is 1 sig QTL for that gene.  
+
+```{r}
+gene_wQTL= totalAPA_wExp %>% group_by(gene) %>% summarise(sig_gene=sum(as.numeric(as.character(sig)))) %>% ungroup() %>% inner_join(expression, by="gene") %>% mutate(sigGeneFactor=ifelse(sig_gene>=1, 1,0))
+
+gene_wQTL$sigGeneFactor= as.factor(as.character(gene_wQTL$sigGeneFactor))
+
+```
+Therea are 92 genes in this set with a QTL.   
+
+
+```{r}
+ggplot(gene_wQTL, aes(x=exp.mean, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) +labs(title="Mean in RNA expression by genes with significant QTL", x="Mean in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+```
+
+
+I can do a similar analysis but test the variance in the gene expression.  
+
+```{r}
+ggplot(gene_wQTL, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title="Varriance in RNA expression by genes with significant QTL", x="Variance in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+```
 
