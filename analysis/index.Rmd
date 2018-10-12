@@ -72,6 +72,8 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 
 * [Condition Total and Nuclear QTLs on each other](conditionAPAqtlFraction.html)
 
+* [Characterize Total Apa QTLS](characterizeTotalApaQtls.html)
+
 
 ###Molecular QTL analysis and Overlap:
 

@@ -1,0 +1,168 @@
+---
+title: "Characterize Total ApaQTLs"
+author: "Briana Mittleman"
+date: "10/11/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This analysis will be used to characterize the total ApaQTLs. I will run the analysis on the total APAqtls in this analysis and will then run a similar analysis on the nuclear APAqtls in another analysis. I would like to study:  
+
+
+* Distance metrics:  
+    + distance from snp to TSS of gene  
+    + Distance from snp to peak  
+
+* Expression metrics: 
+    + expression of genes with significant QTLs vs other genes  (by rna seq)
+    + expression of genes with significant QTLs vs other genes  (peak coverage)  
+
+* Chrom HMM metrics:  
+    + look at the chrom HMM interval for the significant QTLs  
+
+
+ 
+
+
+
+
+##Upload Libraries and Data:  
+
+Library
+```{r}
+library(workflowr)
+library(reshape2)
+library(tidyverse)
+library(VennDiagram)
+library(data.table)
+library(cowplot)
+```
+
+
+Permuted Results from APA:
+
+I will add a column to this dataframe that will tell me if the association is significant at 10% FDR.  This will help me plot based on significance later in the analysis. I am also going to seperate the PID into relevant pieces.  
+
+```{r}
+totalAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>% mutate(sig=ifelse(-log10(bh)>=1, 1,0 )) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak"))
+
+totalAPA$sig=as.factor(totalAPA$sig)
+
+
+print(names(totalAPA))
+```
+
+
+
+##Distance Metrics  
+
+### Distance from snp to TSS  
+
+I ran the QTL analysis based on the starting position of the gene. 
+
+
+```{r}
+ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title="Distance from snp to TSS", x="Base Pairs") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+```
+
+It looks like most of the signifcant values are 100,000 bases. This makes sense.  I can zoom in on this portion.  
+
+```{r}
+ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000))
+```
+
+### Distance from snp to peak  
+
+To perform this analysis I need to recover the peak positions.  
+
+The peak file I used for the QTL analysis is: /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed  
+
+```{r}
+peaks=read.table("../data/PeaksUsed/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed", col.names = c("chr", "peakStart", "peakEnd", "PeakNum", "PeakScore", "Strand", "Gene")) %>% mutate(peak=paste("peak", PeakNum,sep="")) %>% mutate(PeakCenter=peakStart+ (peakEnd- peakStart))
+```
+
+I want to join the peak start to the totalAPA file but the peak column. I will then create a column that is snppos-peakcenter.
+
+```{r}
+totalAPA_peakdist= totalAPA %>%  inner_join(peaks, by="peak") %>%  separate(sid, into=c("snpCHR", "snpLOC"), by=":")
+totalAPA_peakdist$snpLOC= as.numeric(totalAPA_peakdist$snpLOC)
+
+totalAPA_peakdist= totalAPA_peakdist %>%  mutate(DisttoPeak= snpLOC-PeakCenter)
+```
+
+Plot this by significance.  
+```{r}
+ggplot(totalAPA_peakdist, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title="Distance from snp peak", x="log10 absolute value Distance to Peak") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+
+
+```
+
+Look at the summarys based on significance:  
+
+```{r}
+totalAPA_peakdist_sig=totalAPA_peakdist %>% filter(sig==1)
+totalAPA_peakdist_notsig=totalAPA_peakdist %>% filter(sig==0)
+
+
+summary(totalAPA_peakdist_sig$DisttoPeak)
+summary(totalAPA_peakdist_notsig$DisttoPeak)
+```
+
+```{r}
+ggplot(totalAPA_peakdist, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+```
+
+Look like there are some outliers that are really far. I will remove variants greater than 1*10^6th away   
+
+```{r}
+totalAPA_peakdist_filt=totalAPA_peakdist %>% filter(abs(DisttoPeak) <= 1*(10^6))
+
+ggplot(totalAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + facet_grid(.~strand)
+
+ggplot(totalAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + facet_grid(.~strand)
+
+```
+This gives a similar distribution. 
+
+
+I did snp - peak. This means if the peak is downstream of the snp on the positive strand the number will be negative. 
+
+In this case the peak is downstream of the snp. 
+
+```{r}
+totalAPA_peakdist %>% filter(sig==1) %>% filter(strand=="+") %>%  filter(DisttoPeak < 0) %>% nrow()
+totalAPA_peakdist %>% filter(sig==1) %>% filter(strand=="-") %>%  filter(DisttoPeak > 0) %>% nrow()
+```
+Peak is upstream of the snp. 
+
+```{r}
+totalAPA_peakdist %>% filter(sig==1) %>% filter(strand=="+") %>%  filter(DisttoPeak > 0) %>% nrow()
+totalAPA_peakdist %>% filter(sig==1) %>% filter(strand=="-") %>%  filter(DisttoPeak < 0) %>% nrow()
+```
+This means there is about 50/50 distribution around the peak start.  
+
+I am going to plot a violin plot for just the significant ones.  
+
+```{r}
+ggplot(totalAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density()
+```
+Within 1000 bases of the peak center.  
+
+```{r}
+totalAPA_peakdist_sig %>% filter(abs(DisttoPeak) < 1000) %>% nrow()
+
+totalAPA_peakdist_sig %>% filter(abs(DisttoPeak) < 10000) %>% nrow()
+
+totalAPA_peakdist_sig %>% filter(abs(DisttoPeak) < 100000) %>% nrow()
+```
+29 QTLs are within 1000 bp of the peak center, 57 within 10,000bp and 98 within 100,000bp   
+
+
+
+##Expression metrics  
+
+
+
