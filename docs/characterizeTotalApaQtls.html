@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-11</p>
+<p><strong>Last updated:</strong> 2018-10-12</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,13 +347,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f819c8e3a4ef75111646f1ca1e8343711c4133f3" target="_blank">f819c8e</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/477c3f2aec710109a86ccb5c06327e1ca0df3366" target="_blank">477c3f2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -394,6 +395,7 @@ Untracked files:
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
     Untracked:  data/mol_overlap/
+    Untracked:  data/mol_pheno/
     Untracked:  data/nom_QTL/
     Untracked:  data/nom_QTL_opp/
     Untracked:  data/nom_QTL_trans/
@@ -459,6 +461,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/477c3f2aec710109a86ccb5c06327e1ca0df3366/analysis/characterizeTotalApaQtls.Rmd" target="_blank">477c3f2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-12
+</td>
+<td style="text-align:left;">
+add mean exp and var plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/characterizeTotalApaQtls.html" target="_blank">eb02fbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -555,9 +591,69 @@ print(names(totalAPA))</code></pre>
 <p>I ran the QTL analysis based on the starting position of the gene.</p>
 <pre class="r"><code>ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title=&quot;Distance from snp to TSS&quot;, x=&quot;Base Pairs&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-3-1.png" target="_blank">eb02fbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>It looks like most of the signifcant values are 100,000 bases. This makes sense. I can zoom in on this portion.</p>
 <pre class="r"><code>ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000))</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-4-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-4-1.png" target="_blank">eb02fbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="distance-from-snp-to-peak" class="section level3">
 <h3>Distance from snp to peak</h3>
@@ -572,6 +668,36 @@ totalAPA_peakdist= totalAPA_peakdist %&gt;%  mutate(DisttoPeak= snpLOC-PeakCente
 <p>Plot this by significance.</p>
 <pre class="r"><code>ggplot(totalAPA_peakdist, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title=&quot;Distance from snp peak&quot;, x=&quot;log10 absolute value Distance to Peak&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-7-1.png" target="_blank">eb02fbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Look at the summarys based on significance:</p>
 <pre class="r"><code>totalAPA_peakdist_sig=totalAPA_peakdist %&gt;% filter(sig==1)
 totalAPA_peakdist_notsig=totalAPA_peakdist %&gt;% filter(sig==0)
@@ -585,13 +711,104 @@ summary(totalAPA_peakdist_sig$DisttoPeak)</code></pre>
 -70147526   -269853     -1269     -6620    266370   5433999 </code></pre>
 <pre class="r"><code>ggplot(totalAPA_peakdist, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-9-1.png" target="_blank">eb02fbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Look like there are some outliers that are really far. I will remove variants greater than 1*10^6th away</p>
 <pre class="r"><code>totalAPA_peakdist_filt=totalAPA_peakdist %&gt;% filter(abs(DisttoPeak) &lt;= 1*(10^6))
 
 ggplot(totalAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + facet_grid(.~strand)</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-10-1.png" target="_blank">eb02fbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(totalAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + facet_grid(.~strand)</code></pre>
-<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /> This gives a similar distribution.</p>
+<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-10-2.png" target="_blank">eb02fbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>This gives a similar distribution.</p>
 <p>I did snp - peak. This means if the peak is downstream of the snp on the positive strand the number will be negative.</p>
 <p>In this case the peak is downstream of the snp.</p>
 <pre class="r"><code>totalAPA_peakdist %&gt;% filter(sig==1) %&gt;% filter(strand==&quot;+&quot;) %&gt;%  filter(DisttoPeak &lt; 0) %&gt;% nrow()</code></pre>
@@ -606,7 +823,38 @@ ggplot(totalAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom
 <p>This means there is about 50/50 distribution around the peak start.</p>
 <p>I am going to plot a violin plot for just the significant ones.</p>
 <pre class="r"><code>ggplot(totalAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density()</code></pre>
-<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /> Within 1000 bases of the peak center.</p>
+<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-13-1.png" target="_blank">eb02fbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Within 1000 bases of the peak center.</p>
 <pre class="r"><code>totalAPA_peakdist_sig %&gt;% filter(abs(DisttoPeak) &lt; 1000) %&gt;% nrow()</code></pre>
 <pre><code>[1] 29</code></pre>
 <pre class="r"><code>totalAPA_peakdist_sig %&gt;% filter(abs(DisttoPeak) &lt; 10000) %&gt;% nrow()</code></pre>
@@ -618,6 +866,36 @@ ggplot(totalAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom
 </div>
 <div id="expression-metrics" class="section level2">
 <h2>Expression metrics</h2>
+<p>Next I want to pull in the expression values and compare the expression of genes with a total APA qtl in comparison to genes without one. I will also need to pull in the gene names file to add in the gene names from the ensg ID.</p>
+<p>Remove the # from the file.</p>
+<pre class="r"><code>expression=read.table(&quot;../data/mol_pheno/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt&quot;, header = T,stringsAsFactors = F)
+expression_mean=apply(expression[,5:73],1,mean,na.rm=TRUE)
+expression_var=apply(expression[,5:73],1,var,na.rm=TRUE)
+expression$exp.mean= expression_mean 
+expression$exp.var=expression_var
+expression= expression %&gt;% separate(ID, into=c(&quot;Gene.stable.ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;)</code></pre>
+<p>Now I can pull in the names and join the dataframes.</p>
+<pre class="r"><code>geneNames=read.table(&quot;../data/ensemble_to_genename.txt&quot;, sep=&quot;\t&quot;, header=T,stringsAsFactors = F) 
+
+
+
+expression=expression %&gt;% inner_join(geneNames,by=&quot;Gene.stable.ID&quot;) 
+
+expression=expression %&gt;% select(Chr, start, end, Gene.name, exp.mean,exp.var) %&gt;%  rename(&quot;gene&quot;=Gene.name)</code></pre>
+<p>Now I can join this with the qtls.</p>
+<pre class="r"><code>totalAPA_wExp=totalAPA %&gt;% inner_join(expression, by=&quot;gene&quot;) </code></pre>
+<pre class="r"><code>ggplot(totalAPA_wExp, aes(x=exp.mean, by=sig, fill=sig)) + geom_density(alpha=.3)</code></pre>
+<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This is not exactly what I want because there are multiple peaks in a gene so some genes are plotted multiple times. I want to group the QTLs by gene and see if there is 1 sig QTL for that gene.</p>
+<pre class="r"><code>gene_wQTL= totalAPA_wExp %&gt;% group_by(gene) %&gt;% summarise(sig_gene=sum(as.numeric(as.character(sig)))) %&gt;% ungroup() %&gt;% inner_join(expression, by=&quot;gene&quot;) %&gt;% mutate(sigGeneFactor=ifelse(sig_gene&gt;=1, 1,0))
+
+gene_wQTL$sigGeneFactor= as.factor(as.character(gene_wQTL$sigGeneFactor))</code></pre>
+<p>Therea are 92 genes in this set with a QTL.</p>
+<pre class="r"><code>ggplot(gene_wQTL, aes(x=exp.mean, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) +labs(title=&quot;Mean in RNA expression by genes with significant QTL&quot;, x=&quot;Mean in normalized expression&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
+<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I can do a similar analysis but test the variance in the gene expression.</p>
+<pre class="r"><code>ggplot(gene_wQTL, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title=&quot;Varriance in RNA expression by genes with significant QTL&quot;, x=&quot;Variance in normalized expression&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
+<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
