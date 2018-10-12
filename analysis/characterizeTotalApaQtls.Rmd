@@ -224,3 +224,13 @@ I can do a similar analysis but test the variance in the gene expression.
 ggplot(gene_wQTL, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title="Varriance in RNA expression by genes with significant QTL", x="Variance in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
 ```
 
+### Peak coverage for QTLs 
+I can also look at peak coverage for peaks with QLTs and those without. I will first look at this on peak level then mvoe to gene level. The peak scores come from the coverage in the peaks. 
+
+The totalAPA_peakdist data frame has the information I need for this.  
+
+```{r}
+ggplot(totalAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title="Peak score by significance") 
+```
+This is expected. It makes sense that we have more power to detect qtls in higher expressed peaks. This leads me to beleive that filtering out low peaks may add power but will not mitigate the effect. 
+
