@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-12</p>
+<p><strong>Last updated:</strong> 2018-10-15</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/467b7a2cb69f07c8308a47e80d564e6f7454a8f1" target="_blank">467b7a2</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/fb433ecf5eb591488b513c406f1c61e470bc87a4" target="_blank">fb433ec</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -463,6 +463,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/fb433ecf5eb591488b513c406f1c61e470bc87a4/analysis/characterizeTotalApaQtls.Rmd" target="_blank">fb433ec</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-15
+</td>
+<td style="text-align:left;">
+make bed with sig snps
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2f4b0831a662261df5e07f407d6753865631001b/docs/characterizeTotalApaQtls.html" target="_blank">2f4b083</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-12
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1146,7 +1180,36 @@ for ln in open(&quot;/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/G
     chrom=chrom[3:]
     fout.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chrom, start, end, name, score, strand))
 fout.close()</code></pre>
-<p>I am gonig to try to use pybedtooksinstead for bedtools for this analysis. First I can add it to my conda environment.</p>
+<p>I also need to create a significant QTL snp bedfile for the total qtls. Bed files are 0 bases meaning I want the end to be the position I care about.</p>
+<p>chrom, start (pos -1), end (pos), name, score (bh), strand</p>
+<p>I can do this in python using the /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt. I will make the script general to use on the total or nuclear file.</p>
+<p>QTLres2SigSNPbed.py</p>
+<pre class="bash"><code>
+def main(inFile, outFile):
+    fout=open(outFile, &quot;w&quot;)
+    fin=open(inFile, &quot;r&quot;)
+    for num, ln in enumerate(fin):
+      if num &gt;= 1:
+          pid, nvar, shape1, shape2, dummy, sid, dist, npval, slope, ppval, bpval, bh = ln.split()
+          chrom, pos= sid.split(&quot;:&quot;)
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(&quot;:&quot;)[3].split(&quot;_&quot;)[1]
+          bh=float(bh)
+          if bh &lt;= .1: 
+              fout.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chrom, start, end, name, bh, strand))
+    fout.close()
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    fraction=sys.argv[1]
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_%s_transcript_permResBH.txt&quot;%(fraction)
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_%s.bed&quot;%(fraction)
+    main(inFile,outFile) </code></pre>
+<p>I am gonig to try to use pybedtools instead for bedtools for this analysis. First I can add it to my conda environment.</p>
+<pre class="bash"><code>import pybedtools 
+QTL_SNPs = pybedtools.BedTool(&#39;mydata/snps.bed&#39;)</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
