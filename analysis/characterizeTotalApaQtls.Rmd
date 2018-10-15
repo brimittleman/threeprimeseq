@@ -289,7 +289,49 @@ for ln in open("/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/GM1287
 fout.close()
 ```
 
-I am gonig to try to use pybedtooksinstead for bedtools for this analysis. First I can add it to my conda environment.  
 
+I also need to create a significant QTL snp bedfile for the total qtls. Bed files are 0 bases meaning I want the end to be the position I care about.  
+
+chrom, start (pos -1), end (pos), name, score (bh), strand
+
+I can do this in python using the /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt. I will make the script general to use on the total or nuclear file.  
+
+QTLres2SigSNPbed.py
+```{bash,eval=F}
+
+def main(inFile, outFile):
+    fout=open(outFile, "w")
+    fin=open(inFile, "r")
+    for num, ln in enumerate(fin):
+      if num >= 1:
+          pid, nvar, shape1, shape2, dummy, sid, dist, npval, slope, ppval, bpval, bh = ln.split()
+          chrom, pos= sid.split(":")
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(":")[3].split("_")[1]
+          bh=float(bh)
+          if bh <= .1: 
+              fout.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom, start, end, name, bh, strand))
+    fout.close()
+
+if __name__ == "__main__":
+    import sys
+    fraction=sys.argv[1]
+    inFile = "/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_%s_transcript_permResBH.txt"%(fraction)
+    outFile= "/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_%s.bed"%(fraction)
+    main(inFile,outFile) 
+```
+
+
+
+
+I am gonig to try to use pybedtools instead for bedtools for this analysis. First I can add it to my conda environment.  
+
+
+```{bash,eval=F}
+import pybedtools 
+QTL_SNPs = pybedtools.BedTool('mydata/snps.bed')
+```
 
 
