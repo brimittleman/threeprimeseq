@@ -1,0 +1,493 @@
+---
+title: "APA and Protien QTL overlap"
+author: "Briana Mittleman"
+date: "10/22/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to use this analysis to look at the genes with a APAQTL and a protein QTL. I am trying to understand how many of these are independent of RNA.  
+
+I will first look at genes with significant QTLs in both phenotypes. I can use the pipeline I created in https://brimittleman.github.io/threeprimeseq/swarmPlots_QTLs.html to vizualize these snps.
+```{r}
+library(workflowr)
+library(tidyverse)
+library(data.table)
+library(cowplot)
+```
+
+Gene Names:  
+
+```{r}
+geneNames=read.table("../data/ensemble_to_genename.txt", stringsAsFactors = F, header = T, sep="\t")
+```
+
+
+Significant APA QTLS:  
+```{r}
+nuclearAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", stringsAsFactors = F, header = T) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::filter(-log10(bh)>1)
+totalAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::filter(-log10(bh)>1)
+```
+
+Significant Protien QTLs  
+
+```{r}
+protQTL=read.table("../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out", col.names = c("Gene.stable.ID", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"),stringsAsFactors=F) %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval")
+
+protQTL$bh=p.adjust(protQTL$bpval, method="fdr")
+protQTL_sig= protQTL %>% dplyr::filter(-log10(bh)>1)
+
+```
+
+##Gene Level
+Overlap the QTLs by gene name:  
+
+```{r}
+genesBothTot=protQTL_sig %>%  inner_join(totalAPA, by=c("Gene.name"))
+genesBotNuc=protQTL_sig %>%  inner_join(nuclearAPA, by=c("Gene.name"))
+```
+
+These are the genes that have a significant QTL in both.They are not the same snp. This may be because I am using the permuted snps. I will use the APA snp to make the plot.  
+
+```{r}
+plotQTL_func= function(SNP, peak, gene){
+  apaN_file=read.table(paste("../data/apaExamp/qtlSNP_PeakAPANuclear.", SNP, peak, ".txt", sep = "" ), header=T)
+  apaT_file=read.table(paste("../data/apaExamp/qtlSNP_PeakAPATotal.", SNP, peak, ".txt", sep = "" ), header=T)
+  su30_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_4su_30_", SNP, gene, ".txt", sep=""), header = T)
+  su60_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_4su_60_", SNP, gene, ".txt", sep=""), header=T)
+  RNA_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_RNAseq_", SNP, gene, ".txt", sep=""),header=T)
+  RNAg_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_RNAseqGeuvadis_", SNP, gene, ".txt", sep=""), header = T)
+  ribo_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_ribo_", SNP, gene, ".txt", sep=""),header=T)
+  prot_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_prot.", SNP, gene, ".txt", sep=""), header=T)
+  
+  ggplot_func= function(file, molPhen,GENE){
+    file = file %>% mutate(genotype=Allele1 + Allele2)
+    file$genotype= as.factor(as.character(file$genotype))
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y="Phenotpye",title=paste(molPhen, GENE, sep=": ")) + scale_fill_brewer(palette="Paired")
+    return(plot)
+  }
+  
+  apaNplot=ggplot_func(apaN_file, "Apa Nuclear", gene)
+  apaTplot=ggplot_func(apaT_file, "Apa Total", gene)
+  su30plot=ggplot_func(su30_file, "4su30",gene)
+  su60plot=ggplot_func(su60_file, "4su60",gene)
+  RNAplot=ggplot_func(RNA_file, "RNA Seq",gene)
+  RNAgPlot=ggplot_func(RNAg_file, "RNA Seq Geuvadis",gene)
+  riboPlot= ggplot_func(ribo_file, "Ribo Seq",gene)
+  protplot=ggplot_func(prot_file, "Protein",gene)
+  
+  full_plot= plot_grid(apaNplot,apaTplot, su30plot, su60plot, RNAplot, RNAgPlot, riboPlot, protplot,nrow=2)
+  return (full_plot)
+}
+```
+
+
+Total:  
+
+* MRPL43  peak44585 10:102740271
+```{bash,eval=F}
+grep MRPL43 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000055950
+
+
+python createQTLsnpAPAPhenTable.py 10 10:102740271  peak44585 Total
+python createQTLsnpAPAPhenTable.py 10 10:102740271  peak44585  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "10" "10:102740271" "ENSG00000055950"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*10:102740271* .
+
+```
+
+```{r}
+plotQTL_func(SNP="10:102740271", peak="peak44585", gene="ENSG00000055950")
+```
+
+Nuclear:  
+
+* SWAP70 peak49384 11:9732917  
+
+
+```{bash,eval=F}
+grep SWAP70 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000133789
+
+
+python createQTLsnpAPAPhenTable.py 11 11:9732917  peak49384 Total
+python createQTLsnpAPAPhenTable.py 11 11:9732917  peak49384  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "11" "11:9732917" "ENSG00000133789"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*11:9732917* .
+
+```
+
+```{r}
+plotQTL_func(SNP="11:9732917", peak="peak49384", gene="ENSG00000133789")
+```
+
+* DHRS7B peak132739 17:21102458
+
+```{bash,eval=F}
+grep DHRS7B /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000109016
+
+
+python createQTLsnpAPAPhenTable.py 17 17:21102458  peak132739 Total
+python createQTLsnpAPAPhenTable.py 17 17:21102458  peak132739  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "17" "17:21102458" "ENSG00000109016"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*17:21102458* .
+
+```
+
+```{r}
+plotQTL_func(SNP="17:21102458", peak="peak132739", gene="ENSG00000109016")
+```
+* UBA6 peak240167 4:68502794
+```{bash,eval=F}
+grep UBA6 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000033178
+
+
+python createQTLsnpAPAPhenTable.py 4 4:68502794  peak240167 Total
+python createQTLsnpAPAPhenTable.py 4 4:68502794  peak240167  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "4" "4:68502794" "ENSG00000033178"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*4:68502794* .
+
+```
+
+```{r}
+plotQTL_func(SNP="4:68502794", peak="peak240167", gene="ENSG00000033178")
+```
+
+This is not the most effective way to do this because I am overlapping by gene then looking at the effect of the apaQTL snp. I want a method that will look directly at the effect of one snp. I can use the overlap files I created based on the APA qtls in other phenotypes. I can overlap the phenotypes and look for snps that have low pvalues in APA and protien.  
+
+
+##SNP level  
+
+###Total
+I want the overlap where I started in APA qtls and found the snp in the mol file. I am starting with the total.   
+
+```{r}
+totAPAinsu30=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPval4su30.txt", header = T, stringsAsFactors = F)
+totAPAinsu60=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPval4su60.txt", header = T, stringsAsFactors = F)
+totAPAinRNA=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalRNA.txt", header = T, stringsAsFactors = F)
+totAPAinRNAg=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalRNAg.txt", header = T, stringsAsFactors = F)
+totAPAinRibo=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalribo.txt", header = T, stringsAsFactors = F)
+totAPAinProt=read.table("../data/mol_overlap/APA2molTotal/TotAPAqtlsPvalProtein.txt", header = T, stringsAsFactors = F)
+
+
+allOverlap_T=totAPAinsu30 %>%  full_join(totAPAinsu60, by=c("Gene.name", "sid")) %>%  full_join(totAPAinRNA, by=c("Gene.name", "sid")) %>%  full_join(totAPAinRNAg, by=c("Gene.name", "sid"))  %>%  full_join(totAPAinRibo, by=c("Gene.name", "sid"))  %>%  full_join(totAPAinProt, by=c("Gene.name", "sid")) 
+
+colnames(allOverlap_T)=c("Gene.name", "sid", "su30", "su60", "RNA", "RNAg", "ribo", "prot")
+```
+
+```{r}
+plot(sort(allOverlap_T$prot))
+plot(allOverlap_T$RNA ~ allOverlap_T$prot)
+```
+
+
+I want to make a ggplot of these where I color them by RNA pvalue:  
+
+```{r}
+
+allOverlap_T_lowP=allOverlap_T %>% dplyr::filter(prot<.05)
+ggplot(allOverlap_T_lowP, aes(x=RNA, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0) + geom_vline(xintercept = .05, col="red")
+
+
+```
+
+```{r}
+ggplot(allOverlap_T_lowP, aes(x=RNAg, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0) + geom_vline(xintercept = .05, col="red")
+```
+I can use these to look for examples of SNPs that are significant in prot but not in RNA. 
+
+Look at some of these:  
+
+
+Total RNA:  
+* SACM1L  
+* EBI3  
+* FBXL18  
+* PSMF1  
+* COX17  
+
+Total RNAg:  
+* EBI3  
+* FBXL18  
+* APBB1IP
+* PSMF1 
+
+Look at some examples of genes that come up in both. 
+
+EBI3 peak152751 19:4236475  
+
+Expressed in B lymphocytes in response to EB virus. 
+
+```{bash, eval=F}
+grep EBI3 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000105246
+
+
+python createQTLsnpAPAPhenTable.py 19 19:4236475  peak152751 Total
+python createQTLsnpAPAPhenTable.py 19 19:4236475  peak152751  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "19" "19:4236475" "ENSG00000105246"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*19:4236475* .
+
+```
+
+```{r}
+plotQTL_func(SNP="19:4236475", peak="peak152751", gene="ENSG00000105246")
+```
+FBXL18 peak291746 7:5524129
+
+"The protein encoded by this gene is a member of a family of proteins that contain an approximately 40-amino acid F-box motif. This motif is important for interaction with SKP1 and for targeting some proteins for degradation." genecards.org  
+```{bash, eval=F}
+grep FBXL18 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000155034
+
+
+python createQTLsnpAPAPhenTable.py 7 7:5524129  peak291746 Total
+python createQTLsnpAPAPhenTable.py 7 7:5524129  peak291746  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "7" "7:5524129" "ENSG00000155034"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*7:5524129* .
+
+```
+
+```{r}
+plotQTL_func(SNP="7:5524129", peak="peak291746", gene="ENSG00000155034")
+```
+
+
+* PSMF1  peak193648 20:1131308  
+
+This gene codes the 26S proteasome.  
+```{bash, eval=F}
+grep PSMF1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000125818
+
+
+python createQTLsnpAPAPhenTable.py 20 20:1131308   peak193648 Total
+python createQTLsnpAPAPhenTable.py 20 20:1131308   peak193648  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "20" "20:1131308" "ENSG00000125818"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*20:1131308* .
+
+```
+
+```{r}
+plotQTL_func(SNP="20:1131308", peak="peak193648", gene="ENSG00000125818")
+```
+
+
+
+
+
+
+I want to know the number of these that are <.05 in protien and above .1 in RNA  
+
+```{r}
+allOverlap_T_lowP_highRNA=allOverlap_T %>% dplyr::filter(prot<.05) %>% dplyr::filter(RNA>.05)
+allOverlap_T_lowP_highRNAg=allOverlap_T %>% dplyr::filter(prot<.05) %>% dplyr::filter(RNAg>.05)
+```
+
+8 snps with < .05 for protein. Of those 6 have RNA pvalues greater than .05
+
+```{r}
+6/8
+```
+
+###Nuclear  
+
+
+
+```{r}
+nucAPAinsu30=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPval4su30.txt", header = T, stringsAsFactors = F)
+nucAPAinsu60=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPval4su60.txt", header = T, stringsAsFactors = F)
+nucAPAinRNA=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalRNA.txt", header = T, stringsAsFactors = F)
+nucAPAinRNAg=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalRNAg.txt", header = T, stringsAsFactors = F)
+nucAPAinRibo=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalribo.txt", header = T, stringsAsFactors = F)
+nucAPAinProt=read.table("../data/mol_overlap/APA2molNuclear/NucAPAqtlsPvalProtein.txt", header = T, stringsAsFactors = F)
+
+
+allOverlap_N=nucAPAinsu30 %>%  full_join(nucAPAinsu60, by=c("Gene.name", "sid")) %>%  full_join(nucAPAinRNA, by=c("Gene.name", "sid")) %>%  full_join(nucAPAinRNAg, by=c("Gene.name", "sid"))  %>%  full_join(nucAPAinRibo, by=c("Gene.name", "sid"))  %>%  full_join(nucAPAinProt, by=c("Gene.name", "sid")) 
+
+colnames(allOverlap_N)=c("Gene.name", "sid", "su30", "su60", "RNA", "RNAg", "ribo", "prot")
+```
+
+
+```{r}
+#subset by prot < .05  
+
+allOverlap_N_lowP=allOverlap_N %>% dplyr::filter(prot<.05)
+ggplot(allOverlap_N_lowP, aes(x=RNA, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0)+ geom_vline(xintercept = .05, col="red")
+
+
+```
+
+```{r}
+ggplot(allOverlap_N_lowP, aes(x=RNAg, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0)+ geom_vline(xintercept = .05, col="red")
+```
+
+
+```{r}
+allOverlap_N_lowP_highRNA=allOverlap_N %>% dplyr::filter(prot<.05) %>% dplyr::filter(RNA>.05)
+allOverlap_N_lowP_highRNAg=allOverlap_N %>% dplyr::filter(prot<.05) %>% dplyr::filter(RNAg>.05)
+```
+
+39 snps with < .05 for protein. Of those 28 have RNA pvalues greater than .05
+
+```{r}
+28/39
+```
+
+
+```{r}
+inBothN= allOverlap_N_lowP_highRNAg %>%  inner_join(allOverlap_N_lowP_highRNA, by=c("Gene.name", "sid", "su30", "su60", "RNA", "RNAg", "ribo", "prot")) %>% arrange(desc(RNA))
+```
+
+```{r}
+inBothN$Gene.name[1:5]
+```
+
+* MSMO1 4:166260601 peak249109  
+
+contains metal binding motifs, known alternative splice isoforms
+
+
+```{bash, eval=F}
+grep MSMO1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000052802
+
+
+python createQTLsnpAPAPhenTable.py 4 4:166260601  peak249109 Total
+python createQTLsnpAPAPhenTable.py 4 4:166260601  peak249109  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "4" "4:166260601" "ENSG00000052802"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*4:166260601* .
+
+```
+
+```{r}
+plotQTL_func(SNP="4:166260601", peak="peak249109", gene="ENSG00000052802")
+```
+* LYAR peak235215 4:4196045
+
+involved in processing pre-rRNA  
+```{bash, eval=F}
+grep LYAR /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000145220
+
+
+python createQTLsnpAPAPhenTable.py 4 4:4196045  peak235215 Total
+python createQTLsnpAPAPhenTable.py 4 4:4196045  peak235215  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "4" "4:4196045" "ENSG00000145220"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*4:4196045* .
+
+```
+
+```{r}
+plotQTL_func(SNP="4:4196045", peak="peak235215", gene="ENSG00000145220")
+```
+
+CD2BP2 peak122237 16:29898001
+
+From genecards: "in the cytoplasm, the encoded protein binds the cytoplasmic tail of human surface antigen CD2 via its C-terminal GYF domain, and regulate CD2-triggered T lymphocyte activation. In the nucleus, this protein is a component of the U5 small nuclear ribonucleoprotein complex and is involved in RNA splicing."  
+
+
+```{bash, eval=F}
+grep CD2BP2 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000169217
+
+
+python createQTLsnpAPAPhenTable.py 16 16:29898001 peak122237 Total
+python createQTLsnpAPAPhenTable.py 16 16:29898001 peak122237  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "16" "16:29898001" "ENSG00000169217"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*16:29898001* .
+
+```
+
+```{r}
+plotQTL_func(SNP="16:29898001", peak="peak122237", gene="ENSG00000169217")
+```
+KDM2A peak55622 11:66851583
+
+
+
+```{bash, eval=F}
+grep KDM2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000173120
+
+
+python createQTLsnpAPAPhenTable.py 11 11:66851583 peak55622 Total
+python createQTLsnpAPAPhenTable.py 11 11:66851583 peak55622  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "11" "11:66851583" "ENSG00000173120"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*11:66851583* .
+
+```
+
+```{r}
+plotQTL_func(SNP="11:66851583", peak="peak55622", gene="ENSG00000173120")
+```
+
+
+RINT1 peak303436 7:105155320
+
+Interacts with double strand break repair protiens, regulates cell cycle and telomere length  
+```{bash, eval=F}
+grep RINT1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000135249
+
+
+python createQTLsnpAPAPhenTable.py 7 7:105155320 peak303436 Total
+python createQTLsnpAPAPhenTable.py 7 7:105155320 peak303436  Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "7" "7:105155320" "ENSG00000135249"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*7:105155320* .
+
+```
+
+```{r}
+plotQTL_func(SNP="7:105155320", peak="peak303436", gene="ENSG00000135249")
+```
+
+
+###Significance 
+In the next step I need to add significance to the boxplots and think more about the significance cutoffs.  
+
+Maybe I can compare 2 other phenotypes for <.05 and >.05 to see if the percentage is less than what I see for RNA and protein.  
+
+
