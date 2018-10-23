@@ -347,13 +347,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/70a8d68e3f30a742c9fe9e1dae6c6a37f229f981" target="_blank">70a8d68</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/59d9b4a65485bad2cb17c08be92e621641e779f6" target="_blank">59d9b4a</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -365,6 +366,7 @@ Untracked files:
     Untracked:  analysis/verifyBAM.Rmd
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ChromHmmOverlap/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/NuclearApaQTLs.txt
@@ -463,6 +465,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/59d9b4a65485bad2cb17c08be92e621641e779f6/analysis/characterizeTotalApaQtls.Rmd" target="_blank">59d9b4a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-23
+</td>
+<td style="text-align:left;">
+add chromHMM enrichment Total
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/12db557d5cefb669743ce772e87469f4fafb16b9/docs/characterizeTotalApaQtls.html" target="_blank">12db557</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-23
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -664,12 +700,12 @@ add distance metric analsis total apaQTL
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
@@ -710,7 +746,9 @@ print(names(totalAPA))</code></pre>
 <div id="distance-from-snp-to-tss" class="section level3">
 <h3>Distance from snp to TSS</h3>
 <p>I ran the QTL analysis based on the starting position of the gene.</p>
-<pre class="r"><code>ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title=&quot;Distance from snp to TSS&quot;, x=&quot;Base Pairs&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
+<pre class="r"><code>ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title=&quot;Distance from snp to TSS&quot;, x=&quot;Base Pairs&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
+<pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
+which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -743,7 +781,7 @@ Briana Mittleman
 </table>
 <p></details></p>
 <p>It looks like most of the signifcant values are 100,000 bases. This makes sense. I can zoom in on this portion.</p>
-<pre class="r"><code>ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000))</code></pre>
+<pre class="r"><code>ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000)) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-4-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -787,7 +825,9 @@ totalAPA_peakdist$snpLOC= as.numeric(totalAPA_peakdist$snpLOC)
 
 totalAPA_peakdist= totalAPA_peakdist %&gt;%  mutate(DisttoPeak= snpLOC-PeakCenter)</code></pre>
 <p>Plot this by significance.</p>
-<pre class="r"><code>ggplot(totalAPA_peakdist, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title=&quot;Distance from snp peak&quot;, x=&quot;log10 absolute value Distance to Peak&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
+<pre class="r"><code>ggplot(totalAPA_peakdist, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title=&quot;Distance from snp peak&quot;, x=&quot;log10 absolute value Distance to Peak&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
+<pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
+which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -830,7 +870,9 @@ summary(totalAPA_peakdist_sig$DisttoPeak)</code></pre>
 <pre class="r"><code>summary(totalAPA_peakdist_notsig$DisttoPeak)</code></pre>
 <pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 -70147526   -269853     -1269     -6620    266370   5433999 </code></pre>
-<pre class="r"><code>ggplot(totalAPA_peakdist, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
+<pre class="r"><code>ggplot(totalAPA_peakdist, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
+<pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
+which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -865,7 +907,9 @@ Briana Mittleman
 <p>Look like there are some outliers that are really far. I will remove variants greater than 1*10^6th away</p>
 <pre class="r"><code>totalAPA_peakdist_filt=totalAPA_peakdist %&gt;% filter(abs(DisttoPeak) &lt;= 1*(10^6))
 
-ggplot(totalAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + facet_grid(.~strand)</code></pre>
+ggplot(totalAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + facet_grid(.~strand) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
+<pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
+which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -897,7 +941,9 @@ Briana Mittleman
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>ggplot(totalAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + facet_grid(.~strand)</code></pre>
+<pre class="r"><code>ggplot(totalAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + facet_grid(.~strand)+ scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
+<pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
+which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-10-2.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1005,7 +1051,7 @@ expression=expression %&gt;% inner_join(geneNames,by=&quot;Gene.stable.ID&quot;)
 expression=expression %&gt;% select(Chr, start, end, Gene.name, exp.mean,exp.var) %&gt;%  rename(&quot;gene&quot;=Gene.name)</code></pre>
 <p>Now I can join this with the qtls.</p>
 <pre class="r"><code>totalAPA_wExp=totalAPA %&gt;% inner_join(expression, by=&quot;gene&quot;) </code></pre>
-<pre class="r"><code>ggplot(totalAPA_wExp, aes(x=exp.mean, by=sig, fill=sig)) + geom_density(alpha=.3)</code></pre>
+<pre class="r"><code>ggplot(totalAPA_wExp, aes(x=exp.mean, by=sig, fill=sig)) + geom_density(alpha=.3)+ scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1042,7 +1088,9 @@ Briana Mittleman
 
 gene_wQTL$sigGeneFactor= as.factor(as.character(gene_wQTL$sigGeneFactor))</code></pre>
 <p>Therea are 92 genes in this set with a QTL.</p>
-<pre class="r"><code>ggplot(gene_wQTL, aes(x=exp.mean, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) +labs(title=&quot;Mean in RNA expression by genes with significant QTL&quot;, x=&quot;Mean in normalized expression&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
+<pre class="r"><code>ggplot(gene_wQTL, aes(x=exp.mean, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) +labs(title=&quot;Mean in RNA expression by genes with significant QTL&quot;, x=&quot;Mean in normalized expression&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))+ scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
+<pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
+which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1075,7 +1123,9 @@ Briana Mittleman
 </table>
 <p></details></p>
 <p>I can do a similar analysis but test the variance in the gene expression.</p>
-<pre class="r"><code>ggplot(gene_wQTL, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title=&quot;Varriance in RNA expression by genes with significant QTL&quot;, x=&quot;Variance in normalized expression&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))</code></pre>
+<pre class="r"><code>ggplot(gene_wQTL, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title=&quot;Varriance in RNA expression by genes with significant QTL&quot;, x=&quot;Variance in normalized expression&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))+ scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
+<pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
+which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1111,7 +1161,7 @@ Briana Mittleman
 <h3>Peak coverage for QTLs</h3>
 <p>I can also look at peak coverage for peaks with QLTs and those without. I will first look at this on peak level then mvoe to gene level. The peak scores come from the coverage in the peaks.</p>
 <p>The totalAPA_peakdist data frame has the information I need for this.</p>
-<pre class="r"><code>ggplot(totalAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title=&quot;Peak score by significance&quot;) </code></pre>
+<pre class="r"><code>ggplot(totalAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title=&quot;Peak score by significance&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1189,6 +1239,7 @@ Briana Mittleman
 for ln in open(&quot;/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.txt&quot;, &quot;r&quot;):
     bin, chrom, start, end, name, score, strand, thSt, thE, rgb = ln.split()
     chrom=chrom[3:]
+    name=name.split(&quot;_&quot;)[0]
     fout.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chrom, start, end, name, score, strand))
 fout.close()</code></pre>
 <pre class="bash"><code>fout = open(&quot;/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/GM12878.chromHMM.bed&quot;,&#39;w&#39;)
@@ -1224,9 +1275,100 @@ if __name__ == &quot;__main__&quot;:
     inFile = &quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_%s_transcript_permResBH.txt&quot;%(fraction)
     outFile= &quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_%s.bed&quot;%(fraction)
     main(inFile,outFile) </code></pre>
-<p>I am gonig to try to use pybedtools instead for bedtools for this analysis. First I can add it to my conda environment.</p>
+<p>I am going to try to use pybedtools instead for bedtools for this analysis. First I can add it to my conda environment.</p>
+<p>Remove header from HMM</p>
 <pre class="bash"><code>import pybedtools 
-QTL_SNPs = pybedtools.BedTool(&#39;mydata/snps.bed&#39;)</code></pre>
+
+sigNuc=pybedtools.BedTool(&#39;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Nuclear.sort.bed&#39;) 
+
+sigTot=pybedtools.BedTool(&#39;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Total.sort.bed&#39;)
+
+hmm=pybedtools.BedTool(&quot;/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed&quot;)
+
+#map hmm to snps  
+Tot_overlapHMM=sigTot.map(hmm, c=4)
+
+Nuc_overlapHMM=sigNuc.map(hmm,c=4)
+
+#save results  
+
+Tot_overlapHMM.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/Tot_overlapHMM.bed&quot;)
+
+Nuc_overlapHMM.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/Nuc_overlapHMM.bed&quot;)</code></pre>
+<p>I want to make a file that has all of the numbers for the chromatin regions for downstream analysis.</p>
+<pre class="bash"><code>cut -f5 GM12878.chromHMM.txt | sort | uniq &gt; chromHMM_regions.txt</code></pre>
+<p>I then manually seperate the numbers from the name with a tab and remove the name line.</p>
+<p>Evaluate results for total:</p>
+<pre class="r"><code>chromHmm=read.table(&quot;../data/ChromHmmOverlap/chromHMM_regions.txt&quot;, col.names = c(&quot;number&quot;, &quot;name&quot;), stringsAsFactors = F)
+
+TotalOverlapHMM=read.table(&quot;../data/ChromHmmOverlap/Tot_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
+
+TotalOverlapHMM_names=TotalOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
+<pre class="r"><code>ggplot(TotalOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Total APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This is the count but I want enrichemnt. I need to randomly choose 188 snps from the ones I tested (nominal res) and get the same inforamtion on where they are.</p>
+<pre class="bash"><code>shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_total_Random118.txt
+</code></pre>
+<p>Now I need to make these into the snp bed format.</p>
+<p>QTLNOMres2SigSNPbed.py give this * total or nuclear<br />
+* number of snps</p>
+<pre class="bash"><code>
+def main(inFile, outFile):
+    fout=open(outFile, &quot;w&quot;)
+    fin=open(inFile, &quot;r&quot;)
+    for ln in fin:
+          pid, sid, dist, pval, slope = ln.split()
+          chrom, pos= sid.split(&quot;:&quot;)
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(&quot;:&quot;)[3].split(&quot;_&quot;)[1]
+          pval=float(pval)
+          fout.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chrom, start, end, name, pval, strand))
+    fout.close()
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    fraction=sys.argv[1]
+    number=sys.argv[2]
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_%s_Random%s.txt&quot;%(fraction,number)
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_%s_Random%s.bed&quot;%(fraction,number)
+    main(inFile,outFile) </code></pre>
+<p>Sort output</p>
+<pre class="bash"><code>import pybedtools 
+
+RANDtot=pybedtools.BedTool(&#39;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_total_Random118.sort.bed&#39;) 
+
+
+
+hmm=pybedtools.BedTool(&quot;/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed&quot;)
+
+#map hmm to snps  
+TotRnad_overlapHMM=RANDtot.map(hmm, c=4)
+
+
+#save results  
+
+TotRnad_overlapHMM.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_total_Random_overlapHMM.bed&quot;)
+</code></pre>
+<pre class="r"><code>TotalRandOverlapHMM=read.table(&quot;../data/ChromHmmOverlap/ApaQTL_total_Random_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
+
+TotalRandOverlapHMM_names=TotalRandOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
+<pre class="r"><code>ggplot(TotalRandOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Total APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>To put this on the same plot I can count the number in each then plot them next to eachother.</p>
+<pre class="r"><code>random_perChromHMM=TotalRandOverlapHMM_names %&gt;%  group_by(name) %&gt;% summarise(Random=n())
+sig_perChromHMM= TotalOverlapHMM_names %&gt;%  group_by(name) %&gt;%  summarise(Total_QTLs=n())
+
+perChrommHMM=random_perChromHMM %&gt;%  full_join(sig_perChromHMM, by=&quot;name&quot;, ) %&gt;% replace_na(list(Random=0,Total_QTLs=0))  
+
+perChrommHMM_melt=melt(perChrommHMM, id.vars=&quot;name&quot;)
+names(perChrommHMM_melt)=c(&quot;Region&quot;,&quot;Set&quot;, &quot;N_Snps&quot; )</code></pre>
+<pre class="r"><code>chromenrichTotalplot=ggplot(perChrommHMM_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;Enrichment of Total QTLs by chromatin region&quot;, y=&quot;Number of Snps&quot;, x=&quot;Chromatin Region&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)
+chromenrichTotalplot</code></pre>
+<p><img src="figure/characterizeTotalApaQtls.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(&quot;../output/plots/ChromHmmEnrich_Total.png&quot;, chromenrichTotalplot)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -1259,20 +1401,20 @@ loaded via a namespace (and not attached):
  [4] colorspace_1.3-2     htmltools_0.3.6      yaml_2.2.0          
  [7] rlang_0.2.2          R.oo_1.22.0          pillar_1.3.0        
 [10] glue_1.3.0           withr_2.1.2          R.utils_2.7.0       
-[13] lambda.r_1.2.3       modelr_0.1.2         readxl_1.1.0        
-[16] bindr_0.1.1          plyr_1.8.4           munsell_0.5.0       
-[19] gtable_0.2.0         cellranger_1.1.0     rvest_0.3.2         
-[22] R.methodsS3_1.7.1    evaluate_0.11        labeling_0.3        
-[25] knitr_1.20           broom_0.5.0          Rcpp_0.12.19        
-[28] formatR_1.5          backports_1.1.2      scales_1.0.0        
-[31] jsonlite_1.5         hms_0.4.2            digest_0.6.17       
-[34] stringi_1.2.4        rprojroot_1.3-2      cli_1.0.1           
-[37] tools_3.5.1          magrittr_1.5         lazyeval_0.2.1      
-[40] futile.options_1.0.1 crayon_1.3.4         whisker_0.3-2       
-[43] pkgconfig_2.0.2      xml2_1.2.0           lubridate_1.7.4     
-[46] assertthat_0.2.0     rmarkdown_1.10       httr_1.3.1          
-[49] rstudioapi_0.8       R6_2.3.0             nlme_3.1-137        
-[52] git2r_0.23.0         compiler_3.5.1      </code></pre>
+[13] RColorBrewer_1.1-2   lambda.r_1.2.3       modelr_0.1.2        
+[16] readxl_1.1.0         bindr_0.1.1          plyr_1.8.4          
+[19] munsell_0.5.0        gtable_0.2.0         cellranger_1.1.0    
+[22] rvest_0.3.2          R.methodsS3_1.7.1    evaluate_0.11       
+[25] labeling_0.3         knitr_1.20           broom_0.5.0         
+[28] Rcpp_0.12.19         formatR_1.5          backports_1.1.2     
+[31] scales_1.0.0         jsonlite_1.5         hms_0.4.2           
+[34] digest_0.6.17        stringi_1.2.4        rprojroot_1.3-2     
+[37] cli_1.0.1            tools_3.5.1          magrittr_1.5        
+[40] lazyeval_0.2.1       futile.options_1.0.1 crayon_1.3.4        
+[43] whisker_0.3-2        pkgconfig_2.0.2      xml2_1.2.0          
+[46] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.10      
+[49] httr_1.3.1           rstudioapi_0.8       R6_2.3.0            
+[52] nlme_3.1-137         git2r_0.23.0         compiler_3.5.1      </code></pre>
 </div>
 
 <hr>
