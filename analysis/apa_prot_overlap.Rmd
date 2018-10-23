@@ -17,6 +17,7 @@ library(workflowr)
 library(tidyverse)
 library(data.table)
 library(cowplot)
+library(ggpubr)
 ```
 
 Gene Names:  
@@ -62,24 +63,26 @@ plotQTL_func= function(SNP, peak, gene){
   RNAg_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_RNAseqGeuvadis_", SNP, gene, ".txt", sep=""), header = T)
   ribo_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_ribo_", SNP, gene, ".txt", sep=""),header=T)
   prot_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_prot.", SNP, gene, ".txt", sep=""), header=T)
+
   
-  ggplot_func= function(file, molPhen,GENE){
+  ggplot_func= function(file, molPhen,GENE,allOverlap_T){
     file = file %>% mutate(genotype=Allele1 + Allele2)
     file$genotype= as.factor(as.character(file$genotype))
-    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y="Phenotpye",title=paste(molPhen, GENE, sep=": ")) + scale_fill_brewer(palette="Paired")
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y="Phenotpye",title=paste(molPhen, GENE, sep=": ")) + scale_fill_brewer(palette="Paired") + stat_compare_means(method = "anova",  label.y.npc = "top")
     return(plot)
   }
+
   
   apaNplot=ggplot_func(apaN_file, "Apa Nuclear", gene)
   apaTplot=ggplot_func(apaT_file, "Apa Total", gene)
   su30plot=ggplot_func(su30_file, "4su30",gene)
   su60plot=ggplot_func(su60_file, "4su60",gene)
-  RNAplot=ggplot_func(RNA_file, "RNA Seq",gene)
-  RNAgPlot=ggplot_func(RNAg_file, "RNA Seq Geuvadis",gene)
-  riboPlot= ggplot_func(ribo_file, "Ribo Seq",gene)
+  RNAplot=ggplot_func(RNA_file, "RNA",gene)
+  RNAgPlot=ggplot_func(RNAg_file, "RNAg",gene)
+  riboPlot= ggplot_func(ribo_file, "Ribo",gene)
   protplot=ggplot_func(prot_file, "Protein",gene)
   
-  full_plot= plot_grid(apaNplot,apaTplot, su30plot, su60plot, RNAplot, RNAgPlot, riboPlot, protplot,nrow=2)
+  full_plot= plot_grid(apaNplot,apaTplot, RNAplot, protplot,nrow=2)
   return (full_plot)
 }
 ```
@@ -489,5 +492,31 @@ plotQTL_func(SNP="7:105155320", peak="peak303436", gene="ENSG00000135249")
 In the next step I need to add significance to the boxplots and think more about the significance cutoffs.  
 
 Maybe I can compare 2 other phenotypes for <.05 and >.05 to see if the percentage is less than what I see for RNA and protein.  
+
+```{r}
+sigProt=allOverlap_N_lowP %>% nrow()
+paste("Sig Prot", sigProt, sep=" ")
+allOverlap_N_lowP_higrna=allOverlap_N %>% dplyr::filter(prot<.05) %>% dplyr::filter(RNA>.05) %>%nrow()
+paste("Sig Prot not RNA", allOverlap_N_lowP_higrna, sep=" ")
+allOverlap_N_lowP_higribo=allOverlap_N %>% dplyr::filter(prot<.05) %>% dplyr::filter(ribo>.05) %>%nrow()
+paste("Sig Prot not ribo", allOverlap_N_lowP_higribo, sep=" ")
+allOverlap_N_lowP_higsu30=allOverlap_N %>% dplyr::filter(prot<.05) %>% dplyr::filter(su30>.05) %>% nrow()
+paste("Sig Prot not 4su30", allOverlap_N_lowP_higsu30, sep=" ")
+allOverlap_N_lowP_higsu60=allOverlap_N %>% dplyr::filter(prot<.05) %>% dplyr::filter(su60>.05) %>% nrow()
+paste("Sig Prot not 4su60", allOverlap_N_lowP_higsu60, sep=" ")
+```
+
+```{r}
+sigProtT=allOverlap_T_lowP %>% nrow()
+paste("Sig Prot", sigProtT, sep=" ")
+allOverlap_T_lowP_higrna=allOverlap_T %>% dplyr::filter(prot<.05) %>% dplyr::filter(RNA>.05) %>%nrow()
+paste("Sig Prot not RNA", allOverlap_T_lowP_higrna, sep=" ")
+allOverlap_T_lowP_higribo=allOverlap_T %>% dplyr::filter(prot<.05) %>% dplyr::filter(ribo>.05) %>%nrow()
+paste("Sig Prot not ribo", allOverlap_T_lowP_higribo, sep=" ")
+allOverlap_T_lowP_higsu30=allOverlap_T %>% dplyr::filter(prot<.05) %>% dplyr::filter(su30>.05) %>% nrow()
+paste("Sig Prot not 4su30", allOverlap_T_lowP_higsu30, sep=" ")
+allOverlap_T_lowP_higsu60=allOverlap_T %>% dplyr::filter(prot<.05) %>% dplyr::filter(su60>.05) %>% nrow()
+paste("Sig Prot not 4su60", allOverlap_T_lowP_higsu60, sep=" ")
+```
 
 
