@@ -65,13 +65,13 @@ I ran the QTL analysis based on the starting position of the gene.
 
 
 ```{r}
-ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title="Distance from snp to TSS", x="Base Pairs") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title="Distance from snp to TSS", x="Base Pairs") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + scale_fill_brewer(palette="Paired")
 ```
 
 It looks like most of the signifcant values are 100,000 bases. This makes sense.  I can zoom in on this portion.  
 
 ```{r}
-ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000))
+ggplot(totalAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000)) + scale_fill_brewer(palette="Paired")
 ```
 
 ### Distance from snp to peak  
@@ -95,7 +95,7 @@ totalAPA_peakdist= totalAPA_peakdist %>%  mutate(DisttoPeak= snpLOC-PeakCenter)
 
 Plot this by significance.  
 ```{r}
-ggplot(totalAPA_peakdist, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title="Distance from snp peak", x="log10 absolute value Distance to Peak") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+ggplot(totalAPA_peakdist, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title="Distance from snp peak", x="log10 absolute value Distance to Peak") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + scale_fill_brewer(palette="Paired")
 
 
 ```
@@ -112,7 +112,7 @@ summary(totalAPA_peakdist_notsig$DisttoPeak)
 ```
 
 ```{r}
-ggplot(totalAPA_peakdist, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+ggplot(totalAPA_peakdist, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + scale_fill_brewer(palette="Paired")
 ```
 
 Look like there are some outliers that are really far. I will remove variants greater than 1*10^6th away   
@@ -120,9 +120,9 @@ Look like there are some outliers that are really far. I will remove variants gr
 ```{r}
 totalAPA_peakdist_filt=totalAPA_peakdist %>% filter(abs(DisttoPeak) <= 1*(10^6))
 
-ggplot(totalAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + facet_grid(.~strand)
+ggplot(totalAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + facet_grid(.~strand) + scale_fill_brewer(palette="Paired")
 
-ggplot(totalAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + facet_grid(.~strand)
+ggplot(totalAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + facet_grid(.~strand)+ scale_fill_brewer(palette="Paired")
 
 ```
 This gives a similar distribution. 
@@ -199,7 +199,7 @@ totalAPA_wExp=totalAPA %>% inner_join(expression, by="gene")
 ```
 
 ```{r}
-ggplot(totalAPA_wExp, aes(x=exp.mean, by=sig, fill=sig)) + geom_density(alpha=.3)
+ggplot(totalAPA_wExp, aes(x=exp.mean, by=sig, fill=sig)) + geom_density(alpha=.3)+ scale_fill_brewer(palette="Paired")
 ```
 
 This is not exactly what I want because there are multiple peaks in a gene so some genes are plotted multiple times.  I want to group the QTLs by gene and see if there is 1 sig QTL for that gene.  
@@ -214,14 +214,14 @@ Therea are 92 genes in this set with a QTL.
 
 
 ```{r}
-ggplot(gene_wQTL, aes(x=exp.mean, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) +labs(title="Mean in RNA expression by genes with significant QTL", x="Mean in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+ggplot(gene_wQTL, aes(x=exp.mean, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) +labs(title="Mean in RNA expression by genes with significant QTL", x="Mean in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))+ scale_fill_brewer(palette="Paired")
 ```
 
 
 I can do a similar analysis but test the variance in the gene expression.  
 
 ```{r}
-ggplot(gene_wQTL, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title="Varriance in RNA expression by genes with significant QTL", x="Variance in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))
+ggplot(gene_wQTL, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title="Varriance in RNA expression by genes with significant QTL", x="Variance in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))+ scale_fill_brewer(palette="Paired")
 ```
 
 ### Peak coverage for QTLs 
@@ -230,7 +230,7 @@ I can also look at peak coverage for peaks with QLTs and those without. I will f
 The totalAPA_peakdist data frame has the information I need for this.  
 
 ```{r}
-ggplot(totalAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title="Peak score by significance") 
+ggplot(totalAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title="Peak score by significance") + scale_fill_brewer(palette="Paired")
 ```
 This is expected. It makes sense that we have more power to detect qtls in higher expressed peaks. This leads me to believe that filtering out low peaks may add power but will not mitigate the effect. 
 
@@ -275,6 +275,7 @@ fout = open("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.bed",
 for ln in open("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.txt", "r"):
     bin, chrom, start, end, name, score, strand, thSt, thE, rgb = ln.split()
     chrom=chrom[3:]
+    name=name.split("_")[0]
     fout.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom, start, end, name, score, strand))
 fout.close()
 ```
@@ -324,14 +325,142 @@ if __name__ == "__main__":
 ```
 
 
+I am going to try to use pybedtools instead for bedtools for this analysis. First I can add it to my conda environment.  
+
+Remove header from HMM  
+```{bash,eval=F}
+import pybedtools 
+
+sigNuc=pybedtools.BedTool('/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Nuclear.sort.bed') 
+
+sigTot=pybedtools.BedTool('/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Total.sort.bed')
+
+hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+
+#map hmm to snps  
+Tot_overlapHMM=sigTot.map(hmm, c=4)
+
+Nuc_overlapHMM=sigNuc.map(hmm,c=4)
+
+#save results  
+
+Tot_overlapHMM.saveas("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/Tot_overlapHMM.bed")
+
+Nuc_overlapHMM.saveas("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/Nuc_overlapHMM.bed")
+```
+
+I want to make a file that has all of the numbers for the chromatin regions for downstream analysis. 
+
+```{bash,eval=F}
+cut -f5 GM12878.chromHMM.txt | sort | uniq > chromHMM_regions.txt
+```
+I then manually seperate the numbers from the name with a tab and remove the name line.  
 
 
-I am gonig to try to use pybedtools instead for bedtools for this analysis. First I can add it to my conda environment.  
+Evaluate results for total:  
+
+```{r}
+chromHmm=read.table("../data/ChromHmmOverlap/chromHMM_regions.txt", col.names = c("number", "name"), stringsAsFactors = F)
+
+TotalOverlapHMM=read.table("../data/ChromHmmOverlap/Tot_overlapHMM.bed", col.names=c("chrom", "start", "end", "sid", "significance", "strand", "number"))
+
+TotalOverlapHMM_names=TotalOverlapHMM %>% left_join(chromHmm, by="number")
+```
+
+```{r}
+ggplot(TotalOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Total APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+This is the count but I want enrichemnt. I need to randomly choose 188 snps from the ones I tested (nominal res) and get the same inforamtion on where they are.   
 
 
 ```{bash,eval=F}
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_total_Random118.txt
+
+```
+Now I need to make these into the snp bed format.  
+
+QTLNOMres2SigSNPbed.py
+give this
+* total or nuclear  
+* number of snps   
+```{bash,eval=F}
+
+def main(inFile, outFile):
+    fout=open(outFile, "w")
+    fin=open(inFile, "r")
+    for ln in fin:
+          pid, sid, dist, pval, slope = ln.split()
+          chrom, pos= sid.split(":")
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(":")[3].split("_")[1]
+          pval=float(pval)
+          fout.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom, start, end, name, pval, strand))
+    fout.close()
+
+if __name__ == "__main__":
+    import sys
+    fraction=sys.argv[1]
+    number=sys.argv[2]
+    inFile = "/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_%s_Random%s.txt"%(fraction,number)
+    outFile= "/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_%s_Random%s.bed"%(fraction,number)
+    main(inFile,outFile) 
+```
+Sort output  
+
+```{bash,eval=F}
 import pybedtools 
-QTL_SNPs = pybedtools.BedTool('mydata/snps.bed')
+
+RANDtot=pybedtools.BedTool('/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_total_Random118.sort.bed') 
+
+
+
+hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+
+#map hmm to snps  
+TotRnad_overlapHMM=RANDtot.map(hmm, c=4)
+
+
+#save results  
+
+TotRnad_overlapHMM.saveas("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_total_Random_overlapHMM.bed")
+
+
 ```
 
+
+```{r}
+TotalRandOverlapHMM=read.table("../data/ChromHmmOverlap/ApaQTL_total_Random_overlapHMM.bed", col.names=c("chrom", "start", "end", "sid", "significance", "strand", "number"))
+
+TotalRandOverlapHMM_names=TotalRandOverlapHMM %>% left_join(chromHmm, by="number")
+```
+
+
+```{r}
+ggplot(TotalRandOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Total APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+To put this on the same plot I can count the number in each then plot them next to eachother.  
+
+
+```{r}
+random_perChromHMM=TotalRandOverlapHMM_names %>%  group_by(name) %>% summarise(Random=n())
+sig_perChromHMM= TotalOverlapHMM_names %>%  group_by(name) %>%  summarise(Total_QTLs=n())
+
+perChrommHMM=random_perChromHMM %>%  full_join(sig_perChromHMM, by="name", ) %>% replace_na(list(Random=0,Total_QTLs=0))  
+
+perChrommHMM_melt=melt(perChrommHMM, id.vars="name")
+names(perChrommHMM_melt)=c("Region","Set", "N_Snps" )
+```
+
+```{r}
+chromenrichTotalplot=ggplot(perChrommHMM_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position="dodge", stat="identity") +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Enrichment of Total QTLs by chromatin region", y="Number of Snps", x="Chromatin Region") + scale_fill_brewer(palette="Paired")
+chromenrichTotalplot
+
+ggsave("../output/plots/ChromHmmEnrich_Total.png", chromenrichTotalplot)
+
+```
 
