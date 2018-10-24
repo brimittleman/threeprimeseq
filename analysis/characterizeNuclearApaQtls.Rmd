@@ -1,0 +1,299 @@
+---
+title: "Characterize Nuclear ApaQTLs"
+author: "Briana Mittleman"
+date: "10/24/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This analysis is similar to the [Characterize Total APAqtl analysis](characterizeTotalApaQtls.html)
+
+I would like to study:  
+
+
+* Distance metrics:  
+    + distance from snp to TSS of gene  
+    + Distance from snp to peak  
+
+* Expression metrics: 
+    + expression of genes with significant QTLs vs other genes  (by rna seq)
+    + expression of genes with significant QTLs vs other genes  (peak coverage)  
+
+* Chrom HMM metrics:  
+    + look at the chrom HMM interval for the significant QTLs  
+
+
+##Upload Libraries and Data:  
+
+Library
+```{r}
+library(workflowr)
+library(reshape2)
+library(tidyverse)
+library(VennDiagram)
+library(data.table)
+library(cowplot)
+```
+
+
+Permuted Results from APA:
+
+I will add a column to this dataframe that will tell me if the association is significant at 10% FDR.  This will help me plot based on significance later in the analysis. I am also going to seperate the PID into relevant pieces.  
+
+```{r}
+NuclearAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>% mutate(sig=ifelse(-log10(bh)>=1, 1,0 )) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak"))
+
+NuclearAPA$sig=as.factor(NuclearAPA$sig)
+
+
+print(names(NuclearAPA))
+```
+
+##Distance Metrics  
+
+### Distance from snp to TSS  
+
+I ran the QTL analysis based on the starting position of the gene. 
+
+
+```{r}
+ggplot(NuclearAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title="Distance from snp to TSS", x="Base Pairs") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + scale_fill_brewer(palette="Paired")
+```
+
+Zoom in to 100,000. 
+
+```{r}
+ggplot(NuclearAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000)) + scale_fill_brewer(palette="Paired")
+```
+### Distance from snp to peak  
+
+To perform this analysis I need to recover the peak positions.  
+
+The peak file I used for the QTL analysis is: /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed  
+
+```{r}
+peaks=read.table("../data/PeaksUsed/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed", col.names = c("chr", "peakStart", "peakEnd", "PeakNum", "PeakScore", "Strand", "Gene")) %>% mutate(peak=paste("peak", PeakNum,sep="")) %>% mutate(PeakCenter=peakStart+ (peakEnd- peakStart))
+```
+
+I want to join the peak start to the NuclearAPA file but the peak column. I will then create a column that is snppos-peakcenter.
+
+
+```{r}
+NuclearAPA_peakdist= NuclearAPA %>%  inner_join(peaks, by="peak") %>%  separate(sid, into=c("snpCHR", "snpLOC"), by=":")
+NuclearAPA_peakdist$snpLOC= as.numeric(NuclearAPA_peakdist$snpLOC)
+
+NuclearAPA_peakdist= NuclearAPA_peakdist %>%  mutate(DisttoPeak= snpLOC-PeakCenter)
+```
+
+
+Plot this by significance.  
+```{r}
+ggplot(NuclearAPA_peakdist, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density(alpha=.5)  +  labs(title="Distance from snp peak", x="log10 absolute value Distance to Peak") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + scale_fill_brewer(palette="Paired")
+
+
+```
+
+
+Look at the summarys based on significance:  
+
+```{r}
+NuclearAPA_peakdist_sig=NuclearAPA_peakdist %>% filter(sig==1)
+NuclearAPA_peakdist_notsig=NuclearAPA_peakdist %>% filter(sig==0)
+
+
+summary(NuclearAPA_peakdist_sig$DisttoPeak)
+summary(NuclearAPA_peakdist_notsig$DisttoPeak)
+```
+
+
+```{r}
+ggplot(NuclearAPA_peakdist, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + scale_fill_brewer(palette="Paired")
+```
+
+
+
+Look like there are some outliers that are really far. I will remove variants greater than 1*10^6th away   
+
+```{r}
+NuclearAPA_peakdist_filt=NuclearAPA_peakdist %>% filter(abs(DisttoPeak) <= 1*(10^6))
+
+ggplot(NuclearAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + geom_boxplot()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + facet_grid(.~strand) + scale_fill_brewer(palette="Paired")
+
+ggplot(NuclearAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = "Significant QTL")) + facet_grid(.~strand)+ scale_fill_brewer(palette="Paired")
+
+```
+
+
+I am going to plot a violin plot for just the significant ones.  
+
+```{r}
+ggplot(NuclearAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density()
+```
+
+Within 1000 bases of the peak center.  
+
+```{r}
+NuclearAPA_peakdist_sig %>% filter(abs(DisttoPeak) < 1000) %>% nrow()
+
+NuclearAPA_peakdist_sig %>% filter(abs(DisttoPeak) < 10000) %>% nrow()
+
+NuclearAPA_peakdist_sig %>% filter(abs(DisttoPeak) < 100000) %>% nrow()
+```
+
+192 QTLs are within 1000 bp, 420 are within 10000, and 726 are within 100,000bp
+
+
+
+##Expression metrics  
+
+
+Next I want to pull in the expression values and compare the expression of genes with a nuclear APA qtl in comparison to genes without one.  I will also need to pull in the gene names file to add in the gene names from the ensg ID.   
+
+Remove the # from the file.
+
+```{r}
+expression=read.table("../data/mol_pheno/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt", header = T,stringsAsFactors = F)
+expression_mean=apply(expression[,5:73],1,mean,na.rm=TRUE)
+expression_var=apply(expression[,5:73],1,var,na.rm=TRUE)
+expression$exp.mean= expression_mean 
+expression$exp.var=expression_var
+expression= expression %>% separate(ID, into=c("Gene.stable.ID", "ver"), sep ="[.]")
+```
+
+
+Now I can pull in the names and join the dataframes.  
+
+```{r}
+geneNames=read.table("../data/ensemble_to_genename.txt", sep="\t", header=T,stringsAsFactors = F) 
+
+expression=expression %>% inner_join(geneNames,by="Gene.stable.ID") 
+
+expression=expression %>% select(Chr, start, end, Gene.name, exp.mean,exp.var) %>%  rename("gene"=Gene.name)
+```
+
+
+Now I can join this with the qtls.  
+
+```{r}
+NuclearAPA_wExp=NuclearAPA %>% inner_join(expression, by="gene") 
+```
+
+```{r}
+gene_wQTL_N= NuclearAPA_wExp %>% group_by(gene) %>% summarise(sig_gene=sum(as.numeric(as.character(sig)))) %>% ungroup() %>% inner_join(expression, by="gene") %>% mutate(sigGeneFactor=ifelse(sig_gene>=1, 1,0))
+
+gene_wQTL_N$sigGeneFactor= as.factor(as.character(gene_wQTL_N$sigGeneFactor))
+summary(gene_wQTL_N$sigGeneFactor)
+```
+
+
+There are 607 genes with a QTL  
+
+
+```{r}
+ggplot(gene_wQTL_N, aes(x=exp.mean, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) +labs(title="Mean in RNA expression by genes with significant QTL", x="Mean in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))+ scale_fill_brewer(palette="Paired")
+```
+
+
+
+I can do a similar analysis but test the variance in the gene expression.  
+
+```{r}
+ggplot(gene_wQTL_N, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title="Varriance in RNA expression by genes with significant QTL", x="Variance in normalized expression") + scale_fill_discrete(guide = guide_legend(title = "Significant QTL"))+ scale_fill_brewer(palette="Paired")
+```
+
+
+### Peak coverage for QTLs 
+I can also look at peak coverage for peaks with QLTs and those without. I will first look at this on peak level then mvoe to gene level. The peak scores come from the coverage in the peaks. 
+
+The NuclearAPA_peakdist data frame has the information I need for this.  
+
+```{r}
+ggplot(NuclearAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title="Peak score by significance") + scale_fill_brewer(palette="Paired")
+```
+
+This is expected. It makes sense that we have more power to detect qtls in higher expressed peaks. This leads me to believe that filtering out low peaks may add power but will not mitigate the effect. 
+##Where are the SNPs  
+
+I created the significant SNP files in the [Characterize Total APAqtl analysis](characterizeTotalApaQtls.html) analysis. 
+
+```{r}
+chromHmm=read.table("../data/ChromHmmOverlap/chromHMM_regions.txt", col.names = c("number", "name"), stringsAsFactors = F)
+
+NuclearOverlapHMM=read.table("../data/ChromHmmOverlap/Nuc_overlapHMM.bed", col.names=c("chrom", "start", "end", "sid", "significance", "strand", "number"))
+NuclearOverlapHMM$number=as.integer(NuclearOverlapHMM$number)
+NuclearOverlapHMM_names=NuclearOverlapHMM %>% left_join(chromHmm, by="number")
+```
+
+```{r}
+ggplot(NuclearOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Nuclear APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+I do still need to get 880 random snps.  
+
+
+```{bash,eval=F}
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_nuclear_Random880.txt
+
+```
+
+Run QTLNOMres2SigSNPbed.py with nuclear 880  and sort output  
+
+```{bash,eval=F}
+import pybedtools 
+
+RANDnuc=pybedtools.BedTool('/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_nuclear_Random880.sort.bed') 
+
+
+
+hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+
+#map hmm to snps  
+NucRnad_overlapHMM=RANDnuc.map(hmm, c=4)
+
+
+#save results  
+
+NucRnad_overlapHMM.saveas("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_nuclear_Random_overlapHMM.bed")
+
+
+```
+
+
+```{r}
+NuclearRandOverlapHMM=read.table("../data/ChromHmmOverlap/ApaQTL_nuclear_Random_overlapHMM.bed", col.names=c("chrom", "start", "end", "sid", "significance", "strand", "number"))
+
+NuclearRandOverlapHMM_names=NuclearRandOverlapHMM %>% left_join(chromHmm, by="number")
+```
+
+
+
+```{r}
+ggplot(NuclearRandOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Nuclear APAQtls (Random)" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+To put this on the same plot I can count the number in each then plot them next to eachother.  
+
+
+```{r}
+random_perChromHMM_nuc=NuclearRandOverlapHMM_names %>%  group_by(name) %>% summarise(Random=n())
+sig_perChromHMM_nuc= NuclearOverlapHMM_names %>%  group_by(name) %>%  summarise(Nuclear_QTLs=n())
+
+perChrommHMM_nuc=random_perChromHMM_nuc %>%  full_join(sig_perChromHMM_nuc, by="name", ) %>% replace_na(list(Random=0,Total_QTLs=0))  
+
+perChrommHMM_nuc_melt=melt(perChrommHMM_nuc, id.vars="name")
+names(perChrommHMM_nuc_melt)=c("Region","Set", "N_Snps" )
+```
+
+
+```{r}
+chromenrichNuclearplot=ggplot(perChrommHMM_nuc_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position="dodge", stat="identity") +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Enrichment of Nuclear QTLs by chromatin region", y="Number of Snps", x="Chromatin Region") + scale_fill_brewer(palette="Paired")
+chromenrichNuclearplot
+ggsave("../output/plots/ChromHmmEnrich_Nuclear.png", chromenrichNuclearplot)
+
+```
+
+
