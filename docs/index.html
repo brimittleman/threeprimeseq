@@ -221,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-22</p>
+<p><strong>Last updated:</strong> 2018-10-24</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c8dbaf06efdfed0b7563c03c01ccc390b6cea6c0" target="_blank">c8dbaf0</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/96a97f4b407baa2e87100144f096a2a9c483e874" target="_blank">96a97f4</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -248,6 +248,7 @@ Untracked files:
     Untracked:  analysis/verifyBAM.Rmd
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ChromHmmOverlap/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/NuclearApaQTLs.txt
@@ -267,6 +268,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
@@ -346,6 +348,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/96a97f4b407baa2e87100144f096a2a9c483e874/analysis/index.Rmd" target="_blank">96a97f4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+<td style="text-align:left;">
+add nuclear characterization
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/index.html" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1779,6 +1815,7 @@ Start workflowr project.
 <li><p><a href="PeakToGeneAssignment.html">QTL and Diff iso wih correct peak to gene assignment</a></p></li>
 <li><p><a href="conditionAPAqtlFraction.html">Condition Total and Nuclear QTLs on each other</a></p></li>
 <li><p><a href="characterizeTotalApaQtls.html">Characterize Total Apa QTLS</a></p></li>
+<li><p><a href="characterizeNuclearApaQtls.html">Characterize Nuclear Apa QTLS</a></p></li>
 </ul>
 <div id="molecular-qtl-analysis-and-overlap" class="section level3">
 <h3>Molecular QTL analysis and Overlap:</h3>
