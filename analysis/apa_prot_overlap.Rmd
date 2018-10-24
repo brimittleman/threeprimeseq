@@ -18,6 +18,8 @@ library(tidyverse)
 library(data.table)
 library(cowplot)
 library(ggpubr)
+library(VennDiagram)
+library(gridExtra)
 ```
 
 Gene Names:  
@@ -520,3 +522,75 @@ paste("Sig Prot not 4su60", allOverlap_T_lowP_higsu60, sep=" ")
 ```
 
 
+###CLoser to a global scale  
+
+In order to think about this more broadly I am going to plot overlaps:
+
+Given all of these are APA qtls, how many are significant in:  
+
+* protein  
+* RNA and protein
+* RNA but not protein 
+* Not in RNA or Protein  
+
+Do this first for total:  
+
+```{r}
+p_N=allOverlap_N %>% filter(prot<.05) %>% nrow()
+RP_N=allOverlap_N %>% filter(prot<.05 & RNA <.05) %>% nrow()
+RnotP_N=allOverlap_N %>% filter(prot>.05 & RNA <.05) %>% nrow()
+notRnotP_N=allOverlap_N %>% filter(prot>.05 & RNA >.05) %>% nrow()
+notRP_N= allOverlap_N %>% filter(prot<.05 & RNA >.05) %>% nrow()
+
+
+overlapNames=c("Protein", "RNAandProtein", "RNAnotProt", "Neither", "ProteinnotRNA")
+NucRPoverlap=c(p_N/nrow(allOverlap_N),RP_N/nrow(allOverlap_N), RnotP_N/nrow(allOverlap_N), notRnotP_N/nrow(allOverlap_N),notRP_N/nrow(allOverlap_N) )
+
+
+NucOverlapDF=data.frame(overlapNames,NucRPoverlap)
+ggplot(NucOverlapDF, aes(x=overlapNames, y=NucRPoverlap)) + geom_bar(stat="identity")
+```
+
+
+DO the same for total:  
+
+```{r}
+p_T=allOverlap_T %>% filter(prot<.05) %>% nrow()
+RP_T=allOverlap_T %>% filter(prot<.05 & RNA <.05) %>% nrow()
+RnotP_T=allOverlap_T %>% filter(prot>.05 & RNA <.05) %>% nrow()
+notRnotP_T=allOverlap_T %>% filter(prot>.05 & RNA >.05) %>% nrow()
+notRP_T= allOverlap_T %>% filter(prot<.05 & RNA >.05) %>% nrow()
+
+TotRPoverlap=c(p_T/nrow(allOverlap_T),RP_T/nrow(allOverlap_T), RnotP_T/nrow(allOverlap_T), notRnotP_T/nrow(allOverlap_T),notRP_T/nrow(allOverlap_T))
+TotOverlapDF=data.frame(overlapNames,TotRPoverlap)
+ggplot(TotOverlapDF, aes(x=overlapNames, y=TotRPoverlap)) + geom_bar(stat="identity")
+```
+```{r}
+allOverlapDF=TotOverlapDF %>% full_join(NucOverlapDF, by="overlapNames")
+
+allOverlapDF_melt=melt(allOverlapDF, id.vars="overlapNames")
+
+ggplot(allOverlapDF_melt, aes(x=overlapNames, y=value, by=variable, fill=variable)) + geom_bar(stat="identity", position="dodge") + scale_fill_manual(values=c("darkviolet", "deepskyblue3")) + labs(y="Proportion of APA QTLs", x="Category")
+```
+
+```{r}
+ 
+
+oT=overlapplotT=draw.pairwise.venn(area1=.08, area2=.07, cross.area = .02, category = c("Protein", "RNA"),lty = rep("solid", 2), fill = c("Blue", "Orange"), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2), euler.d = T, scaled=T)
+
+png("../output/plots/overlapProtRNAvenT.png") 
+grid.arrange(gTree(children=oT), top="Total: Protein and RNA QTL overlap", bottom="Neither=.37")
+
+dev.off()
+```
+
+```{r}
+
+oN=overlapplotN=draw.pairwise.venn(area1=.056, area2=.096, cross.area = .016, category = c("Protein", "RNA"),lty = rep("solid", 2), fill = c("Blue", "Orange"), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2), euler.d = T, scaled=T)
+
+png("../output/plots/overlapProtRNAvenN.png") 
+
+grid.arrange(gTree(children=oN), top="Nuclear:Protein and RNA QTL overlap", bottom="Neither=.38")
+dev.off()
+```
+This doesnt look statistically significant but it does look like the total fraction has more pQTLs that are not eQTLs and in the nuclear you get the opposite effect.  
