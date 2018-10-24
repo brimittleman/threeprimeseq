@@ -1176,7 +1176,7 @@ for num, ln in enumerate(inFile):
             end=int(end)
             strand=ID.split(":")[4]
             gene=ID.split(":")[5]
-            new_ID="chr%s:%d:%d:%s_%s_%s"%(chrom, start, end, gene, strand, peak)
+            new_ID="chr%s:%d:%d:%s"%(chrom, start, end, gene)
             pheno=ln.split()[6:]
             pheno.insert(0, new_ID)
             outFile.write(" ".join(pheno)+'\n')
@@ -1273,7 +1273,7 @@ outfile.close()
 ```
 
 
-*try zipping the phenos*  
+
 run_leafcutter_ds_bychrom_tr.sh  
 ```{bash, eval=F}
 #!/bin/bash
@@ -1287,15 +1287,85 @@ run_leafcutter_ds_bychrom_tr.sh
 #SBATCH --mem=50G
 #SBATCH --mail-type=END
 
-module load R  
+module load R
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
+Rscript /project2/gilad/briana/davidaknowles-leafcutter-c3d9474/scripts/leafcutter_ds.R --num_threads 4  /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_transcript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.ALL.pheno_fixed_${i}.txt /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/TN_diff_isoform_chr${i}.txt 
 done
 ```
 
-Error:  
-Evaluation error: object 'perturbed' not found.
+  
+* Error in colSums(cluster_counts > 0): 'x' must be an array of at least two dimensions
+
+* Not enough valid samples	NA	NA	NA	chr7:TRPV6	NA
+
+* <=1 sample with coverage>min_coverage	NA	NA	NA	chr7:WBSCR17	NA
 
 
+There are duplicates peak IDs in chr 6 and 19. This could be due to the same gene name on diff strands from diff versions of the gene. The problems on 6 come from HLA, the one overlap on 19 is DPP9. I am going to remove the dep lines with low coverage because they will probably drop out of the leafcutter analysis due to low numbers.  
+
+The errors in the significance files are due to clusters that do not satisfy requirements for leafcutter. Either there is only 1 peak in the gene, there are not enought samples with coverage or the min coverage is not satisfied. I can remove these peaks from the results.  
+
+Plot results:  
+
+```{r}
+diffIso=read.table("../data/diff_iso_trans/TN_diff_isoform_all_cluster_sig_Succ.txt", col.names = c("status",	"loglr",	"df",	"p",	"cluster",	"p.adjust"))
+
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab="-log10 Total Adjusted Leafcutter pvalue", xlab="-log 10 Uniform expectation", main="Leafcutter differencial isoform analysis between fractions")
+abline(0,1)
+```
+
+
+A better way to look at this is effect sizes because we expect a large amount of signal here.  
+
+```{r}
+effectsize=read.table("../data/diff_iso_trans/TN_diff_isoform_ALL.txt_effect_sizes.fixed.txt", stringsAsFactors = F, col.names=c('intron',	'logef'	,'Nuclear',	'Total','deltapsi'))
+```
+
+Plot effect sizes:
+
+```{r}
+
+effectsize$logef=as.numeric(effectsize$logef)
+plot(sort(effectsize$logef),main="Leafcutter effect Sizes", ylab="Effect size", xlab="Peak Index")
+
+```
+
+
+Negative effect sizes are more in nuclear. There are 193842 negative effect sizes and 70873 positive.  
+
+I want to color this plot by top and bottom 5%.  
+
+```{r}
+quantile(effectsize$logef,na.rm=T,probs = seq(0, 1, .05))
+
+
+```
+
+
+
+5% is -.61, 95% is 1.18
+
+```{r}
+
+
+effectsize$colorsF=ifelse(effectsize$logef >= 1.18, "deepskyblue3", ifelse(effectsize$logef <= -.61,"darkviolet", "black"))
+
+plot(effectsize$logef, col = effectsize$colorsF ,main="Leafcutter effect Sizes", ylab="Effect size")
+legend("bottomleft", legend=c("Top 5%: Total", "Bottom 5%: Nuclear"),
+       col=c( "deepskyblue3","darkviolet"), pch=19, cex=0.8)
+
+```
+I want to plot this by chr.
+
+```{r}
+effectsize$colorsF=as.factor(effectsize$colorsF)
+
+effectsize_chr=effectsize %>% tidyr::separate(intron, into=c("chrom", "start", "end", "gene"), sep=":")
+
+effectsize_chr$chrom=as.factor(effectsize_chr$chrom)
+ggplot(effectsize_chr, aes(x=chrom, y=logef, col=chrom)) + geom_jitter()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
 
