@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-05</p>
+<p><strong>Last updated:</strong> 2018-10-24</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,13 +346,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/0d453347bbc9bd3309eba0affd114647f1ac1685" target="_blank">0d45334</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2d5ac0891350d55eb99769b5b637569b0c951a44" target="_blank">2d5ac08</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
 Untracked files:
@@ -363,12 +364,17 @@ Untracked files:
     Untracked:  analysis/verifyBAM.Rmd
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/GM12878.chromHMM.bed
+    Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeaksUsed/
     Untracked:  data/RNAkalisto/
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/apaExamp/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
     Untracked:  data/bin200.Anuccov.bed
@@ -378,6 +384,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
@@ -391,6 +398,7 @@ Untracked files:
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
     Untracked:  data/mol_overlap/
+    Untracked:  data/mol_pheno/
     Untracked:  data/nom_QTL/
     Untracked:  data/nom_QTL_opp/
     Untracked:  data/nom_QTL_trans/
@@ -455,6 +463,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2d5ac0891350d55eb99769b5b637569b0c951a44/analysis/PeakToGeneAssignment.Rmd" target="_blank">2d5ac08</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+<td style="text-align:left;">
+leafcutter effect size plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/73bc857cbab2fbd4dd6fecb0911a447d04abbe56/docs/PeakToGeneAssignment.html" target="_blank">73bc857</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -767,12 +809,12 @@ test peak to gene transcript dist
 <p></details></p>
 <hr />
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -1690,6 +1732,36 @@ sum(peak2transDist_noties_transcript$onePeak==1)</code></pre>
 plot(tot.perm$ppval, tot.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-32-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/73bc857cbab2fbd4dd6fecb0911a447d04abbe56/docs/figure/PeakToGeneAssignment.Rmd/unnamed-chunk-32-1.png" target="_blank">73bc857</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>tot_qtl_10= tot.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
 tot_qtl_10</code></pre>
 <pre><code>[1] 118</code></pre>
@@ -1702,6 +1774,36 @@ tot_qtl_10</code></pre>
 plot(nuc.perm$ppval, nuc.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-34-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/73bc857cbab2fbd4dd6fecb0911a447d04abbe56/docs/figure/PeakToGeneAssignment.Rmd/unnamed-chunk-34-1.png" target="_blank">73bc857</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>nuc_qtl_10= nuc.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
 nuc_qtl_10</code></pre>
 <pre><code>[1] 880</code></pre>
@@ -1876,6 +1978,36 @@ nuc.perm$sig=as.factor(nuc.perm$sig)
 nucQTLdist_plot= ggplot(nuc.perm, aes(x=log10(abs(dist)), by=sig, fill=sig)) + geom_density(alpha=.5) + labs(title=&quot;Distance between snp and peak\n Nuclear fraction&quot;)</code></pre>
 <pre class="r"><code>plot_grid(totQTLdist_plot, nucQTLdist_plot )</code></pre>
 <p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-41-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/73bc857cbab2fbd4dd6fecb0911a447d04abbe56/docs/figure/PeakToGeneAssignment.Rmd/unnamed-chunk-41-1.png" target="_blank">73bc857</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>How many of the significant snps are the same.</p>
 <pre class="r"><code>tot.perm_sigOnly=tot.perm %&gt;% filter(sig==&quot;Yes&quot;)
 nuc.perm_sigOnly=nuc.perm %&gt;% filter(sig==&quot;Yes&quot;)</code></pre>
@@ -1897,6 +2029,36 @@ nrow(tot.perm_sigOnly_notT)</code></pre>
 <pre class="r"><code>grid.newpage()
 qtloverlap=draw.pairwise.venn(area1 = 3049, area2 = 677, cross.area = 148, category = c(&quot;Nuclear: QTLs&quot;, &quot;Total: QTLs&quot;), lty = rep(&quot;solid&quot;, 2), fill = c(&quot;light blue&quot;, &quot;pink&quot;), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2))</code></pre>
 <p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-44-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/73bc857cbab2fbd4dd6fecb0911a447d04abbe56/docs/figure/PeakToGeneAssignment.Rmd/unnamed-chunk-44-1.png" target="_blank">73bc857</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-05
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Overlap accouting for gene.</p>
 <pre class="r"><code>#nuc genes
 nuc.perm_sigOnly_gene= nuc.perm_sigOnly %&gt;%  separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% select(gene) %&gt;% distinct(gene)
@@ -1984,7 +2146,7 @@ for num, ln in enumerate(inFile):
             end=int(end)
             strand=ID.split(&quot;:&quot;)[4]
             gene=ID.split(&quot;:&quot;)[5]
-            new_ID=&quot;chr%s:%d:%d:%s_%s_%s&quot;%(chrom, start, end, gene, strand, peak)
+            new_ID=&quot;chr%s:%d:%d:%s&quot;%(chrom, start, end, gene)
             pheno=ln.split()[6:]
             pheno.insert(0, new_ID)
             outFile.write(&quot; &quot;.join(pheno)+&#39;\n&#39;)
@@ -2058,8 +2220,7 @@ for line, i in enumerate(infile):
           next
                 
 outfile.close()</code></pre>
-<p><em>try zipping the phenos</em><br />
-run_leafcutter_ds_bychrom_tr.sh</p>
+<p>run_leafcutter_ds_bychrom_tr.sh</p>
 <pre class="bash"><code>#!/bin/bash
 
 #SBATCH --job-name=run_leafcutter_ds_bychrom_tr
@@ -2071,13 +2232,58 @@ run_leafcutter_ds_bychrom_tr.sh</p>
 #SBATCH --mem=50G
 #SBATCH --mail-type=END
 
-module load R  
+module load R
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
+Rscript /project2/gilad/briana/davidaknowles-leafcutter-c3d9474/scripts/leafcutter_ds.R --num_threads 4  /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_transcript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.ALL.pheno_fixed_${i}.txt /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso_transcript/TN_diff_isoform_chr${i}.txt 
 done</code></pre>
-<p>Error:<br />
-Evaluation error: object ‘perturbed’ not found.</p>
+<ul>
+<li><p>Error in colSums(cluster_counts &gt; 0): ‘x’ must be an array of at least two dimensions</p></li>
+<li><p>Not enough valid samples NA NA NA chr7:TRPV6 NA</p></li>
+<li><p>&lt;=1 sample with coverage&gt;min_coverage NA NA NA chr7:WBSCR17 NA</p></li>
+</ul>
+<p>There are duplicates peak IDs in chr 6 and 19. This could be due to the same gene name on diff strands from diff versions of the gene. The problems on 6 come from HLA, the one overlap on 19 is DPP9. I am going to remove the dep lines with low coverage because they will probably drop out of the leafcutter analysis due to low numbers.</p>
+<p>The errors in the significance files are due to clusters that do not satisfy requirements for leafcutter. Either there is only 1 peak in the gene, there are not enought samples with coverage or the min coverage is not satisfied. I can remove these peaks from the results.</p>
+<p>Plot results:</p>
+<pre class="r"><code>diffIso=read.table(&quot;../data/diff_iso_trans/TN_diff_isoform_all_cluster_sig_Succ.txt&quot;, col.names = c(&quot;status&quot;,   &quot;loglr&quot;,    &quot;df&quot;,   &quot;p&quot;,    &quot;cluster&quot;,  &quot;p.adjust&quot;))
+
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab=&quot;-log10 Total Adjusted Leafcutter pvalue&quot;, xlab=&quot;-log 10 Uniform expectation&quot;, main=&quot;Leafcutter differencial isoform analysis between fractions&quot;)
+abline(0,1)</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>A better way to look at this is effect sizes because we expect a large amount of signal here.</p>
+<pre class="r"><code>effectsize=read.table(&quot;../data/diff_iso_trans/TN_diff_isoform_ALL.txt_effect_sizes.fixed.txt&quot;, stringsAsFactors = F, col.names=c(&#39;intron&#39;,  &#39;logef&#39; ,&#39;Nuclear&#39;, &#39;Total&#39;,&#39;deltapsi&#39;))</code></pre>
+<p>Plot effect sizes:</p>
+<pre class="r"><code>effectsize$logef=as.numeric(effectsize$logef)
+plot(sort(effectsize$logef),main=&quot;Leafcutter effect Sizes&quot;, ylab=&quot;Effect size&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Negative effect sizes are more in nuclear. There are 193842 negative effect sizes and 70873 positive.</p>
+<p>I want to color this plot by top and bottom 5%.</p>
+<pre class="r"><code>quantile(effectsize$logef,na.rm=T,probs = seq(0, 1, .05))</code></pre>
+<pre><code>          0%           5%          10%          15%          20% 
+-20.08363095  -0.60972092  -0.45829291  -0.36423672  -0.29749657 
+         25%          30%          35%          40%          45% 
+ -0.25078432  -0.21370090  -0.18275473  -0.15592521  -0.13132430 
+         50%          55%          60%          65%          70% 
+ -0.11103719  -0.09127381  -0.07203322  -0.05144509  -0.02853051 
+         75%          80%          85%          90%          95% 
+  0.04114049   0.20084899   0.41743866   0.73096535   1.18251507 
+        100% 
+  7.45641015 </code></pre>
+<p>5% is -.61, 95% is 1.18</p>
+<pre class="r"><code>effectsize$colorsF=ifelse(effectsize$logef &gt;= 1.18, &quot;deepskyblue3&quot;, ifelse(effectsize$logef &lt;= -.61,&quot;darkviolet&quot;, &quot;black&quot;))
+
+plot(effectsize$logef, col = effectsize$colorsF ,main=&quot;Leafcutter effect Sizes&quot;, ylab=&quot;Effect size&quot;)
+legend(&quot;bottomleft&quot;, legend=c(&quot;Top 5%: Total&quot;, &quot;Bottom 5%: Nuclear&quot;),
+       col=c( &quot;deepskyblue3&quot;,&quot;darkviolet&quot;), pch=19, cex=0.8)</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /> I want to plot this by chr.</p>
+<pre class="r"><code>effectsize$colorsF=as.factor(effectsize$colorsF)
+
+effectsize_chr=effectsize %&gt;% tidyr::separate(intron, into=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;), sep=&quot;:&quot;)
+
+effectsize_chr$chrom=as.factor(effectsize_chr$chrom)
+ggplot(effectsize_chr, aes(x=chrom, y=logef, col=chrom)) + geom_jitter()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-59-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -2113,15 +2319,15 @@ loaded via a namespace (and not attached):
 [16] bindr_0.1.1          plyr_1.8.4           munsell_0.5.0       
 [19] gtable_0.2.0         cellranger_1.1.0     rvest_0.3.2         
 [22] R.methodsS3_1.7.1    evaluate_0.11        labeling_0.3        
-[25] knitr_1.20           broom_0.5.0          Rcpp_0.12.18        
+[25] knitr_1.20           broom_0.5.0          Rcpp_0.12.19        
 [28] formatR_1.5          scales_1.0.0         backports_1.1.2     
-[31] jsonlite_1.5         hms_0.4.2            digest_0.6.16       
-[34] stringi_1.2.4        rprojroot_1.3-2      cli_1.0.0           
+[31] jsonlite_1.5         hms_0.4.2            digest_0.6.17       
+[34] stringi_1.2.4        rprojroot_1.3-2      cli_1.0.1           
 [37] tools_3.5.1          magrittr_1.5         lazyeval_0.2.1      
 [40] futile.options_1.0.1 crayon_1.3.4         whisker_0.3-2       
 [43] pkgconfig_2.0.2      MASS_7.3-50          xml2_1.2.0          
 [46] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.10      
-[49] httr_1.3.1           rstudioapi_0.7       R6_2.2.2            
+[49] httr_1.3.1           rstudioapi_0.8       R6_2.3.0            
 [52] nlme_3.1-137         git2r_0.23.0         compiler_3.5.1      </code></pre>
 </div>
 
