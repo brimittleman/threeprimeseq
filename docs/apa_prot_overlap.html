@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-22</p>
+<p><strong>Last updated:</strong> 2018-10-24</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c8dbaf06efdfed0b7563c03c01ccc390b6cea6c0" target="_blank">c8dbaf0</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d8c6f3c5da410db72cab08afd52d4b05d4852812" target="_blank">d8c6f3c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -365,6 +365,7 @@ Untracked files:
     Untracked:  analysis/verifyBAM.Rmd
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ChromHmmOverlap/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/NuclearApaQTLs.txt
@@ -384,6 +385,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
@@ -468,6 +470,57 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d8c6f3c5da410db72cab08afd52d4b05d4852812/analysis/apa_prot_overlap.Rmd" target="_blank">d8c6f3c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+<td style="text-align:left;">
+add ven diagrams
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/70a8d68e3f30a742c9fe9e1dae6c6a37f229f981/analysis/apa_prot_overlap.Rmd" target="_blank">70a8d68</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-23
+</td>
+<td style="text-align:left;">
+add anova pvalue to examples
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/apa_prot_overlap.html" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c8dbaf06efdfed0b7563c03c01ccc390b6cea6c0/analysis/apa_prot_overlap.Rmd" target="_blank">c8dbaf0</a>
 </td>
 <td style="text-align:left;">
@@ -514,6 +567,35 @@ Attaching package: &#39;cowplot&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:ggplot2&#39;:
 
     ggsave</code></pre>
+<pre class="r"><code>library(ggpubr)</code></pre>
+<pre><code>Loading required package: magrittr</code></pre>
+<pre><code>
+Attaching package: &#39;magrittr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    set_names</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    extract</code></pre>
+<pre><code>
+Attaching package: &#39;ggpubr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:cowplot&#39;:
+
+    get_legend</code></pre>
+<pre class="r"><code>library(VennDiagram)</code></pre>
+<pre><code>Loading required package: grid</code></pre>
+<pre><code>Loading required package: futile.logger</code></pre>
+<pre><code>
+Attaching package: &#39;VennDiagram&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggpubr&#39;:
+
+    rotate</code></pre>
+<pre class="r"><code>library(gridExtra)</code></pre>
+<pre><code>
+Attaching package: &#39;gridExtra&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:dplyr&#39;:
+
+    combine</code></pre>
 <p>Gene Names:</p>
 <pre class="r"><code>geneNames=read.table(&quot;../data/ensemble_to_genename.txt&quot;, stringsAsFactors = F, header = T, sep=&quot;\t&quot;)</code></pre>
 <p>Significant APA QTLS:</p>
@@ -539,24 +621,26 @@ genesBotNuc=protQTL_sig %&gt;%  inner_join(nuclearAPA, by=c(&quot;Gene.name&quot
   RNAg_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_RNAseqGeuvadis_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header = T)
   ribo_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_ribo_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;),header=T)
   prot_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_prot.&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header=T)
+
   
-  ggplot_func= function(file, molPhen,GENE){
+  ggplot_func= function(file, molPhen,GENE,allOverlap_T){
     file = file %&gt;% mutate(genotype=Allele1 + Allele2)
     file$genotype= as.factor(as.character(file$genotype))
-    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y=&quot;Phenotpye&quot;,title=paste(molPhen, GENE, sep=&quot;: &quot;)) + scale_fill_brewer(palette=&quot;Paired&quot;)
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y=&quot;Phenotpye&quot;,title=paste(molPhen, GENE, sep=&quot;: &quot;)) + scale_fill_brewer(palette=&quot;Paired&quot;) + stat_compare_means(method = &quot;anova&quot;,  label.y.npc = &quot;top&quot;)
     return(plot)
   }
+
   
   apaNplot=ggplot_func(apaN_file, &quot;Apa Nuclear&quot;, gene)
   apaTplot=ggplot_func(apaT_file, &quot;Apa Total&quot;, gene)
   su30plot=ggplot_func(su30_file, &quot;4su30&quot;,gene)
   su60plot=ggplot_func(su60_file, &quot;4su60&quot;,gene)
-  RNAplot=ggplot_func(RNA_file, &quot;RNA Seq&quot;,gene)
-  RNAgPlot=ggplot_func(RNAg_file, &quot;RNA Seq Geuvadis&quot;,gene)
-  riboPlot= ggplot_func(ribo_file, &quot;Ribo Seq&quot;,gene)
+  RNAplot=ggplot_func(RNA_file, &quot;RNA&quot;,gene)
+  RNAgPlot=ggplot_func(RNAg_file, &quot;RNAg&quot;,gene)
+  riboPlot= ggplot_func(ribo_file, &quot;Ribo&quot;,gene)
   protplot=ggplot_func(prot_file, &quot;Protein&quot;,gene)
   
-  full_plot= plot_grid(apaNplot,apaTplot, su30plot, su60plot, RNAplot, RNAgPlot, riboPlot, protplot,nrow=2)
+  full_plot= plot_grid(apaNplot,apaTplot, RNAplot, protplot,nrow=2)
   return (full_plot)
 }</code></pre>
 <p>Total:</p>
@@ -577,6 +661,36 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;10:102740271&quot;, peak=&quot;peak44585&quot;, gene=&quot;ENSG00000055950&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-8-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-8-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Nuclear:</p>
 <ul>
 <li>SWAP70 peak49384 11:9732917</li>
@@ -595,6 +709,36 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;11:9732917&quot;, peak=&quot;peak49384&quot;, gene=&quot;ENSG00000133789&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-10-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <ul>
 <li>DHRS7B peak132739 17:21102458</li>
 </ul>
@@ -611,7 +755,40 @@ sbatch run_createQTLsnpMolPhenTable.sh &quot;17&quot; &quot;17:21102458&quot; &q
 scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*17:21102458* .
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;17:21102458&quot;, peak=&quot;peak132739&quot;, gene=&quot;ENSG00000109016&quot;)</code></pre>
-<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /> * UBA6 peak240167 4:68502794</p>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-12-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<ul>
+<li>UBA6 peak240167 4:68502794</li>
+</ul>
 <pre class="bash"><code>grep UBA6 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
 #ENSG00000033178
 
@@ -626,6 +803,36 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;4:68502794&quot;, peak=&quot;peak240167&quot;, gene=&quot;ENSG00000033178&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-14-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This is not the most effective way to do this because I am overlapping by gene then looking at the effect of the apaQTL snp. I want a method that will look directly at the effect of one snp. I can use the overlap files I created based on the APA qtls in other phenotypes. I can overlap the phenotypes and look for snps that have low pvalues in APA and protien.</p>
 </div>
 <div id="snp-level" class="section level2">
@@ -646,14 +853,135 @@ allOverlap_T=totAPAinsu30 %&gt;%  full_join(totAPAinsu60, by=c(&quot;Gene.name&q
 colnames(allOverlap_T)=c(&quot;Gene.name&quot;, &quot;sid&quot;, &quot;su30&quot;, &quot;su60&quot;, &quot;RNA&quot;, &quot;RNAg&quot;, &quot;ribo&quot;, &quot;prot&quot;)</code></pre>
 <pre class="r"><code>plot(sort(allOverlap_T$prot))</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-16-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-16-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot(allOverlap_T$RNA ~ allOverlap_T$prot)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-16-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-16-2.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I want to make a ggplot of these where I color them by RNA pvalue:</p>
 <pre class="r"><code>allOverlap_T_lowP=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05)
 ggplot(allOverlap_T_lowP, aes(x=RNA, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0) + geom_vline(xintercept = .05, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-17-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(allOverlap_T_lowP, aes(x=RNAg, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0) + geom_vline(xintercept = .05, col=&quot;red&quot;)</code></pre>
-<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /> I can use these to look for examples of SNPs that are significant in prot but not in RNA.</p>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-18-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>I can use these to look for examples of SNPs that are significant in prot but not in RNA.</p>
 <p>Look at some of these:</p>
 <p>Total RNA:<br />
 * SACM1L<br />
@@ -681,7 +1009,38 @@ sbatch run_createQTLsnpMolPhenTable.sh &quot;19&quot; &quot;19:4236475&quot; &qu
 scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*19:4236475* .
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;19:4236475&quot;, peak=&quot;peak152751&quot;, gene=&quot;ENSG00000105246&quot;)</code></pre>
-<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /> FBXL18 peak291746 7:5524129</p>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-20-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>FBXL18 peak291746 7:5524129</p>
 <p>“The protein encoded by this gene is a member of a family of proteins that contain an approximately 40-amino acid F-box motif. This motif is important for interaction with SKP1 and for targeting some proteins for degradation.” genecards.org</p>
 <pre class="bash"><code>grep FBXL18 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
 #ENSG00000155034
@@ -697,8 +1056,39 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;7:5524129&quot;, peak=&quot;peak291746&quot;, gene=&quot;ENSG00000155034&quot;)</code></pre>
 <pre><code>Warning: Removed 4 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 4 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 4 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-22-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <ul>
 <li>PSMF1 peak193648 20:1131308</li>
 </ul>
@@ -717,8 +1107,39 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;20:1131308&quot;, peak=&quot;peak193648&quot;, gene=&quot;ENSG00000125818&quot;)</code></pre>
 <pre><code>Warning: Removed 2 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 2 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-24-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-24-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I want to know the number of these that are &lt;.05 in protien and above .1 in RNA</p>
 <pre class="r"><code>allOverlap_T_lowP_highRNA=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNA&gt;.05)
 allOverlap_T_lowP_highRNAg=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNAg&gt;.05)</code></pre>
@@ -744,8 +1165,68 @@ colnames(allOverlap_N)=c(&quot;Gene.name&quot;, &quot;sid&quot;, &quot;su30&quot
 allOverlap_N_lowP=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05)
 ggplot(allOverlap_N_lowP, aes(x=RNA, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0)+ geom_vline(xintercept = .05, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-28-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-28-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(allOverlap_N_lowP, aes(x=RNAg, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0)+ geom_vline(xintercept = .05, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-29-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-29-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>allOverlap_N_lowP_highRNA=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNA&gt;.05)
 allOverlap_N_lowP_highRNAg=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNAg&gt;.05)</code></pre>
 <p>39 snps with &lt; .05 for protein. Of those 28 have RNA pvalues greater than .05</p>
@@ -772,8 +1253,42 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;4:166260601&quot;, peak=&quot;peak249109&quot;, gene=&quot;ENSG00000052802&quot;)</code></pre>
 <pre><code>Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 3 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
-<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /> * LYAR peak235215 4:4196045</p>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-35-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-35-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<ul>
+<li>LYAR peak235215 4:4196045</li>
+</ul>
 <p>involved in processing pre-rRNA</p>
 <pre class="bash"><code>grep LYAR /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
 #ENSG00000145220
@@ -789,6 +1304,36 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;4:4196045&quot;, peak=&quot;peak235215&quot;, gene=&quot;ENSG00000145220&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-37-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-37-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>CD2BP2 peak122237 16:29898001</p>
 <p>From genecards: “in the cytoplasm, the encoded protein binds the cytoplasmic tail of human surface antigen CD2 via its C-terminal GYF domain, and regulate CD2-triggered T lymphocyte activation. In the nucleus, this protein is a component of the U5 small nuclear ribonucleoprotein complex and is involved in RNA splicing.”</p>
 <pre class="bash"><code>grep CD2BP2 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
@@ -805,8 +1350,40 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;16:29898001&quot;, peak=&quot;peak122237&quot;, gene=&quot;ENSG00000169217&quot;)</code></pre>
 <pre><code>Warning: Removed 5 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 5 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 5 rows containing missing values (geom_point).</code></pre>
-<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /> KDM2A peak55622 11:66851583</p>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-39-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-39-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>KDM2A peak55622 11:66851583</p>
 <pre class="bash"><code>grep KDM2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
 #ENSG00000173120
 
@@ -821,8 +1398,39 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;11:66851583&quot;, peak=&quot;peak55622&quot;, gene=&quot;ENSG00000173120&quot;)</code></pre>
 <pre><code>Warning: Removed 8 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 8 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 8 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-41-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-41-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>RINT1 peak303436 7:105155320</p>
 <p>Interacts with double strand break repair protiens, regulates cell cycle and telomere length</p>
 <pre class="bash"><code>grep RINT1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
@@ -839,13 +1447,135 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;7:105155320&quot;, peak=&quot;peak303436&quot;, gene=&quot;ENSG00000135249&quot;)</code></pre>
 <pre><code>Warning: Removed 2 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 2 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-43-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-43-1.png" target="_blank">5649809</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-22
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="significance" class="section level3">
 <h3>Significance</h3>
 <p>In the next step I need to add significance to the boxplots and think more about the significance cutoffs.</p>
 <p>Maybe I can compare 2 other phenotypes for &lt;.05 and &gt;.05 to see if the percentage is less than what I see for RNA and protein.</p>
+<pre class="r"><code>sigProt=allOverlap_N_lowP %&gt;% nrow()
+paste(&quot;Sig Prot&quot;, sigProt, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot 39&quot;</code></pre>
+<pre class="r"><code>allOverlap_N_lowP_higrna=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNA&gt;.05) %&gt;%nrow()
+paste(&quot;Sig Prot not RNA&quot;, allOverlap_N_lowP_higrna, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot not RNA 28&quot;</code></pre>
+<pre class="r"><code>allOverlap_N_lowP_higribo=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(ribo&gt;.05) %&gt;%nrow()
+paste(&quot;Sig Prot not ribo&quot;, allOverlap_N_lowP_higribo, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot not ribo 23&quot;</code></pre>
+<pre class="r"><code>allOverlap_N_lowP_higsu30=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(su30&gt;.05) %&gt;% nrow()
+paste(&quot;Sig Prot not 4su30&quot;, allOverlap_N_lowP_higsu30, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot not 4su30 31&quot;</code></pre>
+<pre class="r"><code>allOverlap_N_lowP_higsu60=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(su60&gt;.05) %&gt;% nrow()
+paste(&quot;Sig Prot not 4su60&quot;, allOverlap_N_lowP_higsu60, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot not 4su60 27&quot;</code></pre>
+<pre class="r"><code>sigProtT=allOverlap_T_lowP %&gt;% nrow()
+paste(&quot;Sig Prot&quot;, sigProtT, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot 8&quot;</code></pre>
+<pre class="r"><code>allOverlap_T_lowP_higrna=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNA&gt;.05) %&gt;%nrow()
+paste(&quot;Sig Prot not RNA&quot;, allOverlap_T_lowP_higrna, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot not RNA 6&quot;</code></pre>
+<pre class="r"><code>allOverlap_T_lowP_higribo=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(ribo&gt;.05) %&gt;%nrow()
+paste(&quot;Sig Prot not ribo&quot;, allOverlap_T_lowP_higribo, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot not ribo 5&quot;</code></pre>
+<pre class="r"><code>allOverlap_T_lowP_higsu30=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(su30&gt;.05) %&gt;% nrow()
+paste(&quot;Sig Prot not 4su30&quot;, allOverlap_T_lowP_higsu30, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot not 4su30 6&quot;</code></pre>
+<pre class="r"><code>allOverlap_T_lowP_higsu60=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(su60&gt;.05) %&gt;% nrow()
+paste(&quot;Sig Prot not 4su60&quot;, allOverlap_T_lowP_higsu60, sep=&quot; &quot;)</code></pre>
+<pre><code>[1] &quot;Sig Prot not 4su60 5&quot;</code></pre>
+</div>
+<div id="closer-to-a-global-scale" class="section level3">
+<h3>CLoser to a global scale</h3>
+<p>In order to think about this more broadly I am going to plot overlaps:</p>
+<p>Given all of these are APA qtls, how many are significant in:</p>
+<ul>
+<li>protein<br />
+</li>
+<li>RNA and protein</li>
+<li>RNA but not protein</li>
+<li>Not in RNA or Protein</li>
+</ul>
+<p>Do this first for total:</p>
+<pre class="r"><code>p_N=allOverlap_N %&gt;% filter(prot&lt;.05) %&gt;% nrow()
+RP_N=allOverlap_N %&gt;% filter(prot&lt;.05 &amp; RNA &lt;.05) %&gt;% nrow()
+RnotP_N=allOverlap_N %&gt;% filter(prot&gt;.05 &amp; RNA &lt;.05) %&gt;% nrow()
+notRnotP_N=allOverlap_N %&gt;% filter(prot&gt;.05 &amp; RNA &gt;.05) %&gt;% nrow()
+notRP_N= allOverlap_N %&gt;% filter(prot&lt;.05 &amp; RNA &gt;.05) %&gt;% nrow()
+
+
+overlapNames=c(&quot;Protein&quot;, &quot;RNAandProtein&quot;, &quot;RNAnotProt&quot;, &quot;Neither&quot;, &quot;ProteinnotRNA&quot;)
+NucRPoverlap=c(p_N/nrow(allOverlap_N),RP_N/nrow(allOverlap_N), RnotP_N/nrow(allOverlap_N), notRnotP_N/nrow(allOverlap_N),notRP_N/nrow(allOverlap_N) )
+
+
+NucOverlapDF=data.frame(overlapNames,NucRPoverlap)
+ggplot(NucOverlapDF, aes(x=overlapNames, y=NucRPoverlap)) + geom_bar(stat=&quot;identity&quot;)</code></pre>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>DO the same for total:</p>
+<pre class="r"><code>p_T=allOverlap_T %&gt;% filter(prot&lt;.05) %&gt;% nrow()
+RP_T=allOverlap_T %&gt;% filter(prot&lt;.05 &amp; RNA &lt;.05) %&gt;% nrow()
+RnotP_T=allOverlap_T %&gt;% filter(prot&gt;.05 &amp; RNA &lt;.05) %&gt;% nrow()
+notRnotP_T=allOverlap_T %&gt;% filter(prot&gt;.05 &amp; RNA &gt;.05) %&gt;% nrow()
+notRP_T= allOverlap_T %&gt;% filter(prot&lt;.05 &amp; RNA &gt;.05) %&gt;% nrow()
+
+TotRPoverlap=c(p_T/nrow(allOverlap_T),RP_T/nrow(allOverlap_T), RnotP_T/nrow(allOverlap_T), notRnotP_T/nrow(allOverlap_T),notRP_T/nrow(allOverlap_T))
+TotOverlapDF=data.frame(overlapNames,TotRPoverlap)
+ggplot(TotOverlapDF, aes(x=overlapNames, y=TotRPoverlap)) + geom_bar(stat=&quot;identity&quot;)</code></pre>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>allOverlapDF=TotOverlapDF %&gt;% full_join(NucOverlapDF, by=&quot;overlapNames&quot;)
+
+allOverlapDF_melt=melt(allOverlapDF, id.vars=&quot;overlapNames&quot;)
+
+ggplot(allOverlapDF_melt, aes(x=overlapNames, y=value, by=variable, fill=variable)) + geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + scale_fill_manual(values=c(&quot;darkviolet&quot;, &quot;deepskyblue3&quot;)) + labs(y=&quot;Proportion of APA QTLs&quot;, x=&quot;Category&quot;)</code></pre>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>oT=overlapplotT=draw.pairwise.venn(area1=.08, area2=.07, cross.area = .02, category = c(&quot;Protein&quot;, &quot;RNA&quot;),lty = rep(&quot;solid&quot;, 2), fill = c(&quot;Blue&quot;, &quot;Orange&quot;), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2), euler.d = T, scaled=T)</code></pre>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>png(&quot;../output/plots/overlapProtRNAvenT.png&quot;) 
+grid.arrange(gTree(children=oT), top=&quot;Total: Protein and RNA QTL overlap&quot;, bottom=&quot;Neither=.37&quot;)
+
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<pre class="r"><code>oN=overlapplotN=draw.pairwise.venn(area1=.056, area2=.096, cross.area = .016, category = c(&quot;Protein&quot;, &quot;RNA&quot;),lty = rep(&quot;solid&quot;, 2), fill = c(&quot;Blue&quot;, &quot;Orange&quot;), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2), euler.d = T, scaled=T)</code></pre>
+<p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>png(&quot;../output/plots/overlapProtRNAvenN.png&quot;) 
+
+grid.arrange(gTree(children=oN), top=&quot;Nuclear:Protein and RNA QTL overlap&quot;, bottom=&quot;Neither=.38&quot;)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<p>This doesnt look statistically significant but it does look like the total fraction has more pQTLs that are not eQTLs and in the nuclear you get the opposite effect.</p>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -863,34 +1593,36 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] grid      stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
- [1] bindrcpp_0.2.2    cowplot_0.9.3     data.table_1.11.8
- [4] forcats_0.3.0     stringr_1.3.1     dplyr_0.7.6      
- [7] purrr_0.2.5       readr_1.1.1       tidyr_0.8.1      
-[10] tibble_1.4.2      ggplot2_3.0.0     tidyverse_1.2.1  
-[13] workflowr_1.1.1  
+ [1] bindrcpp_0.2.2      gridExtra_2.3       VennDiagram_1.6.20 
+ [4] futile.logger_1.4.3 ggpubr_0.1.8        magrittr_1.5       
+ [7] cowplot_0.9.3       data.table_1.11.8   forcats_0.3.0      
+[10] stringr_1.3.1       dplyr_0.7.6         purrr_0.2.5        
+[13] readr_1.1.1         tidyr_0.8.1         tibble_1.4.2       
+[16] ggplot2_3.0.0       tidyverse_1.2.1     workflowr_1.1.1    
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4   haven_1.1.2        lattice_0.20-35   
- [4] colorspace_1.3-2   htmltools_0.3.6    yaml_2.2.0        
- [7] rlang_0.2.2        R.oo_1.22.0        pillar_1.3.0      
-[10] glue_1.3.0         withr_2.1.2        R.utils_2.7.0     
-[13] RColorBrewer_1.1-2 modelr_0.1.2       readxl_1.1.0      
-[16] bindr_0.1.1        plyr_1.8.4         munsell_0.5.0     
-[19] gtable_0.2.0       cellranger_1.1.0   rvest_0.3.2       
-[22] R.methodsS3_1.7.1  evaluate_0.11      labeling_0.3      
-[25] knitr_1.20         broom_0.5.0        Rcpp_0.12.19      
-[28] scales_1.0.0       backports_1.1.2    jsonlite_1.5      
-[31] hms_0.4.2          digest_0.6.17      stringi_1.2.4     
-[34] grid_3.5.1         rprojroot_1.3-2    cli_1.0.1         
-[37] tools_3.5.1        magrittr_1.5       lazyeval_0.2.1    
-[40] crayon_1.3.4       whisker_0.3-2      pkgconfig_2.0.2   
-[43] xml2_1.2.0         lubridate_1.7.4    assertthat_0.2.0  
-[46] rmarkdown_1.10     httr_1.3.1         rstudioapi_0.8    
-[49] R6_2.3.0           nlme_3.1-137       git2r_0.23.0      
-[52] compiler_3.5.1    </code></pre>
+ [1] tidyselect_0.2.4     reshape2_1.4.3       haven_1.1.2         
+ [4] lattice_0.20-35      colorspace_1.3-2     htmltools_0.3.6     
+ [7] yaml_2.2.0           rlang_0.2.2          R.oo_1.22.0         
+[10] pillar_1.3.0         glue_1.3.0           withr_2.1.2         
+[13] R.utils_2.7.0        RColorBrewer_1.1-2   lambda.r_1.2.3      
+[16] modelr_0.1.2         readxl_1.1.0         bindr_0.1.1         
+[19] plyr_1.8.4           munsell_0.5.0        gtable_0.2.0        
+[22] cellranger_1.1.0     rvest_0.3.2          R.methodsS3_1.7.1   
+[25] evaluate_0.11        labeling_0.3         knitr_1.20          
+[28] broom_0.5.0          Rcpp_0.12.19         formatR_1.5         
+[31] scales_1.0.0         backports_1.1.2      jsonlite_1.5        
+[34] hms_0.4.2            digest_0.6.17        stringi_1.2.4       
+[37] rprojroot_1.3-2      cli_1.0.1            tools_3.5.1         
+[40] lazyeval_0.2.1       futile.options_1.0.1 crayon_1.3.4        
+[43] whisker_0.3-2        pkgconfig_2.0.2      xml2_1.2.0          
+[46] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.10      
+[49] httr_1.3.1           rstudioapi_0.8       R6_2.3.0            
+[52] nlme_3.1-137         git2r_0.23.0         compiler_3.5.1      </code></pre>
 </div>
 
 <hr>
