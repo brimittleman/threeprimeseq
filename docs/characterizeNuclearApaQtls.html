@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/96a97f4b407baa2e87100144f096a2a9c483e874" target="_blank">96a97f4</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/00b1020c35e7fd99f72e33159fb83aa93ac79d4e" target="_blank">00b1020</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -470,6 +470,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/00b1020c35e7fd99f72e33159fb83aa93ac79d4e/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">00b1020</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+<td style="text-align:left;">
+naive enrichment
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/characterizeNuclearApaQtls.html" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/96a97f4b407baa2e87100144f096a2a9c483e874/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">96a97f4</a>
 </td>
 <td style="text-align:left;">
@@ -564,9 +598,72 @@ print(names(NuclearAPA))</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-3-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Zoom in to 100,000.</p>
 <pre class="r"><code>ggplot(NuclearAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000)) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
-<p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /> ### Distance from snp to peak</p>
+<p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-4-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-4-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="distance-from-snp-to-peak" class="section level3">
+<h3>Distance from snp to peak</h3>
 <p>To perform this analysis I need to recover the peak positions.</p>
 <p>The peak file I used for the QTL analysis is: /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed</p>
 <pre class="r"><code>peaks=read.table(&quot;../data/PeaksUsed/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed&quot;, col.names = c(&quot;chr&quot;, &quot;peakStart&quot;, &quot;peakEnd&quot;, &quot;PeakNum&quot;, &quot;PeakScore&quot;, &quot;Strand&quot;, &quot;Gene&quot;)) %&gt;% mutate(peak=paste(&quot;peak&quot;, PeakNum,sep=&quot;&quot;)) %&gt;% mutate(PeakCenter=peakStart+ (peakEnd- peakStart))</code></pre>
@@ -580,6 +677,36 @@ NuclearAPA_peakdist= NuclearAPA_peakdist %&gt;%  mutate(DisttoPeak= snpLOC-PeakC
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-7-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Look at the summarys based on significance:</p>
 <pre class="r"><code>NuclearAPA_peakdist_sig=NuclearAPA_peakdist %&gt;% filter(sig==1)
 NuclearAPA_peakdist_notsig=NuclearAPA_peakdist %&gt;% filter(sig==0)
@@ -595,6 +722,36 @@ summary(NuclearAPA_peakdist_sig$DisttoPeak)</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-9-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Look like there are some outliers that are really far. I will remove variants greater than 1*10^6th away</p>
 <pre class="r"><code>NuclearAPA_peakdist_filt=NuclearAPA_peakdist %&gt;% filter(abs(DisttoPeak) &lt;= 1*(10^6))
 
@@ -602,13 +759,103 @@ ggplot(NuclearAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + ge
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(NuclearAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + facet_grid(.~strand)+ scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-2.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I am going to plot a violin plot for just the significant ones.</p>
 <pre class="r"><code>ggplot(NuclearAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density()</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Within 1000 bases of the peak center.</p>
 <pre class="r"><code>NuclearAPA_peakdist_sig %&gt;% filter(abs(DisttoPeak) &lt; 1000) %&gt;% nrow()</code></pre>
 <pre><code>[1] 192</code></pre>
@@ -648,17 +895,107 @@ summary(gene_wQTL_N$sigGeneFactor)</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-17-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I can do a similar analysis but test the variance in the gene expression.</p>
 <pre class="r"><code>ggplot(gene_wQTL_N, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title=&quot;Varriance in RNA expression by genes with significant QTL&quot;, x=&quot;Variance in normalized expression&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))+ scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-18-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <div id="peak-coverage-for-qtls" class="section level3">
 <h3>Peak coverage for QTLs</h3>
 <p>I can also look at peak coverage for peaks with QLTs and those without. I will first look at this on peak level then mvoe to gene level. The peak scores come from the coverage in the peaks.</p>
 <p>The NuclearAPA_peakdist data frame has the information I need for this.</p>
 <pre class="r"><code>ggplot(NuclearAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title=&quot;Peak score by significance&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-19-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This is expected. It makes sense that we have more power to detect qtls in higher expressed peaks. This leads me to believe that filtering out low peaks may add power but will not mitigate the effect. ##Where are the SNPs</p>
 <p>I created the significant SNP files in the <a href="characterizeTotalApaQtls.html">Characterize Total APAqtl analysis</a> analysis.</p>
 <pre class="r"><code>chromHmm=read.table(&quot;../data/ChromHmmOverlap/chromHMM_regions.txt&quot;, col.names = c(&quot;number&quot;, &quot;name&quot;), stringsAsFactors = F)
@@ -668,6 +1005,36 @@ NuclearOverlapHMM$number=as.integer(NuclearOverlapHMM$number)
 NuclearOverlapHMM_names=NuclearOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
 <pre class="r"><code>ggplot(NuclearOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-21-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I do still need to get 880 random snps.</p>
 <pre class="bash"><code>shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_nuclear_Random880.txt
 </code></pre>
@@ -693,6 +1060,36 @@ NucRnad_overlapHMM.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/nomina
 NuclearRandOverlapHMM_names=NuclearRandOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
 <pre class="r"><code>ggplot(NuclearRandOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls (Random)&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-25-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-25-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>To put this on the same plot I can count the number in each then plot them next to eachother.</p>
 <pre class="r"><code>random_perChromHMM_nuc=NuclearRandOverlapHMM_names %&gt;%  group_by(name) %&gt;% summarise(Random=n())
 sig_perChromHMM_nuc= NuclearOverlapHMM_names %&gt;%  group_by(name) %&gt;%  summarise(Nuclear_QTLs=n())
@@ -704,7 +1101,54 @@ names(perChrommHMM_nuc_melt)=c(&quot;Region&quot;,&quot;Set&quot;, &quot;N_Snps&
 <pre class="r"><code>chromenrichNuclearplot=ggplot(perChrommHMM_nuc_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;Enrichment of Nuclear QTLs by chromatin region&quot;, y=&quot;Number of Snps&quot;, x=&quot;Chromatin Region&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)
 chromenrichNuclearplot</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-27-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-27-1.png" target="_blank">de860f0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggsave(&quot;../output/plots/ChromHmmEnrich_Nuclear.png&quot;, chromenrichNuclearplot)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+<div id="chompare-enrichment-between-fractions" class="section level3">
+<h3>Chompare enrichment between fractions</h3>
+<p>I want to make a plot with the enrichment by fraction. I am first going to get an enrichemnt score for each bin naively by looking at the QTL/random in each category.</p>
+<pre class="r"><code>perChrommHMM_nuc$Random= as.integer(perChrommHMM_nuc$Random)
+perChrommHMM_nuc_enr=perChrommHMM_nuc %&gt;%  mutate(Nuclear=Nuclear_QTLs-Random)
+
+perChrommHMM_tot_enr=read.table(&quot;../data/ChromHmmOverlap/perChrommHMM_Total_enr.txt&quot;,stringsAsFactors = F,header = T)</code></pre>
+<pre class="r"><code>allenrich=perChrommHMM_tot_enr %&gt;% inner_join(perChrommHMM_nuc_enr, by=&quot;name&quot;) %&gt;% select(name, Total, Nuclear)
+
+allenrich_melt=melt(allenrich, id.vars=&quot;name&quot;)</code></pre>
+<p>plot it</p>
+<pre class="r"><code>chromenrichBoth=ggplot(allenrich_melt, aes(x=name, by=variable, y=value, fill=variable)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;QTL-Random for each bin by fraction&quot;, y=&quot;Num QTL SNPs - Num Random SNPs&quot;) + scale_fill_manual(values=c(&quot;darkviolet&quot;, &quot;deepskyblue3&quot;))
+
+
+ggsave(&quot;../output/plots/ChromHmmEnrich_BothFrac.png&quot;, chromenrichBoth)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 </div>
