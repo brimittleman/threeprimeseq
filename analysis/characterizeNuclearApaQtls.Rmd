@@ -296,4 +296,30 @@ ggsave("../output/plots/ChromHmmEnrich_Nuclear.png", chromenrichNuclearplot)
 
 ```
 
+###Chompare enrichment between fractions  
+
+I want to make a plot with the enrichment by fraction. I am first going to get an enrichemnt score for each bin naively by looking at the QTL/random in each category.  
+
+```{r}
+
+perChrommHMM_nuc$Random= as.integer(perChrommHMM_nuc$Random)
+perChrommHMM_nuc_enr=perChrommHMM_nuc %>%  mutate(Nuclear=Nuclear_QTLs-Random)
+
+perChrommHMM_tot_enr=read.table("../data/ChromHmmOverlap/perChrommHMM_Total_enr.txt",stringsAsFactors = F,header = T)
+```
+
+
+```{r}
+allenrich=perChrommHMM_tot_enr %>% inner_join(perChrommHMM_nuc_enr, by="name") %>% select(name, Total, Nuclear)
+
+allenrich_melt=melt(allenrich, id.vars="name")
+```
+
+plot it
+```{r}
+chromenrichBoth=ggplot(allenrich_melt, aes(x=name, by=variable, y=value, fill=variable)) + geom_bar(stat="identity", position = "dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="QTL-Random for each bin by fraction", y="Num QTL SNPs - Num Random SNPs") + scale_fill_manual(values=c("darkviolet", "deepskyblue3"))
+
+
+ggsave("../output/plots/ChromHmmEnrich_BothFrac.png", chromenrichBoth)
+```
 

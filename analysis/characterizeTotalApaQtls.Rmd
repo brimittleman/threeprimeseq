@@ -439,7 +439,7 @@ TotalRandOverlapHMM_names=TotalRandOverlapHMM %>% left_join(chromHmm, by="number
 
 
 ```{r}
-ggplot(TotalRandOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Total APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(TotalRandOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Total APAQtls (Random)" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 
@@ -462,5 +462,22 @@ chromenrichTotalplot
 
 ggsave("../output/plots/ChromHmmEnrich_Total.png", chromenrichTotalplot)
 
+```
+
+I want to make a plot with the enrichment by fraction. I am first going to get an enrichemnt score for each bin naively by looking at the QTL-random in each category.  
+
+
+```{r}
+
+perChrommHMM$Random= as.integer(perChrommHMM$Random)
+perChrommHMM$Total_QTLs= as.integer(perChrommHMM$Total_QTLs)
+perChrommHMM_enr=perChrommHMM %>%  mutate(Total=Total_QTLs- Random)
+```
+
+
+Write this file so I can put it in the nuclear analysis and compare between groups.  
+
+```{r}
+write.table(perChrommHMM_enr, file="../data/ChromHmmOverlap/perChrommHMM_Total_enr.txt", quote=F, sep="\t", col.names = T, row.names = F)
 ```
 
