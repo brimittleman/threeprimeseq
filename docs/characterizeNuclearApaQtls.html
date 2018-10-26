@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-24</p>
+<p><strong>Last updated:</strong> 2018-10-26</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/00b1020c35e7fd99f72e33159fb83aa93ac79d4e" target="_blank">00b1020</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/5cb6b0bd668c8bf71bd004454e6fffaeaf7dadb3" target="_blank">5cb6b0b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -359,6 +359,7 @@ Ignored files:
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/coloc_apaQTLs_protQTLs.Rmd
     Untracked:  analysis/genometrack_figs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -426,7 +427,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/39indQC.Rmd
-    Modified:   analysis/PeakToGeneAssignment.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
@@ -465,6 +465,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5cb6b0bd668c8bf71bd004454e6fffaeaf7dadb3/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">5cb6b0b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-26
+</td>
+<td style="text-align:left;">
+permutation code
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/96cfdcdc9dee62c2443381962d012f0e17f57c27/docs/characterizeNuclearApaQtls.html" target="_blank">96cfdcd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -548,12 +582,12 @@ add nuclear characterization
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
@@ -1151,6 +1185,227 @@ allenrich_melt=melt(allenrich, id.vars=&quot;name&quot;)</code></pre>
 ggsave(&quot;../output/plots/ChromHmmEnrich_BothFrac.png&quot;, chromenrichBoth)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
+</div>
+<div id="permutations" class="section level2">
+<h2>Permutations</h2>
+<p>I want to permute the background snps so i can get a better expectation. To do this I need to chose random lines from the nominal file, change the lines to snp format, overlap with HMM, count how many are in each category, and append the list to a dataframe that is category by permuation. I will do all of this in python.</p>
+<pre class="bash"><code>
+
+def main(inFile, outFile, nperm,nsamp):
+  nom_res= pd.read_csv(inFile, sep=&quot;\t&quot;, encoding=&quot;utf-8&quot;,header=None)
+  out=open(outFile, &quot;w&quot;)
+  categories=list(range(1,16))
+  out.write(&quot; &quot;.join(categories)+&#39;\n&#39;)
+  
+  def make_rand_snp(x):
+    #x is from the random snps pulled from the nom_res, return the snp df
+    chrom_list=list()
+    start_list=list()
+    end_list=list()
+    name_list=list()
+    pval_list=list()
+    strand_list=list()
+    for ln in x:
+          pid, sid, dist, pval, slope = ln.split()
+          chrom, pos= sid.split(&quot;:&quot;)
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(&quot;:&quot;)[3].split(&quot;_&quot;)[1]
+          pval=float(pval)
+          chrom_list.append(chrom)
+          start_list.append(start)
+          end_list.append(end)
+          name_list.append(name)
+          pval_list.append(pval)
+          strand_list.append(strand)
+          # add info to the lists 
+    #zip lists
+    zip_list=list(zip(chrom_list,start_list,end_list,name_list,pval_list, strand_list))
+    snp_df=pd.DataFrame(data=zip_list, columns=[&quot;Chrom&quot;, &quot;Start&quot;, &quot;End&quot;, &quot;Name&quot;, &quot;Pval&quot;, &quot;Strand&quot;])
+    return snp_df
+  
+  for i in range(1, nperm+1):
+    sample=nom_res.sample(nsamp)
+    sample_snp=make_rand_snp(sample)
+    sample_snp_sort=sample_snp.sort_values(by=[&#39;Chrom&#39;, &#39;Start&#39;])
+    hmm=pybedtools.BedTool(&quot;/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed&quot;)
+    sample_snp_bed=pybedtools.from_dataframe(sample_snp_sort)
+    samp_overHMM=sample_snp_bed(hmm, c=4)
+    samp_overHMM_df=pybedtools.to_dataframe(samp_overHMM,names=[&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;])
+    samp_overHMM_df.groupby(&#39;number&#39;).count()
+    #need to see how this comes out and how I can make it into a list, after i have the list for each I can zip them together (list_i)
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pybedtools
+    import pandas as pd
+    fraction = sys.argv[1]
+    nperm= sys.argv[2]
+    nperm=int(nperm)
+    nsamp=sys.argv[3]
+    nsamp=int(nsamp)
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_%s_NomRes.txt&quot;%(fraction)
+    outFile = &quot;dataframe with res&quot;%()
+    main(inFile, outFile, nperm, nsamp)
+    
+    
+    </code></pre>
+<p>Maybe it is better to make this a bash script that has a pipeline of different scripts. This way I wont have to worry about files/dataframes and all of that.</p>
+<p>DO this for total first (118 snps)</p>
+<p>total_random118_chromHmm.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=total_random118_chromHmm.out
+#SBATCH --error=total_random118_chromHmm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=56G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {1..2};
+do
+python pull_random_lines.py Total 118 ${i}
+done
+
+#make random 
+for i in {1..2};
+do
+python randomRes2SNPbed.py Total 118 ${i}
+done 
+
+
+#cat res together   
+cat /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed/* &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed_all/randomRes_Total_118_ALLperm.bed
+
+
+#sort full file 
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed_all/randomRes_Total_118_ALLperm.bed &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed_all/randomRes_Total_118_ALLperm.sort.bed
+
+
+#hmm overlap
+python overlap_chromHMM.py  Total 118 1000 
+
+#Next I would pull this into R to do the group by and average!
+</code></pre>
+<p>pull_random_lines.py</p>
+<pre class="bash"><code>def main(inFile, outFile ,nsamp):
+  nom_res= pd.read_csv(inFile, sep=&quot;\t&quot;, encoding=&quot;utf-8&quot;,header=None)
+  out=open(outFile, &quot;w&quot;)
+  sample=nom_res.sample(nsamp)
+  sample.to_csv(out, sep=&quot;\t&quot;, encoding=&#39;utf-8&#39;, index=False, header=F)
+  out.close()
+    
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pandas as pd
+    fraction = sys.argv[1]
+    nsamp=sys.argv[2]
+    nsamp=int(nsamp)
+    iter=sys.argv[3]
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_%s_NomRes.txt&quot;%(fraction)
+    outFile = &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/randomRes_%s_%d_%s.txt&quot;%(fraction,fraction, nsamp, iter)
+    main(inFile, outFile, nsamp)</code></pre>
+<p>randomRes2SNPbed.py</p>
+<pre class="bash"><code>def main(inFile, outFile):
+    fout=open(outFile, &quot;w&quot;)
+    fin=open(inFile, &quot;r&quot;)
+    for ln in fin:
+          pid, sid, dist, pval, slope = ln.split()
+          chrom, pos= sid.split(&quot;:&quot;)
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(&quot;:&quot;)[3].split(&quot;_&quot;)[1]
+          pval=float(pval)
+          fout.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chrom, start, end, name, pval, strand))
+    fout.close()
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    nsamp=int(nsamp)
+    iter=sys.argv[3]
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/randomRes_%s_%d_%s.txt&quot;%(fraction,fraction, nsamp, iter)
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/snp_bed/randomRes_%s_%d_%s.bed&quot;%(fraction,fraction, nsamp, iter)
+    main(inFile,outFile) </code></pre>
+<p>overlap_chromHMM.py</p>
+<pre class="bash"><code>
+
+
+def main(inFile, outFile):
+  rand=pybedtools.BedTool(inFile) 
+  hmm=pybedtools.BedTool(&quot;/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed&quot;)
+  #map hmm to snps
+  Rand_overlapHMM=rand.map(hmm, c=4)
+  #save results
+  Rand_overlapHMM.saveas(outFile)
+
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pandas as pd
+    import pybedtools
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    niter=sys.argv[3]
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/snp_bed_all/randomRes_%s_%s_ALLperm.sort.bed&quot;%(fraction,fraction, nsamp)
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_%s.txt&quot;%(fraction,fraction,nsamp, niter)
+    main(inFile,outFile)
+</code></pre>
+<p>*Nuclear 880</p>
+<p>nuclear_random880_chromHmm.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm.out
+#SBATCH --error=nuc_random880_chromHmm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=56G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {1..1000};
+do
+python pull_random_lines.py Nuclear 880 ${i}
+done
+
+#make random 
+for i in {1..1000};
+do
+python randomRes2SNPbed.py Nuclear 880 ${i}
+done 
+
+
+#cat res together   
+cat /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed/* &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.bed
+
+
+#sort full file 
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.bed &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.sort.bed
+
+
+#hmm overlap
+python overlap_chromHMM.py  Nuclear 880 1000
+
+#Next I would pull this into R to do the group by and average!
+</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
