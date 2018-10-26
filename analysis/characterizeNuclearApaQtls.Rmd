@@ -323,3 +323,253 @@ chromenrichBoth=ggplot(allenrich_melt, aes(x=name, by=variable, y=value, fill=va
 ggsave("../output/plots/ChromHmmEnrich_BothFrac.png", chromenrichBoth)
 ```
 
+
+
+##Permutations  
+I want to permute the background snps so i can get a better expectation. To do this I need to chose random lines from the nominal file, change the lines to snp format, overlap with HMM, count how many are in each category, and append the list to a dataframe that is category by permuation. I will do all of this in python.  
+
+
+```{bash, eval=F}
+
+
+def main(inFile, outFile, nperm,nsamp):
+  nom_res= pd.read_csv(inFile, sep="\t", encoding="utf-8",header=None)
+  out=open(outFile, "w")
+  categories=list(range(1,16))
+  out.write(" ".join(categories)+'\n')
+  
+  def make_rand_snp(x):
+    #x is from the random snps pulled from the nom_res, return the snp df
+    chrom_list=list()
+    start_list=list()
+    end_list=list()
+    name_list=list()
+    pval_list=list()
+    strand_list=list()
+    for ln in x:
+          pid, sid, dist, pval, slope = ln.split()
+          chrom, pos= sid.split(":")
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(":")[3].split("_")[1]
+          pval=float(pval)
+          chrom_list.append(chrom)
+          start_list.append(start)
+          end_list.append(end)
+          name_list.append(name)
+          pval_list.append(pval)
+          strand_list.append(strand)
+          # add info to the lists 
+    #zip lists
+    zip_list=list(zip(chrom_list,start_list,end_list,name_list,pval_list, strand_list))
+    snp_df=pd.DataFrame(data=zip_list, columns=["Chrom", "Start", "End", "Name", "Pval", "Strand"])
+    return snp_df
+  
+  for i in range(1, nperm+1):
+    sample=nom_res.sample(nsamp)
+    sample_snp=make_rand_snp(sample)
+    sample_snp_sort=sample_snp.sort_values(by=['Chrom', 'Start'])
+    hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+    sample_snp_bed=pybedtools.from_dataframe(sample_snp_sort)
+    samp_overHMM=sample_snp_bed(hmm, c=4)
+    samp_overHMM_df=pybedtools.to_dataframe(samp_overHMM,names=["chrom", "start", "end", "sid", "significance", "strand", "number"])
+    samp_overHMM_df.groupby('number').count()
+    #need to see how this comes out and how I can make it into a list, after i have the list for each I can zip them together (list_i)
+
+if __name__ == "__main__":
+    import sys
+    import pybedtools
+    import pandas as pd
+    fraction = sys.argv[1]
+    nperm= sys.argv[2]
+    nperm=int(nperm)
+    nsamp=sys.argv[3]
+    nsamp=int(nsamp)
+    inFile = "/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_%s_NomRes.txt"%(fraction)
+    outFile = "dataframe with res"%()
+    main(inFile, outFile, nperm, nsamp)
+    
+    
+    
+```
+
+
+Maybe it is better to make this a bash script that has a pipeline of different scripts. This way I wont have to worry about files/dataframes and all of that.  
+
+
+DO this for total first (118 snps)
+
+total_random118_chromHmm.sh
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=total_random118_chromHmm.out
+#SBATCH --error=total_random118_chromHmm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=56G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {1..2};
+do
+python pull_random_lines.py Total 118 ${i}
+done
+
+#make random 
+for i in {1..2};
+do
+python randomRes2SNPbed.py Total 118 ${i}
+done 
+
+
+#cat res together   
+cat /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed/* > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed_all/randomRes_Total_118_ALLperm.bed
+
+
+#sort full file 
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed_all/randomRes_Total_118_ALLperm.bed > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed_all/randomRes_Total_118_ALLperm.sort.bed
+
+
+#hmm overlap
+python overlap_chromHMM.py  Total 118 1000 
+
+#Next I would pull this into R to do the group by and average!
+
+```
+
+
+pull_random_lines.py  
+
+```{bash,eval=F}
+def main(inFile, outFile ,nsamp):
+  nom_res= pd.read_csv(inFile, sep="\t", encoding="utf-8",header=None)
+  out=open(outFile, "w")
+  sample=nom_res.sample(nsamp)
+  sample.to_csv(out, sep="\t", encoding='utf-8', index=False, header=F)
+  out.close()
+    
+if __name__ == "__main__":
+    import sys
+    import pandas as pd
+    fraction = sys.argv[1]
+    nsamp=sys.argv[2]
+    nsamp=int(nsamp)
+    iter=sys.argv[3]
+    inFile = "/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_%s_NomRes.txt"%(fraction)
+    outFile = "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/randomRes_%s_%d_%s.txt"%(fraction,fraction, nsamp, iter)
+    main(inFile, outFile, nsamp)
+```
+
+randomRes2SNPbed.py
+```{bash,eval=F}
+def main(inFile, outFile):
+    fout=open(outFile, "w")
+    fin=open(inFile, "r")
+    for ln in fin:
+          pid, sid, dist, pval, slope = ln.split()
+          chrom, pos= sid.split(":")
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(":")[3].split("_")[1]
+          pval=float(pval)
+          fout.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom, start, end, name, pval, strand))
+    fout.close()
+
+if __name__ == "__main__":
+    import sys
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    nsamp=int(nsamp)
+    iter=sys.argv[3]
+    inFile = "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/randomRes_%s_%d_%s.txt"%(fraction,fraction, nsamp, iter)
+    outFile= "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/snp_bed/randomRes_%s_%d_%s.bed"%(fraction,fraction, nsamp, iter)
+    main(inFile,outFile) 
+```
+
+
+overlap_chromHMM.py  
+
+```{bash,eval=F}
+
+
+
+def main(inFile, outFile):
+  rand=pybedtools.BedTool(inFile) 
+  hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+  #map hmm to snps
+  Rand_overlapHMM=rand.map(hmm, c=4)
+  #save results
+  Rand_overlapHMM.saveas(outFile)
+
+
+if __name__ == "__main__":
+    import sys
+    import pandas as pd
+    import pybedtools
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    niter=sys.argv[3]
+    inFile = "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/snp_bed_all/randomRes_%s_%s_ALLperm.sort.bed"%(fraction,fraction, nsamp)
+    outFile= "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_%s.txt"%(fraction,fraction,nsamp, niter)
+    main(inFile,outFile)
+
+
+```
+
+*Nuclear 880
+
+nuclear_random880_chromHmm.sh
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm.out
+#SBATCH --error=nuc_random880_chromHmm.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=56G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {1..1000};
+do
+python pull_random_lines.py Nuclear 880 ${i}
+done
+
+#make random 
+for i in {1..1000};
+do
+python randomRes2SNPbed.py Nuclear 880 ${i}
+done 
+
+
+#cat res together   
+cat /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed/* > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.bed
+
+
+#sort full file 
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.bed > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.sort.bed
+
+
+#hmm overlap
+python overlap_chromHMM.py  Nuclear 880 1000
+
+#Next I would pull this into R to do the group by and average!
+
+```
