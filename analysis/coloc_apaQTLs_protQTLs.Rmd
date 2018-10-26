@@ -1,0 +1,172 @@
+---
+title: "Gene Level Overlap - Colocalization"
+author: "Briana Mittleman"
+date: "10/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this analyis I want to find more candidates for apaQTL and protein QTL overlap by looking at leading snps and how far they are from eachother. Colocalization of the snps may provide evidence for overlap even if they are not the same exact location.  I can then show that top SNPs for the RNA QTL in that gene is either near or far from the APA/Prot QTL. I need to start by looking at the distance between the leading snp for each gene in the protein and APA qtl. It would be interesting if the distribution for this is different than the distribution for APA qtl to RNA qtl. I dont want to condition on significane at this point. I just want the leading SNP for each gene. To get this in the APA data I will have to select the most sig peak for each gene.  
+
+Libraries:  
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+library(reshape2)
+```
+
+##Upload and process data  
+Pull in the permuted results for each apa QTL file and keep the top for each gene:  
+* Total  
+```{r}
+total_perm=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt",header=T, stringsAsFactors = F) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("Gene.name", "strand", "peak"))
+
+
+total_perm_gene=total_perm %>%  group_by(Gene.name) %>% top_n(-1, bpval) %>% ungroup() %>% dplyr::select("Gene.name", "sid", "bpval") %>% separate(sid, sep = ":", into=c("chr", "loc"))
+
+colnames(total_perm_gene)=c("Gene.name", "chr", "tot_loc", "tot_pbval")
+total_perm_gene$tot_loc=as.integer(total_perm_gene$tot_loc)
+```
+
+* Nuclear  
+
+```{r}
+nuc_perm=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt",header=T, stringsAsFactors = F) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("Gene.name", "strand", "peak"))
+
+
+nuc_perm_gene=nuc_perm %>%  group_by(Gene.name) %>% top_n(-1, bpval) %>% ungroup() %>% dplyr::select("Gene.name", "sid", "bpval") %>% separate(sid, sep = ":", into=c("chr", "loc")) 
+
+colnames(nuc_perm_gene)=c("Gene.name", "chr", "nuc_loc", "nuc_pbval")
+nuc_perm_gene$nuc_loc=as.integer(nuc_perm_gene$nuc_loc)
+```
+
+
+Pull in the protein and RNA QTLs:  
+
+```{r}
+geneNames=read.table("../data/ensemble_to_genename.txt",head=T, sep="\t", stringsAsFactors = F)
+```
+
+* Rna
+
+```{r}
+rna_qtl=read.table("../data/other_qtls/fastqtl_qqnorm_RNAseq_phase2.fixed.perm.out",col.names = c("pid" ,   "nvar" ,  "shape1","shape2" ,"dummy",  "sid" ,   "dist" ,  "npval" , "slope",  "ppval",  "bpval" ), stringsAsFactors=F) %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>%  inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "sid", "bpval") %>%   separate(sid, sep = ":", into=c("chr", "loc")) 
+
+colnames(rna_qtl)=c("Gene.name", "chr", "rna_loc", "rna_pbval")
+rna_qtl$rna_loc=as.integer(rna_qtl$rna_loc)
+```
+
+
+
+* Protein 
+```{r}
+prot_qtl=read.table("../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out",col.names = c("Gene.stable.ID" ,   "nvar" ,  "shape1","shape2" ,"dummy",  "sid" ,   "dist" ,  "npval" , "slope",  "ppval",  "bpval" ), stringsAsFactors=F) %>%  inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name", "sid", "bpval") %>%   separate(sid, sep = ":", into=c("chr", "loc")) 
+
+colnames(prot_qtl)=c("Gene.name", "chr", "prot_loc", "prot_pbval")
+prot_qtl$prot_loc=as.integer(prot_qtl$prot_loc)
+```
+
+
+
+
+I think I should first look at the genes that we have all of the data for. I will inner join these.  
+```{r}
+Tot_topQTL_bygene=total_perm_gene %>% inner_join(rna_qtl, by=c("Gene.name", "chr"))%>% inner_join(prot_qtl, by=c("Gene.name", "chr")) %>% mutate(tot2rna= abs(tot_loc-rna_loc)) %>% mutate(tot2Prot= abs(tot_loc-prot_loc))
+```
+
+
+
+```{r}
+Nuc_topQTL_bygene=nuc_perm_gene %>% inner_join(rna_qtl, by=c("Gene.name", "chr"))%>% inner_join(prot_qtl, by=c("Gene.name", "chr")) %>% mutate(nuc2rna= abs(nuc_loc-rna_loc)) %>% mutate(nuc2Prot= abs(nuc_loc-prot_loc))
+```
+
+
+##Plot results  
+
+First plot the correlation between the 2 dist mesasures 
+```{r}
+ggplot(Tot_topQTL_bygene, aes(x=tot2Prot, y=tot2rna)) + geom_point() + geom_smooth(method='lm')
+```
+
+
+```{r}
+lm(Tot_topQTL_bygene$tot2rna~Tot_topQTL_bygene$tot2Prot)
+```
+
+```{r}
+ggplot(Nuc_topQTL_bygene, aes(x=nuc2Prot, y=nuc2rna)) + geom_point() +geom_smooth(method='lm')
+```
+
+```{r}
+lm(Nuc_topQTL_bygene$nuc2rna~Nuc_topQTL_bygene$nuc2Prot)
+```
+
+Now I want to plot the distributions:  
+
+```{r}
+ggplot(Tot_topQTL_bygene, aes(x=tot2Prot)) + geom_density() 
+ggplot(Tot_topQTL_bygene, aes(x=tot2rna)) + geom_density() 
+```
+
+
+```{r}
+ggplot(Nuc_topQTL_bygene, aes(x=nuc2Prot)) + geom_density() 
+ggplot(Nuc_topQTL_bygene, aes(x=nuc2rna)) + geom_density() 
+```
+
+
+I want to plot them on the same plot.
+
+```{r}
+tot_dist=Tot_topQTL_bygene %>% dplyr::select(Gene.name, tot2rna ,tot2Prot)
+tot_dist_melt=melt(tot_dist, id.vars="Gene.name")
+
+ggplot(tot_dist_melt, aes(y=value, x=variable, fill=variable)) + geom_violin() 
+```
+
+
+
+```{r}
+nuc_dist=Nuc_topQTL_bygene %>% dplyr::select(Gene.name, nuc2rna ,nuc2Prot)
+nuc_dist_melt=melt(nuc_dist, id.vars="Gene.name")
+
+ggplot(nuc_dist_melt, aes(y=value,x=variable, fill=variable)) + geom_violin()
+```
+
+
+
+##Investigate close values:  
+
+```{r}
+summary(Nuc_topQTL_bygene$nuc2Prot)
+summary(Nuc_topQTL_bygene$nuc2rna)
+```
+```{r}
+summary(Tot_topQTL_bygene$tot2Prot)
+summary(Tot_topQTL_bygene$tot2rna)
+```
+
+
+Look at how many have prot < 100 bp away.  
+
+```{r}
+nucProtWithin100=Nuc_topQTL_bygene %>% filter(nuc2Prot<1000) %>% mutate(distDiff=abs(nuc2Prot-nuc2rna)) %>%  arrange(distDiff)
+nrow(nucProtWithin100)
+summary(nucProtWithin100$nuc2rna)
+```
+
+
+
+
+```{r}
+totProtWithin100=Tot_topQTL_bygene %>% filter(tot2Prot<1000) %>% mutate(distDiff=abs(tot2Prot -tot2rna)) %>% arrange(distDiff)
+nrow(totProtWithin100)
+summary(totProtWithin100$tot2rna)
+```
+
+These are not significant so maybe this isnt telling me anything.   
