@@ -130,7 +130,7 @@ ggplot(NuclearAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_den
 I am going to plot a violin plot for just the significant ones.  
 
 ```{r}
-ggplot(NuclearAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density()
+ggplot(NuclearAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density(fill="deepskyblue3")+ labs(title="Nuclear: Distance from QTL to PAS Peak", x="Distance from SNP to PAS")
 ```
 
 Within 1000 bases of the peak center.  
@@ -406,11 +406,11 @@ total_random118_chromHmm.sh
 
 #SBATCH --job-name=total_random118_chromHmm
 #SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=total_random118_chromHmm.out
 #SBATCH --error=total_random118_chromHmm.err
-#SBATCH --partition=broadwl
-#SBATCH --mem=56G
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
 #SBATCH --mail-type=END
 
 module load Anaconda3
@@ -419,13 +419,13 @@ source activate three-prime-env
 
 #test with 2 permutations then make it 1000  
 #choose random res
-for i in {1..2};
+for i in {1..100};
 do
-python pull_random_lines.py Total 118 ${i}
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Total_118_${i}.txt
 done
 
 #make random 
-for i in {1..2};
+for i in {1..1000};
 do
 python randomRes2SNPbed.py Total 118 ${i}
 done 
@@ -534,11 +534,11 @@ nuclear_random880_chromHmm.sh
 
 #SBATCH --job-name=nuc_random880_chromHmm
 #SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=nuc_random880_chromHmm.out
 #SBATCH --error=nuc_random880_chromHmm.err
-#SBATCH --partition=broadwl
-#SBATCH --mem=56G
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
 #SBATCH --mail-type=END
 
 module load Anaconda3
@@ -549,13 +549,13 @@ source activate three-prime-env
 #choose random res
 for i in {1..1000};
 do
-python pull_random_lines.py Nuclear 880 ${i}
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Nuclear_880_${i}.txt
 done
 
 #make random 
 for i in {1..1000};
 do
-python randomRes2SNPbed.py Nuclear 880 ${i}
+python randomRes2SNPbed.py Nuclear 880 ${i} 
 done 
 
 

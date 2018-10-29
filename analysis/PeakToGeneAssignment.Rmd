@@ -1350,11 +1350,11 @@ quantile(effectsize$logef,na.rm=T,probs = seq(0, 1, .05))
 ```{r}
 
 
-effectsize$colorsF=ifelse(effectsize$logef >= 1.18, "deepskyblue3", ifelse(effectsize$logef <= -.61,"darkviolet", "black"))
+effectsize$colorsF=ifelse(effectsize$logef >= 1.18, "darkviolet", ifelse(effectsize$logef <= -.61,"deepskyblue3", "black"))
 
 plot(effectsize$logef, col = effectsize$colorsF ,main="Leafcutter effect Sizes", ylab="Effect size")
 legend("bottomleft", legend=c("Top 5%: Total", "Bottom 5%: Nuclear"),
-       col=c( "deepskyblue3","darkviolet"), pch=19, cex=0.8)
+       col=c( "darkviolet","deepskyblue3"), pch=19, cex=0.8)
 
 ```
 I want to plot this by chr.
