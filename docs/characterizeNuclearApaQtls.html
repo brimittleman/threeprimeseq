@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-26</p>
+<p><strong>Last updated:</strong> 2018-10-29</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/5cb6b0bd668c8bf71bd004454e6fffaeaf7dadb3" target="_blank">5cb6b0b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/afb0ce901919c79bb2117f5548f0e2839c70aba6" target="_blank">afb0ce9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -359,7 +359,6 @@ Ignored files:
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
-    Untracked:  analysis/coloc_apaQTLs_protQTLs.Rmd
     Untracked:  analysis/genometrack_figs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -428,6 +427,7 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/39indQC.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
+    Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explore.filters.Rmd
@@ -465,6 +465,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/afb0ce901919c79bb2117f5548f0e2839c70aba6/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">afb0ce9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-29
+</td>
+<td style="text-align:left;">
+change plot colors
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/805dec6d4a2b4f026b6738fece69ae5daf24244d/docs/characterizeNuclearApaQtls.html" target="_blank">805dec6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -858,7 +892,7 @@ Briana Mittleman
 </table>
 <p></details></p>
 <p>I am going to plot a violin plot for just the significant ones.</p>
-<pre class="r"><code>ggplot(NuclearAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density()</code></pre>
+<pre class="r"><code>ggplot(NuclearAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density(fill=&quot;deepskyblue3&quot;)+ labs(title=&quot;Nuclear: Distance from QTL to PAS Peak&quot;, x=&quot;Distance from SNP to PAS&quot;)</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1258,11 +1292,11 @@ if __name__ == &quot;__main__&quot;:
 
 #SBATCH --job-name=total_random118_chromHmm
 #SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=total_random118_chromHmm.out
 #SBATCH --error=total_random118_chromHmm.err
-#SBATCH --partition=broadwl
-#SBATCH --mem=56G
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
 #SBATCH --mail-type=END
 
 module load Anaconda3
@@ -1271,13 +1305,13 @@ source activate three-prime-env
 
 #test with 2 permutations then make it 1000  
 #choose random res
-for i in {1..2};
+for i in {1..100};
 do
-python pull_random_lines.py Total 118 ${i}
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Total_118_${i}.txt
 done
 
 #make random 
-for i in {1..2};
+for i in {1..1000};
 do
 python randomRes2SNPbed.py Total 118 ${i}
 done 
@@ -1368,11 +1402,11 @@ if __name__ == &quot;__main__&quot;:
 
 #SBATCH --job-name=nuc_random880_chromHmm
 #SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=nuc_random880_chromHmm.out
 #SBATCH --error=nuc_random880_chromHmm.err
-#SBATCH --partition=broadwl
-#SBATCH --mem=56G
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
 #SBATCH --mail-type=END
 
 module load Anaconda3
@@ -1383,13 +1417,13 @@ source activate three-prime-env
 #choose random res
 for i in {1..1000};
 do
-python pull_random_lines.py Nuclear 880 ${i}
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Nuclear_880_${i}.txt
 done
 
 #make random 
 for i in {1..1000};
 do
-python randomRes2SNPbed.py Nuclear 880 ${i}
+python randomRes2SNPbed.py Nuclear 880 ${i} 
 done 
 
 
