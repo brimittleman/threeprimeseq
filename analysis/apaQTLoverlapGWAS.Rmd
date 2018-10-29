@@ -1,0 +1,89 @@
+---
+title: "apaQTL GWAS overlap"
+author: "Briana Mittleman"
+date: "10/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this analysis I want to see if APAqtls show up in the GWAS catelog. I then want to see if they explain different signal then overlappnig the eQTLs.  
+
+I can use my significant snp bed file from /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps to overlap with the GWAS catelog. First I can look at direct location then I will use an LD cutoff to colocalize.  
+
+* /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Nuclear.sort.bed
+* /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Total.sort.bed  
+
+
+The downloaded GWAS catalog from the UCSD table browser.  
+
+* /project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.txt 
+
+I will make this into a bed format to use with pybedtools.  
+
+-Chrom
+-start
+-end
+-name
+-score
+
+```{bash,eval=F}
+fin=open("/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.txt", "r")
+fout=open("/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.bed","w")
+
+for num, ln in enumerate(fin):
+  if num > 0: 
+    line=ln.split("\t")
+    id_list=[line[4],line[5], line[14]]
+    start=int(line[2])
+    end=int(line[3])
+    id=":".join(id_list)
+    chr=line[1][3:]
+    pval=line[16]
+    fout.write("%s\t%d\t%d\t%s\t%s\n"%(chr,start, end, id, pval)
+fout.close() 
+    
+```
+
+Pybedtools to intersect my snps with catelog /project2/gilad/briana/threeprimeseq/data/GWAS_overlap 
+
+output dir: 
+```{bash,eval=F}
+import pybedtools
+gwas=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.sort.bed")
+nuc=pybedtools.BedTool("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Nuclear.sort.bed")
+tot=pybedtools.BedTool("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Total.sort.bed") 
+
+nucOverGWAS=nuc.intersect(gwas, wa=True,wb=True)
+totOverGWAS=tot.intersect(gwas,wa=True, wb=True)
+
+#this only results in one overlap:  
+nucOverGWAS.saveas("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/nucFDR10overlapGWAS.txt")
+
+```
+
+*Problem: I see this snp but it is assoicated with a different gene. I need to think about gene and snp overlap. *
+
+
+I can see if this snp is an eqtl.  
+
+16:30482494   
+
+```{r}
+eqtl=read.table(file = "../data/other_qtls/fastqtl_qqnorm_RNAseq_phase2.fixed.perm.out")
+eqtl_g= read.table("../data/other_qtls/fastqtl_qqnorm_RNAseqGeuvadis.fixed.perm.out")
+
+```
+
+This snp is not in either of these files. I will check for them in the nominal results.  
+
+```{bash,eval=F}
+grep 16:30482494   /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out
+
+
+grep 16:30482494   /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out
+
+```
+

@@ -74,7 +74,9 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 
 * [Characterize Total Apa QTLS](characterizeTotalApaQtls.html)  
 
-* [Characterize Nuclear Apa QTLS](characterizeNuclearApaQtls.html)
+* [Characterize Nuclear Apa QTLS](characterizeNuclearApaQtls.html)  
+
+* [Overlap with GWAS](apaQTLoverlapGWAS.Rmd)  
 
 
 ###Molecular QTL analysis and Overlap:
