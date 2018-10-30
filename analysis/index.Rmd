@@ -66,6 +66,8 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 
 * [Read and peak QC plots](39indQC.html)
 
+* [Genome tracks to visualize reads](genometrack_figs.html)
+
 * [APAqtl for full ind set](apaQTLsAllInd.html)
 
 * [QTL and Diff iso wih correct peak to gene assignment](PeakToGeneAssignment.html)
