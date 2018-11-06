@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-29</p>
+<p><strong>Last updated:</strong> 2018-11-06</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/afb0ce901919c79bb2117f5548f0e2839c70aba6" target="_blank">afb0ce9</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/75467a16514b78f266c6fb4a0533e6d73846bddf" target="_blank">75467a1</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -359,7 +359,6 @@ Ignored files:
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
-    Untracked:  analysis/genometrack_figs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -426,6 +425,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/39indQC.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
@@ -435,6 +435,7 @@ Unstaged changes:
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
     Modified:   code/Snakefile
 
@@ -465,6 +466,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/75467a16514b78f266c6fb4a0533e6d73846bddf/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">75467a1</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-06
+</td>
+<td style="text-align:left;">
+load in permutation results
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a5b4cf677cb4da813fbf7aee2733afe7dccfb8d6/docs/characterizeNuclearApaQtls.html" target="_blank">a5b4cf6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -616,12 +651,12 @@ add nuclear characterization
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
@@ -639,9 +674,27 @@ Attaching package: &#39;data.table&#39;</code></pre>
 <pre><code>The following objects are masked from &#39;package:reshape2&#39;:
 
     dcast, melt</code></pre>
+<pre class="r"><code>library(ggpubr)</code></pre>
+<pre><code>Loading required package: magrittr</code></pre>
+<pre><code>
+Attaching package: &#39;magrittr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    set_names</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    extract</code></pre>
+<pre><code>
+Attaching package: &#39;ggpubr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:VennDiagram&#39;:
+
+    rotate</code></pre>
 <pre class="r"><code>library(cowplot)</code></pre>
 <pre><code>
 Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggpubr&#39;:
+
+    get_legend</code></pre>
 <pre><code>The following object is masked from &#39;package:ggplot2&#39;:
 
     ggsave</code></pre>
@@ -910,6 +963,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a5b4cf677cb4da813fbf7aee2733afe7dccfb8d6/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" target="_blank">a5b4cf6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-29
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" target="_blank">de860f0</a>
@@ -1290,11 +1354,11 @@ if __name__ == &quot;__main__&quot;:
 <p>total_random118_chromHmm.sh</p>
 <pre class="bash"><code>#!/bin/bash
 
-#SBATCH --job-name=total_random118_chromHmm
+#SBATCH --job-name=total_random118_chromHmm_f
 #SBATCH --account=pi-yangili1
 #SBATCH --time=36:00:00
-#SBATCH --output=total_random118_chromHmm.out
-#SBATCH --error=total_random118_chromHmm.err
+#SBATCH --output=total_random118_chromHmm_f.out
+#SBATCH --error=total_random118_chromHmm_f.err
 #SBATCH --partition=bigmem2
 #SBATCH --mem=200G
 #SBATCH --mail-type=END
@@ -1305,9 +1369,9 @@ source activate three-prime-env
 
 #test with 2 permutations then make it 1000  
 #choose random res
-for i in {1..100};
+for i in {1..1000};
 do
-shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Total_118_${i}.txt
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/randomRes_Total_118_${i}.txt
 done
 
 #make random 
@@ -1326,7 +1390,7 @@ sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total
 
 
 #hmm overlap
-python overlap_chromHMM.py  Total 118 1000 
+python overlap_chromHMM.py  Total 118 1000
 
 #Next I would pull this into R to do the group by and average!
 </code></pre>
@@ -1440,6 +1504,513 @@ python overlap_chromHMM.py  Nuclear 880 1000
 
 #Next I would pull this into R to do the group by and average!
 </code></pre>
+<p>Perm didnt finish: do this with less (824)</p>
+<p>nuclear_random880_chromHmm.sm.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_sm
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_sm.out
+#SBATCH --error=nuc_random880_chromHmm_sm.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {1..824};
+do
+python randomRes2SNPbed.py Nuclear 880 ${i} 
+done 
+
+
+#cat res together   
+cat /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed/* &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.bed
+
+
+#sort full file 
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.bed &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_all/randomRes_Nuclear_880_ALLperm.sort.bed
+
+
+#hmm overlap
+python overlap_chromHMM.py  Nuclear 880 824</code></pre>
+<p>I need a way to make this more efficient to run 1000 permutations. Here I will look at the results from the 824 permutations.</p>
+<pre class="r"><code>nuclear_perm824= read.table(&quot;../data/ChromHmmOverlap/randomres_overlapChromHMM_Nuclear_880_824.txt&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;),stringsAsFactors = F, na.strings = &quot;NA&quot;)
+#924 snps are not annoated 
+
+nuclear_perm824$number=as.integer(as.factor(nuclear_perm824$number))
+
+nuclear_perm824_names=nuclear_perm824 %&gt;% left_join(chromHmm, by=&quot;number&quot;)
+
+random_perChromHMM_nuc_PERM=nuclear_perm824_names %&gt;%  group_by(name) %&gt;% summarise(Random=n()) %&gt;% mutate(Random_perm=Random/824) %&gt;%  replace_na(list(name=&quot;No_annoation&quot;)) 
+
+perChrommHMM_nuc_withPerm=random_perChromHMM_nuc_PERM %&gt;%  full_join(sig_perChromHMM_nuc, by=&quot;name&quot; ) %&gt;% replace_na(list(Random=0,Nuclear_QTLs=0)) %&gt;%  select(name,Random_perm, Nuclear_QTLs)
+
+ 
+
+perChrommHMM_nuc_withPerm_melt=melt(perChrommHMM_nuc_withPerm, id.vars=&quot;name&quot;)
+names(perChrommHMM_nuc_withPerm_melt)=c(&quot;Region&quot;,&quot;Set&quot;, &quot;N_Snps&quot; )
+
+
+
+
+ggplot(perChrommHMM_nuc_withPerm_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;Enrichment of Nuclear QTLs by chromatin region&quot;, y=&quot;Number of Snps&quot;, x=&quot;Chromatin Region&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
+<p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>ENrichment is the actual/random:</p>
+<pre class="r"><code>perChrommHMM_nuc_withPerm_enrich = perChrommHMM_nuc_withPerm %&gt;% mutate(Nuclear_Enrichment=(Nuclear_QTLs-Random_perm)/Random_perm, chiSq=(Nuclear_QTLs-Random_perm)^2/Random_perm)
+
+ggplot(perChrommHMM_nuc_withPerm_enrich, aes(x=name, y=Nuclear_Enrichment)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;deepskyblue3&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;ChromHMM Enrichment of Nuclear ApaQTLs \n over 824 Random Permuations&quot;, x=&quot;Region&quot;)</code></pre>
+<p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(perChrommHMM_nuc_withPerm_enrich, aes(x=name, y=chiSq)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;deepskyblue3&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;ChromHMM ChiSq of Nuclear ApaQTLs \n over 824 Random Permuations&quot;, x=&quot;Region&quot;) </code></pre>
+<p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-39-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>To parallelize this I will run the permutations in 4 bash scripts:</p>
+<p>nuc_random880_chromHmm_set1.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_set1
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_set1.out
+#SBATCH --error=nuc_random880_chromHmm_set1.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {1..250};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Nuclear_880_${i}.txt
+done
+</code></pre>
+<p>nuc_random880_chromHmm_set2.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_set2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_set2.out
+#SBATCH --error=nuc_random880_chromHmm_set2.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {251..500};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Nuclear_880_${i}.txt
+done
+</code></pre>
+<p>nuc_random880_chromHmm_set3.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_set3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_set3.out
+#SBATCH --error=nuc_random880_chromHmm_set3.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {501..750};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Nuclear_880_${i}.txt
+done
+</code></pre>
+<p>nuc_random880_chromHmm_set4.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_set4
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_set4.out
+#SBATCH --error=nuc_random880_chromHmm_set4.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {751..1000};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/randomRes_Nuclear_880_${i}.txt
+done
+</code></pre>
+<p>Same for total:</p>
+<p>total_random118_chromHmm_set1.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm_set1
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=total_random118_chromHmm_set1.out
+#SBATCH --error=total_random118_chromHmm_set1.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {1..250};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/randomRes_Total_118_${i}.txt
+done
+</code></pre>
+<p>total_random118_chromHmm_set2.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm_set2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=total_random118_chromHmm_set2.out
+#SBATCH --error=total_random118_chromHmm_set2.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {251..500};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/randomRes_Total_118_${i}.txt
+done
+</code></pre>
+<p>total_random118_chromHmm_set3.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm_set3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=total_random118_chromHmm_set3.out
+#SBATCH --error=total_random118_chromHmm_set3.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {501..750};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/randomRes_Total_118_${i}.txt
+done
+</code></pre>
+<p>total_random118_chromHmm_set4.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm_set4
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=total_random118_chromHmm_set4.out
+#SBATCH --error=total_random118_chromHmm_set4.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {751..1000};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/randomRes_Total_118_${i}.txt
+done
+</code></pre>
+<p>I want to turn each of these into snp files:</p>
+<p>randomLines2Snp.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=randomLines2Snp
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=randomLines2Snp.out
+#SBATCH --error=randomLines2Snp.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#make random 
+for i in {1..1000};
+do
+python randomRes2SNPbed.py Nuclear 880 ${i} 
+done 
+
+#make random 
+for i in {1..1000};
+do
+python randomRes2SNPbed.py Total 118 ${i}
+done </code></pre>
+<p>Next step is the overlap. I want this to run on each seperatly.</p>
+<p>sortRandomSnps.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=sortRandomSnps
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=sortRandomSnps.out
+#SBATCH --error=sortRandomSnps.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed/);
+do
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed/$i &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/snp_bed_sort/$i.sort.bed
+done
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed/);
+do
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed/$i &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/snp_bed_sort/$i.sort.bed
+done
+</code></pre>
+<p>Rewrite overlap with ChromHMM script to do it on each file seperatly.</p>
+<p>overlap_chromHMM_sepfiles.py</p>
+<pre class="bash"><code>def main(inFile, outFile):
+  rand=pybedtools.BedTool(inFile) 
+  hmm=pybedtools.BedTool(&quot;/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed&quot;)
+  #map hmm to snps
+  Rand_overlapHMM=rand.map(hmm, c=4)
+  #save results
+  Rand_overlapHMM.saveas(outFile)
+
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pandas as pd
+    import pybedtools
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    niter=sys.argv[3]
+    #which itteration we are on 
+    inFile =&quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/snp_bed_sort/randomRes_%s_%s_%s.bed.sort.bed&quot;%(fraction,fraction, nsamp, iter)
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_%s.txt&quot;%(fraction,fraction,nsamp, niter)
+    main(inFile,outFile)</code></pre>
+<p>overlap_chromHMM_sepfiles.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=overlap_chromHMM_sepfiles
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=overlap_chromHMM_sepfiles.out
+#SBATCH --error=overlap_chromHMM_sepfiles.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+for i in {1..1000};
+do
+python overlap_chromHMM_sepfiles.py  Nuclear 880 $i
+done
+
+for i in {1..1000};
+do
+python overlap_chromHMM_sepfiles.py  Total 118 $i
+done</code></pre>
+<p>I will next make an R script that will take in each file and perform the groupby command to get the number of snps in each group.</p>
+<p>groupRandomByChromHMM.R</p>
+<pre class="r"><code>#!/bin/rscripts
+
+# usage: groupRandomByChromHMM.R -f infile -o outfile 
+
+#this file will take any of the itterations and output a file with chrom hmm number, name, numberof snps
+
+library(optparse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+
+option_list = list(
+  make_option(c(&quot;-f&quot;, &quot;--file&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;input coverage file&quot;),
+  make_option(c(&quot;-o&quot;, &quot;--output&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;output file&quot;)
+)
+
+opt_parser &lt;- OptionParser(option_list=option_list)
+opt &lt;- parse_args(opt_parser)
+
+
+#interrupt execution if no file is  supplied
+if (is.null(opt$file)){
+  print_help(opt_parser)
+  stop(&quot;Need input file&quot;, call.=FALSE)
+}
+if (is.null(opt$output)){
+  print_help(opt_parser)
+  stop(&quot;Need output file&quot;, call.=FALSE)
+}
+
+randomSNPS=read.table(opt$file, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;),stringsAsFactors = F, na.strings = &quot;NA&quot;)
+hmm_names=read.table(&quot;/project2/gilad/briana/genome_anotation_data/chromHMM_regions.txt&quot;, col.names = c(&quot;number&quot;, &quot;name&quot;),stringsAsFactors=F)
+randomSNPS$number=as.integer(as.factor(randomSNPS$number))
+randomSNPS_names= randomSNPS  %&gt;% left_join(hmm_names, by=&quot;number&quot;)
+#split the name of the file to get the iteration number
+fileSplit=strsplit(opt$file, &quot;/&quot;)[[1]][10]
+iter.txt=strsplit(fileSplit, &quot;_&quot;)[[1]][5]
+iter=substr(iter.txt, 1, nchar(iter.txt)-4) 
+
+randomSNPS_names_grouped=randomSNPS_names %&gt;%  group_by(name) %&gt;% summarise(!!iter:=n()) %&gt;%  replace_na(list(name=&quot;No_annotation&quot;)) %&gt;%  dplyr::select(name, !!iter) 
+
+final=hmm_names %&gt;% left_join(randomSNPS_names_grouped,by=&quot;name&quot;)
+
+write.table(final,opt$output,quote=FALSE, col.names = T, row.names = F)</code></pre>
+<p>groupRandomChromHMM.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=groupRandomChromHMM
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=groupRandomChromHMM.out
+#SBATCH --error=groupRandomChromHMM.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+for i in {1..1000};
+do
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/chromHMM_overlap/randomres_overlapChromHMM_Nuclear_880_${i}.txt -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/chromHMM_overlap_group/randomres_overlapChromHMM_Nuclear_880_${i}_grouped.txt
+done
+
+for i in {1..1000};
+do
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/chromHMM_overlap/randomres_overlapChromHMM_Total_118_${i}.txt -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/chromHMM_overlap_group/randomres_overlapChromHMM_Total_118_${i}_grouped.txt
+done</code></pre>
+<p>Once I have the results I will paste the third column of each file together</p>
+<pre class="bash"><code>cut -d$&#39; &#39; -f 1,2 randomres_overlapChromHMM_Nuclear_880_1_grouped.txt &gt; Nuc_chromOverlap.txt
+
+for i in {1..1000};
+do
+paste -d&quot; &quot; Nuc_chromOverlap.txt &lt;(cut -d&quot; &quot; -f 3 randomres_overlapChromHMM_Nuclear_880_${i}_grouped.txt) &gt; tmp
+mv tmp Nuc_chromOverlap.txt
+done
+
+
+cut -d$&#39; &#39; -f 1,2 randomres_overlapChromHMM_Total_118_99_grouped.txt&gt; Tot_chromOverlap.txt
+
+for i in {1..1000};
+do
+paste -d&quot; &quot; Tot_chromOverlap.txt &lt;(cut -d&quot; &quot; -f 3 randomres_overlapChromHMM_Total_118_${i}_grouped.txt) &gt; tmp
+mv tmp Tot_chromOverlap.txt
+done
+</code></pre>
+<p>There will be NAs in this file. I will turn them into 0s when I bring it in R.</p>
+<p>Pull files onto computer:</p>
+<p>/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear/chromHMM_overlap_group/Nuc_chromOverlap.txt /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total/chromHMM_overlap_group/Tot_chromOverlap.txt</p>
+<pre class="r"><code>regions=c(&#39;Txn_Elongation&#39;,&#39;Weak_Txn&#39;,&#39;Repressed&#39;,&#39;Heterochrom/lo&#39;,&#39;Repetitive/CNV1&#39;,&#39;Repetitive/CNV2&#39;,&#39;Active_Promoter&#39;,&#39;Weak_Promoter&#39;,&#39;Poised_Promoter&#39;,&#39;Strong_Enhancer1&#39;,&#39;Strong_Enhancer2&#39;,&#39;Weak_Enhancer1&#39;,&#39;Weak_Enhancer2&#39;,&#39;Insulator&#39;,&#39;Txn_Transition&#39;)
+
+
+permutationResTotal=read.table(&quot;../data/ChromHmmOverlap/Tot_chromOverlap.txt&quot;, header=T)
+permutationResTotal[is.na(permutationResTotal)] &lt;- 0
+permutationResTotal= as_data_frame(permutationResTotal)
+permutationResTotal=permutationResTotal[,3:ncol(permutationResTotal)]
+permutationResTotal_T=permutationResTotal %&gt;% t()
+colnames(permutationResTotal_T)=regions
+
+permutationResNuclear=read.table(&quot;../data/ChromHmmOverlap/Nuc_chromOverlap.txt&quot;,header = T)
+permutationResNuclear[is.na(permutationResNuclear)] &lt;- 0
+permutationResNuclear= as_data_frame(permutationResNuclear)
+permutationResNuclear=permutationResNuclear[,3:ncol(permutationResNuclear)]
+permutationResNuclear_T=permutationResNuclear %&gt;% t()
+colnames(permutationResNuclear_T)=regions</code></pre>
+<pre class="r"><code>#nuclear
+summary(permutationResNuclear_T)</code></pre>
+<pre><code> Txn_Elongation      Weak_Txn        Repressed      Heterochrom/lo 
+ Min.   :  1.00   Min.   :  4.00   Min.   :  3.00   Min.   :  0.0  
+ 1st Qu.:  8.00   1st Qu.: 11.00   1st Qu.: 12.00   1st Qu.: 11.0  
+ Median : 13.00   Median : 14.00   Median : 17.00   Median : 26.0  
+ Mean   : 35.23   Mean   : 50.08   Mean   : 47.18   Mean   :149.6  
+ 3rd Qu.: 72.00   3rd Qu.:130.00   3rd Qu.: 34.00   3rd Qu.:486.2  
+ Max.   :177.00   Max.   :185.00   Max.   :544.00   Max.   :552.0  
+ Repetitive/CNV1 Repetitive/CNV2 Active_Promoter  Weak_Promoter  
+ Min.   : 0.00   Min.   : 0.00   Min.   : 1.000   Min.   : 2.00  
+ 1st Qu.: 2.00   1st Qu.: 2.00   1st Qu.: 1.000   1st Qu.: 9.00  
+ Median :12.00   Median :12.00   Median : 2.000   Median :11.00  
+ Mean   :13.79   Mean   :13.79   Mean   : 4.963   Mean   :10.89  
+ 3rd Qu.:19.00   3rd Qu.:19.00   3rd Qu.: 9.000   3rd Qu.:13.00  
+ Max.   :55.00   Max.   :55.00   Max.   :22.000   Max.   :23.00  
+ Poised_Promoter  Strong_Enhancer1 Strong_Enhancer2 Weak_Enhancer1 
+ Min.   :  1.00   Min.   : 14      Min.   : 14      Min.   : 23.0  
+ 1st Qu.:  4.00   1st Qu.: 28      1st Qu.: 28      1st Qu.: 46.0  
+ Median : 73.00   Median :177      Median :177      Median :502.0  
+ Mean   : 54.39   Mean   :134      Mean   :134      Mean   :360.2  
+ 3rd Qu.: 81.00   3rd Qu.:190      3rd Qu.:190      3rd Qu.:517.0  
+ Max.   :100.00   Max.   :227      Max.   :227      Max.   :560.0  
+ Weak_Enhancer2    Insulator      Txn_Transition 
+ Min.   : 23.0   Min.   : 1.000   Min.   : 1.00  
+ 1st Qu.: 46.0   1st Qu.: 2.000   1st Qu.: 3.00  
+ Median :502.0   Median : 6.000   Median : 9.00  
+ Mean   :360.2   Mean   : 6.419   Mean   :11.57  
+ 3rd Qu.:517.0   3rd Qu.: 9.000   3rd Qu.:12.00  
+ Max.   :560.0   Max.   :20.000   Max.   :99.00  </code></pre>
+<pre class="r"><code>#total
+summary(permutationResTotal_T)</code></pre>
+<pre><code> Txn_Elongation     Weak_Txn       Repressed      Heterochrom/lo  
+ Min.   : 0.00   Min.   : 0.00   Min.   : 0.000   Min.   : 0.000  
+ 1st Qu.: 2.00   1st Qu.: 0.00   1st Qu.: 0.000   1st Qu.: 0.000  
+ Median : 6.00   Median : 2.00   Median : 0.000   Median : 0.000  
+ Mean   :21.75   Mean   :20.57   Mean   : 9.382   Mean   : 1.524  
+ 3rd Qu.:26.25   3rd Qu.:60.00   3rd Qu.: 1.000   3rd Qu.: 0.000  
+ Max.   :82.00   Max.   :83.00   Max.   :81.000   Max.   :79.000  
+ Repetitive/CNV1 Repetitive/CNV2 Active_Promoter Weak_Promoter   
+ Min.   :0.000   Min.   :0.000   Min.   :1.000   Min.   : 1.000  
+ 1st Qu.:0.000   1st Qu.:0.000   1st Qu.:1.000   1st Qu.: 1.000  
+ Median :0.000   Median :0.000   Median :1.000   Median : 2.000  
+ Mean   :0.024   Mean   :0.024   Mean   :1.802   Mean   : 2.106  
+ 3rd Qu.:0.000   3rd Qu.:0.000   3rd Qu.:2.000   3rd Qu.: 2.000  
+ Max.   :5.000   Max.   :5.000   Max.   :6.000   Max.   :21.000  
+ Poised_Promoter  Strong_Enhancer1 Strong_Enhancer2 Weak_Enhancer1 
+ Min.   : 1.000   Min.   : 2.00    Min.   : 2.00    Min.   : 2.00  
+ 1st Qu.: 1.000   1st Qu.: 4.00    1st Qu.: 4.00    1st Qu.: 5.00  
+ Median : 2.000   Median : 5.00    Median : 5.00    Median : 9.00  
+ Mean   : 3.585   Mean   :10.24    Mean   :10.24    Mean   :18.13  
+ 3rd Qu.: 3.000   3rd Qu.: 8.00    3rd Qu.: 8.00    3rd Qu.:25.25  
+ Max.   :29.000   Max.   :92.00    Max.   :92.00    Max.   :85.00  
+ Weak_Enhancer2    Insulator     Txn_Transition 
+ Min.   : 2.00   Min.   : 0.00   Min.   : 0.00  
+ 1st Qu.: 5.00   1st Qu.: 2.00   1st Qu.: 4.00  
+ Median : 9.00   Median : 8.00   Median : 9.00  
+ Mean   :18.13   Mean   :11.43   Mean   :17.45  
+ 3rd Qu.:25.25   3rd Qu.:16.00   3rd Qu.:21.00  
+ Max.   :85.00   Max.   :83.00   Max.   :85.00  </code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -1460,12 +2031,12 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] bindrcpp_0.2.2      cowplot_0.9.3       data.table_1.11.8  
- [4] VennDiagram_1.6.20  futile.logger_1.4.3 forcats_0.3.0      
- [7] stringr_1.3.1       dplyr_0.7.6         purrr_0.2.5        
-[10] readr_1.1.1         tidyr_0.8.1         tibble_1.4.2       
-[13] ggplot2_3.0.0       tidyverse_1.2.1     reshape2_1.4.3     
-[16] workflowr_1.1.1    
+ [1] bindrcpp_0.2.2      cowplot_0.9.3       ggpubr_0.1.8       
+ [4] magrittr_1.5        data.table_1.11.8   VennDiagram_1.6.20 
+ [7] futile.logger_1.4.3 forcats_0.3.0       stringr_1.3.1      
+[10] dplyr_0.7.6         purrr_0.2.5         readr_1.1.1        
+[13] tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0      
+[16] tidyverse_1.2.1     reshape2_1.4.3      workflowr_1.1.1    
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4     haven_1.1.2          lattice_0.20-35     
@@ -1480,12 +2051,12 @@ loaded via a namespace (and not attached):
 [28] Rcpp_0.12.19         formatR_1.5          backports_1.1.2     
 [31] scales_1.0.0         jsonlite_1.5         hms_0.4.2           
 [34] digest_0.6.17        stringi_1.2.4        rprojroot_1.3-2     
-[37] cli_1.0.1            tools_3.5.1          magrittr_1.5        
-[40] lazyeval_0.2.1       futile.options_1.0.1 crayon_1.3.4        
-[43] whisker_0.3-2        pkgconfig_2.0.2      xml2_1.2.0          
-[46] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.10      
-[49] httr_1.3.1           rstudioapi_0.8       R6_2.3.0            
-[52] nlme_3.1-137         git2r_0.23.0         compiler_3.5.1      </code></pre>
+[37] cli_1.0.1            tools_3.5.1          lazyeval_0.2.1      
+[40] futile.options_1.0.1 crayon_1.3.4         whisker_0.3-2       
+[43] pkgconfig_2.0.2      xml2_1.2.0           lubridate_1.7.4     
+[46] assertthat_0.2.0     rmarkdown_1.10       httr_1.3.1          
+[49] rstudioapi_0.8       R6_2.3.0             nlme_3.1-137        
+[52] git2r_0.23.0         compiler_3.5.1      </code></pre>
 </div>
 
 <hr>
