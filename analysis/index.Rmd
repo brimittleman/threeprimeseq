@@ -92,3 +92,5 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 * [Overlap QTLs starting with APAqtls](overlapMolQTL.opposite.html)  
 
 * [Investigate APA protein RNA relationship](apa_prot_overlap.html)  
+
+* [Use flash and mash to look at sharing](flash2mash.html)

@@ -1,0 +1,85 @@
+---
+title: "FLASH2MASH"
+author: "Briana Mittleman"
+date: "11/6/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this analysis to implement the flash and mash packages developed by the stephens lab to better understand molecular QTL sharing and to see if adding APA to a model can help with power in protein QTLs.
+
+Steps:
+1. FLASH to see tissue patterns (https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn.html and https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn2.html)  
+2. Conditional analysis with residuals to see if I can call APA qtls on the residuals from an RNA~protein analysis
+3. run MASH  
+
+
+Data stucture: I need to have a matrix with all of my QTL results. I want to get a snp-gene by phenotype matrix with the effect sizes and standard errors. First I will do this with the genes we have all data for (unless it is too small). To deal with the APA isoform problem I will use the peak with the most significant peak-snp pair. This should be ok because given the peaks are ratios they are all correlated with eachother.  
+
+```{r}
+library(tidyverse)
+library(workflowr)
+```
+
+
+First I can use the permuted results to look at the genes that are tested in all of the phenotypes.  
+
+
+```{r}
+
+read_permfile=function(file, mol){
+  perm_names=c("pid" ,"nvar","shape1" ,"shape2", "dummy","sid" ,"dist","npval", "slope" , "ppval" ,"bpval")
+  geneNames=read.table("../data/ensemble_to_genename.txt", sep="\t", header=T,stringsAsFactors = F)
+  res=read.table(file, col.names = perm_names, stringsAsFactors = F)
+  if (mol == "protein"){
+    res_f= res %>% rename("Gene.stable.ID"=pid)
+    res_final= res_f %>% inner_join(geneNames, by="Gene.stable.ID") %>% select(c("Gene.name"))
+  }
+  else{
+    res_final =res %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene.stable.ID") %>% select(c("Gene.name"))
+  }
+  return(res_final)
+}
+```
+
+```{r}
+prot_res=read_permfile("../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out", "protein")
+rna_res=read_permfile("../data/other_qtls/fastqtl_qqnorm_RNAseq_phase2.fixed.perm.out", "RNA")
+rnaG_res=read_permfile("../data/other_qtls/fastqtl_qqnorm_RNAseqGeuvadis.fixed.perm.out", "RNAG")
+su30_res=read_permfile("../data/other_qtls/fastqtl_qqnorm_4su30.fixed.perm.out", "su30")
+su60_res=read_permfile("../data/other_qtls/fastqtl_qqnorm_4su60.fixed.perm.out", "su60")
+ribo_res=read_permfile("../data/other_qtls/fastqtl_qqnorm_ribo_phase2.fixed.perm.out", "ribo")
+
+
+```
+
+Now I need to look at the apa file genes.  
+
+```{r}
+NuclearAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>%  rename("Gene.name"=gene) %>% select(Gene.name)%>% distinct()
+
+totalAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% rename("Gene.name"=gene) %>% select(Gene.name) %>% distinct()
+```
+
+
+
+Look hoqw many genes are in all sets: 
+
+```{r}
+allgenes= NuclearAPA %>% inner_join(totalAPA,by="Gene.name") %>% inner_join(totalAPA,by="Gene.name") %>% inner_join(su30_res,by="Gene.name") %>% inner_join(su60_res,by="Gene.name") %>% inner_join(rna_res,by="Gene.name") %>% inner_join(rnaG_res,by="Gene.name")%>% inner_join(ribo_res,by="Gene.name")%>% inner_join(prot_res,by="Gene.name")
+print(nrow(allgenes))
+allgenes_minusprot= NuclearAPA %>% inner_join(totalAPA,by="Gene.name") %>% inner_join(totalAPA,by="Gene.name") %>% inner_join(su30_res,by="Gene.name") %>% inner_join(su60_res,by="Gene.name") %>% inner_join(rna_res,by="Gene.name") %>% inner_join(rnaG_res,by="Gene.name")%>% inner_join(ribo_res,by="Gene.name")
+print(nrow(allgenes_minusprot))
+allgenes_minusribo= NuclearAPA %>% inner_join(totalAPA,by="Gene.name") %>% inner_join(totalAPA,by="Gene.name") %>% inner_join(su30_res,by="Gene.name") %>% inner_join(su60_res,by="Gene.name") %>% inner_join(rna_res,by="Gene.name") %>% inner_join(rnaG_res,by="Gene.name")%>% inner_join(prot_res,by="Gene.name")
+print(nrow(allgenes_minusribo))
+
+genes_ApaRnaProt= NuclearAPA %>% inner_join(totalAPA,by="Gene.name") %>%inner_join(rna_res,by="Gene.name") %>%inner_join(prot_res,by="Gene.name")
+print(nrow(genes_ApaRnaProt))
+
+genes_RNAProt= rna_res%>%inner_join(prot_res,by="Gene.name")
+print(nrow(genes_RNAProt))
+```
+Only have 904 genes that are tested in both APA and protein data.  
