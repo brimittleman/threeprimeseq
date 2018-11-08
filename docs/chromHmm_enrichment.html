@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/962e39bcfc173365546499232b60d586f6470f38" target="_blank">962e39b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/70cf09c19343a0c37c200842b84edebe43324a4f" target="_blank">70cf09c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -471,6 +471,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/70cf09c19343a0c37c200842b84edebe43324a4f/analysis/chromHmm_enrichment.Rmd" target="_blank">70cf09c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+<td style="text-align:left;">
+add perm res
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/chromHmm_enrichment.html" target="_blank">2ec5ffd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/962e39bcfc173365546499232b60d586f6470f38/analysis/chromHmm_enrichment.Rmd" target="_blank">962e39b</a>
 </td>
 <td style="text-align:left;">
@@ -550,12 +584,74 @@ NuclearOverlapHMM$number=as.integer(NuclearOverlapHMM$number)
 NuclearOverlapHMM_names=NuclearOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
 <pre class="r"><code>ggplot(NuclearOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-3-1.png" target="_blank">2ec5ffd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Evaluate results for total:</p>
 <pre class="r"><code>TotalOverlapHMM=read.table(&quot;../data/ChromHmmOverlap/Tot_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
 
 TotalOverlapHMM_names=TotalOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
 <pre class="r"><code>ggplot(TotalOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Total APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
-<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /> ##Pull one set of random snps:</p>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-5-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-5-1.png" target="_blank">2ec5ffd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<div id="pull-one-set-of-random-snps" class="section level2">
+<h2>Pull one set of random snps:</h2>
 <p>I do still need to get 880 random snps.</p>
 <pre class="bash"><code>shuf -n 880 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_nuclear_Random880.txt
 </code></pre>
@@ -581,6 +677,36 @@ NucRnad_overlapHMM.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/nomina
 NuclearRandOverlapHMM_names=NuclearRandOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
 <pre class="r"><code>ggplot(NuclearRandOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls (Random)&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-9-1.png" target="_blank">2ec5ffd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>To put this on the same plot I can count the number in each then plot them next to eachother.</p>
 <pre class="r"><code>random_perChromHMM_nuc=NuclearRandOverlapHMM_names %&gt;%  group_by(name) %&gt;% summarise(Random=n())
 sig_perChromHMM_nuc= NuclearOverlapHMM_names %&gt;%  group_by(name) %&gt;%  summarise(Nuclear_QTLs=n())
@@ -592,6 +718,36 @@ names(perChrommHMM_nuc_melt)=c(&quot;Region&quot;,&quot;Set&quot;, &quot;N_Snps&
 <pre class="r"><code>chromenrichNuclearplot=ggplot(perChrommHMM_nuc_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;Enrichment of Nuclear QTLs by chromatin region&quot;, y=&quot;Number of Snps&quot;, x=&quot;Chromatin Region&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)
 chromenrichNuclearplot</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-11-1.png" target="_blank">2ec5ffd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggsave(&quot;../output/plots/ChromHmmEnrich_Nuclear.png&quot;, chromenrichNuclearplot)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <div id="compare-enrichment-between-fractions" class="section level3">
@@ -610,6 +766,7 @@ allenrich_melt=melt(allenrich, id.vars=&quot;name&quot;)</code></pre>
 
 ggsave(&quot;../output/plots/ChromHmmEnrich_BothFrac.png&quot;, chromenrichBoth)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
+</div>
 </div>
 <div id="permutations" class="section level2">
 <h2>Permutations</h2>
@@ -822,13 +979,103 @@ names(perChrommHMM_nuc_withPerm_melt)=c(&quot;Region&quot;,&quot;Set&quot;, &quo
 
 ggplot(perChrommHMM_nuc_withPerm_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;Enrichment of Nuclear QTLs by chromatin region&quot;, y=&quot;Number of Snps&quot;, x=&quot;Chromatin Region&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-21-1.png" target="_blank">2ec5ffd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Enrichment is the actual/random:</p>
 <pre class="r"><code>perChrommHMM_nuc_withPerm_enrich = perChrommHMM_nuc_withPerm %&gt;% mutate(Nuclear_Enrichment=(Nuclear_QTLs-Random_perm)/Random_perm, chiSq=(Nuclear_QTLs-Random_perm)^2/Random_perm)
 
 ggplot(perChrommHMM_nuc_withPerm_enrich, aes(x=name, y=Nuclear_Enrichment)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;deepskyblue3&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;ChromHMM Enrichment of Nuclear ApaQTLs \n over 824 Random Permuations&quot;, x=&quot;Region&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-22-1.png" target="_blank">2ec5ffd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(perChrommHMM_nuc_withPerm_enrich, aes(x=name, y=chiSq)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;deepskyblue3&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;ChromHMM ChiSq of Nuclear ApaQTLs \n over 824 Random Permuations&quot;, x=&quot;Region&quot;) </code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-22-2.png" target="_blank">2ec5ffd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>To parallelize this I will run the permutations in 4 bash scripts:</p>
 <p>nuc_random880_chromHmm_set1.sh</p>
 <pre class="bash"><code>#!/bin/bash
@@ -1179,79 +1426,50 @@ done
 <pre class="r"><code>regions=c(&#39;Txn_Elongation&#39;,&#39;Weak_Txn&#39;,&#39;Repressed&#39;,&#39;Heterochrom/lo&#39;,&#39;Repetitive/CNV1&#39;,&#39;Repetitive/CNV2&#39;,&#39;Active_Promoter&#39;,&#39;Weak_Promoter&#39;,&#39;Poised_Promoter&#39;,&#39;Strong_Enhancer1&#39;,&#39;Strong_Enhancer2&#39;,&#39;Weak_Enhancer1&#39;,&#39;Weak_Enhancer2&#39;,&#39;Insulator&#39;,&#39;Txn_Transition&#39;)
 
 
-permutationResTotal=read.table(&quot;../data/ChromHmmOverlap/Tot_chromOverlap.txt&quot;, header=T)
+permutationResTotal=read.table(&quot;../data/ChromHmmOverlap/Tot_chromOverlap.txt&quot;, header=T, stringsAsFactors = F)
 permutationResTotal[is.na(permutationResTotal)] &lt;- 0
 permutationResTotal= as_data_frame(permutationResTotal)
-permutationResTotal=permutationResTotal[,3:ncol(permutationResTotal)]
-permutationResTotal_T=permutationResTotal %&gt;% t()
-colnames(permutationResTotal_T)=regions
+permutationResTotal_noName=permutationResTotal[,3:ncol(permutationResTotal)]
+totRand_mean=rowMeans(permutationResTotal_noName)/1000
 
-permutationResNuclear=read.table(&quot;../data/ChromHmmOverlap/Nuc_chromOverlap.txt&quot;,header = T)
+permutationResNuclear=read.table(&quot;../data/ChromHmmOverlap/Nuc_chromOverlap.txt&quot;,header = T,stringsAsFactors = F)
 permutationResNuclear[is.na(permutationResNuclear)] &lt;- 0
-permutationResNuclear= as_data_frame(permutationResNuclear)
-permutationResNuclear=permutationResNuclear[,3:ncol(permutationResNuclear)]
-permutationResNuclear_T=permutationResNuclear %&gt;% t()
-colnames(permutationResNuclear_T)=regions</code></pre>
-<pre class="r"><code>#nuclear
-summary(permutationResNuclear_T)</code></pre>
-<pre><code> Txn_Elongation      Weak_Txn        Repressed      Heterochrom/lo 
- Min.   :  1.00   Min.   :  4.00   Min.   :  3.00   Min.   :  0.0  
- 1st Qu.:  8.00   1st Qu.: 11.00   1st Qu.: 12.00   1st Qu.: 11.0  
- Median : 13.00   Median : 14.00   Median : 17.00   Median : 26.0  
- Mean   : 35.23   Mean   : 50.08   Mean   : 47.18   Mean   :149.6  
- 3rd Qu.: 72.00   3rd Qu.:130.00   3rd Qu.: 34.00   3rd Qu.:486.2  
- Max.   :177.00   Max.   :185.00   Max.   :544.00   Max.   :552.0  
- Repetitive/CNV1 Repetitive/CNV2 Active_Promoter  Weak_Promoter  
- Min.   : 0.00   Min.   : 0.00   Min.   : 1.000   Min.   : 2.00  
- 1st Qu.: 2.00   1st Qu.: 2.00   1st Qu.: 1.000   1st Qu.: 9.00  
- Median :12.00   Median :12.00   Median : 2.000   Median :11.00  
- Mean   :13.79   Mean   :13.79   Mean   : 4.963   Mean   :10.89  
- 3rd Qu.:19.00   3rd Qu.:19.00   3rd Qu.: 9.000   3rd Qu.:13.00  
- Max.   :55.00   Max.   :55.00   Max.   :22.000   Max.   :23.00  
- Poised_Promoter  Strong_Enhancer1 Strong_Enhancer2 Weak_Enhancer1 
- Min.   :  1.00   Min.   : 14      Min.   : 14      Min.   : 23.0  
- 1st Qu.:  4.00   1st Qu.: 28      1st Qu.: 28      1st Qu.: 46.0  
- Median : 73.00   Median :177      Median :177      Median :502.0  
- Mean   : 54.39   Mean   :134      Mean   :134      Mean   :360.2  
- 3rd Qu.: 81.00   3rd Qu.:190      3rd Qu.:190      3rd Qu.:517.0  
- Max.   :100.00   Max.   :227      Max.   :227      Max.   :560.0  
- Weak_Enhancer2    Insulator      Txn_Transition 
- Min.   : 23.0   Min.   : 1.000   Min.   : 1.00  
- 1st Qu.: 46.0   1st Qu.: 2.000   1st Qu.: 3.00  
- Median :502.0   Median : 6.000   Median : 9.00  
- Mean   :360.2   Mean   : 6.419   Mean   :11.57  
- 3rd Qu.:517.0   3rd Qu.: 9.000   3rd Qu.:12.00  
- Max.   :560.0   Max.   :20.000   Max.   :99.00  </code></pre>
-<pre class="r"><code>#total
-summary(permutationResTotal_T)</code></pre>
-<pre><code> Txn_Elongation     Weak_Txn       Repressed      Heterochrom/lo  
- Min.   : 0.00   Min.   : 0.00   Min.   : 0.000   Min.   : 0.000  
- 1st Qu.: 2.00   1st Qu.: 0.00   1st Qu.: 0.000   1st Qu.: 0.000  
- Median : 6.00   Median : 2.00   Median : 0.000   Median : 0.000  
- Mean   :21.75   Mean   :20.57   Mean   : 9.382   Mean   : 1.524  
- 3rd Qu.:26.25   3rd Qu.:60.00   3rd Qu.: 1.000   3rd Qu.: 0.000  
- Max.   :82.00   Max.   :83.00   Max.   :81.000   Max.   :79.000  
- Repetitive/CNV1 Repetitive/CNV2 Active_Promoter Weak_Promoter   
- Min.   :0.000   Min.   :0.000   Min.   :1.000   Min.   : 1.000  
- 1st Qu.:0.000   1st Qu.:0.000   1st Qu.:1.000   1st Qu.: 1.000  
- Median :0.000   Median :0.000   Median :1.000   Median : 2.000  
- Mean   :0.024   Mean   :0.024   Mean   :1.802   Mean   : 2.106  
- 3rd Qu.:0.000   3rd Qu.:0.000   3rd Qu.:2.000   3rd Qu.: 2.000  
- Max.   :5.000   Max.   :5.000   Max.   :6.000   Max.   :21.000  
- Poised_Promoter  Strong_Enhancer1 Strong_Enhancer2 Weak_Enhancer1 
- Min.   : 1.000   Min.   : 2.00    Min.   : 2.00    Min.   : 2.00  
- 1st Qu.: 1.000   1st Qu.: 4.00    1st Qu.: 4.00    1st Qu.: 5.00  
- Median : 2.000   Median : 5.00    Median : 5.00    Median : 9.00  
- Mean   : 3.585   Mean   :10.24    Mean   :10.24    Mean   :18.13  
- 3rd Qu.: 3.000   3rd Qu.: 8.00    3rd Qu.: 8.00    3rd Qu.:25.25  
- Max.   :29.000   Max.   :92.00    Max.   :92.00    Max.   :85.00  
- Weak_Enhancer2    Insulator     Txn_Transition 
- Min.   : 2.00   Min.   : 0.00   Min.   : 0.00  
- 1st Qu.: 5.00   1st Qu.: 2.00   1st Qu.: 4.00  
- Median : 9.00   Median : 8.00   Median : 9.00  
- Mean   :18.13   Mean   :11.43   Mean   :17.45  
- 3rd Qu.:25.25   3rd Qu.:16.00   3rd Qu.:21.00  
- Max.   :85.00   Max.   :83.00   Max.   :85.00  </code></pre>
+permutationResNuclear_noName=permutationResNuclear[,3:ncol(permutationResNuclear)]
+nucRand_mean=rowMeans(permutationResNuclear_noName)/1000</code></pre>
+<pre class="r"><code>allRand_mean_df= data.frame(cbind(regions,totRand_mean, nucRand_mean))
+
+allRand_mean_df_melt=melt(allRand_mean_df, id.vars=&quot;regions&quot;)</code></pre>
+<pre><code>Warning: attributes are not identical across measure variables; they will
+be dropped</code></pre>
+<pre class="r"><code>allRand_mean_df_melt$value= as.numeric(allRand_mean_df_melt$value)
+ggplot(allRand_mean_df_melt, aes(y=value, x=regions, by=variable, fill=variable))+ geom_histogram(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I want to look at specific distributions:</p>
+<pre class="r"><code>permutationResTotal_melt= melt(permutationResTotal, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
+<pre class="r"><code>ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>For nuclear:</p>
+<pre class="r"><code>permutationResNuclear_melt= melt(permutationResNuclear, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
+<pre class="r"><code>ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Try log scale:</p>
+<p>I want to add horizontal line where the actual QTL number is.</p>
+<pre class="r"><code>ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning: Removed 448 rows containing missing values (geom_bar).</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning: Removed 631 rows containing missing values (geom_bar).</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Try removing 0s:</p>
+<pre class="r"><code>permutationResTotal_melt_no0= permutationResTotal_melt %&gt;% filter(value&gt;0)
+ggplot(permutationResTotal_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>permutationResNuclear_melt_no0= permutationResNuclear_melt %&gt;% filter(value&gt;0)
+ggplot(permutationResNuclear_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
