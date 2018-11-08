@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-07</p>
+<p><strong>Last updated:</strong> 2018-11-08</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/70cf09c19343a0c37c200842b84edebe43324a4f" target="_blank">70cf09c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/ab79f33b0858f7059283b2764531a884b8a1c218" target="_blank">ab79f33</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -471,6 +471,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ab79f33b0858f7059283b2764531a884b8a1c218/analysis/chromHmm_enrichment.Rmd" target="_blank">ab79f33</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-08
+</td>
+<td style="text-align:left;">
+add enrichment analysis (messed up perm)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/chromHmm_enrichment.html" target="_blank">19b98b3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/70cf09c19343a0c37c200842b84edebe43324a4f/analysis/chromHmm_enrichment.Rmd" target="_blank">70cf09c</a>
 </td>
 <td style="text-align:left;">
@@ -582,7 +616,8 @@ Attaching package: &#39;cowplot&#39;</code></pre>
 NuclearOverlapHMM=read.table(&quot;../data/ChromHmmOverlap/Nuc_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
 NuclearOverlapHMM$number=as.integer(NuclearOverlapHMM$number)
 NuclearOverlapHMM_names=NuclearOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
-<pre class="r"><code>ggplot(NuclearOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<pre class="r"><code>NuclearOverlapHMM_names$number=as.character(NuclearOverlapHMM_names$number)
+ggplot(NuclearOverlapHMM_names, aes(x=number, fill=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -618,7 +653,8 @@ Briana Mittleman
 <pre class="r"><code>TotalOverlapHMM=read.table(&quot;../data/ChromHmmOverlap/Tot_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
 
 TotalOverlapHMM_names=TotalOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
-<pre class="r"><code>ggplot(TotalOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Total APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<pre class="r"><code>TotalOverlapHMM_names$number=as.character(TotalOverlapHMM_names$number)
+ggplot(TotalOverlapHMM_names, aes(x=number, fill=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Total APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-5-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -753,19 +789,18 @@ Briana Mittleman
 <div id="compare-enrichment-between-fractions" class="section level3">
 <h3>Compare enrichment between fractions</h3>
 <p>I want to make a plot with the enrichment by fraction. I am first going to get an enrichemnt score for each bin naively by looking at the QTL/random in each category.</p>
-<pre class="r"><code>perChrommHMM_nuc$Random= as.integer(perChrommHMM_nuc$Random)
-perChrommHMM_nuc_enr=perChrommHMM_nuc %&gt;%  mutate(Nuclear=Nuclear_QTLs-Random)
+<pre class="r"><code>#perChrommHMM_nuc$Random= as.integer(perChrommHMM_nuc$Random)
+#perChrommHMM_nuc_enr=perChrommHMM_nuc %&gt;%  mutate(Nuclear=Nuclear_QTLs-Random)
 
-perChrommHMM_tot_enr=read.table(&quot;../data/ChromHmmOverlap/perChrommHMM_Total_enr.txt&quot;,stringsAsFactors = F,header = T)</code></pre>
-<pre class="r"><code>allenrich=perChrommHMM_tot_enr %&gt;% inner_join(perChrommHMM_nuc_enr, by=&quot;name&quot;) %&gt;% select(name, Total, Nuclear)
+#perChrommHMM_tot_enr=read.table(&quot;../data/ChromHmmOverlap/perChrommHMM_Total_enr.txt&quot;,stringsAsFactors = F,header = T)</code></pre>
+<pre class="r"><code>#allenrich=perChrommHMM_tot_enr %&gt;% inner_join(perChrommHMM_nuc_enr, by=&quot;name&quot;) %&gt;% select(name, Total, Nuclear)
 
-allenrich_melt=melt(allenrich, id.vars=&quot;name&quot;)</code></pre>
+#allenrich_melt=melt(allenrich, id.vars=&quot;name&quot;)</code></pre>
 <p>plot it</p>
-<pre class="r"><code>chromenrichBoth=ggplot(allenrich_melt, aes(x=name, by=variable, y=value, fill=variable)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;QTL-Random for each bin by fraction&quot;, y=&quot;Num QTL SNPs - Num Random SNPs&quot;) + scale_fill_manual(values=c(&quot;darkviolet&quot;, &quot;deepskyblue3&quot;))
+<pre class="r"><code>#chromenrichBoth=ggplot(allenrich_melt, aes(x=name, by=variable, y=value, fill=variable)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;QTL-Random for each bin by fraction&quot;, y=&quot;Num QTL SNPs - Num Random SNPs&quot;) + scale_fill_manual(values=c(&quot;darkviolet&quot;, &quot;deepskyblue3&quot;))
 
 
-ggsave(&quot;../output/plots/ChromHmmEnrich_BothFrac.png&quot;, chromenrichBoth)</code></pre>
-<pre><code>Saving 7 x 5 in image</code></pre>
+#ggsave(&quot;../output/plots/ChromHmmEnrich_BothFrac.png&quot;, chromenrichBoth)</code></pre>
 </div>
 </div>
 <div id="permutations" class="section level2">
@@ -1445,31 +1480,285 @@ be dropped</code></pre>
 ggplot(allRand_mean_df_melt, aes(y=value, x=regions, by=variable, fill=variable))+ geom_histogram(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-38-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-38-1.png" target="_blank">19b98b3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I want to look at specific distributions:</p>
 <pre class="r"><code>permutationResTotal_melt= melt(permutationResTotal, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-40-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-40-1.png" target="_blank">19b98b3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>For nuclear:</p>
 <pre class="r"><code>permutationResNuclear_melt= melt(permutationResNuclear, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-42-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-42-1.png" target="_blank">19b98b3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Try log scale:</p>
 <p>I want to add horizontal line where the actual QTL number is.</p>
-<pre class="r"><code>ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()</code></pre>
+<pre class="r"><code>ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10() + labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 448 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()</code></pre>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-43-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-43-1.png" target="_blank">19b98b3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 631 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-44-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-44-1.png" target="_blank">19b98b3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Try removing 0s:</p>
 <pre class="r"><code>permutationResTotal_melt_no0= permutationResTotal_melt %&gt;% filter(value&gt;0)
-ggplot(permutationResTotal_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)</code></pre>
+ggplot(permutationResTotal_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)+ scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning: Removed 407 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-45-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-1.png" target="_blank">19b98b3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>permutationResNuclear_melt_no0= permutationResNuclear_melt %&gt;% filter(value&gt;0)
-ggplot(permutationResNuclear_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)</code></pre>
+ggplot(permutationResNuclear_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)+ scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning: Removed 630 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-45-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-2.png" target="_blank">19b98b3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Look at enrichment by using the average</p>
+<pre class="r"><code>TotalPermMean=permutationResTotal_melt %&gt;% group_by(number) %&gt;% summarise(TotRandPerm=mean(value))
+TotalPermMean$number=as.character(TotalPermMean$number)
+NuclearPermMean=permutationResNuclear_melt %&gt;% group_by(number) %&gt;% summarise(NucRandPerm=mean(value))
+NuclearPermMean$number=as.character(NuclearPermMean$number)</code></pre>
+<p>Melt SNP values by name and number to get data in same format:</p>
+<pre class="r"><code>TotalOverlapHMM_names_melt=melt(TotalOverlapHMM_names, id.vars=c(&quot;number&quot;, &quot;name&quot;))%&gt;% filter(variable==&quot;sid&quot;) %&gt;% group_by(number) %&gt;% summarise(TotalQTL=n())</code></pre>
+<pre><code>Warning: attributes are not identical across measure variables; they will
+be dropped</code></pre>
+<pre class="r"><code>TotalOverlapHMM_names_melt$number=as.character(TotalOverlapHMM_names_melt$number)
+NuclearOverlapHMM_names_melt=melt(NuclearOverlapHMM_names, id.vars=c(&quot;number&quot;, &quot;name&quot;)) %&gt;% filter(variable==&quot;sid&quot;) %&gt;% group_by(number) %&gt;% summarise(NucQTL=n())</code></pre>
+<pre><code>Warning: attributes are not identical across measure variables; they will
+be dropped</code></pre>
+<pre class="r"><code>NuclearOverlapHMM_names_melt$number=as.character(NuclearOverlapHMM_names_melt$number)</code></pre>
+<pre class="r"><code>chromHmm$number=as.character(chromHmm$number)
+TotalOverlapHMM_enrichment= TotalOverlapHMM_names_melt %&gt;% full_join(TotalPermMean, by=&quot;number&quot;) %&gt;%  replace_na(list(TotalQTL=.00001)) %&gt;% full_join(chromHmm, by=&quot;number&quot;)
+
+TotalOverlapHMM_enrichment$TotalQTL=as.double(TotalOverlapHMM_enrichment$TotalQTL)
+TotalOverlapHMM_enrichment = TotalOverlapHMM_enrichment %&gt;% mutate(TotEnrich=(TotalQTL-TotRandPerm)/TotRandPerm)
+
+NuclearOverlapHMM_enrichment=NuclearOverlapHMM_names_melt %&gt;% full_join(NuclearPermMean, by=&quot;number&quot;)%&gt;% full_join(chromHmm, by=&quot;number&quot;)
+
+NuclearOverlapHMM_enrichment$NucQTL=as.double(NuclearOverlapHMM_enrichment$NucQTL)
+
+NuclearOverlapHMM_enrichment=NuclearOverlapHMM_enrichment %&gt;%mutate(NucEnrich=(NucQTL-NucRandPerm)/NucRandPerm)</code></pre>
+<pre class="r"><code>ggplot(NuclearOverlapHMM_enrichment, aes(y=NucEnrich, x=number, fill=name)) + geom_bar(stat=&quot;identity&quot;)</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(TotalOverlapHMM_enrichment, aes(y=TotEnrich, x=number, fill=name)) + geom_bar(stat=&quot;identity&quot;)</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-49-2.png" width="672" style="display: block; margin: auto;" /> Join together:</p>
+<pre class="r"><code>bothEnrich=NuclearOverlapHMM_enrichment %&gt;% full_join(TotalOverlapHMM_enrichment, by=c(&quot;name&quot;, &quot;number&quot;)) %&gt;% select(number, name, NucEnrich,TotEnrich)
+
+bothEnrich_melt=melt(bothEnrich, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
+<pre class="r"><code>ggplot(bothEnrich_melt, aes(x=number, by=variable, fill=name, y=value,col=variable)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;,alpha=.5) + scale_color_manual(values=c(&quot;darkviolet&quot;, &quot;deepskyblue3&quot;)) + labs(y=&quot;Enrichment from 1000 permutations&quot;, title=&quot;ChromHMM enrichment for \nTotal and Nuclear ApaQTLs&quot;,x=&quot;Region&quot;)</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Look only at the interesting ones by subsetting:</p>
+<pre class="r"><code>bothEnrich_melt_filt=bothEnrich_melt %&gt;% filter(str_detect(name,&quot;Active_Promoter|Txn_Elongation|Weak_Txn|Heterochrom/lo|Weak_Promoter|Poised_Promoter|Txn_Transition&quot;))
+
+
+ggplot(bothEnrich_melt_filt, aes(x=name, by=variable, fill=variable, y=value))+ geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y=&quot;Enrichment&quot;, x=&quot;Category&quot;, title=&quot;ChromHMM categroies \n with oppositte Enrichemtn patterns&quot;)</code></pre>
+<p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
