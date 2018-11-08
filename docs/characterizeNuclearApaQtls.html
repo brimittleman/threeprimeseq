@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-06</p>
+<p><strong>Last updated:</strong> 2018-11-07</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/75467a16514b78f266c6fb4a0533e6d73846bddf" target="_blank">75467a1</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e43bd073216238b870f4abea85b1fb962c82e489" target="_blank">e43bd07</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -431,6 +431,7 @@ Unstaged changes:
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
@@ -466,6 +467,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e43bd073216238b870f4abea85b1fb962c82e489/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">e43bd07</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-07
+</td>
+<td style="text-align:left;">
+group chromhmm by number
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b176cda51421ba4cf03400f59b31b30eeb7ba31a/docs/characterizeNuclearApaQtls.html" target="_blank">b176cda</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1558,13 +1593,103 @@ names(perChrommHMM_nuc_withPerm_melt)=c(&quot;Region&quot;,&quot;Set&quot;, &quo
 
 ggplot(perChrommHMM_nuc_withPerm_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;Enrichment of Nuclear QTLs by chromatin region&quot;, y=&quot;Number of Snps&quot;, x=&quot;Chromatin Region&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-38-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b176cda51421ba4cf03400f59b31b30eeb7ba31a/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-38-1.png" target="_blank">b176cda</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>ENrichment is the actual/random:</p>
 <pre class="r"><code>perChrommHMM_nuc_withPerm_enrich = perChrommHMM_nuc_withPerm %&gt;% mutate(Nuclear_Enrichment=(Nuclear_QTLs-Random_perm)/Random_perm, chiSq=(Nuclear_QTLs-Random_perm)^2/Random_perm)
 
 ggplot(perChrommHMM_nuc_withPerm_enrich, aes(x=name, y=Nuclear_Enrichment)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;deepskyblue3&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;ChromHMM Enrichment of Nuclear ApaQTLs \n over 824 Random Permuations&quot;, x=&quot;Region&quot;)</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-39-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b176cda51421ba4cf03400f59b31b30eeb7ba31a/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-39-1.png" target="_blank">b176cda</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(perChrommHMM_nuc_withPerm_enrich, aes(x=name, y=chiSq)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;deepskyblue3&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;ChromHMM ChiSq of Nuclear ApaQTLs \n over 824 Random Permuations&quot;, x=&quot;Region&quot;) </code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-39-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-39-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b176cda51421ba4cf03400f59b31b30eeb7ba31a/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-39-2.png" target="_blank">b176cda</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>To parallelize this I will run the permutations in 4 bash scripts:</p>
 <p>nuc_random880_chromHmm_set1.sh</p>
 <pre class="bash"><code>#!/bin/bash
@@ -1884,9 +2009,9 @@ fileSplit=strsplit(opt$file, &quot;/&quot;)[[1]][10]
 iter.txt=strsplit(fileSplit, &quot;_&quot;)[[1]][5]
 iter=substr(iter.txt, 1, nchar(iter.txt)-4) 
 
-randomSNPS_names_grouped=randomSNPS_names %&gt;%  group_by(name) %&gt;% summarise(!!iter:=n()) %&gt;%  replace_na(list(name=&quot;No_annotation&quot;)) %&gt;%  dplyr::select(name, !!iter) 
-
-final=hmm_names %&gt;% left_join(randomSNPS_names_grouped,by=&quot;name&quot;)
+randomSNPS_names_grouped=randomSNPS_names %&gt;%  group_by(number) %&gt;% summarise(!!iter:=n()) %&gt;%  replace_na(list(name=&quot;No_annotation&quot;)) %&gt;%  dplyr::select(number, !!iter) 
+hmm_names$number=as.character(hmm_names$number)
+final=hmm_names %&gt;% left_join(randomSNPS_names_grouped,by=&quot;number&quot;)
 
 write.table(final,opt$output,quote=FALSE, col.names = T, row.names = F)</code></pre>
 <p>groupRandomChromHMM.sh</p>
