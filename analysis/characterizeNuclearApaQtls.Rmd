@@ -1018,9 +1018,9 @@ fileSplit=strsplit(opt$file, "/")[[1]][10]
 iter.txt=strsplit(fileSplit, "_")[[1]][5]
 iter=substr(iter.txt, 1, nchar(iter.txt)-4) 
 
-randomSNPS_names_grouped=randomSNPS_names %>%  group_by(name) %>% summarise(!!iter:=n()) %>%  replace_na(list(name="No_annotation")) %>%  dplyr::select(name, !!iter) 
-
-final=hmm_names %>% left_join(randomSNPS_names_grouped,by="name")
+randomSNPS_names_grouped=randomSNPS_names %>%  group_by(number) %>% summarise(!!iter:=n()) %>%  replace_na(list(name="No_annotation")) %>%  dplyr::select(number, !!iter) 
+hmm_names$number=as.character(hmm_names$number)
+final=hmm_names %>% left_join(randomSNPS_names_grouped,by="number")
 
 write.table(final,opt$output,quote=FALSE, col.names = T, row.names = F)
 
