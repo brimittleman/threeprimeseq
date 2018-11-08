@@ -814,25 +814,75 @@ Pull files onto computer:
 regions=c('Txn_Elongation','Weak_Txn','Repressed','Heterochrom/lo','Repetitive/CNV1','Repetitive/CNV2','Active_Promoter','Weak_Promoter','Poised_Promoter','Strong_Enhancer1','Strong_Enhancer2','Weak_Enhancer1','Weak_Enhancer2','Insulator','Txn_Transition')
 
 
-permutationResTotal=read.table("../data/ChromHmmOverlap/Tot_chromOverlap.txt", header=T)
+permutationResTotal=read.table("../data/ChromHmmOverlap/Tot_chromOverlap.txt", header=T, stringsAsFactors = F)
 permutationResTotal[is.na(permutationResTotal)] <- 0
 permutationResTotal= as_data_frame(permutationResTotal)
-permutationResTotal=permutationResTotal[,3:ncol(permutationResTotal)]
-permutationResTotal_T=permutationResTotal %>% t()
-colnames(permutationResTotal_T)=regions
+permutationResTotal_noName=permutationResTotal[,3:ncol(permutationResTotal)]
+totRand_mean=rowMeans(permutationResTotal_noName)/1000
 
-permutationResNuclear=read.table("../data/ChromHmmOverlap/Nuc_chromOverlap.txt",header = T)
+permutationResNuclear=read.table("../data/ChromHmmOverlap/Nuc_chromOverlap.txt",header = T,stringsAsFactors = F)
 permutationResNuclear[is.na(permutationResNuclear)] <- 0
-permutationResNuclear= as_data_frame(permutationResNuclear)
-permutationResNuclear=permutationResNuclear[,3:ncol(permutationResNuclear)]
-permutationResNuclear_T=permutationResNuclear %>% t()
-colnames(permutationResNuclear_T)=regions
+permutationResNuclear_noName=permutationResNuclear[,3:ncol(permutationResNuclear)]
+nucRand_mean=rowMeans(permutationResNuclear_noName)/1000
+
+```
+```{r}
+allRand_mean_df= data.frame(cbind(regions,totRand_mean, nucRand_mean))
+
+allRand_mean_df_melt=melt(allRand_mean_df, id.vars="regions")
+allRand_mean_df_melt$value= as.numeric(allRand_mean_df_melt$value)
+ggplot(allRand_mean_df_melt, aes(y=value, x=regions, by=variable, fill=variable))+ geom_histogram(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+I want to look at specific distributions:  
+
+```{r}
+permutationResTotal_melt= melt(permutationResTotal, id.vars=c("number", "name"))
+```
+
+```{r}
+ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x="N random Snps in category", title="Random permutation Total")
+```
+
+For nuclear:
+
+
+```{r}
+permutationResNuclear_melt= melt(permutationResNuclear, id.vars=c("number", "name"))
+```
+
+```{r}
+ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x="N random Snps in category", title="Random permutation Nuclear")
+```
+
+
+Try log scale:  
+
+
+
+
+
+I want to add horizontal line where the actual QTL number is.
+```{r}
+ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()
 ```
 
 
 ```{r}
-#nuclear
-summary(permutationResNuclear_T)
-#total
-summary(permutationResTotal_T)
+ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()
 ```
+
+Try removing 0s: 
+
+```{r}
+permutationResTotal_melt_no0= permutationResTotal_melt %>% filter(value>0)
+ggplot(permutationResTotal_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)
+
+permutationResNuclear_melt_no0= permutationResNuclear_melt %>% filter(value>0)
+ggplot(permutationResNuclear_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)
+
+```
+
+
+
