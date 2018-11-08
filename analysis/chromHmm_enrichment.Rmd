@@ -35,7 +35,8 @@ NuclearOverlapHMM_names=NuclearOverlapHMM %>% left_join(chromHmm, by="number")
 ```
 
 ```{r}
-ggplot(NuclearOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Nuclear APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+NuclearOverlapHMM_names$number=as.character(NuclearOverlapHMM_names$number)
+ggplot(NuclearOverlapHMM_names, aes(x=number, fill=name)) + geom_bar() + labs(title="ChromHMM labels for Nuclear APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 Evaluate results for total:  
@@ -48,7 +49,8 @@ TotalOverlapHMM_names=TotalOverlapHMM %>% left_join(chromHmm, by="number")
 ```
 
 ```{r}
-ggplot(TotalOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Total APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+TotalOverlapHMM_names$number=as.character(TotalOverlapHMM_names$number)
+ggplot(TotalOverlapHMM_names, aes(x=number, fill=name)) + geom_bar() + labs(title="ChromHMM labels for Total APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 ##Pull one set of random snps: 
 
@@ -121,25 +123,25 @@ I want to make a plot with the enrichment by fraction. I am first going to get a
 
 ```{r}
 
-perChrommHMM_nuc$Random= as.integer(perChrommHMM_nuc$Random)
-perChrommHMM_nuc_enr=perChrommHMM_nuc %>%  mutate(Nuclear=Nuclear_QTLs-Random)
+#perChrommHMM_nuc$Random= as.integer(perChrommHMM_nuc$Random)
+#perChrommHMM_nuc_enr=perChrommHMM_nuc %>%  mutate(Nuclear=Nuclear_QTLs-Random)
 
-perChrommHMM_tot_enr=read.table("../data/ChromHmmOverlap/perChrommHMM_Total_enr.txt",stringsAsFactors = F,header = T)
+#perChrommHMM_tot_enr=read.table("../data/ChromHmmOverlap/perChrommHMM_Total_enr.txt",stringsAsFactors = F,header = T)
 ```
 
 
 ```{r}
-allenrich=perChrommHMM_tot_enr %>% inner_join(perChrommHMM_nuc_enr, by="name") %>% select(name, Total, Nuclear)
+#allenrich=perChrommHMM_tot_enr %>% inner_join(perChrommHMM_nuc_enr, by="name") %>% select(name, Total, Nuclear)
 
-allenrich_melt=melt(allenrich, id.vars="name")
+#allenrich_melt=melt(allenrich, id.vars="name")
 ```
 
 plot it
 ```{r}
-chromenrichBoth=ggplot(allenrich_melt, aes(x=name, by=variable, y=value, fill=variable)) + geom_bar(stat="identity", position = "dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="QTL-Random for each bin by fraction", y="Num QTL SNPs - Num Random SNPs") + scale_fill_manual(values=c("darkviolet", "deepskyblue3"))
+#chromenrichBoth=ggplot(allenrich_melt, aes(x=name, by=variable, y=value, fill=variable)) + geom_bar(stat="identity", position = "dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="QTL-Random for each bin by fraction", y="Num QTL SNPs - Num Random SNPs") + scale_fill_manual(values=c("darkviolet", "deepskyblue3"))
 
 
-ggsave("../output/plots/ChromHmmEnrich_BothFrac.png", chromenrichBoth)
+#ggsave("../output/plots/ChromHmmEnrich_BothFrac.png", chromenrichBoth)
 ```
 
 
@@ -826,6 +828,7 @@ permutationResNuclear_noName=permutationResNuclear[,3:ncol(permutationResNuclear
 nucRand_mean=rowMeans(permutationResNuclear_noName)/1000
 
 ```
+
 ```{r}
 allRand_mean_df= data.frame(cbind(regions,totRand_mean, nucRand_mean))
 
@@ -865,24 +868,83 @@ Try log scale:
 
 I want to add horizontal line where the actual QTL number is.
 ```{r}
-ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()
+ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10() + labs(x="random Snps in category", title="Random permutation Total")
 ```
 
 
 ```{r}
-ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()
+ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x="random Snps in category", title="Random permutation Nuclear")
 ```
 
 Try removing 0s: 
 
 ```{r}
 permutationResTotal_melt_no0= permutationResTotal_melt %>% filter(value>0)
-ggplot(permutationResTotal_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)
+ggplot(permutationResTotal_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)+ scale_y_log10()+ labs(x="random Snps in category", title="Random permutation Total")
 
 permutationResNuclear_melt_no0= permutationResNuclear_melt %>% filter(value>0)
-ggplot(permutationResNuclear_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)
+ggplot(permutationResNuclear_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)+ scale_y_log10()+ labs(x="random Snps in category", title="Random permutation Nuclear")
 
 ```
 
+Look at enrichment by using the average 
+```{r}
+TotalPermMean=permutationResTotal_melt %>% group_by(number) %>% summarise(TotRandPerm=mean(value))
+TotalPermMean$number=as.character(TotalPermMean$number)
+NuclearPermMean=permutationResNuclear_melt %>% group_by(number) %>% summarise(NucRandPerm=mean(value))
+NuclearPermMean$number=as.character(NuclearPermMean$number)
+```
 
+Melt SNP values by name and number to get data in same format:  
+
+```{r}
+TotalOverlapHMM_names_melt=melt(TotalOverlapHMM_names, id.vars=c("number", "name"))%>% filter(variable=="sid") %>% group_by(number) %>% summarise(TotalQTL=n())
+TotalOverlapHMM_names_melt$number=as.character(TotalOverlapHMM_names_melt$number)
+NuclearOverlapHMM_names_melt=melt(NuclearOverlapHMM_names, id.vars=c("number", "name")) %>% filter(variable=="sid") %>% group_by(number) %>% summarise(NucQTL=n())
+NuclearOverlapHMM_names_melt$number=as.character(NuclearOverlapHMM_names_melt$number)
+```
+
+```{r}
+
+chromHmm$number=as.character(chromHmm$number)
+TotalOverlapHMM_enrichment= TotalOverlapHMM_names_melt %>% full_join(TotalPermMean, by="number") %>%  replace_na(list(TotalQTL=.00001)) %>% full_join(chromHmm, by="number")
+
+TotalOverlapHMM_enrichment$TotalQTL=as.double(TotalOverlapHMM_enrichment$TotalQTL)
+TotalOverlapHMM_enrichment = TotalOverlapHMM_enrichment %>% mutate(TotEnrich=(TotalQTL-TotRandPerm)/TotRandPerm)
+
+NuclearOverlapHMM_enrichment=NuclearOverlapHMM_names_melt %>% full_join(NuclearPermMean, by="number")%>% full_join(chromHmm, by="number")
+
+NuclearOverlapHMM_enrichment$NucQTL=as.double(NuclearOverlapHMM_enrichment$NucQTL)
+
+NuclearOverlapHMM_enrichment=NuclearOverlapHMM_enrichment %>%mutate(NucEnrich=(NucQTL-NucRandPerm)/NucRandPerm)
+```
+
+
+```{r}
+ggplot(NuclearOverlapHMM_enrichment, aes(y=NucEnrich, x=number, fill=name)) + geom_bar(stat="identity")
+
+ggplot(TotalOverlapHMM_enrichment, aes(y=TotEnrich, x=number, fill=name)) + geom_bar(stat="identity")
+
+```
+Join together: 
+
+```{r}
+bothEnrich=NuclearOverlapHMM_enrichment %>% full_join(TotalOverlapHMM_enrichment, by=c("name", "number")) %>% select(number, name, NucEnrich,TotEnrich)
+
+bothEnrich_melt=melt(bothEnrich, id.vars=c("number", "name"))
+
+```
+```{r}
+ggplot(bothEnrich_melt, aes(x=number, by=variable, fill=name, y=value,col=variable)) + geom_bar(position = "dodge", stat = "identity",alpha=.5) + scale_color_manual(values=c("darkviolet", "deepskyblue3")) + labs(y="Enrichment from 1000 permutations", title="ChromHMM enrichment for \nTotal and Nuclear ApaQTLs",x="Region")
+```
+
+Look only at the interesting ones by subsetting:  
+```{r}
+
+bothEnrich_melt_filt=bothEnrich_melt %>% filter(str_detect(name,"Active_Promoter|Txn_Elongation|Weak_Txn|Heterochrom/lo|Weak_Promoter|Poised_Promoter|Txn_Transition"))
+
+
+ggplot(bothEnrich_melt_filt, aes(x=name, by=variable, fill=variable, y=value))+ geom_bar(position = "dodge", stat = "identity") + scale_fill_manual(values=c("deepskyblue3","darkviolet")) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y="Enrichment", x="Category", title="ChromHMM categroies \n with oppositte Enrichemtn patterns")
+
+```
 
