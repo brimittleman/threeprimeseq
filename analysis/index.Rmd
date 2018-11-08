@@ -78,6 +78,8 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 
 * [Characterize Nuclear Apa QTLS](characterizeNuclearApaQtls.html)  
 
+* [ChromHMM enrichment analysis](chromHmm_enrichment.html)
+
 * [Overlap with GWAS](apaQTLoverlapGWAS.Rmd)  
 
 
