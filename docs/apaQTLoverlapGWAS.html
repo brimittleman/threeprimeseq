@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-29</p>
+<p><strong>Last updated:</strong> 2018-11-09</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/42d0e3d7c7875581d9b5bd1d63dc658b03e21f11" target="_blank">42d0e3d</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/489bf91806282e31a19f8558e7d18f33eb6af085" target="_blank">489bf91</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -359,7 +359,6 @@ Ignored files:
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
-    Untracked:  analysis/genometrack_figs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -426,16 +425,18 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/39indQC.Rmd
-    Modified:   analysis/characterizeNuclearApaQtls.Rmd
+    Modified:   analysis/chromHmm_enrichment.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
     Modified:   code/Snakefile
 
@@ -466,6 +467,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/489bf91806282e31a19f8558e7d18f33eb6af085/analysis/apaQTLoverlapGWAS.Rmd" target="_blank">489bf91</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-09
+</td>
+<td style="text-align:left;">
+code for plink r2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/0428c8cc7dbe48e523ec661d5a0215e784135d7b/docs/apaQTLoverlapGWAS.html" target="_blank">0428c8c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -539,6 +574,330 @@ eqtl_g= read.table(&quot;../data/other_qtls/fastqtl_qqnorm_RNAseqGeuvadis.fixed.
 
 grep 16:30482494   /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseqGeuvadis.fixed.nominal.out
 </code></pre>
+<div id="ld-structure" class="section level2">
+<h2>LD structure</h2>
+<p><a href="https://vcftools.github.io/man_latest.html" class="uri">https://vcftools.github.io/man_latest.html</a> –vcf (vcf file) –geno-r2 –out (prefix) vcf tools is on midway 2 “module load vcftools”</p>
+<p>I can use the snp files I created for the chromHMM analysis.</p>
+<ul>
+<li>/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Total.sort.bed</li>
+<li>/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnp/ApaQTLsignificantSnps_10percFDR_Nuclear.sort.bed</li>
+</ul>
+<p>I can use awk to get the first and third column.</p>
+<pre class="bash"><code>awk &#39;{print $1 &quot;:&quot; $3}&#39; /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Nuclear.sort.bed &gt; /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear.txt
+
+awk &#39;{print $1&quot;:&quot;$3}&#39; /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps/ApaQTLsignificantSnps_10percFDR_Total.sort.bed &gt; /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt</code></pre>
+<p>testLD_vcftools_totQTL.sh</p>
+<pre class="bash"><code>
+#!/bin/bash
+
+#SBATCH --job-name=testLD_vcftools_totQTL.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=testLD_vcftools_totQTL.out
+#SBATCH --error=testLD_vcftools_totQTL.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load vcftools
+
+vcftools --gzvcf chr1.dose.vcf.gz  --snps  /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt --out /project2/gilad/briana/YRI_geno_hg19/chr1.totQTL.LD --geno-r2 </code></pre>
+<p>/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD</p>
+<p>/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD</p>
+<p>Now run this for all chr in both fractions.</p>
+<p>LD_vcftools.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=LD_vcftools.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=LD_vcftools.out
+#SBATCH --error=rLD_vcftools.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load vcftools
+
+for i  in {1..22};
+do
+vcftools --gzvcf /project2/gilad/briana/YRI_geno_hg19/chr${i}.dose.vcf.gz  --snps  /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD/chr${i}.totQTL.LD --geno-r2 --min-r2 .8
+done
+
+
+for i  in {1..22};
+do
+vcftools --gzvcf /project2/gilad/briana/YRI_geno_hg19/chr${i}.dose.vcf.gz  --snps  /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear.txt --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD/chr${i}.nucQTL.LD --geno-r2 --min-r2 .8
+done
+</code></pre>
+<p>This doesnt give very many more snps. Let me try this with Tony’s vcf files from the larger panel of LCLs.</p>
+<p>Try it with the –hap-r2 argument.</p>
+<p>LD_vcftools.hap.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=LD_vcftools.hap.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=LD_vcftools.hap.out
+#SBATCH --error=rLD_vcftools.hap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load vcftools
+
+for i  in {1..22};
+do
+vcftools --gzvcf /project2/gilad/briana/YRI_geno_hg19/chr${i}.dose.vcf.gz  --snps  /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD/chr${i}.totQTL.hap.LD --hap-r2--min-r2 .8
+done
+
+
+for i  in {1..22};
+do
+vcftools --gzvcf /project2/gilad/briana/YRI_geno_hg19/chr${i}.dose.vcf.gz  --snps  /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear.txt --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD/chr${i}.nucQTL.hap.LD --hap-r2 --min-r2 .8
+done
+</code></pre>
+<p>still not a lot of snps.</p>
+<p>testLDGeu_vcftools_totQTL.sh</p>
+<pre class="bash"><code>
+#!/bin/bash
+
+#SBATCH --job-name=testLDGeu_vcftools_totQTL.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=testLDGeu_vcftools_totQTL.out
+#SBATCH --error=testLDGeu_vcftools_totQTL.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load vcftools
+
+vcftools --gzvcf /project2/yangili1/LCL/genotypesYRI.gen.txt.gz   --snps  /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/geuvadis.totQTL.LD --geno-r2 </code></pre>
+<p>Error: Insufficient sites remained after filtering</p>
+<p>vcf2Plink.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=vcf2Plink
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=vcf2Plink.out
+#SBATCH --error=vcf2Plink.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load vcftools
+
+for i  in {1..22};
+do
+vcftools --gzvcf /project2/gilad/briana/YRI_geno_hg19/chr${i}.dose.vcf.gz --plink --chr ${i} --out /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr${i}
+done</code></pre>
+<p>Try with plink:<br />
+I will use the ped and map files: –ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr$i.ped –map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chri.map</p>
+<p>–ld-snp-list /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt</p>
+<p>–r2</p>
+<p>–ld-window-r2 0.20.8 testPlink_r2.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=testPlink_r2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=testPlink_r2.out
+#SBATCH --error=testPlink_r2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr22.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr22.map --r2  --ld-window-r2 0.8 --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/plinkYRI_LDchr22
+</code></pre>
+<p>This gives me 77,000 pairs. I will run this on all of the chromosomes then subset by snps i have QTLs for.</p>
+<p>RunPlink_r2.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=RunPlink_r2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunPlink_r2.out
+#SBATCH --error=RunPlink_r2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+for i  in {1..22};
+do
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr${i}.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr${i}.map --r2  --ld-window-r2 0.8 --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/plinkYRI_LDchr${i}
+done
+</code></pre>
+<p>I can now subset these files for snps in the /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt and /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear.txt files using a python script.</p>
+<p>This script will take a fraction and chromosome.</p>
+<p>subset_plink4QTLs.py</p>
+<pre class="bash"><code>
+    
+def main(genFile, qtlFile, outFile):
+  #convert snp file to a list: 
+  def file_to_list(file):
+    snp_list=[]
+    for ln in file:
+      snp=ln.strip()
+      snp_list.append(snp)
+    return(snp_list)
+
+  gen=open(genFile,&quot;r&quot;)
+  fout=open(outFile, &quot;w&quot;)
+  qtls=open(qtlFile, &quot;r&quot;)
+  qtl_list=file_to_list(qtls)
+  for ln in gen:
+      snp=ln.split()[2]
+      if snp in qtl_list:
+          fout.write(ln)
+  fout.close()
+    
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    chrom=sys.argv[1]
+    fraction=sys.argv[2]
+    genFile = &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/plinkYRI_LDchr%s.ld&quot;%(chrom)
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/%sApaQTL_LD/chr%s.%sQTL.LD.geno.ld&quot;%(fraction,chrom,fraction)
+    qtlFile= &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_%s.txt&quot;%(fraction)
+    main(genFile, qtlFile, outFile) 
+    
+    
+    </code></pre>
+<p>Run this for all chr in a bash script:</p>
+<p>run_subset_plink4QTLs.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_subset_plink4QTLs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_subset_plink4QTLs.out
+#SBATCH --error=run_subset_plink4QTLs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i  in {1..22};
+do
+python subset_plink4QTLs.py ${i} &quot;Total&quot;
+done
+
+for i  in {1..22};
+do
+python subset_plink4QTLs.py ${i} &quot;Nuclear&quot;
+done</code></pre>
+<p>This results in 385 more snps for the nuclear QTLs and 54 more for the total.</p>
+<p>I want to try this method on the bigger panel from Tonys work.</p>
+<p>vcf2Plink_geu.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=vcf2Plink_geu
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=vcf2Plink_geu2.out
+#SBATCH --error=vcf2Plink_geu2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load vcftools
+
+for i  in {1..22};
+do
+vcftools --gzvcf /project2/yangili1/LCL/geuvadis_genotypes/GEUVADIS.chr${i}.hg19_MAF5AC.vcf.gz --plink --chr ${i} --out /project2/gilad/briana/YRI_geno_hg19/geu_plinkYRIgeno_chr${i}
+done</code></pre>
+<p>RunPlink_Geu_r2.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=RunPlink_geu_r2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunPlink_geu_r2.out
+#SBATCH --error=RunPlink_geu_r2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+for i  in {1..22};
+do
+plink --ped /project2/gilad/briana/YRI_geno_hg19/geu_plinkYRIgeno_chr${i}.ped  --map /project2/gilad/briana/YRI_geno_hg19/geu_plinkYRIgeno_chr${i}.map --r2  --ld-window-r2 0.8 --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/geu_plinkYRI_LDchr${i}
+done</code></pre>
+<p>Update the python selection script for geu results.<br />
+subset_plink4QTLs_geu.py</p>
+<pre class="bash"><code>
+    
+def main(genFile, qtlFile, outFile):
+  #convert snp file to a list: 
+  def file_to_list(file):
+    snp_list=[]
+    for ln in file:
+      snp=ln.strip()
+      snp_list.append(snp)
+    return(snp_list)
+
+  gen=open(genFile,&quot;r&quot;)
+  fout=open(outFile, &quot;w&quot;)
+  qtls=open(qtlFile, &quot;r&quot;)
+  qtl_list=file_to_list(qtls)
+  for ln in gen:
+      snp=ln.split()[2]
+      if snp in qtl_list:
+          fout.write(ln)
+  fout.close()
+    
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    chrom=sys.argv[1]
+    fraction=sys.argv[2]
+    genFile = &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/geu_plinkYRI_LDchr%s.ld&quot;%(chrom)
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/%sApaQTL_LD_geu/chr%s.%sQTL.LD.geno.ld&quot;%(fraction,chrom,fraction)
+    qtlFile= &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_%s.txt&quot;%(fraction)
+    main(genFile, qtlFile, outFile) 
+    
+    
+    </code></pre>
+<p>run_subset_plink4QTLs_geu.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_subset_plink4QTLs_geu
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_subset_plink4QTLs_geu.out
+#SBATCH --error=run_subset_plink4QTLs_geu.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i  in {1..22};
+do
+python subset_plink4QTLs_geu.py ${i} &quot;Total&quot;
+done
+
+for i  in {1..22};
+do
+python subset_plink4QTLs_geu.py ${i} &quot;Nuclear&quot;
+done</code></pre>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
