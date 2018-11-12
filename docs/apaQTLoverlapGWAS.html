@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-09</p>
+<p><strong>Last updated:</strong> 2018-11-12</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/489bf91806282e31a19f8558e7d18f33eb6af085" target="_blank">489bf91</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/89b780f6c7117e4f7ec14e1e19ed95c11e65d34b" target="_blank">89b780f</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -386,6 +386,7 @@ Untracked files:
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
+    Untracked:  data/example_gene_peakQuant/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -472,6 +473,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/89b780f6c7117e4f7ec14e1e19ed95c11e65d34b/analysis/apaQTLoverlapGWAS.Rmd" target="_blank">89b780f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-12
+</td>
+<td style="text-align:left;">
+add analysis of hits
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7462a2d18003bfe95950899be69da183c533c94c/docs/apaQTLoverlapGWAS.html" target="_blank">7462a2d</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-09
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/489bf91806282e31a19f8558e7d18f33eb6af085/analysis/apaQTLoverlapGWAS.Rmd" target="_blank">489bf91</a>
 </td>
 <td style="text-align:left;">
@@ -523,6 +558,24 @@ add gwas overlap to index
 </ul>
 <p></details></p>
 <hr />
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
 <p>In this analysis I want to see if APAqtls show up in the GWAS catelog. I then want to see if they explain different signal then overlappnig the eQTLs.</p>
 <p>I can use my significant snp bed file from /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps to overlap with the GWAS catelog. First I can look at direct location then I will use an LD cutoff to colocalize.</p>
 <ul>
@@ -535,7 +588,7 @@ add gwas overlap to index
 </ul>
 <p>I will make this into a bed format to use with pybedtools.</p>
 <p>-Chrom -start -end -name -score</p>
-<pre class="bash"><code>fin=open(&quot;/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.txt&quot;, &quot;r&quot;)
+<pre class="bash"><code>fin=open(&quot;&quot;/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.txt&quot;, &quot;r&quot;)
 fout=open(&quot;/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.bed&quot;,&quot;w&quot;)
 
 for num, ln in enumerate(fin):
@@ -836,6 +889,42 @@ for i  in {1..22};
 do
 plink --ped /project2/gilad/briana/YRI_geno_hg19/geu_plinkYRIgeno_chr${i}.ped  --map /project2/gilad/briana/YRI_geno_hg19/geu_plinkYRIgeno_chr${i}.map --r2  --ld-window-r2 0.8 --out /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/geu_plinkYRI_LDchr${i}
 done</code></pre>
+<p>QTLs2GeuSnps.py</p>
+<pre class="bash"><code>tot_in=open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt&quot;, &quot;r&quot;)  
+nuc_in=open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear.txt&quot;, &quot;r&quot;)
+
+tot_out=open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total_GEU.txt&quot;, &quot;w&quot;) 
+nuc_out=open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear_GEU.txt&quot;, &quot;w&quot;) 
+
+
+def fix_file(fin, fout):
+  for ln in fin:
+    chrom, pos = ln.split(&quot;:&quot;)
+    fout.write(&quot;snp_%s_%s/n&quot;%(chrom,pos))
+  fout.close()
+  
+
+fix_file(tot_in, tot_out)
+fix_file(nuc_in, nuc_out)
+</code></pre>
+<p>run_QTLs2GeuSnps.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_QTLs2GeuSnps
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_QTLs2GeuSnps.out
+#SBATCH --error=run_QTLs2GeuSnps.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python QTLs2GeuSnps.py</code></pre>
 <p>Update the python selection script for geu results.<br />
 subset_plink4QTLs_geu.py</p>
 <pre class="bash"><code>
@@ -866,7 +955,7 @@ if __name__ == &quot;__main__&quot;:
     fraction=sys.argv[2]
     genFile = &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/geu_plinkYRI_LDchr%s.ld&quot;%(chrom)
     outFile= &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/%sApaQTL_LD_geu/chr%s.%sQTL.LD.geno.ld&quot;%(fraction,chrom,fraction)
-    qtlFile= &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_%s.txt&quot;%(fraction)
+    qtlFile= &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_%s_GEU.txt&quot;%(fraction)
     main(genFile, qtlFile, outFile) 
     
     
@@ -897,6 +986,163 @@ for i  in {1..22};
 do
 python subset_plink4QTLs_geu.py ${i} &quot;Nuclear&quot;
 done</code></pre>
+<p>This add 166 for total and 1074 for nuclear. This is better. I will use these for the GWAS overlap.</p>
+<p>I want to make a sorted bed file with all of these snps (total and nuclear together) to overlap with the gwas catelog. I will have the snp name include if it was a from the total or nuclear. I can do all of this in python then sort the bed file after.</p>
+<p>The LD files include indels. I will not include there. There are 8 in the total file and 108 in nuclear, I can remove these with the following.</p>
+<pre class="bash"><code>grep -v indel /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld &gt; /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel
+
+
+grep -v indel /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD_geu/allChr.TotalQTL.GD.geno.ld &gt; /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD_geu/allChr.TotalQTL.GD.geno.ld_noIndel</code></pre>
+<ul>
+<li>/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total_GEU.txt</li>
+<li>/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear_GEU.txt</li>
+<li>/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel</li>
+<li>/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD_geu/allChr.TotalQTL.GD.geno.ld_noIndel</li>
+</ul>
+<p>makeAlloverlapbed.py</p>
+<pre class="bash"><code>
+#load files:  
+
+QTL_total=open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total_GEU.txt&quot;, &quot;r&quot;)
+QTL_nuclear=open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear_GEU.txt&quot;, &quot;r&quot;)
+LD_total=open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD_geu/allChr.TotalQTL.GD.geno.ld_noIndel&quot;, &quot;r&quot;)
+LD_nuclear=open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel&quot;, &quot;r&quot;)
+outFile= open(&quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps.bed&quot;, &quot;w&quot;)
+
+#function for qtl to bed format
+def qtl2bed(fqtl, fraction, fout=outFile):
+    for ln in fqtl:
+        snp, chrom, pos = ln.split(&quot;_&quot;)
+        start=int(pos)-1
+        end= int(pos)
+        fout.write(&quot;%s\t%d\t%d\tQTL_%s\n&quot;%(chrom, start, end,fraction))
+
+#function for ld to bed format 
+def ld2bed(fLD, fraction, fout=outFile):
+    for ln in fLD:
+        snpID=ln.split()[5]
+        snp, chrom, pos= snpID.split(&quot;_&quot;)
+        start=int(pos)-1
+        end=int(pos)
+        fout.write(&quot;%s\t%d\t%d\tLD_%s\n&quot;%(chrom, start, end,fraction))
+
+
+#I will run each of these for both fractions to get all of the snps in the out file. 
+
+
+qtl2bed(QTL_nuclear, &quot;Nuclear&quot;)
+qtl2bed(QTL_total, &quot;Total&quot;)
+ld2bed(LD_nuclear, &quot;Nuclear&quot;)
+ld2bed(LD_total, &quot;Total&quot;)
+
+
+outFile.close()</code></pre>
+<p>Sort it:</p>
+<pre class="bash"><code>sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps.bed &gt; /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps_sort.bed</code></pre>
+<p>I can now use py bedtools to overlap this.</p>
+<p>overlapSNPsGWAS.py</p>
+<p>This will take in any lsit of snps and overlap them with the gwas catelog bed file.</p>
+<pre class="bash"><code>
+
+def main(infile, outfile):
+    gwas_file=open(&quot;/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.sort.bed&quot;,&quot;r&quot;)
+    gwas=pybedtools.BedTool(gwas_file)
+    snps_file=open(infile, &quot;r&quot;)
+    snps=pybedtools.BedTool(snps_file)
+    snpOverGWAS=snps.intersect(gwas, wa=True,wb=True)
+    snpOverGWAS.saveas(outfile)
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pybedtools
+    infile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(infile, outfile) </code></pre>
+<p>Call this in bash so i can load the environment</p>
+<p>run_overlapSNPsGWAS.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_overlapSNPsGWAS
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=run_overlapSNPsGWAS.out
+#SBATCH --error=run_overlapSNPsGWAS.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+python overlapSNPsGWAS.py  &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps_sort.bed&quot; &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllSnps_GWASoverlapped.txt&quot;</code></pre>
+<p>Still only get 2 that overlap the catelog. They are in the ITGAL and NCAPG genes. I should check if 16:30482494 (the nuclear QTL) is also a eQTL not how i did before but with my code from the <a href="swarmPlots_QTLs.html">all boxplot analysis</a></p>
+<pre class="r"><code>plotQTL_func= function(SNP, peak, gene){
+  apaN_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_PeakAPANuclear.&quot;, SNP, peak, &quot;.txt&quot;, sep = &quot;&quot; ), header=T)
+  apaT_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_PeakAPATotal.&quot;, SNP, peak, &quot;.txt&quot;, sep = &quot;&quot; ), header=T)
+  su30_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_4su_30_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header = T)
+  su60_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_4su_60_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header=T)
+  RNA_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_RNAseq_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;),header=T)
+  RNAg_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_RNAseqGeuvadis_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header = T)
+  ribo_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_ribo_&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;),header=T)
+  prot_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_Peak_prot.&quot;, SNP, gene, &quot;.txt&quot;, sep=&quot;&quot;), header=T)
+  
+  ggplot_func= function(file, molPhen,GENE){
+    file = file %&gt;% mutate(genotype=Allele1 + Allele2)
+    file$genotype= as.factor(as.character(file$genotype))
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y=&quot;Phenotpye&quot;,title=paste(molPhen, GENE, sep=&quot;: &quot;)) + scale_fill_brewer(palette=&quot;Paired&quot;)
+    return(plot)
+  }
+  
+  apaNplot=ggplot_func(apaN_file, &quot;Apa Nuclear&quot;, gene)
+  apaTplot=ggplot_func(apaT_file, &quot;Apa Total&quot;, gene)
+  su30plot=ggplot_func(su30_file, &quot;4su30&quot;,gene)
+  su60plot=ggplot_func(su60_file, &quot;4su60&quot;,gene)
+  RNAplot=ggplot_func(RNA_file, &quot;RNA Seq&quot;,gene)
+  RNAgPlot=ggplot_func(RNAg_file, &quot;RNA Seq Geuvadis&quot;,gene)
+  riboPlot= ggplot_func(ribo_file, &quot;Ribo Seq&quot;,gene)
+  protplot=ggplot_func(prot_file, &quot;Protein&quot;,gene)
+  
+  full_plot= plot_grid(apaNplot,apaTplot, su30plot, su60plot, RNAplot, RNAgPlot, riboPlot, protplot,nrow=2)
+  return (full_plot)
+}</code></pre>
+<p>16:30482494 PPP4C_+_peak122195</p>
+<pre class="bash"><code>grep peak122195 /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt
+#gene=PPP4C
+grep PPP4C /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000149923
+
+python createQTLsnpAPAPhenTable.py 16 16:30482494  peak122195 Total
+python createQTLsnpAPAPhenTable.py 16 16:30482494  peak122195 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh &quot;16&quot; &quot;16:30482494&quot; &quot;ENSG00000149923&quot;
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*16:30482494* /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/apaExamp</code></pre>
+<pre class="r"><code>plotQTL_func(SNP=&quot;16:30482494&quot;, peak=&quot;peak122195&quot;, gene=&quot;ENSG00000149923&quot;)</code></pre>
+<pre><code>Warning: Removed 2 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/apaQTLoverlapGWAS.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /> This is in a GWAS for Ulcerative colitis.</p>
+<p>I can look at the LD snp as well. I just need to check the ld snps and see which snp it corresponds to in my QTLs.</p>
+<p>4:17797966</p>
+<pre class="bash"><code>grep snp_4_17797966 /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel
+</code></pre>
+<p>In my analysis the snp is 4:17797455 DCAF16_-_peak236311: This is also a different gene.</p>
+<pre class="bash"><code>grep peak236311 /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt
+#gene=PPP4C
+grep DCAF16 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg=ENSG00000163257
+
+python createQTLsnpAPAPhenTable.py 4 4:17797455  peak236311 Total
+python createQTLsnpAPAPhenTable.py 4 4:17797455  peak236311 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh &quot;4&quot; &quot;4:17797455&quot; &quot;ENSG00000163257&quot;
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*4:17797455* /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/apaExamp</code></pre>
+<pre class="r"><code>plotQTL_func(SNP=&quot;4:17797455&quot;, peak=&quot;peak236311&quot;, gene=&quot;ENSG00000163257&quot;)</code></pre>
+<p><img src="figure/apaQTLoverlapGWAS.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This example is a GWAS hit for height .</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -915,14 +1161,30 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] bindrcpp_0.2.2  cowplot_0.9.3   forcats_0.3.0   stringr_1.3.1  
+ [5] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
+ [9] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.1.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.1.1   Rcpp_0.12.19      digest_0.6.17    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.23.0      magrittr_1.5      evaluate_0.11    
-[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.7.0     rmarkdown_1.10    tools_3.5.1      
-[16] stringr_1.3.1     yaml_2.2.0        compiler_3.5.1   
-[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+ [1] tidyselect_0.2.4   haven_1.1.2        lattice_0.20-35   
+ [4] colorspace_1.3-2   htmltools_0.3.6    yaml_2.2.0        
+ [7] rlang_0.2.2        R.oo_1.22.0        pillar_1.3.0      
+[10] glue_1.3.0         withr_2.1.2        R.utils_2.7.0     
+[13] RColorBrewer_1.1-2 modelr_0.1.2       readxl_1.1.0      
+[16] bindr_0.1.1        plyr_1.8.4         munsell_0.5.0     
+[19] gtable_0.2.0       cellranger_1.1.0   rvest_0.3.2       
+[22] R.methodsS3_1.7.1  evaluate_0.11      labeling_0.3      
+[25] knitr_1.20         broom_0.5.0        Rcpp_0.12.19      
+[28] scales_1.0.0       backports_1.1.2    jsonlite_1.5      
+[31] hms_0.4.2          digest_0.6.17      stringi_1.2.4     
+[34] grid_3.5.1         rprojroot_1.3-2    cli_1.0.1         
+[37] tools_3.5.1        magrittr_1.5       lazyeval_0.2.1    
+[40] crayon_1.3.4       whisker_0.3-2      pkgconfig_2.0.2   
+[43] xml2_1.2.0         lubridate_1.7.4    assertthat_0.2.0  
+[46] rmarkdown_1.10     httr_1.3.1         rstudioapi_0.8    
+[49] R6_2.3.0           nlme_3.1-137       git2r_0.23.0      
+[52] compiler_3.5.1    </code></pre>
 </div>
 
 <hr>
