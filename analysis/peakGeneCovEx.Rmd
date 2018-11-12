@@ -1,0 +1,86 @@
+---
+title: "Peak coverage along Gene examples"
+author: "Briana Mittleman"
+date: "11/12/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+The quantified peak files are:  
+
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc
+
+
+I want to grep specific genes and look at the read distribution for peaks along a gene. In these files the peakIDs stil have the peak locations. Before I ran the QTL analysis I changed the final coverage (ex /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz) to have the TSS as the ID.  
+
+Librarys
+```{r}
+library(workflowr)
+library(reshape2)
+library(tidyverse)
+library(VennDiagram)
+library(data.table)
+library(ggpubr)
+library(cowplot)
+```
+
+```{r}
+nuc_names=c('Geneid',	'Chr',	'Start',	'End',	'Strand',	'Length',	'18486_N'	,'18497_N',	'18500_N'	,'18505_N',	'18508_N'	,'18511_N',	'18519_N',	'18520_N',	'18853_N'	,'18858_N',	'18861_N',	'18870_N'	,'18909_N'	,'18912_N'	,'18916_N',	'19092_N'	,'19093_N',	'19119_N',	'19128_N'	,'19130_N',	'19131_N'	,'19137_N',	'19140_N',	'19141_N'	,'19144_N',	'19152_N'	,'19153_N',	'19160_N'	,'19171_N',	'19193_N'	,'19200_N',	'19207_N',	'19209_N',	'19210_N',	'19223_N'	,'19225_N',	'19238_N'	,'19239_N',	'19257_N')
+
+
+tot_names=c('Geneid',	'Chr'	,'Start',	'End',	'Strand',	'Length',	'18486_T',	'18497_T'	,'18500_T','18505_T',	'18508_T'	,'18511_T',	'18519_T',	'18520_T',	'18853_T',	'18858_T',	'18861_T',	'18870_T',	'18909_T'	,'18912_T',	'18916_T',	'19092_T'	,'19093_T',	'19119_T',	'19128_T',	'19130_T',	'19131_T'	,'19137_T',	'19140_T'	,'19141_T',	'19144_T',	'19152_T'	,'19153_T',	'19160_T'	,'19171_T',	'19193_T',	'19200_T',	'19207_T'	,'19209_T'	,'19210_T',	'19223_T',	'19225_T',	'19238_T',	'19239_T',	'19257_T')
+
+```
+
+
+
+```{r}
+NuclearAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>% mutate(sig=ifelse(-log10(bh)>=1, 1,0 )) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% filter(sig==1)
+totalAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>% mutate(sig=ifelse(-log10(bh)>=1, 1,0 )) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% filter(sig==1)
+```
+
+examples to look at 
+Nuclear: IRF5, HSF1, NOL9,DCAF16, PPP4C
+
+Total: NBEAL2, SACM1L, COX7A2L 
+
+
+```{bash,eval=F}
+
+#nuclear
+grep IRF5 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt
+
+grep HSF1 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt
+
+
+grep NOL9 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt
+
+grep DCAF16 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt
+
+grep PPP4C /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt
+
+
+
+#total
+grep NBEAL2 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/NBEAL2_TotalCov_peaks.txt
+
+grep SACM1L /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt
+
+
+
+grep TESK1 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/TESK1_TotalCov_peaks.txt  
+
+
+grep DGCR14 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt  
+
+```
+
+
+Copy these to my computer so I can work with them here. I am going to want to make a function that makes the histogram reproducibly for anyfile. I will need to know how many bins to include in the histogram. First I will make the graph for one example then I will make it more general.  
+
+Files are in  /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/example_gene_peakQuant

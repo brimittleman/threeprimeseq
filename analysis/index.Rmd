@@ -82,6 +82,8 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 
 * [Overlap with GWAS](apaQTLoverlapGWAS.Rmd)  
 
+* [Visualize peaks in significant genes](peakGeneCovEx.html)
+
 
 ###Molecular QTL analysis and Overlap:
 
