@@ -948,3 +948,473 @@ ggplot(bothEnrich_melt_filt, aes(x=name, by=variable, fill=variable, y=value))+ 
 
 ```
 
+The bimodal distributions may come from including both the significant and non significant genes in the test set. I need to remove all of the lines that come from a gene with a significant peak.  
+
+
+```{r}
+NucQTL_genes=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>% mutate(sig=ifelse(-log10(bh)>=1, 1,0 )) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% filter(sig==1) %>% select(gene) %>% distinct(gene)
+#715 genes  
+#write this out as NucAPAGenes
+write.table(NucQTL_genes, "../data/perm_QTL_trans/NucApaGenes.txt", row.names = F, col.names = F, quote=F)
+
+TotQTL_genes=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>% mutate(sig=ifelse(-log10(bh)>=1, 1,0 )) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% filter(sig==1) %>% select(gene) %>% distinct(gene)
+#106 genes
+#write out as TotAPAGenes
+
+write.table(TotQTL_genes, "../data/perm_QTL_trans/TotApaGenes.txt", row.names = F, col.names = F, quote=F)
+
+```
+I need to find a way to get rid of these from the files I cam pulling from.  
+```{bash,eval=F}
+/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt
+
+/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt
+```
+
+I can create an python script to do this. I will need to seperate the first column and and only write the line out if the gene is in the apaGenes files I just created.  
+
+filterSigGenes.py
+```{bash,eval=F}
+#python 
+
+#genes with sig ApaQTL
+TotGenes=open("/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/sig_genes/TotApaGenes.txt", "r")
+NucGenes=open("/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/sig_genes/NucApaGenes.txt", "r")
+
+#nom res (with all snps tested)  
+NucRes=open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt", "r")
+TotRes=open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt", "r")
+
+#output files:
+Nuc_nonSig=open("/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/NucTestedSnps_nonSigGenes.txt", "w")
+Tot_nonSig=open("/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/TotTestedSnps_nonSigGenes.txt", "w")
+
+#convert genes to list
+def file_to_list(file):
+    gene_list=[]
+    for ln in file:
+      gene=ln.strip()
+      gene_list.append(gene)
+    return(gene_list)
+    
+Tot_gene_list=file_to_list(TotGenes)
+Nuc_gene_list=file_to_list(NucGenes)  
+
+#function that will take in the input, the list, and the output. I want to be able to run this function for total and nuclear  
+
+
+def filter(fin,fout, sigGenes):
+  for ln in fin:
+    gene=ln.split()[0].split(":")[3].split("_")[0]
+    if gene not in sigGenes:
+      fout.write(ln)
+  fout.close()
+
+
+filter(NucRes,Nuc_nonSig,Nuc_gene_list)
+filter(TotRes, Tot_nonSig, Tot_gene_list)
+
+
+
+```
+
+
+Call this in a bash script:  
+run_filterSigGenes.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_filterSigGenes
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_filterSigGenes.out
+#SBATCH --error=run_filterSigGenes.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python filterSigGenes.py
+
+```
+
+
+nuc_random880_chromHmm_noSig_set1.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_noSig_set1
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_noSig_set1.out
+#SBATCH --error=nuc_random880_chromHmm_noSig_set1.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {1..250};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/NucTestedSnps_nonSigGenes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/randomRes_Nuclear_880_noSig_${i}.txt
+done
+
+```
+nuc_random880_chromHmm_noSig_set2.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_noSig_set2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_noSig_set2.out
+#SBATCH --error=nuc_random880_chromHmm_noSig_set2.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {251..500};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/NucTestedSnps_nonSigGenes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/randomRes_Nuclear_880_noSig_${i}.txt
+done
+
+```
+
+nuc_random880_chromHmm_noSig_set3.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_noSig_set3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_noSig_set3.out
+#SBATCH --error=nuc_random880_chromHmm_noSig_set3.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {501..750};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/NucTestedSnps_nonSigGenes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/randomRes_Nuclear_880_noSig_${i}.txt
+done
+
+```
+nuc_random880_chromHmm_noSig_set4.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nuc_random880_chromHmm_noSig_set4
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuc_random880_chromHmm_noSig_set4.out
+#SBATCH --error=nuc_random880_chromHmm_noSig_set4.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+#make random 
+for i in {751..1000};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/NucTestedSnps_nonSigGenes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/randomRes_Nuclear_880_noSig_${i}.txt
+done
+
+```
+
+
+Same for total:  
+
+total_random118_chromHmm_noSig_set1.sh
+```{bash, eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm_noSig_set1
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=total_random118_chromHmm_noSig_set1.out
+#SBATCH --error=total_random118_chromHmm_noSig_set1.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {1..250};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/TotTestedSnps_nonSigGenes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/randomRes_Total_118_noSig_${i}.txt
+done
+
+```
+
+total_random118_chromHmm_noSig_set2.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm_noSig_set2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=total_random118_chromHmm_noSig_set2.out
+#SBATCH --error=total_random118_chromHmm_noSig_set2.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {251..500};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/TotTestedSnps_nonSigGenes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/randomRes_Total_118_noSig_${i}.txt
+done
+
+```
+total_random118_chromHmm_noSig_set3.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm_noSig_set3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=total_random118_chromHmm_noSig_set3.out
+#SBATCH --error=total_random118_chromHmm_noSig_set3.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {501..750};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/TotTestedSnps_nonSigGenes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/randomRes_Total_118_noSig_${i}.txt
+done
+
+```
+
+total_random118_chromHmm_noSig_set4.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=total_random118_chromHmm_noSig_set4
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=total_random118_chromHmm_noSig_set4.out
+#SBATCH --error=total_random118_chromHmm_noSig_set4.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#test with 2 permutations then make it 1000  
+#choose random res
+for i in {751..1000};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/TotTestedSnps_nonSigGenes.txt > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/randomRes_Total_118_noSig_${i}.txt
+done
+
+```
+
+
+This may not be enough. I may need to change this so it only has uniq snp. I could be sampling the same snps over an over.
+
+Make these files into snp bed files: 
+
+randomRes2SNPbed_noSig.py
+```{bash,eval=F}
+def main(inFile, outFile):
+    fout=open(outFile, "w")
+    fin=open(inFile, "r")
+    for ln in fin:
+          pid, sid, dist, pval, slope = ln.split()
+          chrom, pos= sid.split(":")
+          name=sid
+          start= int(pos)-1
+          end=int(pos)
+          strand=pid.split(":")[3].split("_")[1]
+          pval=float(pval)
+          fout.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom, start, end, name, pval, strand))
+    fout.close()
+
+if __name__ == "__main__":
+    import sys
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    nsamp=int(nsamp)
+    iter=sys.argv[3]
+    inFile = "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/randomRes_%s_%d_noSig_%s.txt"%(fraction,fraction, nsamp, iter)
+    
+    outFile= "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/snp_bed_noSig/randomRes_%s_%d_noSig_%s.bed"%(fraction,fraction, nsamp, iter)
+    main(inFile,outFile)
+
+
+```
+
+randomLines2Snp_noSig.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=randomLines2Snp_noSig
+#SBATCH --account=pi-gilad
+#SBATCH --time=36:00:00
+#SBATCH --output=randomLines2Snp_noSig.out
+#SBATCH --error=randomLines2Snp_noSig.err
+#SBATCH --partition=gilad
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+#make random 
+for i in {1..1000};
+do
+python randomRes2SNPbed_noSig.py Nuclear 880 ${i} 
+done 
+
+#make random 
+for i in {1..1000};
+do
+python randomRes2SNPbed_noSig.py Total 118 ${i}
+done 
+```
+
+
+sortRandomSnps_noSig.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=sortRandomSnps_noSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=sortRandomSnps_noSig.out
+#SBATCH --error=sortRandomSnps_noSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/snp_bed_noSig/);
+do
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/snp_bed_noSig/$i > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/snp_bed_sort_noSig/$i.sort.bed
+done
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/snp_bed_noSig/);
+do
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/snp_bed_noSig/$i > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/snp_bed_sort_noSig/$i.sort.bed
+done
+
+```
+
+
+
+overlap_chromHMM_sepfiles_noSig.py
+```{bash,eval=F}
+def main(inFile, outFile):
+  rand=pybedtools.BedTool(inFile) 
+  hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+  #map hmm to snps
+  Rand_overlapHMM=rand.map(hmm, c=4)
+  #save results
+  Rand_overlapHMM.saveas(outFile)
+
+
+if __name__ == "__main__":
+    import sys
+    import pandas as pd
+    import pybedtools
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    niter=sys.argv[3]
+    #which itteration we are on 
+    inFile ="/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/snp_bed_sort_noSig/randomRes_%s_%s_%s.bed.sort.bed"%(fraction,fraction, nsamp, niter)
+    outFile= "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_%s.txt"%(fraction,fraction,nsamp, niter)
+    main(inFile,outFile)
+```
+
+
+overlap_chromHMM_sepfiles_noSig.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=overlap_chromHMM_sepfiles_noSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=overlap_chromHMM_sepfiles_noSig.out
+#SBATCH --error=overlap_chromHMM_sepfiles_noSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+for i in {1..1000};
+do
+python overlap_chromHMM_sepfiles_noSig.py  Nuclear 880 $i
+done
+
+for i in {1..1000};
+do
+python overlap_chromHMM_sepfiles_noSig.py  Total 118 $i
+done
+```
+
+
+groupRandomChromHMM_noSig.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=groupRandomChromHMM_noSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=groupRandomChromHMM.out
+#SBATCH --error=groupRandomChromHMM.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+for i in {1..1000};
+do
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/chromHMM_overlap/randomres_overlapChromHMM_Nuclear_880_noSig_${i}.bed  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Nuclear_880_noSig_${i}_grouped.txt
+done
+
+
+for i in {1..1000};
+do
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/chromHMM_overlap/randomres_overlapChromHMM_Total_118_noSig_${i}.bed  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Total_118_noSig_${i}_grouped.txt
+done
+
+```
