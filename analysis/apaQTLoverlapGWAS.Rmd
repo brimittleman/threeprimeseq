@@ -9,6 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(workflowr)
+library(tidyverse)
+library(cowplot)
+```
+
+
 In this analysis I want to see if APAqtls show up in the GWAS catelog. I then want to see if they explain different signal then overlappnig the eQTLs.  
 
 I can use my significant snp bed file from /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/sigSnps to overlap with the GWAS catelog. First I can look at direct location then I will use an LD cutoff to colocalize.  
@@ -30,7 +37,7 @@ I will make this into a bed format to use with pybedtools.
 -score
 
 ```{bash,eval=F}
-fin=open("/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.txt", "r")
+fin=open(""/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.txt", "r")
 fout=open("/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.bed","w")
 
 for num, ln in enumerate(fin):
@@ -418,6 +425,49 @@ plink --ped /project2/gilad/briana/YRI_geno_hg19/geu_plinkYRIgeno_chr${i}.ped  -
 done
 ```
 
+
+QTLs2GeuSnps.py
+```{bash,eval=F}
+tot_in=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt", "r")  
+nuc_in=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear.txt", "r")
+
+tot_out=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total_GEU.txt", "w") 
+nuc_out=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear_GEU.txt", "w") 
+
+
+def fix_file(fin, fout):
+  for ln in fin:
+    chrom, pos = ln.split(":")
+    fout.write("snp_%s_%s/n"%(chrom,pos))
+  fout.close()
+  
+
+fix_file(tot_in, tot_out)
+fix_file(nuc_in, nuc_out)
+
+```
+
+run_QTLs2GeuSnps.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_QTLs2GeuSnps
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_QTLs2GeuSnps.out
+#SBATCH --error=run_QTLs2GeuSnps.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python QTLs2GeuSnps.py
+```
+
 Update the python selection script for geu results.  
 subset_plink4QTLs_geu.py
 
@@ -451,7 +501,7 @@ if __name__ == "__main__":
     fraction=sys.argv[2]
     genFile = "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/geu_plinkYRI_LDchr%s.ld"%(chrom)
     outFile= "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/%sApaQTL_LD_geu/chr%s.%sQTL.LD.geno.ld"%(fraction,chrom,fraction)
-    qtlFile= "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_%s.txt"%(fraction)
+    qtlFile= "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_%s_GEU.txt"%(fraction)
     main(genFile, qtlFile, outFile) 
     
     
@@ -487,3 +537,212 @@ do
 python subset_plink4QTLs_geu.py ${i} "Nuclear"
 done
 ```
+
+
+This add 166 for total and 1074 for nuclear. This is better. I will use these for the GWAS overlap. 
+
+
+I want to make a sorted bed file with all of these snps (total and nuclear together) to overlap with the gwas catelog. I will have the snp name include if it was a from the total or nuclear. I can do all of this in python then sort the bed file after.  
+
+
+
+The LD files include indels. I will not include there.  There are 8 in the total file and 108 in nuclear, I can remove these with the following.  
+
+```{bash,eval=F}
+grep -v indel /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld > /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel
+
+
+grep -v indel /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD_geu/allChr.TotalQTL.GD.geno.ld > /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD_geu/allChr.TotalQTL.GD.geno.ld_noIndel
+```
+
+
+* /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total_GEU.txt
+* /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear_GEU.txt
+* /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel
+* /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD_geu/allChr.TotalQTL.GD.geno.ld_noIndel
+
+
+makeAlloverlapbed.py
+```{bash,eval=F}
+
+#load files:  
+
+QTL_total=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total_GEU.txt", "r")
+QTL_nuclear=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear_GEU.txt", "r")
+LD_total=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/TotalApaQTL_LD_geu/allChr.TotalQTL.GD.geno.ld_noIndel", "r")
+LD_nuclear=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel", "r")
+outFile= open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps.bed", "w")
+
+#function for qtl to bed format
+def qtl2bed(fqtl, fraction, fout=outFile):
+    for ln in fqtl:
+        snp, chrom, pos = ln.split("_")
+        start=int(pos)-1
+        end= int(pos)
+        fout.write("%s\t%d\t%d\tQTL_%s\n"%(chrom, start, end,fraction))
+
+#function for ld to bed format 
+def ld2bed(fLD, fraction, fout=outFile):
+    for ln in fLD:
+        snpID=ln.split()[5]
+        snp, chrom, pos= snpID.split("_")
+        start=int(pos)-1
+        end=int(pos)
+        fout.write("%s\t%d\t%d\tLD_%s\n"%(chrom, start, end,fraction))
+
+
+#I will run each of these for both fractions to get all of the snps in the out file. 
+
+
+qtl2bed(QTL_nuclear, "Nuclear")
+qtl2bed(QTL_total, "Total")
+ld2bed(LD_nuclear, "Nuclear")
+ld2bed(LD_total, "Total")
+
+
+outFile.close()
+```
+
+Sort it:  
+
+```{bash,eval=F}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps.bed > /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps_sort.bed
+```
+
+I can now use py bedtools to overlap this.  
+
+overlapSNPsGWAS.py  
+
+This will take in any lsit of snps and overlap them with the gwas catelog bed file.   
+```{bash,eval=F}
+
+
+def main(infile, outfile):
+    gwas_file=open("/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.sort.bed","r")
+    gwas=pybedtools.BedTool(gwas_file)
+    snps_file=open(infile, "r")
+    snps=pybedtools.BedTool(snps_file)
+    snpOverGWAS=snps.intersect(gwas, wa=True,wb=True)
+    snpOverGWAS.saveas(outfile)
+
+if __name__ == "__main__":
+    import sys
+    import pybedtools
+    infile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(infile, outfile) 
+```
+
+Call this in bash so i can load the environment
+
+
+run_overlapSNPsGWAS.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_overlapSNPsGWAS
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=run_overlapSNPsGWAS.out
+#SBATCH --error=run_overlapSNPsGWAS.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+python overlapSNPsGWAS.py  "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps_sort.bed" "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllSnps_GWASoverlapped.txt"
+```
+
+Still only get 2 that overlap the catelog.  They are in the ITGAL and NCAPG genes.  I should check if 16:30482494 (the nuclear QTL) is also a eQTL not how i did before but with my code from the [all boxplot analysis](swarmPlots_QTLs.html )
+
+
+
+```{r}
+plotQTL_func= function(SNP, peak, gene){
+  apaN_file=read.table(paste("../data/apaExamp/qtlSNP_PeakAPANuclear.", SNP, peak, ".txt", sep = "" ), header=T)
+  apaT_file=read.table(paste("../data/apaExamp/qtlSNP_PeakAPATotal.", SNP, peak, ".txt", sep = "" ), header=T)
+  su30_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_4su_30_", SNP, gene, ".txt", sep=""), header = T)
+  su60_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_4su_60_", SNP, gene, ".txt", sep=""), header=T)
+  RNA_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_RNAseq_", SNP, gene, ".txt", sep=""),header=T)
+  RNAg_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_RNAseqGeuvadis_", SNP, gene, ".txt", sep=""), header = T)
+  ribo_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_ribo_", SNP, gene, ".txt", sep=""),header=T)
+  prot_file=read.table(paste("../data/apaExamp/qtlSNP_Peak_prot.", SNP, gene, ".txt", sep=""), header=T)
+  
+  ggplot_func= function(file, molPhen,GENE){
+    file = file %>% mutate(genotype=Allele1 + Allele2)
+    file$genotype= as.factor(as.character(file$genotype))
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y="Phenotpye",title=paste(molPhen, GENE, sep=": ")) + scale_fill_brewer(palette="Paired")
+    return(plot)
+  }
+  
+  apaNplot=ggplot_func(apaN_file, "Apa Nuclear", gene)
+  apaTplot=ggplot_func(apaT_file, "Apa Total", gene)
+  su30plot=ggplot_func(su30_file, "4su30",gene)
+  su60plot=ggplot_func(su60_file, "4su60",gene)
+  RNAplot=ggplot_func(RNA_file, "RNA Seq",gene)
+  RNAgPlot=ggplot_func(RNAg_file, "RNA Seq Geuvadis",gene)
+  riboPlot= ggplot_func(ribo_file, "Ribo Seq",gene)
+  protplot=ggplot_func(prot_file, "Protein",gene)
+  
+  full_plot= plot_grid(apaNplot,apaTplot, su30plot, su60plot, RNAplot, RNAgPlot, riboPlot, protplot,nrow=2)
+  return (full_plot)
+}
+```  
+
+16:30482494 PPP4C_+_peak122195
+```{bash,eval=F}
+grep peak122195 /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt
+#gene=PPP4C
+grep PPP4C /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg= ENSG00000149923
+
+python createQTLsnpAPAPhenTable.py 16 16:30482494  peak122195 Total
+python createQTLsnpAPAPhenTable.py 16 16:30482494  peak122195 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh "16" "16:30482494" "ENSG00000149923"
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*16:30482494* /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/apaExamp
+```
+
+
+```{r}
+plotQTL_func(SNP="16:30482494", peak="peak122195", gene="ENSG00000149923")
+```
+This is in a GWAS for Ulcerative colitis.  
+
+I can look at the LD snp as well. I just need to check the ld snps and see which snp it corresponds to in my QTLs.  
+
+4:17797966 
+
+```{bash,eval=F}
+grep snp_4_17797966 /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel
+
+```
+
+In my analysis the snp is 4:17797455  DCAF16_-_peak236311: This is also a different gene.  
+
+```{bash,eval=F}
+grep peak236311 /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt
+#gene=PPP4C
+grep DCAF16 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ensg=ENSG00000163257
+
+python createQTLsnpAPAPhenTable.py 4 4:17797455  peak236311 Total
+python createQTLsnpAPAPhenTable.py 4 4:17797455  peak236311 Nuclear
+
+
+sbatch run_createQTLsnpMolPhenTable.sh "4" "4:17797455" "ENSG00000163257"
+
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*4:17797455* /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/apaExamp
+```
+
+
+```{r}
+plotQTL_func(SNP="4:17797455", peak="peak236311", gene="ENSG00000163257")
+```
+
+This example is a GWAS hit for height .  
