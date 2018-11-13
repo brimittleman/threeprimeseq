@@ -1495,20 +1495,272 @@ Steps:
 
 * get total and nuclear snps tested
 
-* subset to uniq snps  
+I need to do this from the nominal results in /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/. The snp ID is in the second column  
+
+```{bash,eval=F}
+cut -f2 -d" " /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt | sort | uniq > /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Nuclear.txt
+
+
+cut -f2 -d" " /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt | sort | uniq > /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Total.txt
+```
+
 
 * remove QTL snps  
 
-* select correct number of snps 1000 times (permutation)
 
-* make bed files for snps snps
+The significant QTL snps are:  
+
+/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear.txt
+/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt
+
+I can use python to remove the snps from the full lists:  
+
+I can write it as a bed file to make the step easier.  
+
+
+testedSnps_noSig.py  
+```{bash,eval=F}
+
+total_qtl=open('/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt', "r")
+nuclear_qtl=open('/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt', "r")
+
+def file_to_list(file):
+    snp_list=[]
+    for ln in file:
+        snp=ln.strip()
+        snp_list.append(snp)
+    return(snp_list)
+    
+total_qtl_list= file_to_list(total_qtl)
+nuclear_qtl_list= file_to_list(nuclear_qtl)
+
+total_out=open("/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/TotalUniqTestedSnp.bed","w")
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Total.txt"):
+    snp=ln.strip()
+    if snp not in total_qtl_list:
+        chrom, pos =snp.split(":")
+        start=int(pos)-1
+        end=int(pos)
+        total_out.write("%s\t%d\t%d\t%s\n"%(chrom, start, end, snp))
+    total_out.close()  
+    
+nuclear_out=open("/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/NuclearUniqTestedSnp.bed","w")
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Nuclear.txt"):
+    snp=ln.strip()
+    if snp not in total_qtl_list:
+        chrom, pos =snp.split(":")
+        start=int(pos)-1
+        end=int(pos)
+        nuclear_out.write("%s\t%d\t%d\t%s\n"%(chrom, start, end, snp))
+    nuclear_out.close()  
+    
+
+```
+
+
+I will probablly need to run this in a bash script.   
+
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_testedSnps_noSig.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=run_testedSnps_noSig.out
+#SBATCH --error=run_testedSnps_noSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python testedSnps_noSig.py  
+```
+
+* select correct number of snps 1000 times (permutation)
+This file is not as big. I may be able to run all of the permutations at once:  
+random_UniqNoSig.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=random_UniqNoSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=random_UniqNoSig.out
+#SBATCH --error=random_UniqNoSig.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in {1..1000};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/TotalUniqTestedSnp.bed  > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_UniqnoSig/randomRes_Total_118_UniqnoSig_${i}.bed
+done
+
+
+for i in {1..1000};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/NuclearUniqTestedSnp.bed > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/randomRes_Nuclear_880_UniqnoSig_${i}.bed
+done
+```
 
 * sort bed files  
 
+
+
+sortRandomUniqSnps_noSig.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=sortRandomUniqSnps_noSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=sortRandomUniqSnps_noSig.out
+#SBATCH --error=sortRandomUniqSnps_noSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/);
+do
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/$i > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/snp_bed_sort_noSig/$i.sort.bed
+done
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/);
+do
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/$i > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/snp_bed_sort_noSig/$i.sort.bed
+done
+
+```
+
+
 * overlap each with chrom HMM  
+
+
+
+
+overlap_chromHMM_sepfiles_UniqnoSig.py
+```{bash,eval=F}
+def main(inFile, outFile):
+  rand=pybedtools.BedTool(inFile) 
+  hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+  #map hmm to snps
+  Rand_overlapHMM=rand.map(hmm, c=4)
+  #save results
+  Rand_overlapHMM.saveas(outFile)
+
+
+if __name__ == "__main__":
+    import sys
+    import pandas as pd
+    import pybedtools
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    niter=sys.argv[3]
+    #which itteration we are on 
+    inFile ="/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_Uniq_noSig/snp_bed_sort_noSig/randomRes_%s_%s_UniqnoSig_%s.bed.sort.bed"%(fraction,fraction, nsamp, niter)
+
+    outFile= "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_UniqnoSig_%s.txt"%(fraction,fraction,nsamp, niter)
+    main(inFile,outFile)
+```
+
+
+overlap_chromHMM_sepfiles_UniqnoSig.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=overlap_chromHMM_sepfiles_UniqnoSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=overlap_chromHMM_sepfiles_UniqnoSig.out
+#SBATCH --error=overlap_chromHMM_sepfiles_UniqnoSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+for i in {1..1000};
+do
+python overlap_chromHMM_sepfiles_UniqnoSig.py  Nuclear 880 $i
+done
+
+for i in {1..1000};
+do
+python overlap_chromHMM_sepfiles_UniqnoSig.py  Total 118 $i
+done
+```
+
 
 * group the chrom HMM calls  
 
-* make the final matrix  
+
+groupRandomChromHMM_UniqnoSig.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=groupRandomChromHMM_UniqnoSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=groupRandomChromHMM_UniqnoSig.out
+#SBATCH --error=groupRandomChromHMM_UniqnoSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+
+for i in {1..1000};
+do
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}.txt -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}_grouped.txt
+done
+
+
+for i in {1..1000};
+do
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_Total_118_UniqnoSig_${i}.txt  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Total_118_UniqnoSig_${i}_grouped.txt
+done
+
+```
+
+* make the final matrix    
+
+```{bash,eval=F}
+#/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap_group/
+cut -d$' ' -f 1,2 randomres_overlapChromHMM_Nuclear_880_UniqnoSig_549_grouped.txt > Nuc_chromOverlap_UniqnoSig.txt
+
+for i in {1..1000};
+do
+paste -d" " Nuc_chromOverlap_UniqnoSig.txt <(cut -d" " -f 3 randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}_grouped.txt) > tmp
+mv tmp Nuc_chromOverlap_UniqnoSig.txt
+done
+
+#/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap_group/
+cut -d$' ' -f 1,2 randomres_overlapChromHMM_Total_118_UniqnoSig_53_grouped.txt > Tot_chromOverlap_UniqnoSig.txt
+
+for i in {1..1000};
+do
+paste -d" " Tot_chromOverlap_UniqnoSig.txt <(cut -d" " -f 3 randomres_overlapChromHMM_Total_118_UniqnoSig_${i}_grouped.txt) > tmp
+mv tmp Tot_chromOverlap_UniqnoSig.txt
+done
+```
+
 
 
