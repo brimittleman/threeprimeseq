@@ -265,3 +265,95 @@ SACM1L_num=makePeakNumplot("../data/example_gene_peakQuant/SACM1L_TotalCov_peaks
 
 plot_grid(SACM1L_loc,SACM1L_num)
 ```
+```{r}
+
+NBEAL2_loc=makePeakLocplot("../data/example_gene_peakQuant/NBEAL2_TotalCov_peaks.txt",'NBEAL2',"Total")
+
+NBEAL2_num=makePeakNumplot("../data/example_gene_peakQuant/NBEAL2_TotalCov_peaks.txt",'NBEAL2',"Total")
+
+plot_grid(NBEAL2_loc,NBEAL2_num)
+```
+
+
+##Which Peak is Sig
+
+It would be interesting to know which peak in these gene plots is associated with the QTL.  
+
+Nuclear:
+* IRF5 : peak305794-7:128635754, peak305795,128681297, peak305798-7:128661132
+
+```{r}
+IRF5_all=read.table("../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt", col.names = nuc_names)
+```
+peak305794-peak 4
+peak305795-peak 5
+peak305798-peak 6
+
+* HSF1: peak323832- 8:145516593
+
+```{r}
+HSF1_all=read.table("../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt", col.names = nuc_names)
+```
+
+The QTL is the first peak. (peak 0)
+
+* NOL9: peak702- 1:6604621
+
+```{r}
+NOL9_all=read.table("../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt", col.names = nuc_names)
+```
+QTL is peak 7 in the graph
+
+* DCAF16: peak236311- 4:17797455
+```{r}
+DCAF16_all=read.table("../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt", col.names = nuc_names)
+```
+QTL is peak 3 in graph  
+
+* PPP4C: peak122195-16:30482494
+
+```{r}
+pprc_all=read.table("../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt", col.names = nuc_names)
+```
+The QTL peak is the lower expressed peak (peak1 in graph)  
+
+Total:
+* NBEAL2: peak216374- 3:47080127
+
+```{r}
+NBEAL2_all=read.table("../data/example_gene_peakQuant/NBEAL2_TotalCov_peaks.txt", col.names = tot_names)
+```
+peak 15 in graph  
+
+
+* SACM1L: peak216084-3:45780980, peak216086-3:45780980, peak216087-3:45790569
+
+```{r}
+SACM1L_all=read.table("../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt", col.names = tot_names)
+```
+peak216084-12
+
+peak216086 - 14 (major peak)
+ 
+peak216087 -15
+
+
+* DGCR14: peak204736-22:18647341
+ 
+```{r}
+DGCR14_all=read.table("../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt", col.names = tot_names)
+```
+
+peak204736- peak 7
+
+
+This has shown me that most of the QTL peaks are not the major/most used peak. This leads me to beleive I would get different QTLs if I made one metric per gene because I may ont be able to capture these effects.  
+
+
+##Seperate by genotype   
+
+It would be good to look at these seperated by genotype. 
+
+* IRF5 : peak305794-7:128635754, peak305795,128681297, peak305798-7:128661132  
+
+
