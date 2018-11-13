@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f8d8c94dfe19af73199a5127e413af9e28859250" target="_blank">f8d8c94</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/42991264aeb6f5c4095a40de261e9911fcf125a0" target="_blank">4299126</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -467,6 +467,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/42991264aeb6f5c4095a40de261e9911fcf125a0/analysis/peakGeneCovEx.Rmd" target="_blank">4299126</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+<td style="text-align:left;">
+investigate which peak is sig
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/peakGeneCovEx.html" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -630,6 +664,36 @@ PPP4c_melt=melt(PPP4c, id.vars=c(&#39;peaks&#39;,&#39;Start&#39;,&#39;End&#39;))
 <pre class="r"><code>ggplot(PPP4c_melt, aes(x=peaks, y=value, by=variable, fill=variable)) + geom_histogram(stat=&quot;identity&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-6-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-6-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Try with actual location as the center of the peak.</p>
 <pre class="r"><code>pos=c(3,4,7:39)
 PPP4c_2=read.table(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;, stringsAsFactors = F, col.names = tot_names) %&gt;% select(pos)
@@ -641,6 +705,36 @@ colnames(PPP4c2_melt)= c(&#39;peaks&#39;,&#39;PeakCenter&#39;, &quot;Start&quot;
 <pre class="r"><code>ggplot(PPP4c2_melt, aes(x=PeakCenter, y=ReadCount, by=Individual, fill=Individual)) + geom_histogram(stat=&quot;identity&quot;) + labs(title=&quot;Peak Coverage and Location PP4c&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-8-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-8-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Generalize this for more genes:</p>
 <pre class="r"><code>makePeakLocplot=function(file, geneName,fraction){
   pos=c(3,4,7:39)
@@ -662,24 +756,234 @@ colnames(PPP4c2_melt)= c(&#39;peaks&#39;,&#39;PeakCenter&#39;, &quot;Start&quot;
 <pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;,&#39;PPP4c&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-10-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt&quot;,&#39;DCAF16&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-11-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt&quot;,&#39;DGCR14&#39;,&quot;Total&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-12-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt&quot;,&#39;IRF5&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-13-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt&quot;,&#39;HSF1&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-14-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt&quot;,&#39;NOL9&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-15-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt&quot;,&#39;SACM1L&#39;,&quot;Total&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-16-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-16-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Make a function to do this by peak number (ignoring direction)</p>
 <pre class="r"><code>makePeakNumplot=function(file, geneName,fraction){
   pos=c(7:39)
@@ -703,42 +1007,308 @@ colnames(PPP4c2_melt)= c(&#39;peaks&#39;,&#39;PeakCenter&#39;, &quot;Start&quot;
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>plot_grid(ppp4c_loc,ppp4c_num)</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-18-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>dcaf16_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt&quot;,&#39;DCAF16&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>dcaf16_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt&quot;,&#39;DCAF16&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>plot_grid(dcaf16_loc,dcaf16_num)</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-19-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>dgcr14_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt&quot;,&#39;DGCR14&#39;,&quot;Total&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>dgcr14_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt&quot;,&#39;DGCR14&#39;,&quot;Total&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>plot_grid(dgcr14_loc,dgcr14_num)</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-20-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>irf5_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt&quot;,&#39;IRF5&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>irf5_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt&quot;,&#39;IRF5&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>plot_grid(irf5_loc,irf5_num)</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-21-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>HSF1_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt&quot;,&#39;HSF1&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>HSF1_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt&quot;,&#39;HSF1&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>plot_grid(HSF1_loc,HSF1_num)</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-22-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>NOL9_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt&quot;,&#39;NOL9&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>NOL9_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt&quot;,&#39;NOL9&#39;,&quot;Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>plot_grid(NOL9_loc,NOL9_num)</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-23-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-23-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>SACM1L_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt&quot;,&#39;SACM1L&#39;,&quot;Total&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>SACM1L_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt&quot;,&#39;SACM1L&#39;,&quot;Total&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>plot_grid(SACM1L_loc,SACM1L_num)</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-24-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-24-1.png" target="_blank">e2da5c4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>NBEAL2_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/NBEAL2_TotalCov_peaks.txt&quot;,&#39;NBEAL2&#39;,&quot;Total&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>NBEAL2_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/NBEAL2_TotalCov_peaks.txt&quot;,&#39;NBEAL2&#39;,&quot;Total&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>plot_grid(NBEAL2_loc,NBEAL2_num)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="which-peak-is-sig" class="section level2">
+<h2>Which Peak is Sig</h2>
+<p>It would be interesting to know which peak in these gene plots is associated with the QTL.</p>
+<p>Nuclear: * IRF5 : peak305794-7:128635754, peak305795,128681297, peak305798-7:128661132</p>
+<pre class="r"><code>IRF5_all=read.table(&quot;../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt&quot;, col.names = nuc_names)</code></pre>
+<p>peak305794-peak 4 peak305795-peak 5 peak305798-peak 6</p>
+<ul>
+<li>HSF1: peak323832- 8:145516593</li>
+</ul>
+<pre class="r"><code>HSF1_all=read.table(&quot;../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt&quot;, col.names = nuc_names)</code></pre>
+<p>The QTL is the first peak. (peak 0)</p>
+<ul>
+<li>NOL9: peak702- 1:6604621</li>
+</ul>
+<pre class="r"><code>NOL9_all=read.table(&quot;../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt&quot;, col.names = nuc_names)</code></pre>
+<p>QTL is peak 7 in the graph</p>
+<ul>
+<li>DCAF16: peak236311- 4:17797455</li>
+</ul>
+<pre class="r"><code>DCAF16_all=read.table(&quot;../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt&quot;, col.names = nuc_names)</code></pre>
+<p>QTL is peak 3 in graph</p>
+<ul>
+<li>PPP4C: peak122195-16:30482494</li>
+</ul>
+<pre class="r"><code>pprc_all=read.table(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;, col.names = nuc_names)</code></pre>
+<p>The QTL peak is the lower expressed peak (peak1 in graph)</p>
+<p>Total: * NBEAL2: peak216374- 3:47080127</p>
+<pre class="r"><code>NBEAL2_all=read.table(&quot;../data/example_gene_peakQuant/NBEAL2_TotalCov_peaks.txt&quot;, col.names = tot_names)</code></pre>
+<p>peak 15 in graph</p>
+<ul>
+<li>SACM1L: peak216084-3:45780980, peak216086-3:45780980, peak216087-3:45790569</li>
+</ul>
+<pre class="r"><code>SACM1L_all=read.table(&quot;../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt&quot;, col.names = tot_names)</code></pre>
+<p>peak216084-12</p>
+<p>peak216086 - 14 (major peak)</p>
+<p>peak216087 -15</p>
+<ul>
+<li>DGCR14: peak204736-22:18647341</li>
+</ul>
+<pre class="r"><code>DGCR14_all=read.table(&quot;../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt&quot;, col.names = tot_names)</code></pre>
+<p>peak204736- peak 7</p>
+<p>This has shown me that most of the QTL peaks are not the major/most used peak. This leads me to beleive I would get different QTLs if I made one metric per gene because I may ont be able to capture these effects.</p>
+</div>
+<div id="seperate-by-genotype" class="section level2">
+<h2>Seperate by genotype</h2>
+<p>It would be good to look at these seperated by genotype.</p>
+<ul>
+<li>IRF5 : peak305794-7:128635754, peak305795,128681297, peak305798-7:128661132</li>
+</ul>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
