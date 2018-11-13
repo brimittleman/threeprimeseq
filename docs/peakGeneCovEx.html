@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-12</p>
+<p><strong>Last updated:</strong> 2018-11-13</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/7d1bd9ac68750e5346974f06ef39a47987716f90" target="_blank">7d1bd9a</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f8d8c94dfe19af73199a5127e413af9e28859250" target="_blank">f8d8c94</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -426,8 +426,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/39indQC.Rmd
-    Modified:   analysis/apaQTLoverlapGWAS.Rmd
-    Modified:   analysis/chromHmm_enrichment.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
@@ -469,6 +467,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f8d8c94dfe19af73199a5127e413af9e28859250/analysis/peakGeneCovEx.Rmd" target="_blank">f8d8c94</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+<td style="text-align:left;">
+add plots for peak coverage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/24821f2e800b26456114ff1400996f16ebbaff3d/docs/peakGeneCovEx.html" target="_blank">24821f2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-12
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -556,7 +588,7 @@ Attaching package: &#39;cowplot&#39;</code></pre>
 tot_names=c(&#39;Geneid&#39;,   &#39;Chr&#39;   ,&#39;Start&#39;,   &#39;End&#39;,  &#39;Strand&#39;,   &#39;Length&#39;,   &#39;18486_T&#39;,  &#39;18497_T&#39;   ,&#39;18500_T&#39;,&#39;18505_T&#39;,   &#39;18508_T&#39;   ,&#39;18511_T&#39;, &#39;18519_T&#39;,  &#39;18520_T&#39;,  &#39;18853_T&#39;,  &#39;18858_T&#39;,  &#39;18861_T&#39;,  &#39;18870_T&#39;,  &#39;18909_T&#39;   ,&#39;18912_T&#39;, &#39;18916_T&#39;,  &#39;19092_T&#39;   ,&#39;19093_T&#39;, &#39;19119_T&#39;,  &#39;19128_T&#39;,  &#39;19130_T&#39;,  &#39;19131_T&#39;   ,&#39;19137_T&#39;, &#39;19140_T&#39;   ,&#39;19141_T&#39;, &#39;19144_T&#39;,  &#39;19152_T&#39;   ,&#39;19153_T&#39;, &#39;19160_T&#39;   ,&#39;19171_T&#39;, &#39;19193_T&#39;,  &#39;19200_T&#39;,  &#39;19207_T&#39;   ,&#39;19209_T&#39;  ,&#39;19210_T&#39;, &#39;19223_T&#39;,  &#39;19225_T&#39;,  &#39;19238_T&#39;,  &#39;19239_T&#39;,  &#39;19257_T&#39;)</code></pre>
 <pre class="r"><code>NuclearAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt&quot;, stringsAsFactors = F, header=T)  %&gt;% mutate(sig=ifelse(-log10(bh)&gt;=1, 1,0 )) %&gt;%  separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% filter(sig==1)
 totalAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt&quot;, stringsAsFactors = F, header=T)  %&gt;% mutate(sig=ifelse(-log10(bh)&gt;=1, 1,0 )) %&gt;%  separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% filter(sig==1)</code></pre>
-<p>examples to look at Nuclear: IRF5, HSF1, NOL9,DCAF16, PPP4C</p>
+<p>examples to look at Nuclear: IRF5, HSF1, NOL9,DCAF16,</p>
 <p>Total: NBEAL2, SACM1L, COX7A2L</p>
 <pre class="bash"><code>
 #nuclear
@@ -587,6 +619,126 @@ grep DGCR14 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filt
 </code></pre>
 <p>Copy these to my computer so I can work with them here. I am going to want to make a function that makes the histogram reproducibly for anyfile. I will need to know how many bins to include in the histogram. First I will make the graph for one example then I will make it more general.</p>
 <p>Files are in /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/example_gene_peakQuant</p>
+<p>Start wit a small file.</p>
+<pre class="r"><code>pos=c(3,4,7:39)
+PPP4c=read.table(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;, stringsAsFactors = F, col.names = nuc_names) %&gt;% select(pos)
+
+PPP4c$peaks=seq(0, (nrow(PPP4c)-1))
+
+PPP4c_melt=melt(PPP4c, id.vars=c(&#39;peaks&#39;,&#39;Start&#39;,&#39;End&#39;))</code></pre>
+<p>Plot:</p>
+<pre class="r"><code>ggplot(PPP4c_melt, aes(x=peaks, y=value, by=variable, fill=variable)) + geom_histogram(stat=&quot;identity&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Try with actual location as the center of the peak.</p>
+<pre class="r"><code>pos=c(3,4,7:39)
+PPP4c_2=read.table(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;, stringsAsFactors = F, col.names = tot_names) %&gt;% select(pos)
+PPP4c_2$peaks=seq(0, (nrow(PPP4c_2)-1))
+PPP4c_2= PPP4c_2 %&gt;% mutate(PeakCenter=(Start+ (End-Start)/2))
+PPP4c2_melt=melt(PPP4c_2, id.vars=c(&#39;peaks&#39;,&#39;PeakCenter&#39;, &quot;Start&quot;, &quot;End&quot;))
+colnames(PPP4c2_melt)= c(&#39;peaks&#39;,&#39;PeakCenter&#39;, &quot;Start&quot;, &quot;End&quot;, &quot;Individual&quot;, &quot;ReadCount&quot;)</code></pre>
+<p>Plot:</p>
+<pre class="r"><code>ggplot(PPP4c2_melt, aes(x=PeakCenter, y=ReadCount, by=Individual, fill=Individual)) + geom_histogram(stat=&quot;identity&quot;) + labs(title=&quot;Peak Coverage and Location PP4c&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Generalize this for more genes:</p>
+<pre class="r"><code>makePeakLocplot=function(file, geneName,fraction){
+  pos=c(3,4,7:39)
+  if (fraction==&quot;Total&quot;){
+  gene=read.table(file, stringsAsFactors = F, col.names = tot_names) %&gt;% select(pos)
+  }
+  else{
+    gene=read.table(file, stringsAsFactors = F, col.names = nuc_names) %&gt;% select(pos)
+  }
+  
+  gene$peaks=seq(0, (nrow(gene)-1))
+  gene= gene %&gt;% mutate(PeakCenter=(Start+ (End-Start)/2))
+  gene_melt=melt(gene, id.vars=c(&#39;peaks&#39;,&#39;PeakCenter&#39;, &quot;Start&quot;, &quot;End&quot;))
+  colnames(gene_melt)= c(&#39;peaks&#39;,&#39;PeakCenter&#39;, &quot;Start&quot;, &quot;End&quot;, &quot;Individual&quot;, &quot;ReadCount&quot;)
+  finalplot=ggplot(gene_melt, aes(x=PeakCenter, y=ReadCount, by=Individual, fill=Individual)) + geom_histogram(stat=&quot;identity&quot;, show.legend = FALSE) + labs(title=paste(&quot;Peak Coverage and Location&quot;, geneName, sep = &quot; &quot;)) 
+  return(finalplot)
+}</code></pre>
+<p>Try for another gene:</p>
+<pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;,&#39;PPP4c&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt&quot;,&#39;DCAF16&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt&quot;,&#39;DGCR14&#39;,&quot;Total&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt&quot;,&#39;IRF5&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt&quot;,&#39;HSF1&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt&quot;,&#39;NOL9&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>makePeakLocplot(&quot;../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt&quot;,&#39;SACM1L&#39;,&quot;Total&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Make a function to do this by peak number (ignoring direction)</p>
+<pre class="r"><code>makePeakNumplot=function(file, geneName,fraction){
+  pos=c(7:39)
+  if (fraction==&quot;Total&quot;){
+  gene=read.table(file, stringsAsFactors = F, col.names = tot_names) %&gt;% select(pos)
+  }
+  else{
+    gene=read.table(file, stringsAsFactors = F, col.names = nuc_names) %&gt;% select(pos)
+  }
+  
+  gene$peaks=seq(0, (nrow(gene)-1))
+  gene_melt=melt(gene, id.vars=c(&#39;peaks&#39;))
+  colnames(gene_melt)= c(&#39;peaks&#39;,&quot;Individual&quot;, &quot;ReadCount&quot;)
+  finalplot=ggplot(gene_melt, aes(x=peaks, y=ReadCount, by=Individual, fill=Individual)) + geom_histogram(stat=&quot;identity&quot;, show.legend = FALSE) + labs(title=paste(&quot;Peak Coverage&quot;, geneName, sep = &quot; &quot;)) 
+  return(finalplot)
+}</code></pre>
+<p>I can plot them next to eachother using cowplot</p>
+<pre class="r"><code>ppp4c_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;,&#39;PPP4c&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>ppp4c_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;,&#39;PPP4c&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>plot_grid(ppp4c_loc,ppp4c_num)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>dcaf16_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt&quot;,&#39;DCAF16&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>dcaf16_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt&quot;,&#39;DCAF16&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>plot_grid(dcaf16_loc,dcaf16_num)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>dgcr14_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt&quot;,&#39;DGCR14&#39;,&quot;Total&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>dgcr14_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt&quot;,&#39;DGCR14&#39;,&quot;Total&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>plot_grid(dgcr14_loc,dgcr14_num)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>irf5_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt&quot;,&#39;IRF5&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>irf5_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt&quot;,&#39;IRF5&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>plot_grid(irf5_loc,irf5_num)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>HSF1_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt&quot;,&#39;HSF1&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>HSF1_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt&quot;,&#39;HSF1&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>plot_grid(HSF1_loc,HSF1_num)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>NOL9_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt&quot;,&#39;NOL9&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>NOL9_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt&quot;,&#39;NOL9&#39;,&quot;Nuclear&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>plot_grid(NOL9_loc,NOL9_num)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SACM1L_loc=makePeakLocplot(&quot;../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt&quot;,&#39;SACM1L&#39;,&quot;Total&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>SACM1L_num=makePeakNumplot(&quot;../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt&quot;,&#39;SACM1L&#39;,&quot;Total&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>plot_grid(SACM1L_loc,SACM1L_num)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -621,16 +773,17 @@ loaded via a namespace (and not attached):
 [13] lambda.r_1.2.3       modelr_0.1.2         readxl_1.1.0        
 [16] bindr_0.1.1          plyr_1.8.4           munsell_0.5.0       
 [19] gtable_0.2.0         cellranger_1.1.0     rvest_0.3.2         
-[22] R.methodsS3_1.7.1    evaluate_0.11        knitr_1.20          
-[25] broom_0.5.0          Rcpp_0.12.19         formatR_1.5         
-[28] backports_1.1.2      scales_1.0.0         jsonlite_1.5        
-[31] hms_0.4.2            digest_0.6.17        stringi_1.2.4       
-[34] rprojroot_1.3-2      cli_1.0.1            tools_3.5.1         
-[37] lazyeval_0.2.1       futile.options_1.0.1 crayon_1.3.4        
-[40] whisker_0.3-2        pkgconfig_2.0.2      xml2_1.2.0          
-[43] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.10      
-[46] httr_1.3.1           rstudioapi_0.8       R6_2.3.0            
-[49] nlme_3.1-137         git2r_0.23.0         compiler_3.5.1      </code></pre>
+[22] R.methodsS3_1.7.1    evaluate_0.11        labeling_0.3        
+[25] knitr_1.20           broom_0.5.0          Rcpp_0.12.19        
+[28] formatR_1.5          backports_1.1.2      scales_1.0.0        
+[31] jsonlite_1.5         hms_0.4.2            digest_0.6.17       
+[34] stringi_1.2.4        rprojroot_1.3-2      cli_1.0.1           
+[37] tools_3.5.1          lazyeval_0.2.1       futile.options_1.0.1
+[40] crayon_1.3.4         whisker_0.3-2        pkgconfig_2.0.2     
+[43] xml2_1.2.0           lubridate_1.7.4      assertthat_0.2.0    
+[46] rmarkdown_1.10       httr_1.3.1           rstudioapi_0.8      
+[49] R6_2.3.0             nlme_3.1-137         git2r_0.23.0        
+[52] compiler_3.5.1      </code></pre>
 </div>
 
 <hr>
