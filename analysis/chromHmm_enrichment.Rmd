@@ -950,6 +950,7 @@ ggplot(bothEnrich_melt_filt, aes(x=name, by=variable, fill=variable, y=value))+ 
 
 The bimodal distributions may come from including both the significant and non significant genes in the test set. I need to remove all of the lines that come from a gene with a significant peak.  
 
+###Remove significant genes
 
 ```{r}
 NucQTL_genes=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt", stringsAsFactors = F, header=T)  %>% mutate(sig=ifelse(-log10(bh)>=1, 1,0 )) %>%  separate(pid, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% filter(sig==1) %>% select(gene) %>% distinct(gene)
@@ -1355,8 +1356,9 @@ if __name__ == "__main__":
     nsamp=sys.argv[2]
     niter=sys.argv[3]
     #which itteration we are on 
-    inFile ="/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/snp_bed_sort_noSig/randomRes_%s_%s_%s.bed.sort.bed"%(fraction,fraction, nsamp, niter)
-    outFile= "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_%s.txt"%(fraction,fraction,nsamp, niter)
+    inFile ="/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/snp_bed_sort_noSig/randomRes_%s_%s_noSig_%s.bed.sort.bed"%(fraction,fraction, nsamp, niter)
+
+    outFile= "/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_noSig_%s.txt"%(fraction,fraction,nsamp, niter)
     main(inFile,outFile)
 ```
 
@@ -1406,15 +1408,107 @@ groupRandomChromHMM_noSig.sh
 module load Anaconda3
 source activate three-prime-env
 
+
+
 for i in {1..1000};
 do
-Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/chromHMM_overlap/randomres_overlapChromHMM_Nuclear_880_noSig_${i}.bed  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Nuclear_880_noSig_${i}_grouped.txt
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/chromHMM_overlap/randomres_overlapChromHMM_Nuclear_880_noSig_${i}.txt -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Nuclear_880_noSig_${i}_grouped.txt
 done
 
 
 for i in {1..1000};
 do
-Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/chromHMM_overlap/randomres_overlapChromHMM_Total_118_noSig_${i}.bed  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Total_118_noSig_${i}_grouped.txt
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/chromHMM_overlap/randomres_overlapChromHMM_Total_118_noSig_${i}.txt  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Total_118_noSig_${i}_grouped.txt
 done
 
 ```
+
+
+```{bash,eval=F}
+cut -d$' ' -f 1,2 randomres_overlapChromHMM_Nuclear_880_noSig_549_grouped.txt > Nuc_chromOverlap_noSig.txt
+
+for i in {1..1000};
+do
+paste -d" " Nuc_chromOverlap_noSig.txt <(cut -d" " -f 3 randomres_overlapChromHMM_Nuclear_880_noSig_${i}_grouped.txt) > tmp
+mv tmp Nuc_chromOverlap_noSig.txt
+done
+
+
+cut -d$' ' -f 1,2 randomres_overlapChromHMM_Total_118_noSig_53_grouped.txt > Tot_chromOverlap_noSig.txt
+
+for i in {1..1000};
+do
+paste -d" " Tot_chromOverlap_noSig.txt <(cut -d" " -f 3 randomres_overlapChromHMM_Total_118_noSig_${i}_grouped.txt) > tmp
+mv tmp Tot_chromOverlap_noSig.txt
+done
+```
+
+
+These files are not on my computer so I can work with them.
+
+```{r}
+
+
+
+permutationResTotal_noSig=read.table("../data/ChromHmmOverlap/Tot_chromOverlap_noSig.txt", header=T, stringsAsFactors = F)
+permutationResTotal_noSig[is.na(permutationResTotal_noSig)] <- 0
+permutationResTotal_noSig= as_data_frame(permutationResTotal_noSig)
+permutationResTotal_noSig_noName=permutationResTotal_noSig[,3:ncol(permutationResTotal_noSig)]
+totRand_mean_noSig=rowMeans(permutationResTotal_noSig_noName)/1000
+
+permutationResNuclear_noSig=read.table("../data/ChromHmmOverlap/Nuc_chromOverlap_noSig.txt",header = T,stringsAsFactors = F)
+permutationResNuclear_noSig[is.na(permutationResNuclear_noSig)] <- 0
+permutationResNuclear_noSig_noName=permutationResNuclear_noSig[,3:ncol(permutationResNuclear_noSig)]
+nucRand_mean_noSig=rowMeans(permutationResNuclear_noSig_noName)/1000
+```
+
+```{r}
+permutationResTotal_noSig_melt= melt(permutationResTotal_noSig, id.vars=c("number", "name"))
+```
+
+```{r}
+ggplot(permutationResTotal_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x="N random Snps in category", title="Random permutation Total")
+```
+
+For nuclear:
+
+
+```{r}
+permutationResNuclear_noSig_melt= melt(permutationResNuclear_noSig, id.vars=c("number", "name"))
+```
+
+```{r}
+ggplot(permutationResNuclear_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x="N random Snps in category", title="Random permutation Nuclear")
+```
+```{r}
+ggplot(permutationResNuclear_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x="random Snps in category", title="Random permutation Nuclear")
+
+ggplot(permutationResTotal_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x="random Snps in category", title="Random permutation Total")
+```
+
+
+###Permute only from unique snps tested 
+This didnt help. I need to choose from the unique snps rather than counting if they were tested multiple times. I will look for the snps tested and get rid of those called as QTLs.  
+
+
+Steps:  
+
+* get total and nuclear snps tested
+
+* subset to uniq snps  
+
+* remove QTL snps  
+
+* select correct number of snps 1000 times (permutation)
+
+* make bed files for snps snps
+
+* sort bed files  
+
+* overlap each with chrom HMM  
+
+* group the chrom HMM calls  
+
+* make the final matrix  
+
+
