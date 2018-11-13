@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1357eac2f73181ec1e6025eedbd790979a2601d0" target="_blank">1357eac</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/595cdc05302a238e9bfd56915be603e99a85ee8b" target="_blank">595cdc0</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -433,7 +433,6 @@ Unstaged changes:
     Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
     Modified:   analysis/overlap_qtls.Rmd
-    Modified:   analysis/peakGeneCovEx.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
@@ -467,6 +466,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/595cdc05302a238e9bfd56915be603e99a85ee8b/analysis/chromHmm_enrichment.Rmd" target="_blank">595cdc0</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+<td style="text-align:left;">
+add code for uniq no sig permutation
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/chromHmm_enrichment.html" target="_blank">086fbcc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -2452,34 +2485,371 @@ nucRand_mean_noSig=rowMeans(permutationResNuclear_noSig_noName)/1000</code></pre
 <pre class="r"><code>permutationResTotal_noSig_melt= melt(permutationResTotal_noSig, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResTotal_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-74-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-74-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-74-1.png" target="_blank">086fbcc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>For nuclear:</p>
 <pre class="r"><code>permutationResNuclear_noSig_melt= melt(permutationResNuclear_noSig, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResNuclear_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-76-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-76-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-76-1.png" target="_blank">086fbcc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(permutationResNuclear_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 630 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-77-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-77-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-77-1.png" target="_blank">086fbcc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(permutationResTotal_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 445 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-77-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-77-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-77-2.png" target="_blank">086fbcc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="permute-only-from-unique-snps-tested" class="section level3">
 <h3>Permute only from unique snps tested</h3>
 <p>This didnt help. I need to choose from the unique snps rather than counting if they were tested multiple times. I will look for the snps tested and get rid of those called as QTLs.</p>
 <p>Steps:</p>
 <ul>
-<li><p>get total and nuclear snps tested</p></li>
-<li><p>subset to uniq snps</p></li>
-<li><p>remove QTL snps</p></li>
-<li><p>select correct number of snps 1000 times (permutation)</p></li>
-<li><p>make bed files for snps snps</p></li>
-<li><p>sort bed files</p></li>
-<li><p>overlap each with chrom HMM</p></li>
-<li><p>group the chrom HMM calls</p></li>
-<li><p>make the final matrix</p></li>
+<li>get total and nuclear snps tested</li>
 </ul>
+<p>I need to do this from the nominal results in /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/. The snp ID is in the second column</p>
+<pre class="bash"><code>cut -f2 -d&quot; &quot; /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt | sort | uniq &gt; /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Nuclear.txt
+
+
+cut -f2 -d&quot; &quot; /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt | sort | uniq &gt; /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Total.txt</code></pre>
+<ul>
+<li>remove QTL snps</li>
+</ul>
+<p>The significant QTL snps are:</p>
+<p>/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Nuclear.txt /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt</p>
+<p>I can use python to remove the snps from the full lists:</p>
+<p>I can write it as a bed file to make the step easier.</p>
+<p>testedSnps_noSig.py</p>
+<pre class="bash"><code>
+total_qtl=open(&#39;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt&#39;, &quot;r&quot;)
+nuclear_qtl=open(&#39;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/ApaQTLsigSNPpos_Total.txt&#39;, &quot;r&quot;)
+
+def file_to_list(file):
+    snp_list=[]
+    for ln in file:
+        snp=ln.strip()
+        snp_list.append(snp)
+    return(snp_list)
+    
+total_qtl_list= file_to_list(total_qtl)
+nuclear_qtl_list= file_to_list(nuclear_qtl)
+
+total_out=open(&quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/TotalUniqTestedSnp.bed&quot;,&quot;w&quot;)
+
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Total.txt&quot;):
+    snp=ln.strip()
+    if snp not in total_qtl_list:
+        chrom, pos =snp.split(&quot;:&quot;)
+        start=int(pos)-1
+        end=int(pos)
+        total_out.write(&quot;%s\t%d\t%d\t%s\n&quot;%(chrom, start, end, snp))
+    total_out.close()  
+    
+nuclear_out=open(&quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/NuclearUniqTestedSnp.bed&quot;,&quot;w&quot;)
+
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Nuclear.txt&quot;):
+    snp=ln.strip()
+    if snp not in total_qtl_list:
+        chrom, pos =snp.split(&quot;:&quot;)
+        start=int(pos)-1
+        end=int(pos)
+        nuclear_out.write(&quot;%s\t%d\t%d\t%s\n&quot;%(chrom, start, end, snp))
+    nuclear_out.close()  
+    
+</code></pre>
+<p>I will probablly need to run this in a bash script.</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_testedSnps_noSig.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=run_testedSnps_noSig.out
+#SBATCH --error=run_testedSnps_noSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python testedSnps_noSig.py  </code></pre>
+<ul>
+<li>select correct number of snps 1000 times (permutation) This file is not as big. I may be able to run all of the permutations at once:<br />
+random_UniqNoSig.sh</li>
+</ul>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=random_UniqNoSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=random_UniqNoSig.out
+#SBATCH --error=random_UniqNoSig.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=200G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in {1..1000};
+do
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/TotalUniqTestedSnp.bed  &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_UniqnoSig/randomRes_Total_118_UniqnoSig_${i}.bed
+done
+
+
+for i in {1..1000};
+do
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/NuclearUniqTestedSnp.bed &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/randomRes_Nuclear_880_UniqnoSig_${i}.bed
+done</code></pre>
+<ul>
+<li>sort bed files</li>
+</ul>
+<p>sortRandomUniqSnps_noSig.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=sortRandomUniqSnps_noSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=sortRandomUniqSnps_noSig.out
+#SBATCH --error=sortRandomUniqSnps_noSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/);
+do
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/$i &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/snp_bed_sort_noSig/$i.sort.bed
+done
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/);
+do
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/$i &gt; /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/snp_bed_sort_noSig/$i.sort.bed
+done
+</code></pre>
+<ul>
+<li>overlap each with chrom HMM</li>
+</ul>
+<p>overlap_chromHMM_sepfiles_UniqnoSig.py</p>
+<pre class="bash"><code>def main(inFile, outFile):
+  rand=pybedtools.BedTool(inFile) 
+  hmm=pybedtools.BedTool(&quot;/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed&quot;)
+  #map hmm to snps
+  Rand_overlapHMM=rand.map(hmm, c=4)
+  #save results
+  Rand_overlapHMM.saveas(outFile)
+
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pandas as pd
+    import pybedtools
+    fraction=sys.argv[1]
+    nsamp=sys.argv[2]
+    niter=sys.argv[3]
+    #which itteration we are on 
+    inFile =&quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_Uniq_noSig/snp_bed_sort_noSig/randomRes_%s_%s_UniqnoSig_%s.bed.sort.bed&quot;%(fraction,fraction, nsamp, niter)
+
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_UniqnoSig_%s.txt&quot;%(fraction,fraction,nsamp, niter)
+    main(inFile,outFile)</code></pre>
+<p>overlap_chromHMM_sepfiles_UniqnoSig.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=overlap_chromHMM_sepfiles_UniqnoSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=overlap_chromHMM_sepfiles_UniqnoSig.out
+#SBATCH --error=overlap_chromHMM_sepfiles_UniqnoSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+for i in {1..1000};
+do
+python overlap_chromHMM_sepfiles_UniqnoSig.py  Nuclear 880 $i
+done
+
+for i in {1..1000};
+do
+python overlap_chromHMM_sepfiles_UniqnoSig.py  Total 118 $i
+done</code></pre>
+<ul>
+<li>group the chrom HMM calls</li>
+</ul>
+<p>groupRandomChromHMM_UniqnoSig.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=groupRandomChromHMM_UniqnoSig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=groupRandomChromHMM_UniqnoSig.out
+#SBATCH --error=groupRandomChromHMM_UniqnoSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+
+for i in {1..1000};
+do
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}.txt -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}_grouped.txt
+done
+
+
+for i in {1..1000};
+do
+Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_Total_118_UniqnoSig_${i}.txt  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Total_118_UniqnoSig_${i}_grouped.txt
+done
+</code></pre>
+<ul>
+<li>make the final matrix</li>
+</ul>
+<pre class="bash"><code>#/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap_group/
+cut -d$&#39; &#39; -f 1,2 randomres_overlapChromHMM_Nuclear_880_UniqnoSig_549_grouped.txt &gt; Nuc_chromOverlap_UniqnoSig.txt
+
+for i in {1..1000};
+do
+paste -d&quot; &quot; Nuc_chromOverlap_UniqnoSig.txt &lt;(cut -d&quot; &quot; -f 3 randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}_grouped.txt) &gt; tmp
+mv tmp Nuc_chromOverlap_UniqnoSig.txt
+done
+
+#/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap_group/
+cut -d$&#39; &#39; -f 1,2 randomres_overlapChromHMM_Total_118_UniqnoSig_53_grouped.txt &gt; Tot_chromOverlap_UniqnoSig.txt
+
+for i in {1..1000};
+do
+paste -d&quot; &quot; Tot_chromOverlap_UniqnoSig.txt &lt;(cut -d&quot; &quot; -f 3 randomres_overlapChromHMM_Total_118_UniqnoSig_${i}_grouped.txt) &gt; tmp
+mv tmp Tot_chromOverlap_UniqnoSig.txt
+done</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
