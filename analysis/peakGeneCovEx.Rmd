@@ -45,7 +45,7 @@ totalAPA=read.table("../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_re
 ```
 
 examples to look at 
-Nuclear: IRF5, HSF1, NOL9,DCAF16, PPP4C
+Nuclear: IRF5, HSF1, NOL9,DCAF16,
 
 Total: NBEAL2, SACM1L, COX7A2L 
 
@@ -84,3 +84,184 @@ grep DGCR14 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filt
 Copy these to my computer so I can work with them here. I am going to want to make a function that makes the histogram reproducibly for anyfile. I will need to know how many bins to include in the histogram. First I will make the graph for one example then I will make it more general.  
 
 Files are in  /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/example_gene_peakQuant
+
+
+Start wit a small file. 
+
+```{r}
+pos=c(3,4,7:39)
+PPP4c=read.table("../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt", stringsAsFactors = F, col.names = nuc_names) %>% select(pos)
+
+PPP4c$peaks=seq(0, (nrow(PPP4c)-1))
+
+PPP4c_melt=melt(PPP4c, id.vars=c('peaks','Start','End'))
+```
+
+Plot:  
+```{r}
+ggplot(PPP4c_melt, aes(x=peaks, y=value, by=variable, fill=variable)) + geom_histogram(stat="identity")
+```
+
+Try with actual location as the center of the peak.  
+
+```{r}
+pos=c(3,4,7:39)
+PPP4c_2=read.table("../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt", stringsAsFactors = F, col.names = tot_names) %>% select(pos)
+PPP4c_2$peaks=seq(0, (nrow(PPP4c_2)-1))
+PPP4c_2= PPP4c_2 %>% mutate(PeakCenter=(Start+ (End-Start)/2))
+PPP4c2_melt=melt(PPP4c_2, id.vars=c('peaks','PeakCenter', "Start", "End"))
+colnames(PPP4c2_melt)= c('peaks','PeakCenter', "Start", "End", "Individual", "ReadCount")
+```
+
+Plot:  
+```{r}
+ggplot(PPP4c2_melt, aes(x=PeakCenter, y=ReadCount, by=Individual, fill=Individual)) + geom_histogram(stat="identity") + labs(title="Peak Coverage and Location PP4c")
+```
+
+
+Generalize this for more genes:  
+
+```{r}
+makePeakLocplot=function(file, geneName,fraction){
+  pos=c(3,4,7:39)
+  if (fraction=="Total"){
+  gene=read.table(file, stringsAsFactors = F, col.names = tot_names) %>% select(pos)
+  }
+  else{
+    gene=read.table(file, stringsAsFactors = F, col.names = nuc_names) %>% select(pos)
+  }
+  
+  gene$peaks=seq(0, (nrow(gene)-1))
+  gene= gene %>% mutate(PeakCenter=(Start+ (End-Start)/2))
+  gene_melt=melt(gene, id.vars=c('peaks','PeakCenter', "Start", "End"))
+  colnames(gene_melt)= c('peaks','PeakCenter', "Start", "End", "Individual", "ReadCount")
+  finalplot=ggplot(gene_melt, aes(x=PeakCenter, y=ReadCount, by=Individual, fill=Individual)) + geom_histogram(stat="identity", show.legend = FALSE) + labs(title=paste("Peak Coverage and Location", geneName, sep = " ")) 
+  return(finalplot)
+}
+```
+
+Try for another gene:  
+
+```{r}
+makePeakLocplot("../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt",'PPP4c',"Nuclear")
+```
+
+```{r}
+makePeakLocplot("../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt",'DCAF16',"Nuclear")
+```
+```{r}
+makePeakLocplot("../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt",'DGCR14',"Total")
+```
+
+
+```{r}
+makePeakLocplot("../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt",'IRF5',"Nuclear")
+```
+
+```{r}
+makePeakLocplot("../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt",'HSF1',"Nuclear")
+```
+```{r}
+makePeakLocplot("../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt",'NOL9',"Nuclear")
+```
+
+
+```{r}
+makePeakLocplot("../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt",'SACM1L',"Total")
+```
+
+
+Make a function to do this by peak number (ignoring direction)  
+
+```{r}
+makePeakNumplot=function(file, geneName,fraction){
+  pos=c(7:39)
+  if (fraction=="Total"){
+  gene=read.table(file, stringsAsFactors = F, col.names = tot_names) %>% select(pos)
+  }
+  else{
+    gene=read.table(file, stringsAsFactors = F, col.names = nuc_names) %>% select(pos)
+  }
+  
+  gene$peaks=seq(0, (nrow(gene)-1))
+  gene_melt=melt(gene, id.vars=c('peaks'))
+  colnames(gene_melt)= c('peaks',"Individual", "ReadCount")
+  finalplot=ggplot(gene_melt, aes(x=peaks, y=ReadCount, by=Individual, fill=Individual)) + geom_histogram(stat="identity", show.legend = FALSE) + labs(title=paste("Peak Coverage", geneName, sep = " ")) 
+  return(finalplot)
+}
+```
+
+
+I can plot them next to eachother using cowplot  
+```{r}
+ppp4c_loc=makePeakLocplot("../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt",'PPP4c',"Nuclear")
+
+ppp4c_num=makePeakNumplot("../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt",'PPP4c',"Nuclear")
+
+plot_grid(ppp4c_loc,ppp4c_num)
+```
+
+```{r}
+
+dcaf16_loc=makePeakLocplot("../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt",'DCAF16',"Nuclear")
+
+dcaf16_num=makePeakNumplot("../data/example_gene_peakQuant/DCAF16_NuclearCov_peaks.txt",'DCAF16',"Nuclear")
+
+plot_grid(dcaf16_loc,dcaf16_num)
+
+```
+
+
+
+```{r}
+
+
+dgcr14_loc=makePeakLocplot("../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt",'DGCR14',"Total")
+
+dgcr14_num=makePeakNumplot("../data/example_gene_peakQuant/DGCR14_TotalCov_peaks.txt",'DGCR14',"Total")
+
+plot_grid(dgcr14_loc,dgcr14_num)
+
+```
+
+
+```{r}
+
+irf5_loc=makePeakLocplot("../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt",'IRF5',"Nuclear")
+
+irf5_num=makePeakNumplot("../data/example_gene_peakQuant/IRF5_NuclearCov_peaks.txt",'IRF5',"Nuclear")
+
+plot_grid(irf5_loc,irf5_num)
+```
+
+```{r}
+
+
+HSF1_loc=makePeakLocplot("../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt",'HSF1',"Nuclear")
+
+HSF1_num=makePeakNumplot("../data/example_gene_peakQuant/HSF1_NuclearCov_peaks.txt",'HSF1',"Nuclear")
+
+plot_grid(HSF1_loc,HSF1_num)
+```
+
+
+
+```{r}
+
+NOL9_loc=makePeakLocplot("../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt",'NOL9',"Nuclear")
+
+NOL9_num=makePeakNumplot("../data/example_gene_peakQuant/NOL9_NuclearCov_peaks.txt",'NOL9',"Nuclear")
+
+plot_grid(NOL9_loc,NOL9_num)
+
+```
+
+
+```{r}
+
+SACM1L_loc=makePeakLocplot("../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt",'SACM1L',"Total")
+
+SACM1L_num=makePeakNumplot("../data/example_gene_peakQuant/SACM1L_TotalCov_peaks.txt",'SACM1L',"Total")
+
+plot_grid(SACM1L_loc,SACM1L_num)
+```
