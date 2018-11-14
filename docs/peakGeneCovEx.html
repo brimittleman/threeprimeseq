@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-13</p>
+<p><strong>Last updated:</strong> 2018-11-14</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,13 +347,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/42991264aeb6f5c4095a40de261e9911fcf125a0" target="_blank">4299126</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/acc74e7fc3a97b1f103febe1503c47a4a7d65402" target="_blank">acc74e7</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -426,6 +427,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/39indQC.Rmd
+    Modified:   analysis/chromHmm_enrichment.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
@@ -467,6 +469,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/acc74e7fc3a97b1f103febe1503c47a4a7d65402/analysis/peakGeneCovEx.Rmd" target="_blank">acc74e7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-14
+</td>
+<td style="text-align:left;">
+add example by genotype plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/d254fd2658506a41fe9d2afe08d945f4d0e3fab8/docs/peakGeneCovEx.html" target="_blank">d254fd2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -616,10 +652,10 @@ Attaching package: &#39;cowplot&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:ggplot2&#39;:
 
     ggsave</code></pre>
-<pre class="r"><code>nuc_names=c(&#39;Geneid&#39;,   &#39;Chr&#39;,  &#39;Start&#39;,    &#39;End&#39;,  &#39;Strand&#39;,   &#39;Length&#39;,   &#39;18486_N&#39;   ,&#39;18497_N&#39;, &#39;18500_N&#39;   ,&#39;18505_N&#39;, &#39;18508_N&#39;   ,&#39;18511_N&#39;, &#39;18519_N&#39;,  &#39;18520_N&#39;,  &#39;18853_N&#39;   ,&#39;18858_N&#39;, &#39;18861_N&#39;,  &#39;18870_N&#39;   ,&#39;18909_N&#39;  ,&#39;18912_N&#39;  ,&#39;18916_N&#39;, &#39;19092_N&#39;   ,&#39;19093_N&#39;, &#39;19119_N&#39;,  &#39;19128_N&#39;   ,&#39;19130_N&#39;, &#39;19131_N&#39;   ,&#39;19137_N&#39;, &#39;19140_N&#39;,  &#39;19141_N&#39;   ,&#39;19144_N&#39;, &#39;19152_N&#39;   ,&#39;19153_N&#39;, &#39;19160_N&#39;   ,&#39;19171_N&#39;, &#39;19193_N&#39;   ,&#39;19200_N&#39;, &#39;19207_N&#39;,  &#39;19209_N&#39;,  &#39;19210_N&#39;,  &#39;19223_N&#39;   ,&#39;19225_N&#39;, &#39;19238_N&#39;   ,&#39;19239_N&#39;, &#39;19257_N&#39;)
+<pre class="r"><code>nuc_names=c(&#39;Geneid&#39;,   &#39;Chr&#39;,  &#39;Start&#39;,    &#39;End&#39;,  &#39;Strand&#39;,   &#39;Length&#39;,   &#39;NA18486&#39;   ,&#39;NA18497&#39;, &#39;NA18500&#39;   ,&#39;NA18505&#39;, &#39;NA18508&#39;   ,&#39;NA18511&#39;, &#39;NA18519&#39;,  &#39;NA18520&#39;,  &#39;NA18853&#39;,&#39;NA18858&#39;,    &#39;NA18861&#39;,  &#39;NA18870&#39;   ,&#39;NA18909&#39;  ,&#39;NA18912&#39;  ,&#39;NA18916&#39;, &#39;NA19092&#39;   ,&#39;NA19093&#39;, &#39;NA19119&#39;,  &#39;NA19128&#39;   ,&#39;NA19130&#39;, &#39;NA19131&#39;   ,&#39;NA19137&#39;, &#39;NA19140&#39;,  &#39;NA19141&#39;   ,&#39;NA19144&#39;, &#39;NA19152&#39;   ,&#39;NA19153&#39;, &#39;NA19160&#39;   ,&#39;NA19171&#39;, &#39;NA19193&#39;   ,&#39;NA19200&#39;, &#39;NA19207&#39;,  &#39;NA19209&#39;,  &#39;NA19210&#39;,  &#39;NA19223&#39;   ,&#39;NA19225&#39;, &#39;NA19238&#39;   ,&#39;NA19239&#39;, &#39;NA19257&#39;)
 
 
-tot_names=c(&#39;Geneid&#39;,   &#39;Chr&#39;   ,&#39;Start&#39;,   &#39;End&#39;,  &#39;Strand&#39;,   &#39;Length&#39;,   &#39;18486_T&#39;,  &#39;18497_T&#39;   ,&#39;18500_T&#39;,&#39;18505_T&#39;,   &#39;18508_T&#39;   ,&#39;18511_T&#39;, &#39;18519_T&#39;,  &#39;18520_T&#39;,  &#39;18853_T&#39;,  &#39;18858_T&#39;,  &#39;18861_T&#39;,  &#39;18870_T&#39;,  &#39;18909_T&#39;   ,&#39;18912_T&#39;, &#39;18916_T&#39;,  &#39;19092_T&#39;   ,&#39;19093_T&#39;, &#39;19119_T&#39;,  &#39;19128_T&#39;,  &#39;19130_T&#39;,  &#39;19131_T&#39;   ,&#39;19137_T&#39;, &#39;19140_T&#39;   ,&#39;19141_T&#39;, &#39;19144_T&#39;,  &#39;19152_T&#39;   ,&#39;19153_T&#39;, &#39;19160_T&#39;   ,&#39;19171_T&#39;, &#39;19193_T&#39;,  &#39;19200_T&#39;,  &#39;19207_T&#39;   ,&#39;19209_T&#39;  ,&#39;19210_T&#39;, &#39;19223_T&#39;,  &#39;19225_T&#39;,  &#39;19238_T&#39;,  &#39;19239_T&#39;,  &#39;19257_T&#39;)</code></pre>
+tot_names=c(&#39;Geneid&#39;,   &#39;Chr&#39;,  &#39;Start&#39;,    &#39;End&#39;,  &#39;Strand&#39;,   &#39;Length&#39;,   &#39;NA18486&#39;   ,&#39;NA18497&#39;, &#39;NA18500&#39;   ,&#39;NA18505&#39;, &#39;NA18508&#39;   ,&#39;NA18511&#39;, &#39;NA18519&#39;,  &#39;NA18520&#39;,  &#39;NA18853&#39;,&#39;NA18858&#39;,    &#39;NA18861&#39;,  &#39;NA18870&#39;   ,&#39;NA18909&#39;  ,&#39;NA18912&#39;  ,&#39;NA18916&#39;, &#39;NA19092&#39;   ,&#39;NA19093&#39;, &#39;NA19119&#39;,  &#39;NA19128&#39;   ,&#39;NA19130&#39;, &#39;NA19131&#39;   ,&#39;NA19137&#39;, &#39;NA19140&#39;,  &#39;NA19141&#39;   ,&#39;NA19144&#39;, &#39;NA19152&#39;   ,&#39;NA19153&#39;, &#39;NA19160&#39;   ,&#39;NA19171&#39;, &#39;NA19193&#39;   ,&#39;NA19200&#39;, &#39;NA19207&#39;,  &#39;NA19209&#39;,  &#39;NA19210&#39;,  &#39;NA19223&#39;   ,&#39;NA19225&#39;, &#39;NA19238&#39;   ,&#39;NA19239&#39;, &#39;NA19257&#39;)</code></pre>
 <pre class="r"><code>NuclearAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_transcript_permResBH.txt&quot;, stringsAsFactors = F, header=T)  %&gt;% mutate(sig=ifelse(-log10(bh)&gt;=1, 1,0 )) %&gt;%  separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% filter(sig==1)
 totalAPA=read.table(&quot;../data/perm_QTL_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_transcript_permResBH.txt&quot;, stringsAsFactors = F, header=T)  %&gt;% mutate(sig=ifelse(-log10(bh)&gt;=1, 1,0 )) %&gt;%  separate(pid, sep = &quot;:&quot;, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep = &quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;)) %&gt;% filter(sig==1)</code></pre>
 <p>examples to look at Nuclear: IRF5, HSF1, NOL9,DCAF16,</p>
@@ -655,7 +691,7 @@ grep DGCR14 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filt
 <p>Files are in /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/example_gene_peakQuant</p>
 <p>Start wit a small file.</p>
 <pre class="r"><code>pos=c(3,4,7:39)
-PPP4c=read.table(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;, stringsAsFactors = F, col.names = nuc_names) %&gt;% select(pos)
+PPP4c=read.table(&quot;../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt&quot;, stringsAsFactors = F, col.names = nuc_names) %&gt;% select(pos) 
 
 PPP4c$peaks=seq(0, (nrow(PPP4c)-1))
 
@@ -1259,6 +1295,36 @@ Briana Mittleman
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>plot_grid(NBEAL2_loc,NBEAL2_num)</code></pre>
 <p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-25-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d254fd2658506a41fe9d2afe08d945f4d0e3fab8/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-25-1.png" target="_blank">d254fd2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <div id="which-peak-is-sig" class="section level2">
 <h2>Which Peak is Sig</h2>
 <p>It would be interesting to know which peak in these gene plots is associated with the QTL.</p>
@@ -1306,8 +1372,59 @@ Briana Mittleman
 <h2>Seperate by genotype</h2>
 <p>It would be good to look at these seperated by genotype.</p>
 <ul>
-<li>IRF5 : peak305794-7:128635754, peak305795,128681297, peak305798-7:128661132</li>
+<li>IRF5 : peak305794-7:128635754, peak305795,7:128681297, peak305798-7:128661132</li>
 </ul>
+<pre class="r"><code>geno_names=c(&#39;CHROM&#39;, &#39;POS&#39;, &#39;snpID&#39;, &#39;REF&#39;, &#39;ALT&#39;, &#39;QUAL&#39;, &#39;FILTER&#39;, &#39;INFO&#39;, &#39;FORMAT&#39;, &#39;NA18486&#39;, &#39;NA18487&#39;, &#39;NA18488&#39;, &#39;NA18489&#39;, &#39;NA18498&#39;, &#39;NA18499&#39;, &#39;NA18501&#39;, &#39;NA18502&#39;, &#39;NA18504&#39;, &#39;NA18505&#39;, &#39;NA18507&#39;, &#39;NA18508&#39;, &#39;NA18510&#39;, &#39;NA18511&#39;, &#39;NA18516&#39;, &#39;NA18517&#39;, &#39;NA18519&#39;, &#39;NA18520&#39;, &#39;NA18522&#39;, &#39;NA18523&#39;, &#39;NA18852&#39;, &#39;NA18853&#39;, &#39;NA18855&#39;, &#39;NA18856&#39;, &#39;NA18858&#39;, &#39;NA18859&#39;, &#39;NA18861&#39;, &#39;NA18862&#39;, &#39;NA18867&#39;, &#39;NA18868&#39;, &#39;NA18870&#39;, &#39;NA18871&#39;, &#39;NA18873&#39;, &#39;NA18874&#39;, &#39;NA18907&#39;, &#39;NA18909&#39;, &#39;NA18910&#39;, &#39;NA18912&#39;, &#39;NA18913&#39;, &#39;NA18916&#39;, &#39;NA18917&#39;, &#39;NA18923&#39;, &#39;NA18924&#39;, &#39;NA18933&#39;, &#39;NA18934&#39;, &#39;NA19093&#39;, &#39;NA19095&#39;, &#39;NA19096&#39;, &#39;NA19098&#39;, &#39;NA19099&#39;, &#39;NA19101&#39;, &#39;NA19102&#39;, &#39;NA19107&#39;, &#39;NA19108&#39;, &#39;NA19113&#39;, &#39;NA19114&#39;, &#39;NA19116&#39;, &#39;NA19117&#39;, &#39;NA19118&#39;, &#39;NA19119&#39;, &#39;NA19121&#39;, &#39;NA19122&#39;, &#39;NA19127&#39;, &#39;NA19128&#39;, &#39;NA19129&#39;, &#39;NA19130&#39;, &#39;NA19131&#39;, &#39;NA19137&#39;, &#39;NA19138&#39;, &#39;NA19140&#39;, &#39;NA19141&#39;, &#39;NA19143&#39;, &#39;NA19144&#39;, &#39;NA19146&#39;, &#39;NA19147&#39;, &#39;NA19149&#39;, &#39;NA19150&#39;, &#39;NA19152&#39;, &#39;NA19153&#39;, &#39;NA19159&#39;, &#39;NA19160&#39;, &#39;NA19171&#39;, &#39;NA19172&#39;, &#39;NA19175&#39;, &#39;NA19176&#39;, &#39;NA19184&#39;, &#39;NA19185&#39;, &#39;NA19189&#39;, &#39;NA19190&#39;, &#39;NA19197&#39;, &#39;NA19198&#39;, &#39;NA19200&#39;, &#39;NA19201&#39;, &#39;NA19203&#39;, &#39;NA19204&#39;, &#39;NA19206&#39;, &#39;NA19207&#39;, &#39;NA19209&#39;, &#39;NA19210&#39;, &#39;NA19213&#39;, &#39;NA19214&#39;, &#39;NA19222&#39;, &#39;NA19223&#39;, &#39;NA19225&#39;, &#39;NA19226&#39;, &#39;NA19235&#39;, &#39;NA19236&#39;, &#39;NA19238&#39;, &#39;NA19239&#39;, &#39;NA19247&#39;, &#39;NA19248&#39;, &#39;NA19256&#39;, &#39;NA19257&#39;)
+#the samples I ran the QTLs for
+samples=c(&#39;NA18486&#39;,&#39;NA18505&#39;,&#39;NA18508&#39;,&#39;NA18511&#39;,&#39;NA18519&#39;,&#39;NA18520&#39;,&#39;NA18853&#39;,&#39;NA18858&#39;,&#39;NA18861&#39;,&#39;NA18870&#39;,&#39;NA18909&#39;,&#39;NA18912&#39;,&#39;NA18916&#39;,&#39;NA19093&#39;,&#39;NA19119&#39;,&#39;NA19128&#39;,&#39;NA19130&#39;,&#39;NA19131&#39;,&#39;NA19137&#39;,&#39;NA19140&#39;,&#39;NA19141&#39;,&#39;NA19144&#39;,&#39;NA19152&#39;,&#39;NA19153&#39;,&#39;NA19160&#39;,&#39;NA19171&#39;,&#39;NA19200&#39;,&#39;NA19207&#39;,&#39;NA19209&#39;,&#39;NA19210&#39;,&#39;NA19223&#39;,&#39;NA19225&#39;,&#39;NA19238&#39;,&#39;NA19239&#39;,&#39;NA19257&#39;)</code></pre>
+<pre class="bash"><code>#grep the genotpe file results to /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/
+grep 7:128635754 chr7.dose.filt.vcf &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_7:128635754.txt
+grep 7:128681297 chr7.dose.filt.vcf &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_7:128681297.txt
+grep 7:128661132 chr7.dose.filt.vcf &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_7:128661132.txt</code></pre>
+<p>Transfer to computer:</p>
+<p>Make a function to take a file and format it the way I can use it.</p>
+<pre class="r"><code>#this gives me 35x1 data frame with the genotpes for each ind at this snp.  
+prepare_genotpes=function(file, genName=geno_names, samp=samples){
+  geno=read.table(file, col.names=genName, stringsAsFactors = F) %&gt;% select(one_of(samp))
+  geno_dose=apply(geno, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,&quot;:&quot;)[[1]][[2]])))
+  geno_dose=as.data.frame(geno_dose) %&gt;% rownames_to_column(var=&quot;individual&quot;)
+  return(geno_dose)
+}
+
+chr7_128681297= prepare_genotpes(&quot;../data/example_gene_peakQuant/Genotypes_7:128681297.txt&quot;)</code></pre>
+<p>I want a dataframe that has individual, genotype, then all of the peaks. I also need to remove individuals not in that genotype file.</p>
+<pre class="r"><code>IRF5_pheno=IRF5_all%&gt;% select(one_of(samples))
+row.names(IRF5_pheno)=paste(&quot;IRF5_peak&quot;, seq(1,nrow(IRF5_all)),sep=&quot;_&quot;)
+
+IRF5_pheno= IRF5_pheno %&gt;% t
+IRF5_pheno= as.data.frame(IRF5_pheno) %&gt;% rownames_to_column(var=&quot;individual&quot;)
+IRF5_pheno_geno=IRF5_pheno %&gt;% inner_join(chr7_128681297, by=&quot;individual&quot;)
+IRF5_pheno_geno_melt= melt(IRF5_pheno_geno, id.vars=c(&quot;geno_dose&quot;, &quot;individual&quot;)) %&gt;% group_by(variable,geno_dose) %&gt;% summarise(mean=mean(value),sd=sd(value))
+
+IRF5_pheno_geno_melt$geno_dose=as.factor(IRF5_pheno_geno_melt$geno_dose)</code></pre>
+<pre class="r"><code>ggplot(IRF5_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y=&quot;Mean read count&quot;, x=&quot;Peak&quot;, title=&quot;IRF5 peaks by chr7:128681297 genotype&quot;) +  annotate(&quot;pointrange&quot;, x = 6, y = 750, ymin = 750, ymax = 750,
+  colour = &quot;black&quot;, size = 1.5)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Try this with a different gene.</p>
+<pre class="bash"><code>#grep the genotpe file results to /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/
+grep 16:30482494 chr16.dose.filt.vcf &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_16:30482494.txt
+</code></pre>
+<pre class="r"><code>chr16_30482494= prepare_genotpes(&quot;../data/example_gene_peakQuant/Genotypes_16:30482494.txt&quot;)
+
+
+pprc_pheno=pprc_all%&gt;% select(one_of(samples))
+row.names(pprc_pheno)=paste(&quot;PPRC_peak&quot;, seq(1,nrow(pprc_all)),sep=&quot;_&quot;)
+
+pprc_pheno= pprc_pheno %&gt;% t
+pprc_pheno= as.data.frame(pprc_pheno) %&gt;% rownames_to_column(var=&quot;individual&quot;)
+pprc_pheno_geno=pprc_pheno %&gt;% inner_join(chr16_30482494, by=&quot;individual&quot;)
+pprc_pheno_geno_melt= melt(pprc_pheno_geno, id.vars=c(&quot;geno_dose&quot;, &quot;individual&quot;)) %&gt;% group_by(variable,geno_dose) %&gt;% summarise(mean=mean(value),sd=sd(value))
+
+pprc_pheno_geno_melt$geno_dose=as.factor(pprc_pheno_geno_melt$geno_dose)</code></pre>
+<p>Plot</p>
+<pre class="r"><code>ggplot(pprc_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y=&quot;Mean read count&quot;, x=&quot;Peak&quot;, title=&quot;PPRC peaks by 16:30482494 genotype&quot;) +  annotate(&quot;pointrange&quot;, x = 2, y = 20, ymin = 20, ymax = 20,colour = &quot;black&quot;, size = .5)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I want to see if this looks similar when I use the normalized usage from leafcutter (what the QTLs actually ran on)</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
