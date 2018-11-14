@@ -404,7 +404,7 @@ IRF5_pheno_geno_melt$geno_dose=as.factor(IRF5_pheno_geno_melt$geno_dose)
 
 ```{r}
 
-ggplot(IRF5_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity") +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y="Mean read count", x="Peak", title="IRF5 peaks by chr7:128681297 genotype") +  annotate("pointrange", x = 6, y = 750, ymin = 750, ymax = 750,
+irf5_readplot=ggplot(IRF5_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity") +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y="Mean read count", x="Peak", title="IRF5 peaks by chr7:128681297 genotype") +  annotate("pointrange", x = 6, y = 750, ymin = 750, ymax = 750,
   colour = "black", size = 1.5)
 
 ```
@@ -438,9 +438,104 @@ pprc_pheno_geno_melt$geno_dose=as.factor(pprc_pheno_geno_melt$geno_dose)
 Plot
 
 ```{r}
-ggplot(pprc_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity") +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y="Mean read count", x="Peak", title="PPRC peaks by 16:30482494 genotype") +  annotate("pointrange", x = 2, y = 20, ymin = 20, ymax = 20,colour = "black", size = .5)
+pprc_countplot=ggplot(pprc_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity") +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y="Mean read count", x="Peak", title="PPRC peaks by 16:30482494 genotype") +  annotate("pointrange", x = 2, y = 20, ymin = 20, ymax = 20,colour = "black", size = .5)
 ```
 
 
 I want to see if this looks similar when I use the normalized usage from leafcutter (what the QTLs actually ran on)
+
+I am going to grab both the perc. and normalized.  
+
+```{bash,eval=F}
+
+
+#nuclear
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr7.gz | grep IRF5 > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/IRF5_NuclearPropCovNorm_peaks.txt
+
+grep IRF5 /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.phen_chr7 > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/IRF5_NuclearPropCov_peaks.txt
+
+
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr16.gz | grep PPP4C > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/PPP4C_NuclearPropCovNorm_peaks.txt
+
+grep PPP4C /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.phen_chr16 > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/PPP4C_NuclearPropCov_peaks.txt
+```
+
+```{r}
+
+cov_names=c('chr',	'start',	'end',	'PeakID','NA18486'	,'NA18497',	'NA18500'	,'NA18505',	'NA18508'	,'NA18511',	'NA18519',	'NA18520',	'NA18853','NA18858',	'NA18861',	'NA18870'	,'NA18909'	,'NA18912'	,'NA18916',	'NA19092'	,'NA19093',	'NA19119',	'NA19128'	,'NA19130',	'NA19131'	,'NA19137',	'NA19140',	'NA19141'	,'NA19144',	'NA19152'	,'NA19153',	'NA19160'	,'NA19171',	'NA19193'	,'NA19200',	'NA19207',	'NA19209',	'NA19210',	'NA19223'	,'NA19225',	'NA19238'	,'NA19239',	'NA19257')
+
+IRF5cov_all=read.table("../data/example_gene_peakQuant/IRF5_NuclearPropCov_peaks.txt", col.names = cov_names)
+IRF5covNorm_all=read.table("../data/example_gene_peakQuant/IRF5_NuclearPropCovNorm_peaks.txt", col.names = cov_names)
+
+
+IRF5cov_pheno=IRF5cov_all%>% select(one_of(samples))
+row.names(IRF5cov_pheno)=paste("IRF5_peak", seq(1,nrow(IRF5cov_all)),sep="_")
+
+IRF5cov_pheno= IRF5cov_pheno %>% t
+IRF5cov_pheno= as.data.frame(IRF5cov_pheno) %>% rownames_to_column(var="individual")
+IRF5cov_pheno_geno=IRF5cov_pheno %>% inner_join(chr7_128681297, by="individual")
+IRF5cov_pheno_geno_melt= melt(IRF5cov_pheno_geno, id.vars=c("geno_dose", "individual")) %>% group_by(variable,geno_dose) %>% summarise(mean=mean(value),sd=sd(value))
+
+IRF5cov_pheno_geno_melt$geno_dose=as.factor(IRF5cov_pheno_geno_melt$geno_dose)
+
+
+irf5_covplot=ggplot(IRF5cov_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity",position = "dodge") +theme(axis.text.x = element_text(angle = 90, hjust = 1)) +labs(y="Mean Coverage Prop", x="Peak", title="IRF5 peaks by chr7:128681297 genotype") + annotate("pointrange", x = 6, y = .75, ymin = .750, ymax = .750,colour = "black", size = .5)
+
+```
+```{r}
+IRF5covNorm_pheno=IRF5covNorm_all%>% select(one_of(samples))
+row.names(IRF5covNorm_pheno)=paste("IRF5_peak", seq(1,nrow(IRF5covNorm_all)),sep="_")
+
+IRF5covNorm_pheno= IRF5covNorm_pheno %>% t
+IRF5covNorm_pheno= as.data.frame(IRF5covNorm_pheno) %>% rownames_to_column(var="individual")
+IRF5covNorm_pheno_geno=IRF5covNorm_pheno %>% inner_join(chr7_128681297, by="individual")
+IRF5covNorm_pheno_geno_melt= melt(IRF5covNorm_pheno_geno, id.vars=c("geno_dose", "individual")) %>% group_by(variable,geno_dose) %>% summarise(mean=mean(value),sd=sd(value))
+
+IRF5covNorm_pheno_geno_melt$geno_dose=as.factor(IRF5covNorm_pheno_geno_melt$geno_dose)
+
+
+irf5_normplot=ggplot(IRF5covNorm_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity",position = "dodge") +theme(axis.text.x = element_text(angle = 90, hjust = 1)) +labs(y="Mean Normalized Coverage Prop", x="Peak", title="IRF5 peaks by chr7:128681297 genotype") + annotate("pointrange", x = 6, y = .75, ymin = .750, ymax = .750,colour = "black", size = .5)
+```
+
+
+```{r}
+pprccov_all=read.table("../data/example_gene_peakQuant/PPP4C_NuclearPropCov_peaks.txt", col.names = cov_names)
+pprccovNorm_all=read.table("../data/example_gene_peakQuant/PPP4C_NuclearPropCovNorm_peaks.txt", col.names = cov_names)
+
+
+pprcCov_pheno=pprccov_all%>% select(one_of(samples))
+row.names(pprcCov_pheno)=paste("PPRC_peak", seq(1,nrow(pprccov_all)),sep="_")
+
+pprcCov_pheno= pprcCov_pheno %>% t
+pprcCov_pheno= as.data.frame(pprcCov_pheno) %>% rownames_to_column(var="individual")
+pprcCov_pheno_geno=pprcCov_pheno %>% inner_join(chr16_30482494, by="individual")
+pprcCov_pheno_geno_melt= melt(pprcCov_pheno_geno, id.vars=c("geno_dose", "individual")) %>% group_by(variable,geno_dose) %>% summarise(mean=mean(value),sd=sd(value))
+
+pprcCov_pheno_geno_melt$geno_dose=as.factor(pprcCov_pheno_geno_melt$geno_dose)
+
+pprc_covplot=ggplot(pprcCov_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity",position = 'dodge') +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y="Mean coverage proportion", x="Peak", title="PPRC peaks by 16:30482494 genotype") + annotate("pointrange", x = 2, y = .4, ymin = .4, ymax = .4,colour = "black", size = .5)
+```
+
+```{r}
+
+pprcCovNorm_pheno=pprccovNorm_all%>% select(one_of(samples))
+row.names(pprcCovNorm_pheno)=paste("PPRC_peak", seq(1,nrow(pprccovNorm_all)),sep="_")
+
+pprcCovNorm_pheno= pprcCovNorm_pheno %>% t
+pprcCovNorm_pheno= as.data.frame(pprcCovNorm_pheno) %>% rownames_to_column(var="individual")
+pprcCovNorm_pheno_geno=pprcCovNorm_pheno %>% inner_join(chr16_30482494, by="individual")
+pprcCovNorm_pheno_geno_melt= melt(pprcCovNorm_pheno_geno, id.vars=c("geno_dose", "individual")) %>% group_by(variable,geno_dose) %>% summarise(mean=mean(value),sd=sd(value))
+
+pprcCovNorm_pheno_geno_melt$geno_dose=as.factor(pprcCovNorm_pheno_geno_melt$geno_dose)
+
+pprc_normplot=ggplot(pprcCovNorm_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity",position = 'dodge') +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y="Mean coverage proportion", x="Peak", title="PPRC peaks by 16:30482494 genotype") + annotate("pointrange", x = 2, y = 1, ymin = 1, ymax = 1,colour = "black", size = .5)
+```
+```{r}
+plot_grid(irf5_readplot,irf5_covplot,irf5_normplot)
+```
+
+
+```{r}
+plot_grid(pprc_countplot,pprc_covplot,pprc_normplot)
+```
 
