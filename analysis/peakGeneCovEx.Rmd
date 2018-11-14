@@ -30,10 +30,10 @@ library(cowplot)
 ```
 
 ```{r}
-nuc_names=c('Geneid',	'Chr',	'Start',	'End',	'Strand',	'Length',	'18486_N'	,'18497_N',	'18500_N'	,'18505_N',	'18508_N'	,'18511_N',	'18519_N',	'18520_N',	'18853_N'	,'18858_N',	'18861_N',	'18870_N'	,'18909_N'	,'18912_N'	,'18916_N',	'19092_N'	,'19093_N',	'19119_N',	'19128_N'	,'19130_N',	'19131_N'	,'19137_N',	'19140_N',	'19141_N'	,'19144_N',	'19152_N'	,'19153_N',	'19160_N'	,'19171_N',	'19193_N'	,'19200_N',	'19207_N',	'19209_N',	'19210_N',	'19223_N'	,'19225_N',	'19238_N'	,'19239_N',	'19257_N')
+nuc_names=c('Geneid',	'Chr',	'Start',	'End',	'Strand',	'Length',	'NA18486'	,'NA18497',	'NA18500'	,'NA18505',	'NA18508'	,'NA18511',	'NA18519',	'NA18520',	'NA18853','NA18858',	'NA18861',	'NA18870'	,'NA18909'	,'NA18912'	,'NA18916',	'NA19092'	,'NA19093',	'NA19119',	'NA19128'	,'NA19130',	'NA19131'	,'NA19137',	'NA19140',	'NA19141'	,'NA19144',	'NA19152'	,'NA19153',	'NA19160'	,'NA19171',	'NA19193'	,'NA19200',	'NA19207',	'NA19209',	'NA19210',	'NA19223'	,'NA19225',	'NA19238'	,'NA19239',	'NA19257')
 
 
-tot_names=c('Geneid',	'Chr'	,'Start',	'End',	'Strand',	'Length',	'18486_T',	'18497_T'	,'18500_T','18505_T',	'18508_T'	,'18511_T',	'18519_T',	'18520_T',	'18853_T',	'18858_T',	'18861_T',	'18870_T',	'18909_T'	,'18912_T',	'18916_T',	'19092_T'	,'19093_T',	'19119_T',	'19128_T',	'19130_T',	'19131_T'	,'19137_T',	'19140_T'	,'19141_T',	'19144_T',	'19152_T'	,'19153_T',	'19160_T'	,'19171_T',	'19193_T',	'19200_T',	'19207_T'	,'19209_T'	,'19210_T',	'19223_T',	'19225_T',	'19238_T',	'19239_T',	'19257_T')
+tot_names=c('Geneid',	'Chr',	'Start',	'End',	'Strand',	'Length',	'NA18486'	,'NA18497',	'NA18500'	,'NA18505',	'NA18508'	,'NA18511',	'NA18519',	'NA18520',	'NA18853','NA18858',	'NA18861',	'NA18870'	,'NA18909'	,'NA18912'	,'NA18916',	'NA19092'	,'NA19093',	'NA19119',	'NA19128'	,'NA19130',	'NA19131'	,'NA19137',	'NA19140',	'NA19141'	,'NA19144',	'NA19152'	,'NA19153',	'NA19160'	,'NA19171',	'NA19193'	,'NA19200',	'NA19207',	'NA19209',	'NA19210',	'NA19223'	,'NA19225',	'NA19238'	,'NA19239',	'NA19257')
 
 ```
 
@@ -90,7 +90,7 @@ Start wit a small file.
 
 ```{r}
 pos=c(3,4,7:39)
-PPP4c=read.table("../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt", stringsAsFactors = F, col.names = nuc_names) %>% select(pos)
+PPP4c=read.table("../data/example_gene_peakQuant/PPP4C_NuclearCov_peaks.txt", stringsAsFactors = F, col.names = nuc_names) %>% select(pos) 
 
 PPP4c$peaks=seq(0, (nrow(PPP4c)-1))
 
@@ -354,6 +354,93 @@ This has shown me that most of the QTL peaks are not the major/most used peak. T
 
 It would be good to look at these seperated by genotype. 
 
-* IRF5 : peak305794-7:128635754, peak305795,128681297, peak305798-7:128661132  
+* IRF5 : peak305794-7:128635754, peak305795,7:128681297, peak305798-7:128661132  
 
+```{r}
+geno_names=c('CHROM', 'POS', 'snpID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT', 'NA18486', 'NA18487', 'NA18488', 'NA18489', 'NA18498', 'NA18499', 'NA18501', 'NA18502', 'NA18504', 'NA18505', 'NA18507', 'NA18508', 'NA18510', 'NA18511', 'NA18516', 'NA18517', 'NA18519', 'NA18520', 'NA18522', 'NA18523', 'NA18852', 'NA18853', 'NA18855', 'NA18856', 'NA18858', 'NA18859', 'NA18861', 'NA18862', 'NA18867', 'NA18868', 'NA18870', 'NA18871', 'NA18873', 'NA18874', 'NA18907', 'NA18909', 'NA18910', 'NA18912', 'NA18913', 'NA18916', 'NA18917', 'NA18923', 'NA18924', 'NA18933', 'NA18934', 'NA19093', 'NA19095', 'NA19096', 'NA19098', 'NA19099', 'NA19101', 'NA19102', 'NA19107', 'NA19108', 'NA19113', 'NA19114', 'NA19116', 'NA19117', 'NA19118', 'NA19119', 'NA19121', 'NA19122', 'NA19127', 'NA19128', 'NA19129', 'NA19130', 'NA19131', 'NA19137', 'NA19138', 'NA19140', 'NA19141', 'NA19143', 'NA19144', 'NA19146', 'NA19147', 'NA19149', 'NA19150', 'NA19152', 'NA19153', 'NA19159', 'NA19160', 'NA19171', 'NA19172', 'NA19175', 'NA19176', 'NA19184', 'NA19185', 'NA19189', 'NA19190', 'NA19197', 'NA19198', 'NA19200', 'NA19201', 'NA19203', 'NA19204', 'NA19206', 'NA19207', 'NA19209', 'NA19210', 'NA19213', 'NA19214', 'NA19222', 'NA19223', 'NA19225', 'NA19226', 'NA19235', 'NA19236', 'NA19238', 'NA19239', 'NA19247', 'NA19248', 'NA19256', 'NA19257')
+#the samples I ran the QTLs for
+samples=c('NA18486','NA18505','NA18508','NA18511','NA18519','NA18520','NA18853','NA18858','NA18861','NA18870','NA18909','NA18912','NA18916','NA19093','NA19119','NA19128','NA19130','NA19131','NA19137','NA19140','NA19141','NA19144','NA19152','NA19153','NA19160','NA19171','NA19200','NA19207','NA19209','NA19210','NA19223','NA19225','NA19238','NA19239','NA19257')
+
+```
+
+```{bash,eval=F}
+#grep the genotpe file results to /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/
+grep 7:128635754 chr7.dose.filt.vcf > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_7:128635754.txt
+grep 7:128681297 chr7.dose.filt.vcf > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_7:128681297.txt
+grep 7:128661132 chr7.dose.filt.vcf > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_7:128661132.txt
+```
+
+Transfer to computer:  
+
+Make a function to take a file and format it the way I can use it.  
+
+```{r}
+#this gives me 35x1 data frame with the genotpes for each ind at this snp.  
+prepare_genotpes=function(file, genName=geno_names, samp=samples){
+  geno=read.table(file, col.names=genName, stringsAsFactors = F) %>% select(one_of(samp))
+  geno_dose=apply(geno, 2, function(y)sapply(y, function(x)as.integer(strsplit(x,":")[[1]][[2]])))
+  geno_dose=as.data.frame(geno_dose) %>% rownames_to_column(var="individual")
+  return(geno_dose)
+}
+
+chr7_128681297= prepare_genotpes("../data/example_gene_peakQuant/Genotypes_7:128681297.txt")
+
+```
+I want a dataframe that has individual, genotype, then all of the peaks. I also need to remove individuals not in that genotype file.  
+
+
+```{r}
+IRF5_pheno=IRF5_all%>% select(one_of(samples))
+row.names(IRF5_pheno)=paste("IRF5_peak", seq(1,nrow(IRF5_all)),sep="_")
+
+IRF5_pheno= IRF5_pheno %>% t
+IRF5_pheno= as.data.frame(IRF5_pheno) %>% rownames_to_column(var="individual")
+IRF5_pheno_geno=IRF5_pheno %>% inner_join(chr7_128681297, by="individual")
+IRF5_pheno_geno_melt= melt(IRF5_pheno_geno, id.vars=c("geno_dose", "individual")) %>% group_by(variable,geno_dose) %>% summarise(mean=mean(value),sd=sd(value))
+
+IRF5_pheno_geno_melt$geno_dose=as.factor(IRF5_pheno_geno_melt$geno_dose)
+
+```
+
+```{r}
+
+ggplot(IRF5_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity") +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y="Mean read count", x="Peak", title="IRF5 peaks by chr7:128681297 genotype") +  annotate("pointrange", x = 6, y = 750, ymin = 750, ymax = 750,
+  colour = "black", size = 1.5)
+
+```
+
+
+Try this with a different gene. 
+
+```{bash,eval=F}
+#grep the genotpe file results to /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/
+grep 16:30482494 chr16.dose.filt.vcf > /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_16:30482494.txt
+
+```
+
+
+```{r}
+chr16_30482494= prepare_genotpes("../data/example_gene_peakQuant/Genotypes_16:30482494.txt")
+
+
+pprc_pheno=pprc_all%>% select(one_of(samples))
+row.names(pprc_pheno)=paste("PPRC_peak", seq(1,nrow(pprc_all)),sep="_")
+
+pprc_pheno= pprc_pheno %>% t
+pprc_pheno= as.data.frame(pprc_pheno) %>% rownames_to_column(var="individual")
+pprc_pheno_geno=pprc_pheno %>% inner_join(chr16_30482494, by="individual")
+pprc_pheno_geno_melt= melt(pprc_pheno_geno, id.vars=c("geno_dose", "individual")) %>% group_by(variable,geno_dose) %>% summarise(mean=mean(value),sd=sd(value))
+
+pprc_pheno_geno_melt$geno_dose=as.factor(pprc_pheno_geno_melt$geno_dose)
+
+
+```
+Plot
+
+```{r}
+ggplot(pprc_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat="identity") +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y="Mean read count", x="Peak", title="PPRC peaks by 16:30482494 genotype") +  annotate("pointrange", x = 2, y = 20, ymin = 20, ymax = 20,colour = "black", size = .5)
+```
+
+
+I want to see if this looks similar when I use the normalized usage from leafcutter (what the QTLs actually ran on)
 
