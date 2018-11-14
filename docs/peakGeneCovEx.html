@@ -347,14 +347,13 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/acc74e7fc3a97b1f103febe1503c47a4a7d65402" target="_blank">acc74e7</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f3efe0fc9d70bf7f3fae12b9c17fdbeaf13f132b" target="_blank">f3efe0f</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -469,6 +468,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f3efe0fc9d70bf7f3fae12b9c17fdbeaf13f132b/analysis/peakGeneCovEx.Rmd" target="_blank">f3efe0f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-14
+</td>
+<td style="text-align:left;">
+add prop cov plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/d4ff15bb6d39d47797377a541e5d96e49afaa4be/docs/peakGeneCovEx.html" target="_blank">d4ff15b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-14
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -718,6 +751,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d4ff15bb6d39d47797377a541e5d96e49afaa4be/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-6-1.png" target="_blank">d4ff15b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-6-1.png" target="_blank">e2da5c4</a>
 </td>
 <td style="text-align:left;">
@@ -757,6 +801,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d4ff15bb6d39d47797377a541e5d96e49afaa4be/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-8-1.png" target="_blank">d4ff15b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-14
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/e2da5c45d30dcb3df83e5b4abcf50bd0e8bdc675/docs/figure/peakGeneCovEx.Rmd/unnamed-chunk-8-1.png" target="_blank">e2da5c4</a>
@@ -1402,9 +1457,8 @@ IRF5_pheno_geno=IRF5_pheno %&gt;% inner_join(chr7_128681297, by=&quot;individual
 IRF5_pheno_geno_melt= melt(IRF5_pheno_geno, id.vars=c(&quot;geno_dose&quot;, &quot;individual&quot;)) %&gt;% group_by(variable,geno_dose) %&gt;% summarise(mean=mean(value),sd=sd(value))
 
 IRF5_pheno_geno_melt$geno_dose=as.factor(IRF5_pheno_geno_melt$geno_dose)</code></pre>
-<pre class="r"><code>ggplot(IRF5_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y=&quot;Mean read count&quot;, x=&quot;Peak&quot;, title=&quot;IRF5 peaks by chr7:128681297 genotype&quot;) +  annotate(&quot;pointrange&quot;, x = 6, y = 750, ymin = 750, ymax = 750,
+<pre class="r"><code>irf5_readplot=ggplot(IRF5_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y=&quot;Mean read count&quot;, x=&quot;Peak&quot;, title=&quot;IRF5 peaks by chr7:128681297 genotype&quot;) +  annotate(&quot;pointrange&quot;, x = 6, y = 750, ymin = 750, ymax = 750,
   colour = &quot;black&quot;, size = 1.5)</code></pre>
-<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Try this with a different gene.</p>
 <pre class="bash"><code>#grep the genotpe file results to /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/
 grep 16:30482494 chr16.dose.filt.vcf &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/Genotypes_16:30482494.txt
@@ -1422,9 +1476,80 @@ pprc_pheno_geno_melt= melt(pprc_pheno_geno, id.vars=c(&quot;geno_dose&quot;, &qu
 
 pprc_pheno_geno_melt$geno_dose=as.factor(pprc_pheno_geno_melt$geno_dose)</code></pre>
 <p>Plot</p>
-<pre class="r"><code>ggplot(pprc_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y=&quot;Mean read count&quot;, x=&quot;Peak&quot;, title=&quot;PPRC peaks by 16:30482494 genotype&quot;) +  annotate(&quot;pointrange&quot;, x = 2, y = 20, ymin = 20, ymax = 20,colour = &quot;black&quot;, size = .5)</code></pre>
-<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pprc_countplot=ggplot(pprc_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y=&quot;Mean read count&quot;, x=&quot;Peak&quot;, title=&quot;PPRC peaks by 16:30482494 genotype&quot;) +  annotate(&quot;pointrange&quot;, x = 2, y = 20, ymin = 20, ymax = 20,colour = &quot;black&quot;, size = .5)</code></pre>
 <p>I want to see if this looks similar when I use the normalized usage from leafcutter (what the QTLs actually ran on)</p>
+<p>I am going to grab both the perc. and normalized.</p>
+<pre class="bash"><code>
+
+#nuclear
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr7.gz | grep IRF5 &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/IRF5_NuclearPropCovNorm_peaks.txt
+
+grep IRF5 /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.phen_chr7 &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/IRF5_NuclearPropCov_peaks.txt
+
+
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr16.gz | grep PPP4C &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/PPP4C_NuclearPropCovNorm_peaks.txt
+
+grep PPP4C /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.phen_chr16 &gt; /project2/gilad/briana/threeprimeseq/data/example_gene_peakQuant/PPP4C_NuclearPropCov_peaks.txt</code></pre>
+<pre class="r"><code>cov_names=c(&#39;chr&#39;,  &#39;start&#39;,    &#39;end&#39;,  &#39;PeakID&#39;,&#39;NA18486&#39;  ,&#39;NA18497&#39;, &#39;NA18500&#39;   ,&#39;NA18505&#39;, &#39;NA18508&#39;   ,&#39;NA18511&#39;, &#39;NA18519&#39;,  &#39;NA18520&#39;,  &#39;NA18853&#39;,&#39;NA18858&#39;,    &#39;NA18861&#39;,  &#39;NA18870&#39;   ,&#39;NA18909&#39;  ,&#39;NA18912&#39;  ,&#39;NA18916&#39;, &#39;NA19092&#39;   ,&#39;NA19093&#39;, &#39;NA19119&#39;,  &#39;NA19128&#39;   ,&#39;NA19130&#39;, &#39;NA19131&#39;   ,&#39;NA19137&#39;, &#39;NA19140&#39;,  &#39;NA19141&#39;   ,&#39;NA19144&#39;, &#39;NA19152&#39;   ,&#39;NA19153&#39;, &#39;NA19160&#39;   ,&#39;NA19171&#39;, &#39;NA19193&#39;   ,&#39;NA19200&#39;, &#39;NA19207&#39;,  &#39;NA19209&#39;,  &#39;NA19210&#39;,  &#39;NA19223&#39;   ,&#39;NA19225&#39;, &#39;NA19238&#39;   ,&#39;NA19239&#39;, &#39;NA19257&#39;)
+
+IRF5cov_all=read.table(&quot;../data/example_gene_peakQuant/IRF5_NuclearPropCov_peaks.txt&quot;, col.names = cov_names)
+IRF5covNorm_all=read.table(&quot;../data/example_gene_peakQuant/IRF5_NuclearPropCovNorm_peaks.txt&quot;, col.names = cov_names)
+
+
+IRF5cov_pheno=IRF5cov_all%&gt;% select(one_of(samples))
+row.names(IRF5cov_pheno)=paste(&quot;IRF5_peak&quot;, seq(1,nrow(IRF5cov_all)),sep=&quot;_&quot;)
+
+IRF5cov_pheno= IRF5cov_pheno %&gt;% t
+IRF5cov_pheno= as.data.frame(IRF5cov_pheno) %&gt;% rownames_to_column(var=&quot;individual&quot;)
+IRF5cov_pheno_geno=IRF5cov_pheno %&gt;% inner_join(chr7_128681297, by=&quot;individual&quot;)
+IRF5cov_pheno_geno_melt= melt(IRF5cov_pheno_geno, id.vars=c(&quot;geno_dose&quot;, &quot;individual&quot;)) %&gt;% group_by(variable,geno_dose) %&gt;% summarise(mean=mean(value),sd=sd(value))
+
+IRF5cov_pheno_geno_melt$geno_dose=as.factor(IRF5cov_pheno_geno_melt$geno_dose)
+
+
+irf5_covplot=ggplot(IRF5cov_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;,position = &quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) +labs(y=&quot;Mean Coverage Prop&quot;, x=&quot;Peak&quot;, title=&quot;IRF5 peaks by chr7:128681297 genotype&quot;) + annotate(&quot;pointrange&quot;, x = 6, y = .75, ymin = .750, ymax = .750,colour = &quot;black&quot;, size = .5)</code></pre>
+<pre class="r"><code>IRF5covNorm_pheno=IRF5covNorm_all%&gt;% select(one_of(samples))
+row.names(IRF5covNorm_pheno)=paste(&quot;IRF5_peak&quot;, seq(1,nrow(IRF5covNorm_all)),sep=&quot;_&quot;)
+
+IRF5covNorm_pheno= IRF5covNorm_pheno %&gt;% t
+IRF5covNorm_pheno= as.data.frame(IRF5covNorm_pheno) %&gt;% rownames_to_column(var=&quot;individual&quot;)
+IRF5covNorm_pheno_geno=IRF5covNorm_pheno %&gt;% inner_join(chr7_128681297, by=&quot;individual&quot;)
+IRF5covNorm_pheno_geno_melt= melt(IRF5covNorm_pheno_geno, id.vars=c(&quot;geno_dose&quot;, &quot;individual&quot;)) %&gt;% group_by(variable,geno_dose) %&gt;% summarise(mean=mean(value),sd=sd(value))
+
+IRF5covNorm_pheno_geno_melt$geno_dose=as.factor(IRF5covNorm_pheno_geno_melt$geno_dose)
+
+
+irf5_normplot=ggplot(IRF5covNorm_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;,position = &quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) +labs(y=&quot;Mean Normalized Coverage Prop&quot;, x=&quot;Peak&quot;, title=&quot;IRF5 peaks by chr7:128681297 genotype&quot;) + annotate(&quot;pointrange&quot;, x = 6, y = .75, ymin = .750, ymax = .750,colour = &quot;black&quot;, size = .5)</code></pre>
+<pre class="r"><code>pprccov_all=read.table(&quot;../data/example_gene_peakQuant/PPP4C_NuclearPropCov_peaks.txt&quot;, col.names = cov_names)
+pprccovNorm_all=read.table(&quot;../data/example_gene_peakQuant/PPP4C_NuclearPropCovNorm_peaks.txt&quot;, col.names = cov_names)
+
+
+pprcCov_pheno=pprccov_all%&gt;% select(one_of(samples))
+row.names(pprcCov_pheno)=paste(&quot;PPRC_peak&quot;, seq(1,nrow(pprccov_all)),sep=&quot;_&quot;)
+
+pprcCov_pheno= pprcCov_pheno %&gt;% t
+pprcCov_pheno= as.data.frame(pprcCov_pheno) %&gt;% rownames_to_column(var=&quot;individual&quot;)
+pprcCov_pheno_geno=pprcCov_pheno %&gt;% inner_join(chr16_30482494, by=&quot;individual&quot;)
+pprcCov_pheno_geno_melt= melt(pprcCov_pheno_geno, id.vars=c(&quot;geno_dose&quot;, &quot;individual&quot;)) %&gt;% group_by(variable,geno_dose) %&gt;% summarise(mean=mean(value),sd=sd(value))
+
+pprcCov_pheno_geno_melt$geno_dose=as.factor(pprcCov_pheno_geno_melt$geno_dose)
+
+pprc_covplot=ggplot(pprcCov_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;,position = &#39;dodge&#39;) +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y=&quot;Mean coverage proportion&quot;, x=&quot;Peak&quot;, title=&quot;PPRC peaks by 16:30482494 genotype&quot;) + annotate(&quot;pointrange&quot;, x = 2, y = .4, ymin = .4, ymax = .4,colour = &quot;black&quot;, size = .5)</code></pre>
+<pre class="r"><code>pprcCovNorm_pheno=pprccovNorm_all%&gt;% select(one_of(samples))
+row.names(pprcCovNorm_pheno)=paste(&quot;PPRC_peak&quot;, seq(1,nrow(pprccovNorm_all)),sep=&quot;_&quot;)
+
+pprcCovNorm_pheno= pprcCovNorm_pheno %&gt;% t
+pprcCovNorm_pheno= as.data.frame(pprcCovNorm_pheno) %&gt;% rownames_to_column(var=&quot;individual&quot;)
+pprcCovNorm_pheno_geno=pprcCovNorm_pheno %&gt;% inner_join(chr16_30482494, by=&quot;individual&quot;)
+pprcCovNorm_pheno_geno_melt= melt(pprcCovNorm_pheno_geno, id.vars=c(&quot;geno_dose&quot;, &quot;individual&quot;)) %&gt;% group_by(variable,geno_dose) %&gt;% summarise(mean=mean(value),sd=sd(value))
+
+pprcCovNorm_pheno_geno_melt$geno_dose=as.factor(pprcCovNorm_pheno_geno_melt$geno_dose)
+
+pprc_normplot=ggplot(pprcCovNorm_pheno_geno_melt,aes(x=variable, y=mean, by=geno_dose, fill=geno_dose)) + geom_bar(stat=&quot;identity&quot;,position = &#39;dodge&#39;) +theme(axis.text.x = element_text(angle = 90, hjust = 1))+ labs(y=&quot;Mean coverage proportion&quot;, x=&quot;Peak&quot;, title=&quot;PPRC peaks by 16:30482494 genotype&quot;) + annotate(&quot;pointrange&quot;, x = 2, y = 1, ymin = 1, ymax = 1,colour = &quot;black&quot;, size = .5)</code></pre>
+<pre class="r"><code>plot_grid(irf5_readplot,irf5_covplot,irf5_normplot)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_grid(pprc_countplot,pprc_covplot,pprc_normplot)</code></pre>
+<p><img src="figure/peakGeneCovEx.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
