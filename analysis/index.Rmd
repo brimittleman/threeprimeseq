@@ -93,6 +93,8 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 
 * [Plot top apaQTLs in other phenotypes](swarmPlots_QTLs.html)  
 
+* [LocusZoom plot for example QTLs](locusZoom.html)
+
 * [Overlap QTLs starting with APAqtls](overlapMolQTL.opposite.html)  
 
 * [Investigate APA protein RNA relationship](apa_prot_overlap.html)  

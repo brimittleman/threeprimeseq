@@ -1,0 +1,115 @@
+---
+title: "LocusZoom Plot"
+author: "Briana Mittleman"
+date: "11/15/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this analysis I will create locus zoom plots for the example QTLs that look to be associated in APA and protein but not in RNA. I will first do this for the EIF2A totalAPA example. peak228606, 3:150302010. 
+
+To run this analysis, I will need the nominal pvalues for this peak/gene. I can then plot the snp location against the pvalue. After I have this working, I can add the r2 values.
+
+
+EIF2A==ENSG00000144895
+
+grep EIF2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+```{bash,eval=F}
+grep peak228606 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak228606.EIF2A.nomTotal.txt
+
+
+grep ENSG00000144895 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.EIF2A.nomTotal.txt
+
+grep ENSG00000144895 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.EIF2A.nomTotal.txt
+
+
+
+```
+
+FastQTL results for nominal:
+ * phenoID  
+ 
+ * SID  
+ 
+ * Distance  
+ 
+ * Nominal Pval  
+ 
+ * Slope  
+
+
+Librarys
+```{r}
+library(workflowr)
+library(reshape2)
+library(tidyverse)
+library(VennDiagram)
+library(data.table)
+library(ggpubr)
+library(cowplot)
+```
+
+ 
+```{r}
+APA=read.table("../data/LocusZoom/TotalAPA.peak228606.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APAPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APAPval)
+APA$Location=as.integer(APA$Location)
+Prot=read.table("../data/LocusZoom/Prot.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "ProtPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, ProtPval)
+Prot$Location=as.integer(Prot$Location)
+RNA=read.table("../data/LocusZoom/RNA.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RnaPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RnaPval)
+RNA$Location=as.integer(RNA$Location)
+```
+ 
+ 
+I can join these by the snps that are tested for all three.  
+
+```{r}
+allPheno=APA %>% inner_join(Prot, by="Location") %>% inner_join(RNA, by="Location")
+```
+
+ 
+ First I can just plot these as is and see what happens: 
+ 
+```{r}
+allPhen_melt= melt(allPheno, id.vars="Location")
+```
+ 
+```{r}
+ggplot(allPhen_melt,aes(x=Location, y=value)) + geom_point() + facet_grid( rows=vars(variable))
+```
+
+
+I need to zoom in around my locus 150302010
+
+```{r}
+allPheno_filt=allPheno %>% filter(Location> 150297010 & Location < 150307010)
+
+allPhen_filt_melt= melt(allPheno_filt, id.vars="Location")
+
+ggplot(allPhen_filt_melt,aes(x=Location, y=-log10(value))) + geom_point() + facet_grid( rows=vars(variable)) + geom_vline(xintercept=150302010, linetype="dashed", color = "red") + theme(axis.line=element_line()) + theme(panel.grid.major = element_line("lightgray",0.25), panel.grid.minor = element_line("lightgray",0.25)) + labs(x="Chromosome 3 Location", y="-Log 10 Pvalue", title="Locus Zoom for EIF2A:peak228606")
+
+```
+
+Plot each seperatly because power is different.  
+
+```{r}
+allPhen_filt_APA=allPhen_filt_melt %>% filter(variable=="APAPval")
+allPhen_filt_Prot=allPhen_filt_melt %>% filter(variable=="ProtPval")
+allPhen_filt_RNA=allPhen_filt_melt %>% filter(variable=="RnaPval")
+```
+
+Plot each seperatly then use cow plot 
+```{r}
+apa=ggplot(allPhen_filt_APA, aes(x=Location, y= -log10(value))) + geom_point()+ geom_vline(xintercept=150302010, linetype="dashed", color = "red") 
+
+prot=ggplot(allPhen_filt_Prot, aes(x=Location, y= -log10(value))) + geom_point()+ geom_vline(xintercept=150302010, linetype="dashed", color = "red") 
+
+rna=ggplot(allPhen_filt_RNA, aes(x=Location, y= -log10(value))) + geom_point()+ geom_vline(xintercept=150302010, linetype="dashed", color = "red") 
+```
+
+```{r}
+plot_grid(apa,prot,rna, align = "v", ncol=1)
+```
+
