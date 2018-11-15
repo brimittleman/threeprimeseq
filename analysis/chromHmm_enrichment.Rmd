@@ -1497,11 +1497,28 @@ Steps:
 
 I need to do this from the nominal results in /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/. The snp ID is in the second column  
 
+run_testedSnps_noSig.sh
+
 ```{bash,eval=F}
-cut -f2 -d" " /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt | sort | uniq > /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Nuclear.txt
+#!/bin/bash
+
+#SBATCH --job-name=run_testedSnps_noSig.
+#SBATCH --account=pi-yangili1
+#SBATCH --time=10:00:00
+#SBATCH --output=run_testedSnps_noSig.out
+#SBATCH --error=run_testedSnps_noSig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
 
 
-cut -f2 -d" " /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt | sort | uniq > /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Total.txt
+cut -f2 -d" " /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/NucTestedSnps_nonSigGenes.txt | sort | uniq > /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Nuclear.txt
+
+
+cut -f2 -d" " /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/nomRes_nonsig/TotTestedSnps_nonSigGenes.txt | sort | uniq > /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Total.txt
 ```
 
 
@@ -1535,7 +1552,6 @@ total_qtl_list= file_to_list(total_qtl)
 nuclear_qtl_list= file_to_list(nuclear_qtl)
 
 total_out=open("/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/TotalUniqTestedSnp.bed","w")
-
 for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/uniq_tested_Total.txt"):
     snp=ln.strip()
     if snp not in total_qtl_list:
@@ -1543,7 +1559,7 @@ for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/u
         start=int(pos)-1
         end=int(pos)
         total_out.write("%s\t%d\t%d\t%s\n"%(chrom, start, end, snp))
-    total_out.close()  
+total_out.close()  
     
 nuclear_out=open("/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/NuclearUniqTestedSnp.bed","w")
 
@@ -1554,7 +1570,7 @@ for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/u
         start=int(pos)-1
         end=int(pos)
         nuclear_out.write("%s\t%d\t%d\t%s\n"%(chrom, start, end, snp))
-    nuclear_out.close()  
+nuclear_out.close()  
     
 
 ```
@@ -1562,15 +1578,15 @@ for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/u
 
 I will probablly need to run this in a bash script.   
 
-
+run_testedSnps2bed.sh
 ```{bash,eval=F}
 #!/bin/bash
 
-#SBATCH --job-name=run_testedSnps_noSig.sh
+#SBATCH --job-name=run_testedSnps2bed.sh
 #SBATCH --account=pi-yangili1
 #SBATCH --time=10:00:00
-#SBATCH --output=run_testedSnps_noSig.out
-#SBATCH --error=run_testedSnps_noSig.err
+#SBATCH --output=run_testedSnps2bed.out
+#SBATCH --error=run_testedSnps2bed.err
 #SBATCH --partition=broadwl
 #SBATCH --mem=50G
 #SBATCH --mail-type=END
@@ -1602,13 +1618,13 @@ source activate three-prime-env
 
 for i in {1..1000};
 do
-shuf -n 118 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/TotalUniqTestedSnp.bed  > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_UniqnoSig/randomRes_Total_118_UniqnoSig_${i}.bed
+shuf -n 118 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/TotalUniqTestedSnp.bed  > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/snp_bed/randomRes_Total_118_UniqnoSig_${i}.bed
 done
 
 
 for i in {1..1000};
 do
-shuf -n 880 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/NuclearUniqTestedSnp.bed > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/randomRes_Nuclear_880_UniqnoSig_${i}.bed
+shuf -n 880 /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/uniqNonSigSnps/NuclearUniqTestedSnp.bed > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/snp_bed/randomRes_Nuclear_880_UniqnoSig_${i}.bed
 done
 ```
 
@@ -1633,14 +1649,14 @@ module load Anaconda3
 source activate three-prime-env
 
 
-for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/);
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/snp_bed);
 do
-sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/$i > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/snp_bed_sort_noSig/$i.sort.bed
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/snp_bed/$i > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/snp_bed_sort_noSig/$i.sort.bed
 done
 
-for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/);
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/snp_bed);
 do
-sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/$i > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/snp_bed_sort_noSig/$i.sort.bed
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/snp_bed/$i > /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/snp_bed_sort_noSig/$i.sort.bed
 done
 
 ```
@@ -1708,6 +1724,63 @@ done
 * group the chrom HMM calls  
 
 
+I need to modify groupRandomByChromHMM_uniq.R  
+
+```{r,eval=F}
+
+#!/bin/rscripts
+
+# usage: groupRandomByChromHMM_uniq.R -f infile -o outfile 
+
+#this file will take any of the itterations and output a file with chrom hmm number, name, numberof snps
+
+library(optparse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+
+option_list = list(
+  make_option(c("-f", "--file"), action="store", default=NA, type='character',
+              help="input coverage file"),
+  make_option(c("-o", "--output"), action="store", default=NA, type='character',
+              help="output file")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+#interrupt execution if no file is  supplied
+if (is.null(opt$file)){
+  print_help(opt_parser)
+  stop("Need input file", call.=FALSE)
+}
+if (is.null(opt$output)){
+  print_help(opt_parser)
+  stop("Need output file", call.=FALSE)
+}
+
+randomSNPS=read.table(opt$file, col.names=c("chrom", "start", "end", "sid", "number"),stringsAsFactors = F, na.strings = "NA")
+hmm_names=read.table("/project2/gilad/briana/genome_anotation_data/chromHMM_regions.txt", col.names = c("number", "name"),stringsAsFactors=F)
+randomSNPS$number=as.character(randomSNPS$number)
+hmm_names$number=as.character(hmm_names$number)
+randomSNPS_names= randomSNPS  %>% left_join(hmm_names, by="number")
+#split the name of the file to get the iteration number
+fileSplit=strsplit(opt$file, "/")[[1]][10]
+iter.txt=strsplit(fileSplit, "_")[[1]][5]
+iter=substr(iter.txt, 1, nchar(iter.txt)-4) 
+
+randomSNPS_names_grouped=randomSNPS_names %>%  group_by(number) %>% summarise(!!iter:=n()) %>%  replace_na(list(name="No_annotation")) %>%  dplyr::select(number, !!iter) 
+hmm_names$number=as.character(hmm_names$number)
+final=hmm_names %>% left_join(randomSNPS_names_grouped,by="number")
+
+write.table(final,opt$output,quote=FALSE, col.names = T, row.names = F)
+
+```
+
+
+
 groupRandomChromHMM_UniqnoSig.sh
 ```{bash,eval=F}
 #!/bin/bash
@@ -1729,13 +1802,13 @@ source activate three-prime-env
 
 for i in {1..1000};
 do
-Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}.txt -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}_grouped.txt
+Rscript groupRandomByChromHMM_uniq.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}.txt -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Nuclear_Uniq_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Nuclear_880_UniqnoSig_${i}_grouped.txt
 done
 
 
 for i in {1..1000};
 do
-Rscript groupRandomByChromHMM.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_Total_118_UniqnoSig_${i}.txt  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Total_118_UniqnoSig_${i}_grouped.txt
+Rscript groupRandomByChromHMM_uniq.R -f /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap/randomres_overlapChromHMM_Total_118_UniqnoSig_${i}.txt  -o /project2/gilad/briana/threeprimeseq/data/random_QTLsnps/Total_Uniq_noSig/chromHMM_overlap_group/randomres_overlapChromHMM_Total_118_UniqnoSig_${i}_grouped.txt
 done
 
 ```
@@ -1763,4 +1836,90 @@ done
 ```
 
 
+```{r}
+
+
+
+permutationResTotal_UniqnoSig=read.table("../data/ChromHmmOverlap/Tot_chromOverlap_UniqnoSig.txt", header=T, stringsAsFactors = F)
+permutationResTotal_UniqnoSig[is.na(permutationResTotal_UniqnoSig)] <- 0
+permutationResTotal_UniqnoSig= as_data_frame(permutationResTotal_UniqnoSig)
+permutationResTotal_UniqnoSig_noName=permutationResTotal_UniqnoSig[,3:ncol(permutationResTotal_UniqnoSig)]
+totRand_mean_UniqnoSig=rowMeans(permutationResTotal_UniqnoSig_noName)/1000
+
+permutationResNuclear_UniqnoSig=read.table("../data/ChromHmmOverlap/Nuc_chromOverlap_UniqnoSig.txt",header = T,stringsAsFactors = F)
+permutationResNuclear_UniqnoSig[is.na(permutationResNuclear_UniqnoSig)] <- 0
+permutationResNuclear_UniqnoSig_noName=permutationResNuclear_UniqnoSig[,3:ncol(permutationResNuclear_UniqnoSig)]
+nucRand_mean_UniqnoSig=rowMeans(permutationResNuclear_UniqnoSig_noName)/1000
+```
+
+```{r}
+permutationResTotal_UniqnoSig_melt= melt(permutationResTotal_UniqnoSig, id.vars=c("number", "name"))
+```
+
+```{r}
+ggplot(permutationResTotal_UniqnoSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x="N random Snps in category", title="Random permutation Total")
+```
+```{r}
+permutationResNuclear_UniqnoSig_melt= melt(permutationResNuclear_UniqnoSig, id.vars=c("number", "name"))
+```
+
+```{r}
+ggplot(permutationResNuclear_UniqnoSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x="N random Snps in category", title="Random permutation Total")
+```
+
+
+This is the model I will move forward with.   
+
+Plot the enrichment:  
+
+
+
+Look at enrichment by using the average 
+```{r}
+TotalPermMean_uniq=permutationResTotal_UniqnoSig_melt %>% group_by(number) %>% summarise(TotRandPerm=mean(value), TotRandPermSD=sd(value))
+TotalPermMean_uniq$number=as.character(TotalPermMean_uniq$number)
+NuclearPermMean_uniq=permutationResNuclear_UniqnoSig_melt %>% group_by(number) %>% summarise(NucRandPerm=mean(value),NucRandPermSD=sd(value))
+NuclearPermMean_uniq$number=as.character(NuclearPermMean_uniq$number)
+```
+
+Melt SNP values by name and number to get data in same format. I already did this above. 
+
+```{r,eval=F }
+TotalOverlapHMM_names_melt=melt(TotalOverlapHMM_names, id.vars=c("number", "name"))%>% filter(variable=="sid") %>% group_by(number) %>% summarise(TotalQTL=n())
+TotalOverlapHMM_names_melt$number=as.character(TotalOverlapHMM_names_melt$number)
+NuclearOverlapHMM_names_melt=melt(NuclearOverlapHMM_names, id.vars=c("number", "name")) %>% filter(variable=="sid") %>% group_by(number) %>% summarise(NucQTL=n())
+NuclearOverlapHMM_names_melt$number=as.character(NuclearOverlapHMM_names_melt$number)
+```
+
+```{r}
+
+chromHmm$number=as.character(chromHmm$number)
+TotalOverlapHMM_Uniq_enrichment= TotalOverlapHMM_names_melt %>% full_join(TotalPermMean_uniq, by="number") %>%  replace_na(list(TotalQTL=.00001)) %>% full_join(chromHmm, by="number")
+
+TotalOverlapHMM_Uniq_enrichment$TotalQTL=as.double(TotalOverlapHMM_Uniq_enrichment$TotalQTL)
+TotalOverlapHMM_Uniq_enrichment = TotalOverlapHMM_Uniq_enrichment %>% mutate(TotEnrich=(TotalQTL-TotRandPerm)/TotRandPermSD)
+
+NuclearOverlapHMM_Uniq_enrichment=NuclearOverlapHMM_names_melt %>% full_join(NuclearPermMean_uniq, by="number")%>% full_join(chromHmm, by="number")
+
+NuclearOverlapHMM_Uniq_enrichment$NucQTL=as.double(NuclearOverlapHMM_Uniq_enrichment$NucQTL)
+
+NuclearOverlapHMM_Uniq_enrichment=NuclearOverlapHMM_Uniq_enrichment %>%mutate(NucEnrich=(NucQTL-NucRandPerm)/NucRandPermSD)
+```
+
+
+```{r}
+ggplot(NuclearOverlapHMM_Uniq_enrichment, aes(y=NucEnrich, x=number, fill=name)) + geom_bar(stat="identity") + labs(title="Nuclear ApaQTL enrichment Z score", y="Enrichment Z score")
+
+ggplot(TotalOverlapHMM_Uniq_enrichment, aes(y=TotEnrich, x=number, fill=name)) + geom_bar(stat="identity")+ labs(title="Total ApaQTL enrichment Z score", y="Enrichment Z score")
+
+```
+```{r}
+bothEnrich_uniq=NuclearOverlapHMM_Uniq_enrichment %>% full_join(TotalOverlapHMM_Uniq_enrichment, by=c("name", "number")) %>% select(number, name, NucEnrich,TotEnrich)
+
+bothEnrich_uniqmelt=melt(bothEnrich_uniq, id.vars=c("number", "name"))
+
+```
+```{r}
+ggplot(bothEnrich_uniqmelt, aes(x=number, by=variable, fill=variable, y=value,col=name)) + geom_bar(position = "dodge", stat = "identity",alpha=.5) + scale_fill_manual(values=c("darkviolet", "deepskyblue3")) + labs(y="Enrichment from 1000 permutations", title="ChromHMM enrichment for \nTotal and Nuclear ApaQTLs",x="Region")
+```
 
