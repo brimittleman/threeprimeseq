@@ -539,7 +539,7 @@ done
 ```
 
 
-This add 166 for total and 1074 for nuclear. This is better. I will use these for the GWAS overlap. 
+This add 1228 for total and 10251 for nuclear. This is better. I will use these for the GWAS overlap. 
 
 
 I want to make a sorted bed file with all of these snps (total and nuclear together) to overlap with the gwas catelog. I will have the snp name include if it was a from the total or nuclear. I can do all of this in python then sort the bed file after.  
@@ -656,6 +656,34 @@ source activate three-prime-env
 python overlapSNPsGWAS.py  "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps_sort.bed" "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllSnps_GWASoverlapped.txt"
 ```
 
+
+There are 13 overlaps now.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####old stuff before change to plink  
 Still only get 2 that overlap the catelog.  They are in the ITGAL and NCAPG genes.  I should check if 16:30482494 (the nuclear QTL) is also a eQTL not how i did before but with my code from the [all boxplot analysis](swarmPlots_QTLs.html )
 
 
@@ -746,3 +774,9 @@ plotQTL_func(SNP="4:17797455", peak="peak236311", gene="ENSG00000163257")
 ```
 
 This example is a GWAS hit for height .  
+
+
+##Yangs script  
+
+
+--ld-window-kb 1000 --ld-window 99999 --ld-window-r2 0.8
