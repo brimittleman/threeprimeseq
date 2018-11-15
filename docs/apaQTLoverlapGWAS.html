@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-12</p>
+<p><strong>Last updated:</strong> 2018-11-15</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/89b780f6c7117e4f7ec14e1e19ed95c11e65d34b" target="_blank">89b780f</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/7960cbb6bc2a5df2fd758d4885351146e2627e4a" target="_blank">7960cbb</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -367,6 +367,7 @@ Untracked files:
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeaksUsed/
     Untracked:  data/RNAkalisto/
@@ -426,7 +427,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/39indQC.Rmd
-    Modified:   analysis/chromHmm_enrichment.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
@@ -468,6 +468,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7960cbb6bc2a5df2fd758d4885351146e2627e4a/analysis/apaQTLoverlapGWAS.Rmd" target="_blank">7960cbb</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-15
+</td>
+<td style="text-align:left;">
+new plink call
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4a4b5c7261b220189f8f2bc433f79618ec4c2bab/docs/apaQTLoverlapGWAS.html" target="_blank">4a4b5c7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-12
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -986,7 +1020,7 @@ for i  in {1..22};
 do
 python subset_plink4QTLs_geu.py ${i} &quot;Nuclear&quot;
 done</code></pre>
-<p>This add 166 for total and 1074 for nuclear. This is better. I will use these for the GWAS overlap.</p>
+<p>This add 1228 for total and 10251 for nuclear. This is better. I will use these for the GWAS overlap.</p>
 <p>I want to make a sorted bed file with all of these snps (total and nuclear together) to overlap with the gwas catelog. I will have the snp name include if it was a from the total or nuclear. I can do all of this in python then sort the bed file after.</p>
 <p>The LD files include indels. I will not include there. There are 8 in the total file and 108 in nuclear, I can remove these with the following.</p>
 <pre class="bash"><code>grep -v indel /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld &gt; /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel
@@ -1076,6 +1110,9 @@ module load Anaconda3
 source activate three-prime-env
 
 python overlapSNPsGWAS.py  &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllOverlapSnps_sort.bed&quot; &quot;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/AllSnps_GWASoverlapped.txt&quot;</code></pre>
+<p>There are 13 overlaps now.</p>
+<div id="old-stuff-before-change-to-plink" class="section level4">
+<h4>old stuff before change to plink</h4>
 <p>Still only get 2 that overlap the catelog. They are in the ITGAL and NCAPG genes. I should check if 16:30482494 (the nuclear QTL) is also a eQTL not how i did before but with my code from the <a href="swarmPlots_QTLs.html">all boxplot analysis</a></p>
 <pre class="r"><code>plotQTL_func= function(SNP, peak, gene){
   apaN_file=read.table(paste(&quot;../data/apaExamp/qtlSNP_PeakAPANuclear.&quot;, SNP, peak, &quot;.txt&quot;, sep = &quot;&quot; ), header=T)
@@ -1122,7 +1159,38 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 <pre class="r"><code>plotQTL_func(SNP=&quot;16:30482494&quot;, peak=&quot;peak122195&quot;, gene=&quot;ENSG00000149923&quot;)</code></pre>
 <pre><code>Warning: Removed 2 rows containing non-finite values (stat_boxplot).</code></pre>
 <pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
-<p><img src="figure/apaQTLoverlapGWAS.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /> This is in a GWAS for Ulcerative colitis.</p>
+<p><img src="figure/apaQTLoverlapGWAS.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-29-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4a4b5c7261b220189f8f2bc433f79618ec4c2bab/docs/figure/apaQTLoverlapGWAS.Rmd/unnamed-chunk-29-1.png" target="_blank">4a4b5c7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-12
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>This is in a GWAS for Ulcerative colitis.</p>
 <p>I can look at the LD snp as well. I just need to check the ld snps and see which snp it corresponds to in my QTLs.</p>
 <p>4:17797966</p>
 <pre class="bash"><code>grep snp_4_17797966 /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/NuclearApaQTL_LD_geu/allChr.NuclearQTL.LD.gene.ld_noIndel
@@ -1142,7 +1210,42 @@ sbatch run_createQTLsnpMolPhenTable.sh &quot;4&quot; &quot;4:17797455&quot; &quo
 scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples/*4:17797455* /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/apaExamp</code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;4:17797455&quot;, peak=&quot;peak236311&quot;, gene=&quot;ENSG00000163257&quot;)</code></pre>
 <p><img src="figure/apaQTLoverlapGWAS.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-32-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4a4b5c7261b220189f8f2bc433f79618ec4c2bab/docs/figure/apaQTLoverlapGWAS.Rmd/unnamed-chunk-32-1.png" target="_blank">4a4b5c7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-12
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This example is a GWAS hit for height .</p>
+</div>
+</div>
+<div id="yangs-script" class="section level2">
+<h2>Yangs script</h2>
+<p>–ld-window-kb 1000 –ld-window 99999 –ld-window-r2 0.8</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
