@@ -80,7 +80,7 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 
 * [ChromHMM enrichment analysis](chromHmm_enrichment.html)
 
-* [Overlap with GWAS](apaQTLoverlapGWAS.Rmd)  
+* [Overlap with GWAS](apaQTLoverlapGWAS.html)  
 
 * [Visualize peaks in significant genes](peakGeneCovEx.html)
 
