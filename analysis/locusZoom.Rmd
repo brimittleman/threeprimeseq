@@ -113,3 +113,45 @@ rna=ggplot(allPhen_filt_RNA, aes(x=Location, y= -log10(value))) + geom_point()+ 
 plot_grid(apa,prot,rna, align = "v", ncol=1)
 ```
 
+The next step is to add the LD structure. I can do this with PLINK and the files I made for the GWAS overlap.  
+
+
+RunPlink_EIF2A.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RunPlink_EIF2A
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunPlink_EIF2A.out
+#SBATCH --error=RunPlink_EIF2A.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr3.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr3.map --r2  --ld-snp 3:150302010 --ld-window-kb 1000 --ld-window 99999  --out /project2/gilad/briana/threeprimeseq/data/LocusZoom/EIF2A_leadsnp.txt
+```
+
+```{r}
+LD_structure=read.table("../data/LocusZoom/EIF2A_leadsnp.txt.ld", header=T) %>% select(BP_B, R2) 
+colnames(LD_structure)=c("Location", "R2")
+
+allPheno_filt2=allPheno %>% filter(Location> 150292010 & Location < 150312010)
+allPheno_filt_LD=allPheno_filt2 %>% inner_join(LD_structure, by="Location")
+
+
+allPheno_filt_LD_melt=melt(allPheno_filt_LD, id.vars=c("Location", "R2"))
+```
+```{r}
+lockedscale=ggplot(allPheno_filt_LD_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable)) + geom_vline(xintercept=150302010, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+freescale=ggplot(allPheno_filt_LD_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable), scales = "free") + geom_vline(xintercept=150302010, linetype="dashed", color = "red") +  theme_linedraw()
+```
+
+```{r}
+plot_grid(lockedscale,freescale, align = "v", ncol=1)
+```
