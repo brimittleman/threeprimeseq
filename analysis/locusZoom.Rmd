@@ -459,3 +459,80 @@ plot_grid(lockedscale_EBI3,freescale_EBI3, align = "v", ncol=1)
 
 
 Snp is in the last intron of EBI3. It looks like the lead protien snp is the one directly upstream.  rs353704. The region is CCCCAC. The preceeding SNP is rs353705. The relevent peak is 19:4236433:4236517.  The snp is in the peak. This is interesting because the alternative allele decreases usage of this peak and the protein.  
+
+
+#SACM1L  
+There are 3 QTLs in the total and nuclear for this. I am gonig to focus on the hit that has the same snp peak assocaition.  
+
+
+peak216086 3:45780980 ENSG00000211456
+
+
+RunLocusZoom_SACM1L.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RunLocusZoom_SACM1L
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunLocusZoom_SACM1L.out
+#SBATCH --error=RunLocusZoom_SACM1L.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+grep peak216086  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak216086.SACM1L.nomNuc.txt
+
+grep peak216086  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak216086.SACM1L.nomTotal.txt
+
+grep ENSG00000211456 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.SACM1L.nomTotal.txt
+
+grep ENSG00000211456 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.SACM1L.nomTotal.txt
+
+ grep ENSG00000211456 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.SACM1L.nomTotal.txt
+
+
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr3.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr3.map --r2  --ld-snp 3:45780980 --ld-window-kb 1000 --ld-window 99999  --out /project2/gilad/briana/threeprimeseq/data/LocusZoom/SACM1L_leadsnp.txt
+```
+
+.  
+
+Move to comp
+
+```{r}
+
+APA_Total_SACM1L=read.table("../data/LocusZoom/TotalAPA.peak216086.SACM1L.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_TotalPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_TotalPval)
+APA_Total_SACM1L$Location=as.integer(APA_Total_SACM1L$Location)
+
+APA_Nuclear_SACM1L=read.table("../data/LocusZoom/NuclearAPA.peak216086.SACM1L.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_NuclearPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_NuclearPval)
+APA_Nuclear_SACM1L$Location=as.integer(APA_Nuclear_SACM1L$Location)
+
+Prot_SACM1L=read.table("../data/LocusZoom/Prot.SACM1L.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "ProtPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, ProtPval)
+Prot_SACM1L$Location=as.integer(Prot_SACM1L$Location)
+RNA_SACM1L=read.table("../data/LocusZoom/RNA.SACM1L.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RnaPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RnaPval)
+RNA_SACM1L$Location=as.integer(RNA_SACM1L$Location)
+Ribo_SACM1L=read.table("../data/LocusZoom/Ribo.SACM1L.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RiboPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RiboPval)
+Ribo_SACM1L$Location=as.integer(Ribo_SACM1L$Location)
+
+LD_structure_SACM1L=read.table("../data/LocusZoom/SACM1L_leadsnp.txt.ld", header=T) %>% select(BP_B, R2) 
+colnames(LD_structure_SACM1L)=c("Location", "R2")
+
+
+allPheno_SACM1L=APA_Total_SACM1L %>% inner_join(APA_Nuclear_SACM1L, by="Location") %>% inner_join(Prot_SACM1L, by="Location") %>% inner_join(Ribo_SACM1L, by="Location") %>% inner_join(RNA_SACM1L, by="Location") %>%  inner_join(LD_structure_SACM1L, by="Location") %>% filter(Location> 45770980 & Location < 45790980)
+allPheno_SACM1L_melt=melt(allPheno_SACM1L, id.vars=c("Location", "R2"))
+
+
+lockedscale_SACM1L=ggplot(allPheno_SACM1L_melt, aes(x=Location, y=-log10(value),col=R2)) +  geom_point() + facet_grid( rows=vars(variable)) + geom_vline(xintercept=45780980, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+freescale_SACM1L=ggplot(allPheno_SACM1L_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable), scales = "free") + geom_vline(xintercept=45780980, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+plot_grid(lockedscale_SACM1L,freescale_SACM1L, align = "v", ncol=1)
+```
+
+
+The snp is in an intron of the SAMCL1 gene rs80065472. The peak is in the UTR of the gene.  
