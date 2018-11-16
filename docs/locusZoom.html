@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4fb0d81892afb37eb09ddc5540cc9deefd597533" target="_blank">4fb0d81</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/eca9b137f44d7d29d1b1f94db2ad473b5ca77cb2" target="_blank">eca9b13</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -474,6 +474,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eca9b137f44d7d29d1b1f94db2ad473b5ca77cb2/analysis/locusZoom.Rmd" target="_blank">eca9b13</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+<td style="text-align:left;">
+add samcl1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/locusZoom.html" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/4fb0d81892afb37eb09ddc5540cc9deefd597533/analysis/locusZoom.Rmd" target="_blank">4fb0d81</a>
 </td>
 <td style="text-align:left;">
@@ -588,12 +622,12 @@ grep ENSG00000144895 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/no
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
@@ -667,6 +701,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-6-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/813a5000acdf4ddf85a19f3ae61c80bcfe41927a/docs/figure/locusZoom.Rmd/unnamed-chunk-6-1.png" target="_blank">813a500</a>
 </td>
 <td style="text-align:left;">
@@ -704,6 +749,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-7-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/813a5000acdf4ddf85a19f3ae61c80bcfe41927a/docs/figure/locusZoom.Rmd/unnamed-chunk-7-1.png" target="_blank">813a500</a>
 </td>
 <td style="text-align:left;">
@@ -719,6 +775,36 @@ Briana Mittleman
 <p>Plot each seperatly because power is different.</p>
 <pre class="r"><code>ggplot(allPhen_filt_melt,aes(x=Location, y=-log10(value))) + geom_point() + facet_grid( rows=vars(variable),scales=&quot;free&quot;) + geom_vline(xintercept=150302010, linetype=&quot;dashed&quot;, color = &quot;red&quot;) + theme(axis.line=element_line()) + theme(panel.grid.major = element_line(&quot;lightgray&quot;,0.25), panel.grid.minor = element_line(&quot;lightgray&quot;,0.25)) + labs(x=&quot;Chromosome 3 Location&quot;, y=&quot;-Log 10 Pvalue&quot;, title=&quot;Locus Zoom for EIF2A:peak228606&quot;)</code></pre>
 <p><img src="figure/locusZoom.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-8-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-8-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>The next step is to add the LD structure. I can do this with PLINK and the files I made for the GWAS overlap.</p>
 <p>RunPlink_EIF2A.sh</p>
 <pre class="bash"><code>#!/bin/bash
@@ -750,9 +836,69 @@ allPheno_filt_LD_melt=melt(allPheno_filt_LD, id.vars=c(&quot;Location&quot;, &qu
 freescale=ggplot(allPheno_filt_LD_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable), scales = &quot;free&quot;) + geom_vline(xintercept=150302010, linetype=&quot;dashed&quot;, color = &quot;red&quot;) +  theme_linedraw()</code></pre>
 <pre class="r"><code>plot_grid(lockedscale,freescale, align = &quot;v&quot;, ncol=1)</code></pre>
 <p><img src="figure/locusZoom.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-12-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Try on the same plot:</p>
 <pre class="r"><code>ggplot(allPheno_filt_LD_melt, aes(x=Location, y=-log10(value), col=variable, by =variable)) +  geom_point() + geom_vline(xintercept=150302010, linetype=&quot;dashed&quot;, color = &quot;red&quot;) +  theme_linedraw()</code></pre>
 <p><img src="figure/locusZoom.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-13-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>rs14434 <a href="https://www.ncbi.nlm.nih.gov/variation/view/?q=rs14434&amp;assm=GCF_000001405.33" class="uri">https://www.ncbi.nlm.nih.gov/variation/view/?q=rs14434&amp;assm=GCF_000001405.33</a></p>
 </div>
 <div id="rint1" class="section level2">
@@ -813,6 +959,36 @@ freescale_RINT1=ggplot(allPheno_RINT1_melt, aes(x=Location, y=-log10(value), col
 
 plot_grid(lockedscale_RINT1,freescale_RINT1, align = &quot;v&quot;, ncol=1)</code></pre>
 <p><img src="figure/locusZoom.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-17-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>rs2463632 (7:105155320): it is an intronic variant in PUS7</p>
 <p>PUS7 chr7:105,080,108-105,162,714 RINT1 chr7:105,172,532-105,208,124</p>
 <p>This snp is in the intron on the gene directly upstream of RINT1.</p>
@@ -878,6 +1054,36 @@ freescale_LYAR=ggplot(allPheno_LYAR_melt, aes(x=Location, y=-log10(value), col=R
 
 plot_grid(lockedscale_LYAR,freescale_LYAR, align = &quot;v&quot;, ncol=1)</code></pre>
 <p><img src="figure/locusZoom.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-19-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Snp is in an intron OTOP1 gene 2 genes upstream. rs7682186</p>
 </div>
 <div id="psmf1" class="section level2">
@@ -940,6 +1146,36 @@ freescale_PSMF1=ggplot(allPheno_PSMF1_melt, aes(x=Location, y=-log10(value), col
 
 plot_grid(lockedscale_PSMF1,freescale_PSMF1, align = &quot;v&quot;, ncol=1)</code></pre>
 <p><img src="figure/locusZoom.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-21-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This varriant is in an intron of the PSMF1 gene. rs56398212</p>
 </div>
 <div id="ebi3" class="section level2">
@@ -1002,8 +1238,101 @@ freescale_EBI3=ggplot(allPheno_EBI3_melt, aes(x=Location, y=-log10(value), col=R
 
 plot_grid(lockedscale_EBI3,freescale_EBI3, align = &quot;v&quot;, ncol=1)</code></pre>
 <p><img src="figure/locusZoom.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-23-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b2b7368a0c997d9a785f6fedf5c37b93d6ef672e/docs/figure/locusZoom.Rmd/unnamed-chunk-23-1.png" target="_blank">b2b7368</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Snp is in the last intron of EBI3. It looks like the lead protien snp is the one directly upstream. rs353704. The region is CCCCAC. The preceeding SNP is rs353705. The relevent peak is 19:4236433:4236517. The snp is in the peak. This is interesting because the alternative allele decreases usage of this peak and the protein.</p>
 </div>
+<div id="sacm1l" class="section level1">
+<h1>SACM1L</h1>
+<p>There are 3 QTLs in the total and nuclear for this. I am gonig to focus on the hit that has the same snp peak assocaition.</p>
+<p>peak216086 3:45780980 ENSG00000211456</p>
+<p>RunLocusZoom_SACM1L.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=RunLocusZoom_SACM1L
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunLocusZoom_SACM1L.out
+#SBATCH --error=RunLocusZoom_SACM1L.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+grep peak216086  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak216086.SACM1L.nomNuc.txt
+
+grep peak216086  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak216086.SACM1L.nomTotal.txt
+
+grep ENSG00000211456 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.SACM1L.nomTotal.txt
+
+grep ENSG00000211456 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.SACM1L.nomTotal.txt
+
+ grep ENSG00000211456 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.SACM1L.nomTotal.txt
+
+
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr3.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr3.map --r2  --ld-snp 3:45780980 --ld-window-kb 1000 --ld-window 99999  --out /project2/gilad/briana/threeprimeseq/data/LocusZoom/SACM1L_leadsnp.txt</code></pre>
+<p>.</p>
+<p>Move to comp</p>
+<pre class="r"><code>APA_Total_SACM1L=read.table(&quot;../data/LocusZoom/TotalAPA.peak216086.SACM1L.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SID&quot;, &quot;Dist&quot;, &quot;APA_TotalPval&quot;,&quot;slope&quot;)) %&gt;% separate(SID, into=c(&quot;Chrom&quot;, &quot;Location&quot;), sep=&quot;:&quot;) %&gt;% select( Location, APA_TotalPval)
+APA_Total_SACM1L$Location=as.integer(APA_Total_SACM1L$Location)
+
+APA_Nuclear_SACM1L=read.table(&quot;../data/LocusZoom/NuclearAPA.peak216086.SACM1L.nomNuc.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SID&quot;, &quot;Dist&quot;, &quot;APA_NuclearPval&quot;,&quot;slope&quot;)) %&gt;% separate(SID, into=c(&quot;Chrom&quot;, &quot;Location&quot;), sep=&quot;:&quot;) %&gt;% select( Location, APA_NuclearPval)
+APA_Nuclear_SACM1L$Location=as.integer(APA_Nuclear_SACM1L$Location)
+
+Prot_SACM1L=read.table(&quot;../data/LocusZoom/Prot.SACM1L.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SID&quot;, &quot;Dist&quot;, &quot;ProtPval&quot;,&quot;slope&quot;)) %&gt;% separate(SID, into=c(&quot;Chrom&quot;, &quot;Location&quot;), sep=&quot;:&quot;)%&gt;% select( Location, ProtPval)
+Prot_SACM1L$Location=as.integer(Prot_SACM1L$Location)
+RNA_SACM1L=read.table(&quot;../data/LocusZoom/RNA.SACM1L.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SID&quot;, &quot;Dist&quot;, &quot;RnaPval&quot;,&quot;slope&quot;)) %&gt;% separate(SID, into=c(&quot;Chrom&quot;, &quot;Location&quot;), sep=&quot;:&quot;)%&gt;% select( Location, RnaPval)
+RNA_SACM1L$Location=as.integer(RNA_SACM1L$Location)
+Ribo_SACM1L=read.table(&quot;../data/LocusZoom/Ribo.SACM1L.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SID&quot;, &quot;Dist&quot;, &quot;RiboPval&quot;,&quot;slope&quot;)) %&gt;% separate(SID, into=c(&quot;Chrom&quot;, &quot;Location&quot;), sep=&quot;:&quot;)%&gt;% select( Location, RiboPval)
+Ribo_SACM1L$Location=as.integer(Ribo_SACM1L$Location)
+
+LD_structure_SACM1L=read.table(&quot;../data/LocusZoom/SACM1L_leadsnp.txt.ld&quot;, header=T) %&gt;% select(BP_B, R2) 
+colnames(LD_structure_SACM1L)=c(&quot;Location&quot;, &quot;R2&quot;)
+
+
+allPheno_SACM1L=APA_Total_SACM1L %&gt;% inner_join(APA_Nuclear_SACM1L, by=&quot;Location&quot;) %&gt;% inner_join(Prot_SACM1L, by=&quot;Location&quot;) %&gt;% inner_join(Ribo_SACM1L, by=&quot;Location&quot;) %&gt;% inner_join(RNA_SACM1L, by=&quot;Location&quot;) %&gt;%  inner_join(LD_structure_SACM1L, by=&quot;Location&quot;) %&gt;% filter(Location&gt; 45770980 &amp; Location &lt; 45790980)
+allPheno_SACM1L_melt=melt(allPheno_SACM1L, id.vars=c(&quot;Location&quot;, &quot;R2&quot;))
+
+
+lockedscale_SACM1L=ggplot(allPheno_SACM1L_melt, aes(x=Location, y=-log10(value),col=R2)) +  geom_point() + facet_grid( rows=vars(variable)) + geom_vline(xintercept=45780980, linetype=&quot;dashed&quot;, color = &quot;red&quot;) +  theme_linedraw()
+
+
+freescale_SACM1L=ggplot(allPheno_SACM1L_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable), scales = &quot;free&quot;) + geom_vline(xintercept=45780980, linetype=&quot;dashed&quot;, color = &quot;red&quot;) +  theme_linedraw()
+
+
+plot_grid(lockedscale_SACM1L,freescale_SACM1L, align = &quot;v&quot;, ncol=1)</code></pre>
+<p><img src="figure/locusZoom.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The snp is in an intron of the SAMCL1 gene rs80065472. The peak is in the UTR of the gene.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -1049,6 +1378,7 @@ loaded via a namespace (and not attached):
 [46] rmarkdown_1.10       httr_1.3.1           rstudioapi_0.8      
 [49] R6_2.3.0             nlme_3.1-137         git2r_0.23.0        
 [52] compiler_3.5.1      </code></pre>
+</div>
 </div>
 
 <hr>
