@@ -461,7 +461,7 @@ plot_grid(lockedscale_EBI3,freescale_EBI3, align = "v", ncol=1)
 Snp is in the last intron of EBI3. It looks like the lead protien snp is the one directly upstream.  rs353704. The region is CCCCAC. The preceeding SNP is rs353705. The relevent peak is 19:4236433:4236517.  The snp is in the peak. This is interesting because the alternative allele decreases usage of this peak and the protein.  
 
 
-#SACM1L  
+##SACM1L  
 There are 3 QTLs in the total and nuclear for this. I am gonig to focus on the hit that has the same snp peak assocaition.  
 
 
