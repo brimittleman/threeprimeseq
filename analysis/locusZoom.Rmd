@@ -9,7 +9,11 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In this analysis I will create locus zoom plots for the example QTLs that look to be associated in APA and protein but not in RNA. I will first do this for the EIF2A totalAPA example. peak228606, 3:150302010. 
+In this analysis I will create locus zoom plots for the example QTLs that look to be associated in APA and protein but not in RNA. 
+
+##EIF2A
+
+I will first do this for the EIF2A totalAPA example. peak228606, 3:150302010. 
 
 To run this analysis, I will need the nominal pvalues for this peak/gene. I can then plot the snp location against the pvalue. After I have this working, I can add the r2 values.
 
@@ -25,7 +29,7 @@ grep ENSG00000144895 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/no
 
 grep ENSG00000144895 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.EIF2A.nomTotal.txt
 
-
+ grep ENSG00000144895 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.EIF2A.nomTotal.txt
 
 ```
 
@@ -60,13 +64,15 @@ Prot=read.table("../data/LocusZoom/Prot.EIF2A.nomTotal.txt", stringsAsFactors = 
 Prot$Location=as.integer(Prot$Location)
 RNA=read.table("../data/LocusZoom/RNA.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RnaPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RnaPval)
 RNA$Location=as.integer(RNA$Location)
+Ribo=read.table("../data/LocusZoom/Ribo.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RiboPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RiboPval)
+Ribo$Location=as.integer(Ribo$Location)
 ```
  
  
 I can join these by the snps that are tested for all three.  
 
 ```{r}
-allPheno=APA %>% inner_join(Prot, by="Location") %>% inner_join(RNA, by="Location")
+allPheno=APA %>% inner_join(Prot, by="Location") %>% inner_join(Ribo, by="Location") %>% inner_join(RNA, by="Location")
 ```
 
  
@@ -95,23 +101,10 @@ ggplot(allPhen_filt_melt,aes(x=Location, y=-log10(value))) + geom_point() + face
 Plot each seperatly because power is different.  
 
 ```{r}
-allPhen_filt_APA=allPhen_filt_melt %>% filter(variable=="APAPval")
-allPhen_filt_Prot=allPhen_filt_melt %>% filter(variable=="ProtPval")
-allPhen_filt_RNA=allPhen_filt_melt %>% filter(variable=="RnaPval")
+ggplot(allPhen_filt_melt,aes(x=Location, y=-log10(value))) + geom_point() + facet_grid( rows=vars(variable),scales="free") + geom_vline(xintercept=150302010, linetype="dashed", color = "red") + theme(axis.line=element_line()) + theme(panel.grid.major = element_line("lightgray",0.25), panel.grid.minor = element_line("lightgray",0.25)) + labs(x="Chromosome 3 Location", y="-Log 10 Pvalue", title="Locus Zoom for EIF2A:peak228606")
 ```
 
-Plot each seperatly then use cow plot 
-```{r}
-apa=ggplot(allPhen_filt_APA, aes(x=Location, y= -log10(value))) + geom_point()+ geom_vline(xintercept=150302010, linetype="dashed", color = "red") 
 
-prot=ggplot(allPhen_filt_Prot, aes(x=Location, y= -log10(value))) + geom_point()+ geom_vline(xintercept=150302010, linetype="dashed", color = "red") 
-
-rna=ggplot(allPhen_filt_RNA, aes(x=Location, y= -log10(value))) + geom_point()+ geom_vline(xintercept=150302010, linetype="dashed", color = "red") 
-```
-
-```{r}
-plot_grid(apa,prot,rna, align = "v", ncol=1)
-```
 
 The next step is to add the LD structure. I can do this with PLINK and the files I made for the GWAS overlap.  
 
@@ -155,3 +148,314 @@ freescale=ggplot(allPheno_filt_LD_melt, aes(x=Location, y=-log10(value), col=R2)
 ```{r}
 plot_grid(lockedscale,freescale, align = "v", ncol=1)
 ```
+
+
+Try on the same plot:  
+```{r}
+ggplot(allPheno_filt_LD_melt, aes(x=Location, y=-log10(value), col=variable, by =variable)) +  geom_point() + geom_vline(xintercept=150302010, linetype="dashed", color = "red") +  theme_linedraw()
+```
+
+rs14434 https://www.ncbi.nlm.nih.gov/variation/view/?q=rs14434&assm=GCF_000001405.33 
+
+
+##RINT1
+
+RINT1 is a nuclear QTL.  peak303436 7:105155320 ENSG00000135249
+
+```{bash,eval=F}
+grep peak303436  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak303436.RINT1.nomNuc.txt
+
+grep peak303436  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak303436.RINT1.nomTotal.txt
+
+grep ENSG00000135249 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.RINT1.nomTotal.txt
+
+grep ENSG00000135249 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.RINT1.nomTotal.txt
+
+ grep ENSG00000135249 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.RINT1.nomTotal.txt
+
+```
+
+RunPlink_RINT1.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RunPlink_RINT1
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunPlink_RINT1.out
+#SBATCH --error=RunPlink_RINT1.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr7.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr7.map --r2  --ld-snp 7:105155320 --ld-window-kb 1000 --ld-window 99999  --out /project2/gilad/briana/threeprimeseq/data/LocusZoom/RINT1_leadsnp
+```
+
+
+```{r}
+
+APA_Total_RINT1=read.table("../data/LocusZoom/TotalAPA.peak303436.RINT1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_TotalPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_TotalPval)
+APA_Total_RINT1$Location=as.integer(APA_Total_RINT1$Location)
+
+APA_Nuclear_RINT1=read.table("../data/LocusZoom/TotalAPA.peak303436.RINT1.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_NuclearPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_NuclearPval)
+APA_Nuclear_RINT1$Location=as.integer(APA_Nuclear_RINT1$Location)
+
+Prot_RINT1=read.table("../data/LocusZoom/Prot.RINT1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "ProtPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, ProtPval)
+Prot_RINT1$Location=as.integer(Prot_RINT1$Location)
+RNA_RINT1=read.table("../data/LocusZoom/RNA.RINT1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RnaPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RnaPval)
+RNA_RINT1$Location=as.integer(RNA_RINT1$Location)
+Ribo_RINT1=read.table("../data/LocusZoom/Ribo.RINT1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RiboPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RiboPval)
+Ribo_RINT1$Location=as.integer(Ribo_RINT1$Location)
+
+LD_structure_RINT1=read.table("../data/LocusZoom/RINT1_leadsnp.ld", header=T) %>% select(BP_B, R2) 
+colnames(LD_structure_RINT1)=c("Location", "R2")
+```
+ 
+ 
+I can join these by the snps that are tested for all three.  Filter 1kb up and downstream
+
+```{r}
+allPheno_RINT1=APA_Total_RINT1 %>% inner_join(APA_Nuclear_RINT1, by="Location") %>% inner_join(Prot_RINT1, by="Location") %>% inner_join(Ribo_RINT1, by="Location") %>% inner_join(RNA_RINT1, by="Location") %>% inner_join(LD_structure_RINT1, by="Location") %>% filter(Location> 105154320 & Location < 105156320)
+
+allPheno_RINT1_melt=melt(allPheno_RINT1, id.vars=c("Location", "R2"))
+
+
+lockedscale_RINT1=ggplot(allPheno_RINT1_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable)) + geom_vline(xintercept=105155320, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+freescale_RINT1=ggplot(allPheno_RINT1_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable), scales = "free") + geom_vline(xintercept=105155320, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+plot_grid(lockedscale_RINT1,freescale_RINT1, align = "v", ncol=1)
+```
+
+
+rs2463632 (7:105155320): it is an intronic variant in PUS7
+
+
+PUS7 chr7:105,080,108-105,162,714
+RINT1 chr7:105,172,532-105,208,124
+
+
+This snp is in the intron on the gene directly upstream of RINT1.  
+
+
+
+##LYAR  
+
+This is a nuclear QTL as well.  peak235215 4:4196045 ENSG00000145220
+
+
+RunLocusZoom_LYAR.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RunLocusZoom_LYAR
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunLocusZoom_LYAR.out
+#SBATCH --error=RunLocusZoom_LYAR.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+grep peak235215  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak303436.LYAR.nomNuc.txt
+
+grep peak235215  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak303436.LYAR.nomTotal.txt
+
+grep ENSG00000145220 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.LYAR.nomTotal.txt
+
+grep ENSG00000145220 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.LYAR.nomTotal.txt
+
+ grep ENSG00000145220 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.LYAR.nomTotal.txt
+
+
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr4.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr4.map --r2  --ld-snp 4:4196045 --ld-window-kb 1000 --ld-window 99999  --out /project2/gilad/briana/threeprimeseq/data/LocusZoom/LYAR_leadsnp.txt
+```
+Move to my computer:  
+
+
+
+```{r}
+
+APA_Total_LYAR=read.table("../data/LocusZoom/TotalAPA.peak303436.LYAR.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_TotalPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_TotalPval)
+APA_Total_LYAR$Location=as.integer(APA_Total_LYAR$Location)
+
+APA_Nuclear_LYAR=read.table("../data/LocusZoom/NuclearAPA.peak303436.LYAR.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_NuclearPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_NuclearPval)
+APA_Nuclear_LYAR$Location=as.integer(APA_Nuclear_LYAR$Location)
+
+Prot_LYAR=read.table("../data/LocusZoom/Prot.LYAR.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "ProtPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, ProtPval)
+Prot_LYAR$Location=as.integer(Prot_LYAR$Location)
+RNA_LYAR=read.table("../data/LocusZoom/RNA.LYAR.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RnaPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RnaPval)
+RNA_LYAR$Location=as.integer(RNA_LYAR$Location)
+Ribo_LYAR=read.table("../data/LocusZoom/Ribo.LYAR.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RiboPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RiboPval)
+Ribo_LYAR$Location=as.integer(Ribo_LYAR$Location)
+
+LD_structure_LYAR=read.table("../data/LocusZoom/LYAR_leadsnp.txt.ld", header=T) %>% select(BP_B, R2) 
+colnames(LD_structure_LYAR)=c("Location", "R2")
+
+
+allPheno_LYAR=APA_Total_LYAR %>% inner_join(APA_Nuclear_LYAR, by="Location") %>% inner_join(Prot_LYAR, by="Location") %>% inner_join(Ribo_LYAR, by="Location") %>% inner_join(RNA_LYAR, by="Location") %>% inner_join(LD_structure_LYAR, by="Location") %>% filter(Location> 4191045 & Location < 4201045)
+
+allPheno_LYAR_melt=melt(allPheno_LYAR, id.vars=c("Location", "R2"))
+
+
+lockedscale_LYAR=ggplot(allPheno_LYAR_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable)) + geom_vline(xintercept=4196045, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+freescale_LYAR=ggplot(allPheno_LYAR_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable), scales = "free") + geom_vline(xintercept=4196045, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+plot_grid(lockedscale_LYAR,freescale_LYAR, align = "v", ncol=1)
+```
+ 
+Snp is in an intron OTOP1 gene 2 genes upstream.  rs7682186
+
+
+##PSMF1
+
+Total QTL peak193648 20:1131308 ENSG00000125818
+
+RunLocusZoom_PSMF1.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RunLocusZoom_PSMF1
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunLocusZoom_PSMF1.out
+#SBATCH --error=RunLocusZoom_PSMF1.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+grep peak193648  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak193648.PSMF1.nomNuc.txt
+
+grep peak193648  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak193648.PSMF1.nomTotal.txt
+
+grep ENSG00000125818 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.PSMF1.nomTotal.txt
+
+grep ENSG00000125818 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.PSMF1.nomTotal.txt
+
+ grep ENSG00000125818 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.PSMF1.nomTotal.txt
+
+
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr20.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr20.map --r2  --ld-snp 20:1131308 --ld-window-kb 1000 --ld-window 99999  --out /project2/gilad/briana/threeprimeseq/data/LocusZoom/PSMF1_leadsnp.txt
+```
+
+Move to computer  
+
+```{r}
+
+APA_Total_PSMF1=read.table("../data/LocusZoom/TotalAPA.peak193648.PSMF1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_TotalPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_TotalPval)
+APA_Total_PSMF1$Location=as.integer(APA_Total_PSMF1$Location)
+
+APA_Nuclear_PSMF1=read.table("../data/LocusZoom/NuclearAPA.peak193648.PSMF1.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_NuclearPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_NuclearPval)
+APA_Nuclear_PSMF1$Location=as.integer(APA_Nuclear_PSMF1$Location)
+
+Prot_PSMF1=read.table("../data/LocusZoom/Prot.PSMF1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "ProtPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, ProtPval)
+Prot_PSMF1$Location=as.integer(Prot_PSMF1$Location)
+RNA_PSMF1=read.table("../data/LocusZoom/RNA.PSMF1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RnaPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RnaPval)
+RNA_PSMF1$Location=as.integer(RNA_PSMF1$Location)
+Ribo_PSMF1=read.table("../data/LocusZoom/Ribo.PSMF1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RiboPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RiboPval)
+Ribo_PSMF1$Location=as.integer(Ribo_PSMF1$Location)
+
+LD_structure_PSMF1=read.table("../data/LocusZoom/PSMF1_leadsnp.txt.ld", header=T) %>% select(BP_B, R2) 
+colnames(LD_structure_PSMF1)=c("Location", "R2")
+
+
+allPheno_PSMF1=APA_Total_PSMF1 %>% inner_join(APA_Nuclear_PSMF1, by="Location") %>% inner_join(Prot_PSMF1, by="Location") %>% inner_join(Ribo_PSMF1, by="Location") %>% inner_join(RNA_PSMF1, by="Location") %>%  inner_join(LD_structure_PSMF1, by="Location") %>% filter(Location> 1121308 & Location < 1181308)
+allPheno_PSMF1_melt=melt(allPheno_PSMF1, id.vars=c("Location", "R2"))
+
+
+lockedscale_PSMF1=ggplot(allPheno_PSMF1_melt, aes(x=Location, y=-log10(value),col=R2)) +  geom_point() + facet_grid( rows=vars(variable)) + geom_vline(xintercept=1131308, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+freescale_PSMF1=ggplot(allPheno_PSMF1_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable), scales = "free") + geom_vline(xintercept=1131308, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+plot_grid(lockedscale_PSMF1,freescale_PSMF1, align = "v", ncol=1)
+```
+
+
+This varriant is in an intron of the PSMF1 gene.  rs56398212 
+
+ 
+##EBI3  
+
+This is a total and a nuclear QTL  peak152751, ENSG00000105246 19:4236475
+
+RunLocusZoom_EBI3.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RunLocusZoom_EBI3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=RunLocusZoom_EBI3.out
+#SBATCH --error=RunLocusZoom_EBI3.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+module load plink
+
+
+grep peak152751  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak152751.EBI3.nomNuc.txt
+
+grep peak152751  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak152751.EBI3.nomTotal.txt
+
+grep ENSG00000105246 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.EBI3.nomTotal.txt
+
+grep ENSG00000105246 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.EBI3.nomTotal.txt
+
+ grep ENSG00000105246 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.EBI3.nomTotal.txt
+
+
+plink --ped /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr19.ped  --map /project2/gilad/briana/YRI_geno_hg19/plinkYRIgeno_chr19.map --r2  --ld-snp 19:4236475 --ld-window-kb 1000 --ld-window 99999  --out /project2/gilad/briana/threeprimeseq/data/LocusZoom/EBI3_leadsnp.txt
+```
+Move to comp
+
+```{r}
+
+APA_Total_EBI3=read.table("../data/LocusZoom/TotalAPA.peak152751.EBI3.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_TotalPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_TotalPval)
+APA_Total_EBI3$Location=as.integer(APA_Total_EBI3$Location)
+
+APA_Nuclear_EBI3=read.table("../data/LocusZoom/NuclearAPA.peak152751.EBI3.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "APA_NuclearPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":") %>% select( Location, APA_NuclearPval)
+APA_Nuclear_EBI3$Location=as.integer(APA_Nuclear_EBI3$Location)
+
+Prot_EBI3=read.table("../data/LocusZoom/Prot.EBI3.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "ProtPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, ProtPval)
+Prot_EBI3$Location=as.integer(Prot_EBI3$Location)
+RNA_EBI3=read.table("../data/LocusZoom/RNA.EBI3.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RnaPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RnaPval)
+RNA_EBI3$Location=as.integer(RNA_EBI3$Location)
+Ribo_EBI3=read.table("../data/LocusZoom/Ribo.EBI3.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SID", "Dist", "RiboPval","slope")) %>% separate(SID, into=c("Chrom", "Location"), sep=":")%>% select( Location, RiboPval)
+Ribo_EBI3$Location=as.integer(Ribo_EBI3$Location)
+
+LD_structure_EBI3=read.table("../data/LocusZoom/EBI3_leadsnp.txt.ld", header=T) %>% select(BP_B, R2) 
+colnames(LD_structure_EBI3)=c("Location", "R2")
+
+
+allPheno_EBI3=APA_Total_EBI3 %>% inner_join(APA_Nuclear_EBI3, by="Location") %>% inner_join(Prot_EBI3, by="Location") %>% inner_join(Ribo_EBI3, by="Location") %>% inner_join(RNA_EBI3, by="Location") %>%  inner_join(LD_structure_EBI3, by="Location") %>% filter(Location> 4231475 & Location < 4241475)
+allPheno_EBI3_melt=melt(allPheno_EBI3, id.vars=c("Location", "R2"))
+
+
+lockedscale_EBI3=ggplot(allPheno_EBI3_melt, aes(x=Location, y=-log10(value),col=R2)) +  geom_point() + facet_grid( rows=vars(variable)) + geom_vline(xintercept=4236475, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+freescale_EBI3=ggplot(allPheno_EBI3_melt, aes(x=Location, y=-log10(value), col=R2)) +  geom_point() + facet_grid( rows=vars(variable), scales = "free") + geom_vline(xintercept=4236475, linetype="dashed", color = "red") +  theme_linedraw()
+
+
+plot_grid(lockedscale_EBI3,freescale_EBI3, align = "v", ncol=1)
+```
+
+
+Snp is in the last intron of EBI3. It looks like the lead protien snp is the one directly upstream.  rs353704. The region is CCCCAC. The preceeding SNP is rs353705. The relevent peak is 19:4236433:4236517.  The snp is in the peak. This is interesting because the alternative allele decreases usage of this peak and the protein.  
