@@ -392,6 +392,7 @@ This varriant is in an intron of the PSMF1 gene.  rs56398212
  
 ##EBI3  
 
+
 This is a total and a nuclear QTL  peak152751, ENSG00000105246 19:4236475
 
 RunLocusZoom_EBI3.sh
@@ -536,3 +537,167 @@ plot_grid(lockedscale_SACM1L,freescale_SACM1L, align = "v", ncol=1)
 
 
 The snp is in an intron of the SAMCL1 gene rs80065472. The peak is in the UTR of the gene.  
+
+
+##LocusZoom online  
+
+```{r,eval=F}
+APA_LZ=read.table("../data/LocusZoom/TotalAPA.peak228606.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APA_LZ,"../data/LocusZoom/apaEIF21LZ.txt", col.names = T, row.names = F, quote = F)
+#sed -e 's/^/Chr/' apaEIF21LZ.txt > apaEIF21LZ_chr.txt 
+
+prot_LZ=read.table("../data/LocusZoom/Prot.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(prot_LZ,"../data/LocusZoom/ProtEIF21LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'ProtEIF21LZ.txt > ProtEIF21LZ_chr.txt 
+
+
+RNA_LZ=read.table("../data/LocusZoom/RNA.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_LZ,"../data/LocusZoom/RNAEIF21LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/' RNAEIF21LZ.txt > RNAEIF21LZ_chr.txt 
+
+
+ribo_LZ=read.table("../data/LocusZoom/Ribo.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(ribo_LZ,"../data/LocusZoom/RiboEIF21LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/' RiboEIF21LZ.txt > RiboEIF21LZ_chr.txt
+```
+
+Do this for another qtl: 
+
+
+```{r,eval=F}
+APATotal_SACM1L_LZ=read.table("../data/LocusZoom/TotalAPA.peak216086.SACM1L.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_SACM1L_LZ,"../data/LocusZoom/apaTotalSACM1L_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+APANuclear_SACM1L_LZ=read.table("../data/LocusZoom/NuclearAPA.peak216086.SACM1L.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(APANuclear_SACM1L_LZ,"../data/LocusZoom/apaNuclearSACM1L_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+prot_SACM1L_LZ=read.table("../data/LocusZoom/Prot.SACM1L.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(prot_SACM1L_LZ,"../data/LocusZoom/ProtSACM1L_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+RNA_SACM1L_LZ=read.table("../data/LocusZoom/RNA.SACM1L.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_SACM1L_LZ,"../data/LocusZoom/RNASACM1L_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+ribo_SACM1L_LZ=read.table("../data/LocusZoom/Ribo.SACM1L.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(ribo_SACM1L_LZ,"../data/LocusZoom/RiboSACM1L_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/' 
+```
+
+
+One more example: LYAR  
+
+```{r,eval=F}
+APATotal_LYAR_LZ=read.table("../data/LocusZoom/TotalAPA.peak303436.LYAR.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_LYAR_LZ,"../data/LocusZoom/apaTotalLYAR_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+APANuclear_LYAR_LZ=read.table("../data/LocusZoom/NuclearAPA.peak303436.LYAR.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(APANuclear_LYAR_LZ,"../data/LocusZoom/apaNuclearLYAR_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+prot_LYAR_LZ=read.table("../data/LocusZoom/Prot.LYAR.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(prot_LYAR_LZ,"../data/LocusZoom/ProtLYAR_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+RNA_LYAR_LZ=read.table("../data/LocusZoom/RNA.LYAR.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_LYAR_LZ,"../data/LocusZoom/RNALYAR_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+ribo_LYAR_LZ=read.table("../data/LocusZoom/Ribo.LYAR.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(ribo_LYAR_LZ,"../data/LocusZoom/RiboLYAR_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/' 
+```
+
+RINT1
+
+
+```{r,eval=F}
+APATotal_RINT1_LZ=read.table("../data/LocusZoom/TotalAPA.peak303436.RINT1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_RINT1_LZ,"../data/LocusZoom/apaTotalRINT1_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+APANuclear_RINT1_LZ=read.table("../data/LocusZoom/TotalAPA.peak303436.RINT1.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(APANuclear_RINT1_LZ,"../data/LocusZoom/apaNuclearRINT1_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+prot_RINT1_LZ=read.table("../data/LocusZoom/Prot.RINT1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(prot_RINT1_LZ,"../data/LocusZoom/ProtRINT1_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+RNA_RINT1_LZ=read.table("../data/LocusZoom/RNA.RINT1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_RINT1_LZ,"../data/LocusZoom/RNARINT1_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+ribo_RINT1_LZ=read.table("../data/LocusZoom/Ribo.RINT1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(ribo_RINT1_LZ,"../data/LocusZoom/RiboRINT1_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/' 
+```
+
+
+EBI3  rs353704.
+
+
+```{r,eval=F}
+APATotal_EBI3_LZ=read.table("../data/LocusZoom/TotalAPA.peak152751.EBI3.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_EBI3_LZ,"../data/LocusZoom/apaTotalEBI3_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+APANuclear_EBI3_LZ=read.table("../data/LocusZoom/NuclearAPA.peak152751.EBI3.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(APANuclear_EBI3_LZ,"../data/LocusZoom/apaNuclearEBI3_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+prot_EBI3_LZ=read.table("../data/LocusZoom/Prot.EBI3.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(prot_EBI3_LZ,"../data/LocusZoom/ProtEBI3_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+RNA_EBI3_LZ=read.table("../data/LocusZoom/RNA.EBI3.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_EBI3_LZ,"../data/LocusZoom/RNAEBI3_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+ribo_EBI3_LZ=read.table("../data/LocusZoom/Ribo.EBI3.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(ribo_EBI3_LZ,"../data/LocusZoom/RiboEBI3_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/' 
+```
+
