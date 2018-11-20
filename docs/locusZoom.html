@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-19</p>
+<p><strong>Last updated:</strong> 2018-11-20</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/bac8c20c16ad2960381cba88df6ac99beda943a6" target="_blank">bac8c20</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/58d62bb749da88feadda68799633a011b0cfe28a" target="_blank">58d62bb</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -469,6 +469,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/58d62bb749da88feadda68799633a011b0cfe28a/analysis/locusZoom.Rmd" target="_blank">58d62bb</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-20
+</td>
+<td style="text-align:left;">
+add 2 more examples
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4edece52edca72c178745b31c025339cdf47510c/docs/locusZoom.html" target="_blank">4edece5</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-19
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1570,6 +1604,100 @@ ribo_EBI3_LZ=read.table(&quot;../data/LocusZoom/Ribo.EBI3.nomTotal.txt&quot;, st
 write.table(ribo_EBI3_LZ,&quot;../data/LocusZoom/RiboEBI3_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
 
 #sed -e &#39;s/^/Chr/&#39; </code></pre>
+</div>
+<div id="few-more-examples" class="section level2">
+<h2>Few more examples:</h2>
+<div id="apbb1ip-peak35280-1026732342" class="section level3">
+<h3>APBB1IP peak35280 10:26732342</h3>
+<p>go with rs71401891 this snp is 10:26732343</p>
+<pre class="bash"><code>
+grep APBB1IP /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+ENSG00000077420
+ENSG00000077420
+
+grep peak35280  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak35280.APBB1IP.nomNuc.txt
+
+grep peak35280  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak35280.APBB1IP.nomTotal.txt
+
+grep ENSG00000077420 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.APBB1IP.nomTotal.txt
+
+grep ENSG00000077420 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.APBB1IP.nomTotal.txt
+
+ grep ENSG00000077420 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.APBB1IP.nomTotal.txt</code></pre>
+<pre class="r"><code>APATotal_APBB1IP_LZ=read.table(&quot;../data/LocusZoom/TotalAPA.peak35280.APBB1IP.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(APATotal_APBB1IP_LZ,&quot;../data/LocusZoom/apaTotalAPBB1IP_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+
+APANuclear_APBB1IP_LZ=read.table(&quot;../data/LocusZoom/NuclearAPA.peak35280.APBB1IP.nomNuc.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+write.table(APANuclear_APBB1IP_LZ,&quot;../data/LocusZoom/apaNuclearAPBB1IP_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+
+prot_APBB1IP_LZ=read.table(&quot;../data/LocusZoom/Prot.APBB1IP.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+write.table(prot_APBB1IP_LZ,&quot;../data/LocusZoom/ProtAPBB1IP_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+#sed -e &#39;s/^/Chr/&#39;
+
+
+RNA_APBB1IP_LZ=read.table(&quot;../data/LocusZoom/RNA.APBB1IP.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(RNA_APBB1IP_LZ,&quot;../data/LocusZoom/RNAAPBB1IP_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+#sed -e &#39;s/^/Chr/&#39;
+
+
+ribo_APBB1IP_LZ=read.table(&quot;../data/LocusZoom/Ribo.APBB1IP.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(ribo_APBB1IP_LZ,&quot;../data/LocusZoom/RiboAPBB1IP_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+#sed -e &#39;s/^/Chr/&#39; </code></pre>
+<p>There is no usable LD inforamtion for this snp in the LocusZoom database</p>
+</div>
+<div id="pter" class="section level3">
+<h3>PTER</h3>
+<p>rs7075357 PTER nuclear (3’ UTR varriant) peak34317</p>
+<pre class="bash"><code>
+grep PTER /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+ENSG00000165983
+
+
+grep peak34317  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak34317.PTER.nomNuc.txt
+
+grep peak34317  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak34317.PTER.nomTotal.txt
+
+grep ENSG00000165983 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.PTER.nomTotal.txt
+
+grep ENSG00000165983 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.PTER.nomTotal.txt
+
+ grep ENSG00000165983 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.PTER.nomTotal.txt</code></pre>
+<pre class="r"><code>APATotal_PTER_LZ=read.table(&quot;../data/LocusZoom/TotalAPA.peak34317.PTER.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(APATotal_PTER_LZ,&quot;../data/LocusZoom/apaTotalPTER_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+
+APANuclear_PTER_LZ=read.table(&quot;../data/LocusZoom/NuclearAPA.peak34317.PTER.nomNuc.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+write.table(APANuclear_PTER_LZ,&quot;../data/LocusZoom/apaNuclearPTER_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+
+prot_PTER_LZ=read.table(&quot;../data/LocusZoom/Prot.PTER.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+write.table(prot_PTER_LZ,&quot;../data/LocusZoom/ProtPTER_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+#sed -e &#39;s/^/Chr/&#39;
+
+
+RNA_PTER_LZ=read.table(&quot;../data/LocusZoom/RNA.PTER.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(RNA_PTER_LZ,&quot;../data/LocusZoom/RNAPTER_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+#sed -e &#39;s/^/Chr/&#39;
+
+
+ribo_PTER_LZ=read.table(&quot;../data/LocusZoom/Ribo.PTER.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(ribo_PTER_LZ,&quot;../data/LocusZoom/RiboPTER_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+#sed -e &#39;s/^/Chr/&#39; </code></pre>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
