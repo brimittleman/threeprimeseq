@@ -701,3 +701,111 @@ write.table(ribo_EBI3_LZ,"../data/LocusZoom/RiboEBI3_LZ.txt", col.names = T, row
 #sed -e 's/^/Chr/' 
 ```
 
+##Few more examples:  
+
+###APBB1IP peak35280 10:26732342
+
+go with rs71401891 this snp is 10:26732343
+
+```{bash,eval=F}
+
+grep APBB1IP /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+ENSG00000077420
+ENSG00000077420
+
+grep peak35280  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak35280.APBB1IP.nomNuc.txt
+
+grep peak35280  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak35280.APBB1IP.nomTotal.txt
+
+grep ENSG00000077420 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.APBB1IP.nomTotal.txt
+
+grep ENSG00000077420 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.APBB1IP.nomTotal.txt
+
+ grep ENSG00000077420 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.APBB1IP.nomTotal.txt
+```
+
+
+
+```{r,eval=F}
+APATotal_APBB1IP_LZ=read.table("../data/LocusZoom/TotalAPA.peak35280.APBB1IP.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_APBB1IP_LZ,"../data/LocusZoom/apaTotalAPBB1IP_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+APANuclear_APBB1IP_LZ=read.table("../data/LocusZoom/NuclearAPA.peak35280.APBB1IP.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(APANuclear_APBB1IP_LZ,"../data/LocusZoom/apaNuclearAPBB1IP_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+prot_APBB1IP_LZ=read.table("../data/LocusZoom/Prot.APBB1IP.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(prot_APBB1IP_LZ,"../data/LocusZoom/ProtAPBB1IP_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+RNA_APBB1IP_LZ=read.table("../data/LocusZoom/RNA.APBB1IP.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_APBB1IP_LZ,"../data/LocusZoom/RNAAPBB1IP_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+ribo_APBB1IP_LZ=read.table("../data/LocusZoom/Ribo.APBB1IP.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(ribo_APBB1IP_LZ,"../data/LocusZoom/RiboAPBB1IP_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/' 
+```
+
+There is no usable LD inforamtion for this snp in the LocusZoom database  
+
+###PTER
+rs7075357 PTER nuclear (3' UTR varriant) peak34317  
+
+```{bash,eval=F}
+
+grep PTER /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+ENSG00000165983
+
+
+grep peak34317  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/NuclearAPA.peak34317.PTER.nomNuc.txt
+
+grep peak34317  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom/TotalAPA.peak34317.PTER.nomTotal.txt
+
+grep ENSG00000165983 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/RNA.PTER.nomTotal.txt
+
+grep ENSG00000165983 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Prot.PTER.nomTotal.txt
+
+ grep ENSG00000165983 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom/Ribo.PTER.nomTotal.txt
+```
+
+
+
+```{r,eval=F}
+APATotal_PTER_LZ=read.table("../data/LocusZoom/TotalAPA.peak34317.PTER.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_PTER_LZ,"../data/LocusZoom/apaTotalPTER_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+APANuclear_PTER_LZ=read.table("../data/LocusZoom/NuclearAPA.peak34317.PTER.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(APANuclear_PTER_LZ,"../data/LocusZoom/apaNuclearPTER_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+prot_PTER_LZ=read.table("../data/LocusZoom/Prot.PTER.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(prot_PTER_LZ,"../data/LocusZoom/ProtPTER_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+RNA_PTER_LZ=read.table("../data/LocusZoom/RNA.PTER.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_PTER_LZ,"../data/LocusZoom/RNAPTER_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+ribo_PTER_LZ=read.table("../data/LocusZoom/Ribo.PTER.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(ribo_PTER_LZ,"../data/LocusZoom/RiboPTER_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/' 
+```
