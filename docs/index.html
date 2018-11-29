@@ -221,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-15</p>
+<p><strong>Last updated:</strong> 2018-11-29</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/23c62c988586bb3cd15114d6c7bc28fba051c0fa" target="_blank">23c62c9</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/413c8fddd492447ac0d51a7b928c56a3c941f41f" target="_blank">413c8fd</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -242,6 +242,7 @@ Ignored files:
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -252,6 +253,7 @@ Untracked files:
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
     Untracked:  data/PeaksUsed/
     Untracked:  data/RNAkalisto/
     Untracked:  data/TotalApaQTLs.txt
@@ -293,6 +295,7 @@ Untracked files:
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -352,6 +355,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/413c8fddd492447ac0d51a7b928c56a3c941f41f/analysis/index.Rmd" target="_blank">413c8fd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+<td style="text-align:left;">
+add filter QTL analysis and start explain pqtl
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/813a5000acdf4ddf85a19f3ae61c80bcfe41927a/docs/index.html" target="_blank">813a500</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -2045,6 +2082,7 @@ Start workflowr project.
 <li><p><a href="chromHmm_enrichment.html">ChromHMM enrichment analysis</a></p></li>
 <li><p><a href="apaQTLoverlapGWAS.html">Overlap with GWAS</a></p></li>
 <li><p><a href="peakGeneCovEx.html">Visualize peaks in significant genes</a></p></li>
+<li><p><a href="modifyLeafcutter.html">Look at filtering low peaks and modify leafcutter</a></p></li>
 </ul>
 <div id="molecular-qtl-analysis-and-overlap" class="section level3">
 <h3>Molecular QTL analysis and Overlap:</h3>
@@ -2056,6 +2094,7 @@ Start workflowr project.
 <li><p><a href="overlapMolQTL.opposite.html">Overlap QTLs starting with APAqtls</a></p></li>
 <li><p><a href="apa_prot_overlap.html">Investigate APA protein RNA relationship</a></p></li>
 <li><p><a href="flash2mash.html">Use flash and mash to look at sharing</a></p></li>
+<li><p><a href="explainpQTLs.html">Linear models to explain pQTLS</a></p></li>
 </ul>
 </div>
 </div>
