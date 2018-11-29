@@ -1,0 +1,954 @@
+---
+title: "Modify Leafcutter and Chose Extra Filter Cuttoff"
+author: "Briana Mittleman"
+date: "11/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to use this analysis to understand how many genes are not included in the apaQTL analysis due to low coverage and how many are not included due to low variance between individuals. I can do this by modifying the leafcutter prepare_phenotype_table.py to include output this information.  
+
+
+This will take 2 arguments, the ratio file and the outfile with the information for missing info 
+##Modify Scripts 
+MissingandNoVarGenes.py
+```{bash, eval=F}
+#!/usr/bin/env python
+
+import sys
+import gzip
+import numpy as np
+import scipy as sc
+import pickle
+
+from optparse import OptionParser
+    
+from sklearn.decomposition import PCA
+from sklearn import preprocessing
+from sklearn import linear_model
+
+from scipy.stats import rankdata
+from scipy.stats import norm
+
+def qqnorm(x):
+    n=len(x)
+    a=3.0/8.0 if n<=10 else 0.5
+    return(norm.ppf( (rankdata(x)-a)/(n+1.0-2.0*a) ))
+
+def stream_table(f, ss = ''):
+    fc = '#'
+    while fc[0] == "#":
+        fc = f.readline().strip()
+        head = fc.split(ss)
+
+    for ln in f:
+        ln = ln.strip().split(ss)
+        attr = {}
+
+        for i in range(len(head)):
+            try: attr[head[i]] = ln[i]
+            except: break
+        yield attr
+
+def main(ratio_file,out_File, pcs=50):
+    outF=open(out_File, "w")
+    n_Missing=0
+    n_lowVar=0
+    dic_pop, fout = {}, {}
+    try: open(ratio_file)
+    except: 
+        sys.stderr.write("Can't find %s..exiting\n"%(ratio_file))
+        return
+
+    sys.stderr.write("Starting...\n")
+    for i in range(1,23):
+        fout[i] = file(ratio_file+".phen_chr%d"%i,'w')
+        fout_ave = file(ratio_file+".ave",'w')
+    valRows, valRowsnn, geneRows = [], [], []
+    finished = False
+    header = gzip.open(ratio_file).readline().split()[1:]
+
+
+    for i in fout:
+        fout[i].write("\t".join(["#Chr","start", "end", "ID"]+header)+'\n')
+
+    for dic in stream_table(gzip.open(ratio_file),' '):
+
+        chrom = dic['chrom'].replace("chr",'')
+        chr_ = chrom.split(":")[0]
+        if chr_ in 'XY': continue
+        NA_indices, valRow, aveReads = [], [], []
+        tmpvalRow = []
+
+        i = 0
+        for sample in header:
+
+            try: count = dic[sample]
+            except: print chrom, len(dic)
+            num, denom = count.split('/')
+            if float(denom) < 1:
+                count = "NA"
+                tmpvalRow.append("NA")
+                NA_indices.append(i)
+            else:
+                # add a 0.5 pseudocount
+                count = (float(num)+0.5)/((float(denom))+0.5)
+                tmpvalRow.append(count) 
+                aveReads.append(count)
+
+
+        # If ratio is missing for over 40% of the samples, skip
+        if tmpvalRow.count("NA") > len(tmpvalRow)*0.4:
+            #this is missing data (i want to write this row to skipped genes)
+            n_Missing += 1
+            continue
+
+        ave = np.mean(aveReads)
+
+        # Set missing values as the mean of all values
+        for c in tmpvalRow:
+            if c == "NA": valRow.append(ave)
+            else: valRow.append(c)
+
+        # If there is too little variation, skip (there is a bug in fastqtl which doesn't handle cases with no variation)
+        if np.std(valRow) < 0.005:
+            #this is little variation (i want to write this row to little variation genes)
+            n_lowVar +=1 
+            continue
+    outF.write("MissingData:%d: NoVariation:%d"%(n_Missing,n_lowVar))
+    outF.close()
+
+if __name__ == "__main__":
+
+    parser = OptionParser(usage="usage: %prog [-p num_PCs] input_perind.counts.gz")
+    parser.add_option("-p", "--pcs", dest="npcs", default = 50, help="number of PCs output")
+    (options, args) = parser.parse_args()
+    if len(args)==0:
+        sys.stderr.write("Error: no ratio file provided... (e.g. python leafcutter/scripts/prepare_phenotype_table.py input_perind.counts.gz\n")
+        exit(0)
+    main(args[0], args[1], int(options.npcs))
+```
+
+Try this in /project2/gilad/briana/threeprimeseq/data/PASstats
+```{bash,eval=F}
+module load python 
+
+python /project2/gilad/briana/threeprimeseq/code/MissingandNoVarGenes.py /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz /project2/gilad/briana/threeprimeseq/data/PASstats/Nuclear_missing_and_noVar.txt
+
+python /project2/gilad/briana/threeprimeseq/code/MissingandNoVarGenes.py /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz /project2/gilad/briana/threeprimeseq/data/PASstats/Total_missing_and_noVar.txt
+
+```
+
+total (338142): 
+MissingData:1692: NoVariation:112641  
+Nuclear (338142):  
+MissingData:472: NoVariation:134521  
+
+This is 33% in total and 40% in nuclear with low variation.  
+
+It may be interesting to look at how many peaks have counts <5 in at least 40% of the individuals. This could tell me if we need to be filtering more.  
+
+LowExpPeaks.py
+
+Input the ratio matrix and a file to output the number of NAs due to low expression. I am looking at the number of peaks with <5 reads in at least 40% of the individuals.  
+```{bash, eval=F}
+#!/usr/bin/env python
+
+import sys
+import gzip
+import numpy as np
+import scipy as sc
+import pickle
+
+from optparse import OptionParser
+    
+from sklearn.decomposition import PCA
+from sklearn import preprocessing
+from sklearn import linear_model
+
+from scipy.stats import rankdata
+from scipy.stats import norm
+
+def qqnorm(x):
+    n=len(x)
+    a=3.0/8.0 if n<=10 else 0.5
+    return(norm.ppf( (rankdata(x)-a)/(n+1.0-2.0*a) ))
+
+def stream_table(f, ss = ''):
+    fc = '#'
+    while fc[0] == "#":
+        fc = f.readline().strip()
+        head = fc.split(ss)
+
+    for ln in f:
+        ln = ln.strip().split(ss)
+        attr = {}
+
+        for i in range(len(head)):
+            try: attr[head[i]] = ln[i]
+            except: break
+        yield attr
+
+def main(ratio_file,out_File, pcs=50):
+    outF=open(out_File, "w")
+    n_Missing=0
+    n_lowVar=0
+    dic_pop, fout = {}, {}
+    try: open(ratio_file)
+    except: 
+        sys.stderr.write("Can't find %s..exiting\n"%(ratio_file))
+        return
+
+    sys.stderr.write("Starting...\n")
+    for i in range(1,23):
+        fout[i] = file(ratio_file+".phen_chr%d"%i,'w')
+        fout_ave = file(ratio_file+".ave",'w')
+    valRows, valRowsnn, geneRows = [], [], []
+    finished = False
+    header = gzip.open(ratio_file).readline().split()[1:]
+
+
+    for i in fout:
+        fout[i].write("\t".join(["#Chr","start", "end", "ID"]+header)+'\n')
+
+    for dic in stream_table(gzip.open(ratio_file),' '):
+
+        chrom = dic['chrom'].replace("chr",'')
+        chr_ = chrom.split(":")[0]
+        if chr_ in 'XY': continue
+        NA_indices, valRow, aveReads = [], [], []
+        tmpvalRow = []
+
+        i = 0
+        for sample in header:
+
+            try: count = dic[sample]
+            except: print chrom, len(dic)
+            num, denom = count.split('/')
+            if float(denom) < 1:
+                count = "NA"
+                tmpvalRow.append("NA")
+                NA_indices.append(i)
+            #add condition to make the count NA if the numerator is less than 5 
+            if float(num) < 5:
+                count = "NA"
+                tmpvalRow.append("NA")
+                NA_indices.append(i)
+            else:
+                # add a 0.5 pseudocount
+                count = (float(num)+0.5)/((float(denom))+0.5)
+                tmpvalRow.append(count) 
+                aveReads.append(count)
+
+
+        # If ratio is missing for over 40% of the samples, skip
+        if tmpvalRow.count("NA") > len(tmpvalRow)*0.4:
+            #this is missing data (i want to write this row to skipped genes)
+            n_Missing += 1
+            continue
+
+        ave = np.mean(aveReads)
+
+        # Set missing values as the mean of all values
+        for c in tmpvalRow:
+            if c == "NA": valRow.append(ave)
+            else: valRow.append(c)
+
+        # If there is too little variation, skip (there is a bug in fastqtl which doesn't handle cases with no variation)
+        if np.std(valRow) < 0.005:
+            #this is little variation (i want to write this row to little variation genes)
+            n_lowVar +=1 
+            continue
+    outF.write("TooLow:%d\n"%(n_Missing))
+    outF.close()
+
+if __name__ == "__main__":
+
+    parser = OptionParser(usage="usage: %prog [-p num_PCs] input_perind.counts.gz")
+    parser.add_option("-p", "--pcs", dest="npcs", default = 50, help="number of PCs output")
+    (options, args) = parser.parse_args()
+    if len(args)==0:
+        sys.stderr.write("Error: no ratio file provided... (e.g. python leafcutter/scripts/prepare_phenotype_table.py input_perind.counts.gz\n")
+        exit(0)
+    main(args[0], args[1], int(options.npcs))
+```
+
+
+```{bash,eval=F}
+module load python 
+
+python /project2/gilad/briana/threeprimeseq/code/LowExpPeaks.py /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz /project2/gilad/briana/threeprimeseq/data/PASstats/Nuclear_LowExp.txt
+
+python /project2/gilad/briana/threeprimeseq/code/LowExpPeaks.py /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz /project2/gilad/briana/threeprimeseq/data/PASstats/Total_LowExp.txt
+
+```
+
+
+Total: 258090/338142
+Nuclear: 185530/338142
+
+
+##Plot results   
+
+
+```{r}
+library(workflowr)
+library(edgeR)
+library(tidyverse)
+library(reshape2)
+```
+
+
+```{r}
+fraction=c("Total", "Nuclear")
+NoVariation=c(0.33,0.40)
+LowExpression=c(0.76,0.55)
+PASstats=data.frame(fraction, NoVariation, LowExpression)
+PASstats_melt=melt(PASstats)
+```
+
+plot thid 
+```{r}
+ggplot(PASstats_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat="identity",position="dodge") + labs(y="Proportion of PAS", title="PAS with low variation or low expression", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet"))
+```
+
+##Do this de novo
+
+
+###CPM  
+It may be better to look at mean distribution of reads per peak to look for a cuttoff. I can take counts matrix 
+
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc  
+
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc
+
+It would be good to do this in CPM and look at the densities like you do for RNA seq. In order to do this. I need a vector with the peak lengths.  
+
+**total**:  
+
+Load data and convert to CPM with peak length.  
+```{r}
+totalPeakCov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header = T, stringsAsFactors = F)
+
+peakLength=totalPeakCov[,6]
+
+
+totalPeakCov_cpm= cpm(as.matrix(totalPeakCov[,7:ncol(totalPeakCov)]),log=T, gene.length=peakLength)
+```
+
+Plot prefiltered density
+```{r}
+plotDensities(totalPeakCov_cpm, legend = "bottomright", main="Pre-filtering")
+abline(v = -1, lty = 3)
+```
+Looks like filtering around -1 works. I can keep peaks with greater than -1 cpm in 2/3 of the samples (26)
+```{r}
+keep.exprs_T=rowSums(totalPeakCov_cpm>-1) >= 26
+totalPeakCov_cpm_filt= totalPeakCov_cpm[keep.exprs_T,]
+
+plotDensities(totalPeakCov_cpm_filt, legend = "bottomright", main="Post-filtering")
+```
+I can assess this with boxplots. It is interesting to see how different these data are from the RNA seq. 
+
+```{r}
+boxplot(totalPeakCov_cpm, main="Log CPM Counts by library prefilter")
+boxplot(totalPeakCov_cpm_filt, main="Log CPM Counts by library filtered")
+```
+
+
+
+**Nuclear**  
+
+Load data and convert to CPM with peak length.  
+```{r}
+nuclearPeakCov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header = T, stringsAsFactors = F)
+
+peakLengthN=nuclearPeakCov[,6]
+
+
+nuclearPeakCov_cpm= cpm(as.matrix(nuclearPeakCov[,7:ncol(nuclearPeakCov)]),log=T, gene.length=peakLengthN)
+```
+
+Plot prefiltered density
+```{r}
+plotDensities(nuclearPeakCov_cpm, legend = "bottomright", main="Pre-filtering")
+abline(v = 0, lty = 3)
+```
+Looks like filtering around -4.5 works. I can keep peaks with greater than -4.5 cpm in 2/3 of the samples (26)
+```{r}
+keep.exprs_N=rowSums(nuclearPeakCov_cpm>-4.5) >= 26
+nuclearPeakCov_cpm_filt= nuclearPeakCov_cpm[keep.exprs_T,]
+
+plotDensities(nuclearPeakCov_cpm_filt, legend = "bottomright", main="Post-filtering")
+```
+```{r}
+boxplot(nuclearPeakCov_cpm, main="Log CPM Counts by library prefilter")
+boxplot(nuclearPeakCov_cpm_filt, main="Log CPM Counts by library filtered")
+```
+
+I had to filter stronger in the total fraction to get similar boxplot distributions. I can compare this method to using raw counts rather than CPM.  
+
+With this scheme I have the following number of peaks remaining:  
+Total: 66,782
+Nuclear: 124,196 
+
+###Raw counts  
+
+
+**Total**  
+
+```{r}
+totalPeakCov_logM=log10(as.matrix(totalPeakCov[,7:ncol(totalPeakCov)]))
+plotDensities(totalPeakCov_logM, legend = "bottomright", main="Raw Pre-filtering")
+abline(v = .55, lty = 3)
+```
+I can filter 2/3 (26) individuals at .55.
+
+
+```{r}
+keep.exprs_T_raw=rowSums(totalPeakCov_logM>.55) >= 26
+totalPeakCov_raw_filt= totalPeakCov_logM[keep.exprs_T_raw,]
+
+plotDensities(totalPeakCov_raw_filt, legend = "bottomright", main="Post-filtering")
+```
+
+```{r}
+boxplot(totalPeakCov_logM, main="log Counts by library prefilter")
+boxplot(totalPeakCov_raw_filt, main="Log Counts by library filtered")
+```
+
+This leaves 80554 rows.  
+
+**Nuclear**
+
+
+```{r}
+nuclearPeakCov_logM=log10(as.matrix(nuclearPeakCov[,7:ncol(nuclearPeakCov)]))
+plotDensities(nuclearPeakCov_logM, legend = "bottomright", main="Raw Pre-filtering")
+abline(v = .55, lty = 3)
+```
+I can filter 2/3 (26) individuals at .55.
+
+
+```{r}
+keep.exprs_N_raw=rowSums(nuclearPeakCov_logM>.55) >= 26
+nuclearPeakCov_raw_filt= nuclearPeakCov_logM[keep.exprs_N_raw,]
+
+plotDensities(nuclearPeakCov_raw_filt, legend = "bottomright", main="Post-filtering")
+```
+
+```{r}
+boxplot(nuclearPeakCov_logM, main="log Counts by library prefilter")
+boxplot(nuclearPeakCov_raw_filt, main="Log Counts by library filtered")
+```
+
+
+This leaves 159308 peaks with coverage. 
+
+
+###Filter based on raw coverage  
+I am going to write a script to filter based on this cutoff so I can see if there is increased power to detect QTLs. I will need to change this when I add individuals.  
+
+extraFilterPeaks_39ind.R  
+```{r,eval=F}
+#this script will filter the peaks based on peaks with coverage greater than log10(cov)==.55 in 2/3 of the individuals, I will have to fix headers after 
+
+#nonfilter dir:  /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/  
+#filter dir: /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/
+
+
+#total
+totalPeak=read.table("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", stringsAsFactors = F, header=T)
+
+totalPeakCov_logM=log10(as.matrix(totalPeak[,7:ncol(totalPeak)]))
+keep.exprs_T_raw=rowSums(totalPeakCov_logM>.55) >= 26
+totalPeakCov_raw_filt= totalPeak[keep.exprs_T_raw,]
+
+write.table(totalPeakCov_raw_filt,file="/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", quote=F, col.names = T ,row.names = F)
+
+#nuclear 
+
+nuclearPeak=read.table("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header = T)
+
+nuclearPeakCov_logM=log10(as.matrix(nuclearPeak[,7:ncol(nuclearPeak)]))
+keep.exprs_N_raw=rowSums(nuclearPeakCov_logM>.55) >= 26
+nuclearPeakCov_raw_filt= nuclearPeak[keep.exprs_N_raw,]
+
+write.table(nuclearPeakCov_raw_filt,file="/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", quote=F, col.names = T,row.names = F )
+
+
+
+
+```
+
+I can use fileIDs /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_total_Transcript_head.txt and /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_nuclear_Transcript_head.txt  
+
+makePhenoRefSeqPeaks_Transcript_Total_extraFilt.py
+
+```{bash,eval=F}
+#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_total_Transcript.txt"):
+    bam, IND = ln.split("\t")
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#gene start and end dictionaries: 
+dic_geneS = {}
+dic_geneE = {}
+for ln in open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes_sort.txt"):
+    chrom, start, end, geneID, score, strand = ln.split('\t')
+    gene= geneID.split(":")[1]
+    if "-" in gene:
+        gene=gene.split("-")[0]
+    if gene not in dic_geneS:
+        dic_geneS[gene]=int(start)
+        dic_geneE[gene]=int(end)
+        
+
+
+#list of genes   
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", "r")
+genes=[]
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open("/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", "r")
+for line, i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open("/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt","w")
+peak=["chrom"]
+inds_noL=[]
+for each in inds:
+    indsNA= "NA" + each[:-2]
+    inds_noL.append(indsNA) 
+fout.write(" ".join(peak + inds_noL) + '\n' )
+
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", "r")
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        start=dic_geneS[id_list[5]]
+        end=dic_geneE[id_list[5]]
+        buff=[]
+        buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append("%d/%d"%(t,b))
+        fout.write(" ".join(buff)+ '\n')
+        
+fout.close()
+```
+
+
+makePhenoRefSeqPeaks_Transcript_Nuclear_extraFilt.py
+
+```{bash,eval=F}
+#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_nuclear_Transcript.txt"):
+    bam, IND = ln.split("\t")
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#gene start and end dictionaries: 
+dic_geneS = {}
+dic_geneE = {}
+for ln in open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes_sort.txt"):
+    chrom, start, end, geneID, score, strand = ln.split('\t')
+    gene= geneID.split(":")[1]
+    if "-" in gene:
+        gene=gene.split("-")[0]
+    if gene not in dic_geneS:
+        dic_geneS[gene]=int(start)
+        dic_geneE[gene]=int(end)
+        
+
+
+#list of genes   
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", "r")
+genes=[]
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open("/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", "r")
+for line, i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open("/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt","w")
+peak=["chrom"]
+inds_noL=[]
+for each in inds:
+    indsNA= "NA" + each[:-2]
+    inds_noL.append(indsNA) 
+fout.write(" ".join(peak + inds_noL) + '\n' )
+
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", "r")
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        start=dic_geneS[id_list[5]]
+        end=dic_geneE[id_list[5]]
+        buff=[]
+        buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append("%d/%d"%(t,b))
+        fout.write(" ".join(buff)+ '\n')
+        
+fout.close()
+```
+
+run_makePhen_sep_Transcript_extraFilt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_makepheno_sep_trans_filt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_makepheno_sep_trans_filt.out
+#SBATCH --error=run_makepheno_sep_trans_filt.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python makePhenoRefSeqPeaks_Transcript_Total_extraFilt.py  
+
+python makePhenoRefSeqPeaks_Transcript_Nuclear_extraFilt.py  
+
+```
+
+
+Prepare for fastQTL  
+
+/project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov
+
+```{bash,eval=F}
+module load samtools
+#zip file 
+gzip Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt
+
+module load python
+#leafcutter script
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py  Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz 
+
+#source activate three-prime-env
+sh  Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz_prepare.sh
+
+#run for nuclear as well 
+gzip  Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt
+#unload anaconda, load python
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py  Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz
+#load anaconda and env. 
+sh  Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz_prepare.sh
+
+
+
+
+
+#keep only 2 PCs
+head -n 3 Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.PCs > Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs
+head -n 3 Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.PCs > Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs
+```
+
+
+Now I can rerun the modified leafcutter and see if this improves the drop proportion.  
+
+
+```{bash,eval=F}
+module load python 
+
+python /project2/gilad/briana/threeprimeseq/code/MissingandNoVarGenes.py /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz /project2/gilad/briana/threeprimeseq/data/PASstats/Total_missing_and_noVarFilter.txt
+
+python /project2/gilad/briana/threeprimeseq/code/MissingandNoVarGenes.py /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz /project2/gilad/briana/threeprimeseq/data/PASstats/Nuclear_missing_and_noVarFilter.txt
+
+
+
+
+python /project2/gilad/briana/threeprimeseq/code/LowExpPeaks.py /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz /project2/gilad/briana/threeprimeseq/data/PASstats/Nuclear_LowExpFilter.txt
+
+python /project2/gilad/briana/threeprimeseq/code/LowExpPeaks.py /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz /project2/gilad/briana/threeprimeseq/data/PASstats/Total_LowExpFilter.txt
+
+```
+
+No variation  
+* Nuclear: 37738/159308  
+* Total: 8289/80554  
+Low exp  
+* Nuclear 8221/159308  
+* Total: 2808/80554  
+
+
+```{r}
+#total, nuclear
+NoVariationFilt=c(0.10,0.23)
+LowExpressionFilt=c(0.035,0.052)
+PASstatsFilt=data.frame(fraction, NoVariationFilt, LowExpressionFilt)
+PASstatsFilt_melt=melt(PASstatsFilt)
+```
+
+plot thid 
+```{r}
+ggplot(PASstatsFilt_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat="identity",position="dodge") + labs(y="Proportion of Filtered PAS", title="PAS with low variation or low expression after filtering", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet"))
+```
+
+merge the pre and post filter into the same dataframe (did this in excel and saved it)
+```{r}
+PasStats_all=read.csv("../data/PeakCounts/pasStats.csv", header=T, stringsAsFactors = F)
+
+ggplot(PasStats_all, aes(x=Category, y=Value,fill=Fraction))+ geom_bar(stat="identity",position="dodge")  +labs(y="Proportion of PAS", title="PAS with low variation or low expression before and after filtering", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet")) + facet_grid(~Filter)
+```
+
+Rerun QTL analysis.
+
+I can use the same sample list. /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt"  
+APAqtl_nominal_transcript_filt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_transcript_filt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_transcript_filt.out
+#SBATCH --error=APAqtl_nominal_transcript_filt.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+```
+
+
+permuted:  
+
+APAqtl_permuted_transcript_filt.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_permuted_transcript_filt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_permuted_transcript_filt.out
+#SBATCH --error=APAqtl_permuted_transcript_filt.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/ExtrafiltPeakOppstrand_cov/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+```
+
+APAqtlpermCorrectQQplot_trans_filt.R
+```{r, eval=F}
+library(dplyr)
+
+
+##total results
+tot.perm= read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_permRes.out",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+#BH correction
+tot.perm$bh=p.adjust(tot.perm$bpval, method="fdr")
+
+#plot qqplot
+png("/project2/gilad/briana/threeprimeseq/output/plots/qqplot_total_APAperm_transcript_filt.png") 
+qqplot_total= qqplot(-log10(runif(nrow(tot.perm))), -log10(tot.perm$bpval),ylab="-log10 Total permuted pvalue", xlab="Uniform expectation", main="Total permuted pvalues for all snps")
+abline(0,1)
+dev.off()
+
+#write df with BH  
+
+write.table(tot.perm, file = "/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_permResBH.out", col.names = T, row.names = F, quote = F)
+
+##nuclear results  
+
+
+nuc.perm= read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_permRes.out",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+nuc.perm$bh=p.adjust(nuc.perm$bpval, method="fdr")
+
+
+#plot qqplot
+png("/project2/gilad/briana/threeprimeseq/output/plots/qqplot_nuclear_APAperm_transcript_filt.png") 
+qqplot(-log10(runif(nrow(nuc.perm))), -log10(nuc.perm$bpval),ylab="-log10 Nuclear permuted pvalue", xlab="Uniform expectation", main="Nuclear permuted pvalues for all snps")
+abline(0,1)
+dev.off()
+
+# write df with BH
+write.table(nuc.perm, file = "/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_permResBH.out", col.names = T, row.names = F, quote = F)
+```
+
+run_APAqtlpermCorrectQQplot_trans_filt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_APAqtlpermCorrectQQplot_trans_filt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_APAqtlpermCorrectQQplot_trans_filt.out
+#SBATCH --error=run_APAqtlpermCorrectQQplot_trans_filt.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript APAqtlpermCorrectQQplot_trans_filt.R 
+```
+
+
+Evaluate results:  
+
+
+Total:  
+```{r}
+tot.perm= read.table("../data/perm_QTL_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_permResBH.out",head=T, stringsAsFactors=F)
+
+tot.perm %>% filter(-log10(bh) > 1) %>% nrow()
+```
+
+
+Nuclear:  
+
+```{r}
+nuc.perm= read.table("../data/perm_QTL_trans_filt/Extrafiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_permResBH.out",head=T, stringsAsFactors=F)
+
+nuc.perm %>% filter(-log10(bh) > 1) %>% nrow()
+```
+
+
+This analysis gives 183 total and 1031 nuclear. (65 more total and 151 more in nuclear)  
+
+```{r}
+plot(tot.perm$ppval, tot.perm$bpval, xlab="Direct method", ylab="Beta approximation", main="Total Check plot")
+abline(0, 1, col="red")
+
+plot(nuc.perm$ppval, nuc.perm$bpval, xlab="Direct method", ylab="Beta approximation", main="Nuclear Check plot")
+abline(0, 1, col="red")
+```
+

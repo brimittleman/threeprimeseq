@@ -1,0 +1,93 @@
+---
+title: "Explaining pQTLS"
+author: "Briana Mittleman"
+date: "11/29/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this analysis I want to look at how well the eQTLs and apaQTLs an explain pQTLs. I will use linear models on the effect sizes.  
+
+*Libraries*  
+```{r}
+library(workflowr)
+library(tidyverse)
+library(reshape2)
+library(cowplot)
+```
+
+Input the pQTLs (10% FDR) and gene names
+
+```{r}
+geneNames=read.table("../data/ensemble_to_genename.txt", sep="\t", header=T,stringsAsFactors = F)
+pQTL=read.table("../data/other_qtls/fastqtl_qqnorm_prot.fixed.perm.out", col.names = c("Gene.stable.ID", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"), header = F, stringsAsFactors = F) %>% inner_join(geneNames, by="Gene.stable.ID") %>% dplyr::select("Gene.name","Gene.stable.ID", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval")
+
+pQTL$bh=p.adjust(pQTL$bpval, method="fdr")
+
+pQTL_sig=pQTL %>% filter(-log10(bh)> 1) 
+```
+
+
+
+Start with the exanple with the highest effect size:  
+
+CCDC51- ENSG00000164051 3:48476431
+
+I need all of the results for this snp gene pair from the total, nuclear, and RNA nominal files. I can make a python script that will take the gene name and snp and create the relevent dataframe.  
+
+files: 
+* /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt  
+* /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt  
+* /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out (need the ENSG ID)  
+
+
+
+APAandRNAfromProtQTLs.py
+```{bash,eval=F}
+#use this by inserting a gene, gene_ensg (from prot), and snp for the protien QTLs
+def main(gene, gene_ensg,snp):
+    out_RNA=open("/project2/gilad/briana/threeprimeseq/data/protQTL_otherphen/%s_%s_RNAres.txt"%(gene, snp), "w")
+    out_Total=open("/project2/gilad/briana/threeprimeseq/data/protQTL_otherphen/%s_%s_Totalres.txt"%(gene, snp), "w")
+    out_Nulcear=open("/project2/gilad/briana/threeprimeseq/data/protQTL_otherphen/%s_%s_Nuclearres.txt"%(gene, snp), "w")
+    for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt", "r"):
+       s=ln.split()[1]
+       g=ln.split()[0].split(":")[3].split("_")[0]
+       if g==gene and s==snp:
+           out_Nuclear.write(ln)
+    for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt", "r"):
+       s=ln.split()[1]
+       g=ln.split()[0].split(":")[3].split("_")[0]
+       if g==gene and s==snp:
+           out_Total.write(ln)
+    for ln in open("/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out", "r"):
+        s=ln.split()[1]
+        g=ln.split()[0]
+        if g in gene and s==snp:
+          out_RNA.write(ln) 
+
+    out_Total.close()
+    out_Nuclear.close()
+    out_RNA.close()
+
+if __name__ == "__main__":
+    import sys
+    gene=sys.argv[1]
+    gene_ensg=sys.argv[2]
+    snp=sys.argv[3]
+    main(gene, gene_ensg, snp)
+    
+
+
+```
+
+```{bash,eval=F}
+APAandRNAfromProtQTLs.py CCDC51 ENSG00000164051 3:48476431
+```
+
+
+I first want to look at the effect sizes. I am interested in understanding the directions of the effect sizes.  
+
+
