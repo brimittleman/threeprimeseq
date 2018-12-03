@@ -687,4 +687,19 @@ anova(DHRS7B_lmProtRNA,DHRS7B_lmProtAPARNA)
 anova(FYTTD1_lmProtRNA,FYTTD1_lmProtAPARNA)
 ```
 
-The models are significantly different 
+The models are significantly different
+
+
+###Random values  
+
+```{r}
+CCDC51_apaTotProtRNA_rand=transform(CCDC51_apaTotProtRNA,peak216857=sample(peak216857), peak216858=sample(peak216858),peak216859=sample(peak216859), peak216860=sample(peak216860) ,peak216867=sample(peak216867))
+
+
+CCDC51_lmProtAPA_rand=lm(CCDC51_RNA_Resid ~ CCDC51_apaTotProtRNA_rand$peak216857 + CCDC51_apaTotProtRNA_rand$peak216858 + CCDC51_apaTotProtRNA_rand$peak216859 + CCDC51_apaTotProtRNA_rand$peak216860 + CCDC51_apaTotProtRNA_rand$peak216867)
+
+
+summary(CCDC51_lmProtAPA_rand)
+```
+
+
