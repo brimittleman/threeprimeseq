@@ -16,6 +16,7 @@ In this analysis I want to look at how well the eQTLs and apaQTLs an explain pQT
 library(workflowr)
 library(tidyverse)
 library(reshape2)
+library(broom)
 library(cowplot)
 ```
 
@@ -31,7 +32,7 @@ pQTL_sig=pQTL %>% filter(-log10(bh)> 1)
 ```
 
 
-
+##Example CCDC51
 Start with the exanple with the highest effect size:  
 
 CCDC51- ENSG00000164051 3:48476431
@@ -49,28 +50,35 @@ APAandRNAfromProtQTLs.py
 ```{bash,eval=F}
 #use this by inserting a gene, gene_ensg (from prot), and snp for the protien QTLs
 def main(gene, gene_ensg,snp):
+    out_prot=open("/project2/gilad/briana/threeprimeseq/data/protQTL_otherphen/%s_%s_Protres.txt"%(gene, snp), "w")
     out_RNA=open("/project2/gilad/briana/threeprimeseq/data/protQTL_otherphen/%s_%s_RNAres.txt"%(gene, snp), "w")
     out_Total=open("/project2/gilad/briana/threeprimeseq/data/protQTL_otherphen/%s_%s_Totalres.txt"%(gene, snp), "w")
-    out_Nulcear=open("/project2/gilad/briana/threeprimeseq/data/protQTL_otherphen/%s_%s_Nuclearres.txt"%(gene, snp), "w")
+    out_Nuclear=open("/project2/gilad/briana/threeprimeseq/data/protQTL_otherphen/%s_%s_Nuclearres.txt"%(gene, snp), "w")
     for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Nuclear_NomRes.txt", "r"):
        s=ln.split()[1]
        g=ln.split()[0].split(":")[3].split("_")[0]
-       if g==gene and s==snp:
+       if g==gene:
            out_Nuclear.write(ln)
     for ln in open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/filtered_APApeaks_merged_allchrom_refseqGenes_pheno_Total_NomRes.txt", "r"):
        s=ln.split()[1]
        g=ln.split()[0].split(":")[3].split("_")[0]
-       if g==gene and s==snp:
+       if g==gene:
            out_Total.write(ln)
     for ln in open("/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out", "r"):
         s=ln.split()[1]
         g=ln.split()[0]
-        if g in gene and s==snp:
+        if gene_ensg in g:
           out_RNA.write(ln) 
+    for ln in open("/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out", "r"):
+        s=ln.split()[1]
+        g=ln.split()[0]
+        if gene_ensg in g:
+          out_prot.write(ln) 
 
     out_Total.close()
     out_Nuclear.close()
     out_RNA.close()
+    out_prot.close()
 
 if __name__ == "__main__":
     import sys
@@ -82,12 +90,490 @@ if __name__ == "__main__":
 
 
 ```
-
+CCDC51_APAandRNAfromProtQTLs.sh
 ```{bash,eval=F}
-APAandRNAfromProtQTLs.py CCDC51 ENSG00000164051 3:48476431
+#!/bin/bash
+
+#SBATCH --job-name=CCDC51_APAandRNAfromProtQTLs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=CCDC51_APAandRNAfromProtQTLs.out
+#SBATCH --error=CCDC51_APAandRNAfromProtQTLs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load python
+
+python APAandRNAfromProtQTLs.py CCDC51 ENSG00000164051 3:48476431 
 ```
+
+
 
 
 I first want to look at the effect sizes. I am interested in understanding the directions of the effect sizes.  
 
+3:48728204. This genotype is in the genotype file twice. I am gonig to remove this snp from the analysis.  
+```{r}
+nom_names=c("gene", "snp", "dist", "pval", "slope")
+CCDC51_apaTot=read.table("../data/pQTL_otherphen/CCDC51_3:48476431_Totalres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope)
+CCDC51_apaTot=filter(CCDC51_apaTot, !grepl("3:48728204",snp))
+CCDC51_apaNuc=read.table("../data/pQTL_otherphen/CCDC51_3:48476431_Nuclearres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope)
+CCDC51_apaNuc=filter(CCDC51_apaNuc, !grepl("3:48728204",snp))
+CCDC51_RNA=read.table("../data/pQTL_otherphen/CCDC51_3:48476431_RNAres.txt", col.names = nom_names, stringsAsFactors = F) %>% select(snp, slope)
+CCDC51_RNA=filter(CCDC51_RNA, !grepl("3:48728204",snp))
+CCDC51_Prot=read.table("../data/pQTL_otherphen/CCDC51_3:48476431_Protres.txt", col.names = nom_names, stringsAsFactors = F)%>%  select(snp, slope)
+CCDC51_Prot=filter(CCDC51_Prot, !grepl("3:48728204",snp))
+
+```
+Start with RNA and protein because they are the most simple
+```{r}
+CCDC51_ProtRNA=CCDC51_RNA %>% left_join(CCDC51_Prot, by="snp")
+colnames(CCDC51_ProtRNA)=c("snp", "RNA", "Protein")
+```
+
+Model:  
+```{r}
+CCDC51_lmProtRNA=lm(Protein ~ RNA, data=CCDC51_ProtRNA)
+CCDC51_lmProtRNA_sum=glance(CCDC51_lmProtRNA)
+
+```
+
+Plot this:  
+
+```{r}
+plot(CCDC51_ProtRNA$Protein ~ CCDC51_ProtRNA$RNA)
+abline(lm(CCDC51_ProtRNA$Protein ~ CCDC51_ProtRNA$RNA))
+
+```
+For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df. 
+
+```{r}
+CCDC51_apaTot_s=spread(CCDC51_apaTot, "peak", "slope",drop = F)
+```
+
+
+```{r}
+CCDC51_apaNuc_s=spread(CCDC51_apaNuc, "peak", "slope",drop = F)
+```
+
+
+
+I can look at the protein ~ apaTotal.  
+
+```{r}
+CCDC51_apaTotProt=CCDC51_apaTot_s %>% left_join(CCDC51_Prot, by="snp")
+colnames(CCDC51_apaTotProt)=c("snp", "peak216857", "peak216858", "peak216859", "peak216860", "peak216867","Protein")
+```
+
+```{r}
+
+
+
+CCDC51_lmProtAPA=lm(Protein ~peak216857 + peak216858 + peak216859 + peak216860 + peak216867, data=CCDC51_apaTotProt)
+CCDC51_lmProtAPA_sum=glance(CCDC51_lmProtAPA)
+
+```
+
+Try with all of it:  
+
+```{r}
+CCDC51_apaTotProtRNA=CCDC51_apaTot_s %>% left_join(CCDC51_ProtRNA, by="snp")
+colnames(CCDC51_apaTotProtRNA)=c("snp", "peak216857", "peak216858", "peak216859", "peak216860", "peak216867","RNA","Protein")
+```
+
+
+```{r}
+CCDC51_lmProtAPARNA=lm(Protein ~RNA +peak216857 + peak216858 + peak216859 + peak216860 + peak216867, data=CCDC51_apaTotProtRNA)
+CCDC51_lmProtAPARNA_sum=glance(CCDC51_lmProtAPARNA)
+adjR2_CCDC51=cbind("CCDC51", CCDC51_lmProtRNA_sum[1,2], CCDC51_lmProtAPA_sum[1,2], CCDC51_lmProtAPARNA_sum[1,2])
+colnames(adjR2_CCDC51)=c("Gene", "RNA", "APA", "RNAandAPA")
+```
+
+##Example DTD1
+
+DTD1- ENSG00000125821 20:18607243  
+
+DTD1_APAandRNAfromProtQTLs.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=DTD1_APAandRNAfromProtQTLs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=DTD1_APAandRNAfromProtQTLs.out
+#SBATCH --error=DTD1_APAandRNAfromProtQTLs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load python
+
+python APAandRNAfromProtQTLs.py DTD1 ENSG00000125821 20:18607243
+```
+
+
+```{r}
+nom_names=c("gene", "snp", "dist", "pval", "slope")
+
+DTD1_RNA=read.table("../data/pQTL_otherphen/DTD1_20:18607243_RNAres.txt", col.names = nom_names, stringsAsFactors = F) %>% select(snp, slope) %>%  filter(!duplicated(snp))
+
+DTD1_Prot=read.table("../data/pQTL_otherphen/DTD1_20:18607243_Protres.txt", col.names = nom_names, stringsAsFactors = F)%>%  select(snp, slope) %>%  filter(!duplicated(snp))
+
+
+
+#FILTER snps in the list from Rna and prot
+DTD1_apaTot=read.table("../data/pQTL_otherphen/DTD1_20:18607243_Totalres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope) %>% group_by(peak) %>%  filter(!duplicated(snp)) 
+DTD1_apaNuc=read.table("../data/pQTL_otherphen/DTD1_20:18607243_Nuclearres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope) %>% group_by(peak) %>%  filter(!duplicated(snp)) 
+
+```
+
+Start with RNA and protein because they are the most simple
+```{r}
+DTD1_ProtRNA=DTD1_RNA %>% left_join(DTD1_Prot, by="snp")
+colnames(DTD1_ProtRNA)=c("snp", "RNA", "Protein")
+```
+
+Model:  
+```{r}
+DTD1_lmProtRNA=lm(Protein ~ RNA, data=DTD1_ProtRNA)
+DTD1_lmProtRNA_sum=glance(DTD1_lmProtRNA)
+```
+
+```{r}
+DTD1_apaTot_s=spread(DTD1_apaTot, "peak", "slope",drop = F)
+```
+
+
+```{r}
+DTD1_apaNuc_s=spread(DTD1_apaNuc, "peak", "slope",drop = F)
+```
+
+```{r}
+DTD1_apaTotProt=DTD1_apaTot_s %>% inner_join(DTD1_Prot, by="snp")
+
+colnames(DTD1_apaTotProt)=c("snp", "peak195416", "peak195418" ,"peak195419", "peak195420", "peak195423", "peak195424","peak195425" ,"peak195426", "peak195427", "peak195428", "peak195429", "peak195430", "peak195431","peak195432", "peak195433" ,"peak195434" ,"peak195436", "peak195438", "peak195443", "peak195444" ,"peak195445", "peak195446", "peak195447", "peak195449" ,"peak195450", "peak195451", "peak195452","peak195453", "peak195454", "peak195455" ,"protein")
+```
+
+
+```{r}
+DTD1_lmProtAPA=lm(protein ~ peak195416+ peak195418 +peak195419+peak195420+ peak195423+ peak195424+peak195425 +peak195426+ peak195427+ peak195428+ peak195429+ peak195430 + peak195431+peak195432 + peak195433+peak195434+peak195436+peak195438+peak195443+peak195444+peak195445+peak195446+peak195447+peak195449+peak195450+peak195451+peak195452+peak195453+ peak195454 +peak195455, data=DTD1_apaTotProt)
+DTD1_lmProtAPA_sum=glance(DTD1_lmProtAPA)
+```
+
+Try with all:  
+
+```{r}
+DTD1_apaTotProtRNA=DTD1_apaTot_s %>% inner_join(DTD1_ProtRNA, by="snp")
+
+colnames(DTD1_apaTotProtRNA)=c("snp", "peak195416", "peak195418" ,"peak195419", "peak195420", "peak195423", "peak195424","peak195425" ,"peak195426", "peak195427", "peak195428", "peak195429", "peak195430", "peak195431","peak195432", "peak195433" ,"peak195434" ,"peak195436", "peak195438", "peak195443", "peak195444" ,"peak195445", "peak195446", "peak195447", "peak195449" ,"peak195450", "peak195451", "peak195452","peak195453", "peak195454", "peak195455" ,"RNA", "protein")
+```
+
+```{r}
+DTD1_lmProtAPARNA=lm(protein ~RNA+ peak195416+ peak195418 +peak195419+peak195420+ peak195423+ peak195424+peak195425 +peak195426+ peak195427+ peak195428+ peak195429+ peak195430 + peak195431+peak195432 + peak195433+peak195434+peak195436+peak195438+peak195443+peak195444+peak195445+peak195446+peak195447+peak195449+peak195450+peak195451+peak195452+peak195453+ peak195454 +peak195455, data=DTD1_apaTotProtRNA)
+DTD1_lmProtAPARNA_sum=glance(DTD1_lmProtAPARNA)
+
+adjR2_DTD1=cbind("DTD1",DTD1_lmProtRNA_sum[1,2], DTD1_lmProtAPA_sum[1,2], DTD1_lmProtAPARNA_sum[1,2])
+colnames(adjR2_DTD1)=c("Gene", "RNA", "APA", "RNAandAPA")
+```
+
+##Example DHRS7B
+
+DHRS7B ENSG00000109016 17:21036822
+DHRS7B_APAandRNAfromProtQTLs.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=DHRS7B_APAandRNAfromProtQTLs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=DHRS7B_APAandRNAfromProtQTLs.out
+#SBATCH --error=DHRS7B_APAandRNAfromProtQTLs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load python
+
+python APAandRNAfromProtQTLs.py DHRS7B ENSG00000109016 17:21036822
+```
+
+
+```{r}
+nom_names=c("gene", "snp", "dist", "pval", "slope")
+
+DHRS7B_RNA=read.table("../data/pQTL_otherphen/DHRS7B_17:21036822_RNAres.txt", col.names = nom_names, stringsAsFactors = F) %>% select(snp, slope) %>%  filter(!duplicated(snp))
+
+DHRS7B_Prot=read.table("../data/pQTL_otherphen/DHRS7B_17:21036822_Protres.txt", col.names = nom_names, stringsAsFactors = F)%>%  select(snp, slope) %>%  filter(!duplicated(snp))
+
+
+
+#FILTER snps in the list from Rna and prot
+DHRS7B_apaTot=read.table("../data/pQTL_otherphen/DHRS7B_17:21036822_Totalres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope) %>% group_by(peak) %>%  filter(!duplicated(snp)) 
+DHRS7B_apaNuc=read.table("../data/pQTL_otherphen/DHRS7B_17:21036822_Nuclearres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope) %>% group_by(peak) %>%  filter(!duplicated(snp)) 
+
+```
+
+
+Start with RNA and protein because they are the most simple
+```{r}
+DHRS7B_ProtRNA=DHRS7B_RNA %>% left_join(DHRS7B_Prot, by="snp")
+colnames(DHRS7B_ProtRNA)=c("snp", "RNA", "Protein")
+```
+
+Model:  
+```{r}
+DHRS7B_lmProtRNA=lm(Protein ~ RNA, data=DHRS7B_ProtRNA)
+
+DHRS7B_lmProtRNA_sum=glance(DHRS7B_lmProtRNA)
+```
+For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df. 
+
+```{r}
+DHRS7B_apaTot_s=spread(DHRS7B_apaTot, "peak", "slope",drop = F)
+```
+
+
+```{r}
+DHRS7B_apaNuc_s=spread(DHRS7B_apaNuc, "peak", "slope",drop = F)
+```
+
+
+
+I can look at the protein ~ apaTotal.  
+
+```{r}
+DHRS7B_apaTotProt=DHRS7B_apaTot_s %>% left_join(DHRS7B_Prot, by="snp")
+colnames(DHRS7B_apaTotProt)=c(names(DHRS7B_apaTot_s),"Protein")
+```
+
+```{r}
+DHRS7B_lmProtAPA=lm(Protein ~ peak132690+peak132692+peak132693+peak132694+peak132720+peak132721+peak132722+peak132723+peak132724+peak132725+peak132728+peak132729+peak132730+peak132732+peak132733+peak132734+peak132735+peak132738+peak132739+peak132740+peak132741+peak132742+peak132744+peak132745 +peak132746+peak132747+peak132748+peak132749+peak132750+peak132751+peak132753+peak132754+ peak132755+peak132756+peak132757+peak132760+peak132761+peak132762+peak132763+peak132764+peak132766+peak132774+peak132775+peak132777+peak132778+peak132780, data=DHRS7B_apaTotProt)
+DHRS7B_lmProtAPA_sum=glance(DHRS7B_lmProtAPA)
+
+
+```
+Try with all:  
+
+```{r}
+DHRS7B_apaTotProtRNA=DHRS7B_apaTot_s %>% inner_join(DHRS7B_ProtRNA, by="snp")
+
+colnames(DHRS7B_apaTotProtRNA)=c(names(DHRS7B_apaTot_s),"RNA", "protein")
+```
+
+```{r}
+DHRS7B_lmProtAPARNA=lm(protein ~ peak132690+peak132692+peak132693+peak132694+peak132720+peak132721+peak132722+peak132723+peak132724+peak132725+peak132728+peak132729+peak132730+peak132732+peak132733+peak132734+peak132735+peak132738+peak132739+peak132740+peak132741+peak132742+peak132744+peak132745 +peak132746+peak132747+peak132748+peak132749+peak132750+peak132751+peak132753+peak132754+ peak132755+peak132756+peak132757+peak132760+peak132761+peak132762+peak132763+peak132764+peak132766+peak132774+peak132775+peak132777+peak132778+peak132780, data=DHRS7B_apaTotProtRNA)
+
+DHRS7B_lmProtAPARNA_sum=glance(DHRS7B_lmProtAPARNA)
+
+adjR2_DHRS7B=cbind("DHRS7B",DHRS7B_lmProtRNA_sum[1,2], DHRS7B_lmProtAPA_sum[1,2], DHRS7B_lmProtAPARNA_sum[1,2])
+colnames(adjR2_DHRS7B)=c("Gene",  "RNA", "APA", "RNAandAPA")
+
+```
+##Example MMAB  
+
+ENSG00000139428 MMAB 12:109997847  
+
+MMAB_APAandRNAfromProtQTLs.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MMAB_APAandRNAfromProtQTLs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MMAB_APAandRNAfromProtQTLs.out
+#SBATCH --error=MMAB_APAandRNAfromProtQTLs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load python
+
+python APAandRNAfromProtQTLs.py MMAB ENSG00000139428 12:109997847 
+```
+
+
+```{r}
+nom_names=c("gene", "snp", "dist", "pval", "slope")
+
+MMAB_RNA=read.table("../data/pQTL_otherphen/MMAB_12:109997847_RNAres.txt", col.names = nom_names, stringsAsFactors = F) %>% select(snp, slope) %>%  filter(!duplicated(snp))
+
+MMAB_Prot=read.table("../data/pQTL_otherphen/MMAB_12:109997847_Protres.txt", col.names = nom_names, stringsAsFactors = F)%>%  select(snp, slope) %>%  filter(!duplicated(snp))
+
+
+
+#FILTER snps in the list from Rna and prot
+MMAB_apaTot=read.table("../data/pQTL_otherphen/MMAB_12:109997847_Totalres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope) %>% group_by(peak) %>%  filter(!duplicated(snp)) 
+MMAB_apaNuc=read.table("../data/pQTL_otherphen/MMAB_12:109997847_Nuclearres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope) %>% group_by(peak) %>%  filter(!duplicated(snp)) 
+
+```
+
+
+
+Start with RNA and protein because they are the most simple
+```{r}
+MMAB_ProtRNA=MMAB_RNA %>% left_join(MMAB_Prot, by="snp")
+colnames(MMAB_ProtRNA)=c("snp", "RNA", "Protein")
+```
+
+Model:  
+```{r}
+MMAB_lmProtRNA=lm(Protein ~ RNA, data=MMAB_ProtRNA)
+MMAB_lmProtRNA_sum=glance(MMAB_lmProtRNA)
+```
+For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df. 
+
+```{r}
+MMAB_apaTot_s=spread(MMAB_apaTot, "peak", "slope",drop = F)
+```
+
+
+```{r}
+MMAB_apaNuc_s=spread(MMAB_apaNuc, "peak", "slope",drop = F)
+```
+
+
+
+I can look at the protein ~ apaTotal.  
+
+```{r}
+MMAB_apaTotProt=MMAB_apaTot_s %>% left_join(MMAB_Prot, by="snp")
+colnames(MMAB_apaTotProt)=c(names(MMAB_apaTot_s),"Protein")
+```
+
+```{r}
+MMAB_lmProtAPA=lm(Protein ~ peak78754+peak78755+peak78756+peak78757+peak78758+peak78759+peak78760+peak78761+peak78762+peak78763+peak78764+peak78765+peak78766, data=MMAB_apaTotProt)
+MMAB_lmProtAPA_sum=glance(MMAB_lmProtAPA)
+```
+
+
+Try with all:  
+
+```{r}
+MMAB_apaTotProtRNA=MMAB_apaTot_s %>% inner_join(MMAB_ProtRNA, by="snp")
+
+colnames(MMAB_apaTotProtRNA)=c(names(MMAB_apaTot_s),"RNA", "protein")
+```
+
+
+```{r}
+MMAB_lmProtAPARNA=lm(protein ~RNA+ peak78754+peak78755+peak78756+peak78757+peak78758+peak78759+peak78760+peak78761+peak78762+peak78763+peak78764+peak78765+peak78766, data=MMAB_apaTotProtRNA)
+MMAB_lmProtAPARNA_sum=glance(MMAB_lmProtAPARNA)
+
+adjR2_MMAB=cbind("MMAB",MMAB_lmProtRNA_sum[1,2], MMAB_lmProtAPA_sum[1,2], MMAB_lmProtAPARNA_sum[1,2])
+colnames(adjR2_MMAB)=c("Gene",  "RNA", "APA", "RNAandAPA")
+
+```
+
+##Example FYTTD1
+
+FYTTD1 ENSG00000122068 3:197035232  
+
+FYTTD1_APAandRNAfromProtQTLs.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=FYTTD1_APAandRNAfromProtQTLs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=FYTTD1_APAandRNAfromProtQTLs.out
+#SBATCH --error=FYTTD1_APAandRNAfromProtQTLs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load python
+
+python APAandRNAfromProtQTLs.py FYTTD1 ENSG00000122068 3:197035232  
+```
+
+
+
+```{r}
+nom_names=c("gene", "snp", "dist", "pval", "slope")
+
+FYTTD1_RNA=read.table("../data/pQTL_otherphen/FYTTD1_3:197035232_RNAres.txt", col.names = nom_names, stringsAsFactors = F) %>% select(snp, slope) %>%  filter(!duplicated(snp))
+
+FYTTD1_Prot=read.table("../data/pQTL_otherphen/FYTTD1_3:197035232_Protres.txt", col.names = nom_names, stringsAsFactors = F)%>%  select(snp, slope) %>%  filter(!duplicated(snp))
+
+
+
+#FILTER snps in the list from Rna and prot
+FYTTD1_apaTot=read.table("../data/pQTL_otherphen/FYTTD1_3:197035232_Totalres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope) %>% group_by(peak) %>%  filter(!duplicated(snp)) 
+FYTTD1_apaNuc=read.table("../data/pQTL_otherphen/FYTTD1_3:197035232_Nuclearres.txt", col.names = nom_names, stringsAsFactors = F) %>% separate(gene, sep = ":", into=c("chr", "start", "end", "id")) %>% separate(id, sep = "_", into=c("gene", "strand", "peak")) %>% select(snp,peak, slope) %>% group_by(peak) %>%  filter(!duplicated(snp)) 
+
+```
+
+Start with RNA and protein because they are the most simple
+```{r}
+FYTTD1_ProtRNA=FYTTD1_RNA %>% left_join(FYTTD1_Prot, by="snp")
+colnames(FYTTD1_ProtRNA)=c("snp", "RNA", "Protein")
+```
+
+Model:  
+```{r}
+
+FYTTD1_lmProtRNA=lm(Protein ~ RNA, data=FYTTD1_ProtRNA)
+FYTTD1_lmProtRNA_sum=glance(FYTTD1_lmProtRNA)
+```
+For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df. 
+
+```{r}
+FYTTD1_apaTot_s=spread(FYTTD1_apaTot, "peak", "slope",drop = F)
+```
+
+
+```{r}
+FYTTD1_apaNuc_s=spread(FYTTD1_apaNuc, "peak", "slope",drop = F)
+```
+
+
+
+I can look at the protein ~ apaTotal.  
+
+```{r}
+FYTTD1_apaTotProt=FYTTD1_apaTot_s %>% left_join(FYTTD1_Prot, by="snp")
+colnames(FYTTD1_apaTotProt)=c(names(FYTTD1_apaTot_s),"Protein")
+```
+
+```{r}
+FYTTD1_lmProtAPA=lm(Protein ~ peak234016 +peak234082 +peak234088+peak234089+peak234090+peak234092+peak234093+peak234094+peak234095+peak234099+peak234101+peak234103+peak234104+peak234105+peak234106+peak234107+peak234108+peak234111+peak234113+peak234114+peak234117+peak234119+peak234120+peak234122+peak234123+peak234124+peak234125+peak234131+peak234135, data=FYTTD1_apaTotProt)
+FYTTD1_lmProtAPA_sum=glance(FYTTD1_lmProtAPA)
+```
+
+```{r}
+FYTTD1_apaTotProtRNA=FYTTD1_apaTot_s %>% inner_join(FYTTD1_ProtRNA, by="snp")
+
+colnames(FYTTD1_apaTotProtRNA)=c(names(FYTTD1_apaTot_s),"RNA", "protein")
+```
+
+
+```{r}
+FYTTD1_lmProtAPARNA=lm(protein ~RNA+ peak234016 +peak234082 +peak234088+peak234089+peak234090+peak234092+peak234093+peak234094+peak234095+peak234099+peak234101+peak234103+peak234104+peak234105+peak234106+peak234107+peak234108+peak234111+peak234113+peak234114+peak234117+peak234119+peak234120+peak234122+peak234123+peak234124+peak234125+peak234131+peak234135, data=FYTTD1_apaTotProtRNA)
+FYTTD1_lmProtAPARNA_sum=glance(FYTTD1_lmProtAPARNA)
+
+adjR2_FYTTD1=cbind("FYTTD1",FYTTD1_lmProtRNA_sum[1,2], FYTTD1_lmProtAPA_sum[1,2], FYTTD1_lmProtAPARNA_sum[1,2])
+colnames(adjR2_FYTTD1)=c("Gene",  "RNA", "APA", "RNAandAPA")
+```
+
+
+##Analysis  
+
+In each of these examples the total APA explains more of the protein variability. I am going to plot the adjR2 for each gene and model
+
+
+```{r}
+adjR2=rbind(adjR2_CCDC51,adjR2_DTD1,adjR2_DHRS7B, adjR2_MMAB, adjR2_FYTTD1)
+
+adjR2_melt=melt(adjR2, id.vars="Gene")
+colnames(adjR2_melt)=c("Gene", "Model", "AdjR2")
+
+```
+
+Plot this 
+
+```{r}
+ggplot(adjR2_melt, aes(x=Gene, y=AdjR2, by=Model, fill=Model)) + geom_bar(stat="identity", position = "dodge") + labs(title="Adjusted R2 for variation\n in protein effect sizes explained in each model",x="pQTL Gene") + scale_fill_brewer(palette="Paired")
+```
 
