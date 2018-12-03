@@ -347,14 +347,13 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/8b45f35390f99b64593a58dcc245e9040de54fb4" target="_blank">8b45f35</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/17b336bff06fb3529bf11d09b97ee0de29434a22" target="_blank">17b336b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -474,6 +473,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/17b336bff06fb3529bf11d09b97ee0de29434a22/analysis/explainpQTLs.Rmd" target="_blank">17b336b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-03
+</td>
+<td style="text-align:left;">
+add random
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/8bb97f621f41d8d8f0ff04f66ca34d1578902468/docs/explainpQTLs.html" target="_blank">8bb97f6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-03
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -679,7 +712,38 @@ colnames(CCDC51_ProtRNA)=c(&quot;snp&quot;, &quot;RNA&quot;, &quot;Protein&quot;
 <p>Plot this:</p>
 <pre class="r"><code>plot(CCDC51_ProtRNA$Protein ~ CCDC51_ProtRNA$RNA)
 abline(lm(CCDC51_ProtRNA$Protein ~ CCDC51_ProtRNA$RNA))</code></pre>
-<p><img src="figure/explainpQTLs.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /> For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df.</p>
+<p><img src="figure/explainpQTLs.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8bb97f621f41d8d8f0ff04f66ca34d1578902468/docs/figure/explainpQTLs.Rmd/unnamed-chunk-7-1.png" target="_blank">8bb97f6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df.</p>
 <pre class="r"><code>CCDC51_apaTot_s=spread(CCDC51_apaTot, &quot;peak&quot;, &quot;slope&quot;,drop = F)</code></pre>
 <pre class="r"><code>CCDC51_apaNuc_s=spread(CCDC51_apaNuc, &quot;peak&quot;, &quot;slope&quot;,drop = F)</code></pre>
 <p>I can look at the protein ~ apaTotal.</p>
@@ -932,6 +996,36 @@ colnames(adjR2_melt)=c(&quot;Gene&quot;, &quot;Model&quot;, &quot;AdjR2&quot;)</
 <p>Plot this</p>
 <pre class="r"><code>ggplot(adjR2_melt, aes(x=Gene, y=AdjR2, by=Model, fill=Model)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + labs(title=&quot;Adjusted R2 for variation\n in protein effect sizes explained in each model&quot;,x=&quot;pQTL Gene&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/explainpQTLs.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-46-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8bb97f621f41d8d8f0ff04f66ca34d1578902468/docs/figure/explainpQTLs.Rmd/unnamed-chunk-46-1.png" target="_blank">8bb97f6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="residuals-method" class="section level2">
 <h2>Residuals method:</h2>
@@ -983,6 +1077,36 @@ colnames(adjR2_resid_melt)=c(&quot;Gene&quot;, &quot;Model&quot;, &quot;AdjR2&qu
 adjR2_resid_melt_sub=adjR2_resid_melt %&gt;% filter(Model==&quot;APAinRNAResiduals&quot; | Model== &quot;RNA&quot;)</code></pre>
 <pre class="r"><code>ggplot(adjR2_resid_melt_sub, aes(x=Gene, y=AdjR2, by=Model, fill=Model)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + labs(title=&quot;Adjusted R2 for variation\n in protein effect sizes explained in each model&quot;,x=&quot;pQTL Gene&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;) </code></pre>
 <p><img src="figure/explainpQTLs.Rmd/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-54-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8bb97f621f41d8d8f0ff04f66ca34d1578902468/docs/figure/explainpQTLs.Rmd/unnamed-chunk-54-1.png" target="_blank">8bb97f6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>There is most likely an overfitting problem.</p>
 </div>
 </div>
@@ -1091,6 +1215,47 @@ Model 2: protein ~ RNA + peak234016 + peak234082 + peak234088 + peak234089 +
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>The models are significantly different</p>
+<div id="random-values" class="section level3">
+<h3>Random values</h3>
+<pre class="r"><code>CCDC51_apaTotProtRNA_rand=transform(CCDC51_apaTotProtRNA,peak216857=sample(peak216857), peak216858=sample(peak216858),peak216859=sample(peak216859), peak216860=sample(peak216860) ,peak216867=sample(peak216867))
+
+
+CCDC51_lmProtAPA_rand=lm(CCDC51_RNA_Resid ~ CCDC51_apaTotProtRNA_rand$peak216857 + CCDC51_apaTotProtRNA_rand$peak216858 + CCDC51_apaTotProtRNA_rand$peak216859 + CCDC51_apaTotProtRNA_rand$peak216860 + CCDC51_apaTotProtRNA_rand$peak216867)
+
+
+summary(CCDC51_lmProtAPA_rand)</code></pre>
+<pre><code>
+Call:
+lm(formula = CCDC51_RNA_Resid ~ CCDC51_apaTotProtRNA_rand$peak216857 + 
+    CCDC51_apaTotProtRNA_rand$peak216858 + CCDC51_apaTotProtRNA_rand$peak216859 + 
+    CCDC51_apaTotProtRNA_rand$peak216860 + CCDC51_apaTotProtRNA_rand$peak216867)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.28924 -0.25246 -0.06547  0.25200  2.14234 
+
+Coefficients:
+                                      Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)                           0.008342   0.012878   0.648   0.5172
+CCDC51_apaTotProtRNA_rand$peak216857  0.080512   0.042575   1.891   0.0588
+CCDC51_apaTotProtRNA_rand$peak216858  0.020707   0.030660   0.675   0.4995
+CCDC51_apaTotProtRNA_rand$peak216859 -0.046768   0.046426  -1.007   0.3139
+CCDC51_apaTotProtRNA_rand$peak216860 -0.027177   0.042205  -0.644   0.5197
+CCDC51_apaTotProtRNA_rand$peak216867 -0.031990   0.040653  -0.787   0.4315
+                                      
+(Intercept)                           
+CCDC51_apaTotProtRNA_rand$peak216857 .
+CCDC51_apaTotProtRNA_rand$peak216858  
+CCDC51_apaTotProtRNA_rand$peak216859  
+CCDC51_apaTotProtRNA_rand$peak216860  
+CCDC51_apaTotProtRNA_rand$peak216867  
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.4611 on 1462 degrees of freedom
+Multiple R-squared:  0.004125,  Adjusted R-squared:  0.0007196 
+F-statistic: 1.211 on 5 and 1462 DF,  p-value: 0.3014</code></pre>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
