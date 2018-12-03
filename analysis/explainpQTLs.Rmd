@@ -132,12 +132,6 @@ CCDC51_ProtRNA=CCDC51_RNA %>% left_join(CCDC51_Prot, by="snp")
 colnames(CCDC51_ProtRNA)=c("snp", "RNA", "Protein")
 ```
 
-Model:  
-```{r}
-CCDC51_lmProtRNA=lm(Protein ~ RNA, data=CCDC51_ProtRNA)
-CCDC51_lmProtRNA_sum=glance(CCDC51_lmProtRNA)
-
-```
 
 Plot this:  
 
@@ -166,14 +160,6 @@ CCDC51_apaTotProt=CCDC51_apaTot_s %>% left_join(CCDC51_Prot, by="snp")
 colnames(CCDC51_apaTotProt)=c("snp", "peak216857", "peak216858", "peak216859", "peak216860", "peak216867","Protein")
 ```
 
-```{r}
-
-
-
-CCDC51_lmProtAPA=lm(Protein ~peak216857 + peak216858 + peak216859 + peak216860 + peak216867, data=CCDC51_apaTotProt)
-CCDC51_lmProtAPA_sum=glance(CCDC51_lmProtAPA)
-
-```
 
 Try with all of it:  
 
@@ -183,12 +169,22 @@ colnames(CCDC51_apaTotProtRNA)=c("snp", "peak216857", "peak216858", "peak216859"
 ```
 
 
+
+I want to use the same data for each model:  
 ```{r}
+CCDC51_lmProtRNA=lm(Protein ~ RNA, data=CCDC51_apaTotProtRNA)
+CCDC51_lmProtRNA_sum=glance(CCDC51_lmProtRNA)
+
+CCDC51_lmProtAPA=lm(Protein ~peak216857 + peak216858 + peak216859 + peak216860 + peak216867, data=CCDC51_apaTotProtRNA)
+CCDC51_lmProtAPA_sum=glance(CCDC51_lmProtAPA)
+
 CCDC51_lmProtAPARNA=lm(Protein ~RNA +peak216857 + peak216858 + peak216859 + peak216860 + peak216867, data=CCDC51_apaTotProtRNA)
 CCDC51_lmProtAPARNA_sum=glance(CCDC51_lmProtAPARNA)
 adjR2_CCDC51=cbind("CCDC51", CCDC51_lmProtRNA_sum[1,2], CCDC51_lmProtAPA_sum[1,2], CCDC51_lmProtAPARNA_sum[1,2])
 colnames(adjR2_CCDC51)=c("Gene", "RNA", "APA", "RNAandAPA")
+
 ```
+
 
 ##Example DTD1
 
@@ -234,11 +230,6 @@ DTD1_ProtRNA=DTD1_RNA %>% left_join(DTD1_Prot, by="snp")
 colnames(DTD1_ProtRNA)=c("snp", "RNA", "Protein")
 ```
 
-Model:  
-```{r}
-DTD1_lmProtRNA=lm(Protein ~ RNA, data=DTD1_ProtRNA)
-DTD1_lmProtRNA_sum=glance(DTD1_lmProtRNA)
-```
 
 ```{r}
 DTD1_apaTot_s=spread(DTD1_apaTot, "peak", "slope",drop = F)
@@ -254,12 +245,7 @@ DTD1_apaTotProt=DTD1_apaTot_s %>% inner_join(DTD1_Prot, by="snp")
 
 colnames(DTD1_apaTotProt)=c("snp", "peak195416", "peak195418" ,"peak195419", "peak195420", "peak195423", "peak195424","peak195425" ,"peak195426", "peak195427", "peak195428", "peak195429", "peak195430", "peak195431","peak195432", "peak195433" ,"peak195434" ,"peak195436", "peak195438", "peak195443", "peak195444" ,"peak195445", "peak195446", "peak195447", "peak195449" ,"peak195450", "peak195451", "peak195452","peak195453", "peak195454", "peak195455" ,"protein")
 ```
-
-
-```{r}
-DTD1_lmProtAPA=lm(protein ~ peak195416+ peak195418 +peak195419+peak195420+ peak195423+ peak195424+peak195425 +peak195426+ peak195427+ peak195428+ peak195429+ peak195430 + peak195431+peak195432 + peak195433+peak195434+peak195436+peak195438+peak195443+peak195444+peak195445+peak195446+peak195447+peak195449+peak195450+peak195451+peak195452+peak195453+ peak195454 +peak195455, data=DTD1_apaTotProt)
-DTD1_lmProtAPA_sum=glance(DTD1_lmProtAPA)
-```
+`
 
 Try with all:  
 
@@ -269,13 +255,24 @@ DTD1_apaTotProtRNA=DTD1_apaTot_s %>% inner_join(DTD1_ProtRNA, by="snp")
 colnames(DTD1_apaTotProtRNA)=c("snp", "peak195416", "peak195418" ,"peak195419", "peak195420", "peak195423", "peak195424","peak195425" ,"peak195426", "peak195427", "peak195428", "peak195429", "peak195430", "peak195431","peak195432", "peak195433" ,"peak195434" ,"peak195436", "peak195438", "peak195443", "peak195444" ,"peak195445", "peak195446", "peak195447", "peak195449" ,"peak195450", "peak195451", "peak195452","peak195453", "peak195454", "peak195455" ,"RNA", "protein")
 ```
 
+
+Model:  
 ```{r}
+DTD1_lmProtRNA=lm(protein ~ RNA, data=DTD1_apaTotProtRNA)
+DTD1_lmProtRNA_sum=glance(DTD1_lmProtRNA)
+
+DTD1_lmProtAPA=lm(protein ~ peak195416+ peak195418 +peak195419+peak195420+ peak195423+ peak195424+peak195425 +peak195426+ peak195427+ peak195428+ peak195429+ peak195430 + peak195431+peak195432 + peak195433+peak195434+peak195436+peak195438+peak195443+peak195444+peak195445+peak195446+peak195447+peak195449+peak195450+peak195451+peak195452+peak195453+ peak195454 +peak195455, data=DTD1_apaTotProtRNA)
+DTD1_lmProtAPA_sum=glance(DTD1_lmProtAPA)
+
 DTD1_lmProtAPARNA=lm(protein ~RNA+ peak195416+ peak195418 +peak195419+peak195420+ peak195423+ peak195424+peak195425 +peak195426+ peak195427+ peak195428+ peak195429+ peak195430 + peak195431+peak195432 + peak195433+peak195434+peak195436+peak195438+peak195443+peak195444+peak195445+peak195446+peak195447+peak195449+peak195450+peak195451+peak195452+peak195453+ peak195454 +peak195455, data=DTD1_apaTotProtRNA)
 DTD1_lmProtAPARNA_sum=glance(DTD1_lmProtAPARNA)
 
 adjR2_DTD1=cbind("DTD1",DTD1_lmProtRNA_sum[1,2], DTD1_lmProtAPA_sum[1,2], DTD1_lmProtAPARNA_sum[1,2])
 colnames(adjR2_DTD1)=c("Gene", "RNA", "APA", "RNAandAPA")
+
 ```
+
+
 
 ##Example DHRS7B
 
@@ -321,12 +318,7 @@ DHRS7B_ProtRNA=DHRS7B_RNA %>% left_join(DHRS7B_Prot, by="snp")
 colnames(DHRS7B_ProtRNA)=c("snp", "RNA", "Protein")
 ```
 
-Model:  
-```{r}
-DHRS7B_lmProtRNA=lm(Protein ~ RNA, data=DHRS7B_ProtRNA)
 
-DHRS7B_lmProtRNA_sum=glance(DHRS7B_lmProtRNA)
-```
 For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df. 
 
 ```{r}
@@ -347,12 +339,7 @@ DHRS7B_apaTotProt=DHRS7B_apaTot_s %>% left_join(DHRS7B_Prot, by="snp")
 colnames(DHRS7B_apaTotProt)=c(names(DHRS7B_apaTot_s),"Protein")
 ```
 
-```{r}
-DHRS7B_lmProtAPA=lm(Protein ~ peak132690+peak132692+peak132693+peak132694+peak132720+peak132721+peak132722+peak132723+peak132724+peak132725+peak132728+peak132729+peak132730+peak132732+peak132733+peak132734+peak132735+peak132738+peak132739+peak132740+peak132741+peak132742+peak132744+peak132745 +peak132746+peak132747+peak132748+peak132749+peak132750+peak132751+peak132753+peak132754+ peak132755+peak132756+peak132757+peak132760+peak132761+peak132762+peak132763+peak132764+peak132766+peak132774+peak132775+peak132777+peak132778+peak132780, data=DHRS7B_apaTotProt)
-DHRS7B_lmProtAPA_sum=glance(DHRS7B_lmProtAPA)
 
-
-```
 Try with all:  
 
 ```{r}
@@ -361,7 +348,17 @@ DHRS7B_apaTotProtRNA=DHRS7B_apaTot_s %>% inner_join(DHRS7B_ProtRNA, by="snp")
 colnames(DHRS7B_apaTotProtRNA)=c(names(DHRS7B_apaTot_s),"RNA", "protein")
 ```
 
+
+
 ```{r}
+DHRS7B_lmProtRNA=lm(protein ~ RNA, data=DHRS7B_apaTotProtRNA)
+
+DHRS7B_lmProtRNA_sum=glance(DHRS7B_lmProtRNA)
+
+DHRS7B_lmProtAPA=lm(protein ~ peak132690+peak132692+peak132693+peak132694+peak132720+peak132721+peak132722+peak132723+peak132724+peak132725+peak132728+peak132729+peak132730+peak132732+peak132733+peak132734+peak132735+peak132738+peak132739+peak132740+peak132741+peak132742+peak132744+peak132745 +peak132746+peak132747+peak132748+peak132749+peak132750+peak132751+peak132753+peak132754+ peak132755+peak132756+peak132757+peak132760+peak132761+peak132762+peak132763+peak132764+peak132766+peak132774+peak132775+peak132777+peak132778+peak132780, data=DHRS7B_apaTotProtRNA)
+DHRS7B_lmProtAPA_sum=glance(DHRS7B_lmProtAPA)
+
+
 DHRS7B_lmProtAPARNA=lm(protein ~ peak132690+peak132692+peak132693+peak132694+peak132720+peak132721+peak132722+peak132723+peak132724+peak132725+peak132728+peak132729+peak132730+peak132732+peak132733+peak132734+peak132735+peak132738+peak132739+peak132740+peak132741+peak132742+peak132744+peak132745 +peak132746+peak132747+peak132748+peak132749+peak132750+peak132751+peak132753+peak132754+ peak132755+peak132756+peak132757+peak132760+peak132761+peak132762+peak132763+peak132764+peak132766+peak132774+peak132775+peak132777+peak132778+peak132780, data=DHRS7B_apaTotProtRNA)
 
 DHRS7B_lmProtAPARNA_sum=glance(DHRS7B_lmProtAPARNA)
@@ -370,6 +367,8 @@ adjR2_DHRS7B=cbind("DHRS7B",DHRS7B_lmProtRNA_sum[1,2], DHRS7B_lmProtAPA_sum[1,2]
 colnames(adjR2_DHRS7B)=c("Gene",  "RNA", "APA", "RNAandAPA")
 
 ```
+
+
 ##Example MMAB  
 
 ENSG00000139428 MMAB 12:109997847  
@@ -416,11 +415,6 @@ MMAB_ProtRNA=MMAB_RNA %>% left_join(MMAB_Prot, by="snp")
 colnames(MMAB_ProtRNA)=c("snp", "RNA", "Protein")
 ```
 
-Model:  
-```{r}
-MMAB_lmProtRNA=lm(Protein ~ RNA, data=MMAB_ProtRNA)
-MMAB_lmProtRNA_sum=glance(MMAB_lmProtRNA)
-```
 For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df. 
 
 ```{r}
@@ -441,11 +435,6 @@ MMAB_apaTotProt=MMAB_apaTot_s %>% left_join(MMAB_Prot, by="snp")
 colnames(MMAB_apaTotProt)=c(names(MMAB_apaTot_s),"Protein")
 ```
 
-```{r}
-MMAB_lmProtAPA=lm(Protein ~ peak78754+peak78755+peak78756+peak78757+peak78758+peak78759+peak78760+peak78761+peak78762+peak78763+peak78764+peak78765+peak78766, data=MMAB_apaTotProt)
-MMAB_lmProtAPA_sum=glance(MMAB_lmProtAPA)
-```
-
 
 Try with all:  
 
@@ -457,13 +446,24 @@ colnames(MMAB_apaTotProtRNA)=c(names(MMAB_apaTot_s),"RNA", "protein")
 
 
 ```{r}
+MMAB_lmProtRNA=lm(protein ~ RNA, data=MMAB_apaTotProtRNA)
+MMAB_lmProtRNA_sum=glance(MMAB_lmProtRNA)
+
+
+MMAB_lmProtAPA=lm(protein ~ peak78754+peak78755+peak78756+peak78757+peak78758+peak78759+peak78760+peak78761+peak78762+peak78763+peak78764+peak78765+peak78766, data=MMAB_apaTotProtRNA)
+MMAB_lmProtAPA_sum=glance(MMAB_lmProtAPA)
+
+
 MMAB_lmProtAPARNA=lm(protein ~RNA+ peak78754+peak78755+peak78756+peak78757+peak78758+peak78759+peak78760+peak78761+peak78762+peak78763+peak78764+peak78765+peak78766, data=MMAB_apaTotProtRNA)
 MMAB_lmProtAPARNA_sum=glance(MMAB_lmProtAPARNA)
 
 adjR2_MMAB=cbind("MMAB",MMAB_lmProtRNA_sum[1,2], MMAB_lmProtAPA_sum[1,2], MMAB_lmProtAPARNA_sum[1,2])
 colnames(adjR2_MMAB)=c("Gene",  "RNA", "APA", "RNAandAPA")
 
+
 ```
+
+
 
 ##Example FYTTD1
 
@@ -511,12 +511,6 @@ FYTTD1_ProtRNA=FYTTD1_RNA %>% left_join(FYTTD1_Prot, by="snp")
 colnames(FYTTD1_ProtRNA)=c("snp", "RNA", "Protein")
 ```
 
-Model:  
-```{r}
-
-FYTTD1_lmProtRNA=lm(Protein ~ RNA, data=FYTTD1_ProtRNA)
-FYTTD1_lmProtRNA_sum=glance(FYTTD1_lmProtRNA)
-```
 For APA I need to get a data frame that has the snps by the effect sizes for each peak.I basically want to spread this df. 
 
 ```{r}
@@ -537,10 +531,6 @@ FYTTD1_apaTotProt=FYTTD1_apaTot_s %>% left_join(FYTTD1_Prot, by="snp")
 colnames(FYTTD1_apaTotProt)=c(names(FYTTD1_apaTot_s),"Protein")
 ```
 
-```{r}
-FYTTD1_lmProtAPA=lm(Protein ~ peak234016 +peak234082 +peak234088+peak234089+peak234090+peak234092+peak234093+peak234094+peak234095+peak234099+peak234101+peak234103+peak234104+peak234105+peak234106+peak234107+peak234108+peak234111+peak234113+peak234114+peak234117+peak234119+peak234120+peak234122+peak234123+peak234124+peak234125+peak234131+peak234135, data=FYTTD1_apaTotProt)
-FYTTD1_lmProtAPA_sum=glance(FYTTD1_lmProtAPA)
-```
 
 ```{r}
 FYTTD1_apaTotProtRNA=FYTTD1_apaTot_s %>% inner_join(FYTTD1_ProtRNA, by="snp")
@@ -548,15 +538,22 @@ FYTTD1_apaTotProtRNA=FYTTD1_apaTot_s %>% inner_join(FYTTD1_ProtRNA, by="snp")
 colnames(FYTTD1_apaTotProtRNA)=c(names(FYTTD1_apaTot_s),"RNA", "protein")
 ```
 
-
+Model:  
 ```{r}
+
+FYTTD1_lmProtRNA=lm(protein ~ RNA, data=FYTTD1_apaTotProtRNA)
+FYTTD1_lmProtRNA_sum=glance(FYTTD1_lmProtRNA)
+
+FYTTD1_lmProtAPA=lm(protein ~ peak234016 +peak234082 +peak234088+peak234089+peak234090+peak234092+peak234093+peak234094+peak234095+peak234099+peak234101+peak234103+peak234104+peak234105+peak234106+peak234107+peak234108+peak234111+peak234113+peak234114+peak234117+peak234119+peak234120+peak234122+peak234123+peak234124+peak234125+peak234131+peak234135, data=FYTTD1_apaTotProtRNA)
+FYTTD1_lmProtAPA_sum=glance(FYTTD1_lmProtAPA)
+
+
 FYTTD1_lmProtAPARNA=lm(protein ~RNA+ peak234016 +peak234082 +peak234088+peak234089+peak234090+peak234092+peak234093+peak234094+peak234095+peak234099+peak234101+peak234103+peak234104+peak234105+peak234106+peak234107+peak234108+peak234111+peak234113+peak234114+peak234117+peak234119+peak234120+peak234122+peak234123+peak234124+peak234125+peak234131+peak234135, data=FYTTD1_apaTotProtRNA)
 FYTTD1_lmProtAPARNA_sum=glance(FYTTD1_lmProtAPARNA)
 
 adjR2_FYTTD1=cbind("FYTTD1",FYTTD1_lmProtRNA_sum[1,2], FYTTD1_lmProtAPA_sum[1,2], FYTTD1_lmProtAPARNA_sum[1,2])
 colnames(adjR2_FYTTD1)=c("Gene",  "RNA", "APA", "RNAandAPA")
 ```
-
 
 ##Analysis  
 
@@ -577,3 +574,117 @@ Plot this
 ggplot(adjR2_melt, aes(x=Gene, y=AdjR2, by=Model, fill=Model)) + geom_bar(stat="identity", position = "dodge") + labs(title="Adjusted R2 for variation\n in protein effect sizes explained in each model",x="pQTL Gene") + scale_fill_brewer(palette="Paired")
 ```
 
+##Residuals method:  
+
+I want to use the resid(lm) method to get the residuals for the RNA model and see if I can explain some of these with the APA information:  
+
+###Get RNA model residuals  
+
+```{r}
+CCDC51_RNA_Resid=resid(CCDC51_lmProtRNA)
+DTD1_RNA_Resid=resid(DTD1_lmProtRNA)
+DHRS7B_RNA_Resid=resid(DHRS7B_lmProtRNA)
+MMAB_RNA_Resid=resid(MMAB_lmProtRNA)
+FYTTD1_RNA_Resid=resid(FYTTD1_lmProtRNA)
+
+```
+
+###Model APA against residuals   
+####CCDC51  
+```{r}
+CCDC51_lmResidAPA=lm(CCDC51_RNA_Resid ~ CCDC51_apaTotProt$peak216857 +CCDC51_apaTotProt$peak216858 + CCDC51_apaTotProt$peak216859 + CCDC51_apaTotProt$peak216860 + CCDC51_apaTotProt$peak216867)
+CCDC51_lmResidRNA_sum=glance(CCDC51_lmResidAPA)
+```
+
+
+####DTD1  
+
+```{r}
+DTD1_lmResidAPA=lm(DTD1_RNA_Resid ~ DTD1_apaTotProtRNA$peak195416+ DTD1_apaTotProtRNA$peak195418 +DTD1_apaTotProtRNA$peak195419+DTD1_apaTotProtRNA$peak195420+ DTD1_apaTotProtRNA$peak195423+ DTD1_apaTotProtRNA$peak195424+DTD1_apaTotProtRNA$peak195425 +DTD1_apaTotProtRNA$peak195426+ DTD1_apaTotProtRNA$peak195427+ DTD1_apaTotProtRNA$peak195428+ DTD1_apaTotProtRNA$peak195429+ DTD1_apaTotProtRNA$peak195430 + DTD1_apaTotProtRNA$peak195431+DTD1_apaTotProtRNA$peak195432 + DTD1_apaTotProtRNA$peak195433+DTD1_apaTotProtRNA$peak195434+DTD1_apaTotProtRNA$peak195436+DTD1_apaTotProtRNA$peak195438+DTD1_apaTotProtRNA$peak195443+DTD1_apaTotProtRNA$peak195444+DTD1_apaTotProtRNA$peak195445+DTD1_apaTotProtRNA$peak195446+DTD1_apaTotProtRNA$peak195447+DTD1_apaTotProtRNA$peak195449+DTD1_apaTotProtRNA$peak195450+DTD1_apaTotProtRNA$peak195451+DTD1_apaTotProtRNA$peak195452+DTD1_apaTotProtRNA$peak195453+ DTD1_apaTotProtRNA$peak195454 +DTD1_apaTotProtRNA$peak195455)
+DTD1_lmResidRNA_sum=glance(DTD1_lmResidAPA)
+```
+
+####DHRS7B
+
+```{r}
+
+DHRS7B_lmResidAPA=lm(DHRS7B_RNA_Resid ~ DHRS7B_apaTotProtRNA$peak132690+DHRS7B_apaTotProtRNA$peak132692+DHRS7B_apaTotProtRNA$peak132693+DHRS7B_apaTotProtRNA$peak132694+DHRS7B_apaTotProtRNA$peak132720+DHRS7B_apaTotProtRNA$peak132721+DHRS7B_apaTotProtRNA$peak132722+DHRS7B_apaTotProtRNA$peak132723+DHRS7B_apaTotProtRNA$peak132724+DHRS7B_apaTotProtRNA$peak132725+DHRS7B_apaTotProtRNA$peak132728+DHRS7B_apaTotProtRNA$peak132729+DHRS7B_apaTotProtRNA$peak132730+DHRS7B_apaTotProtRNA$peak132732+DHRS7B_apaTotProtRNA$peak132733+DHRS7B_apaTotProtRNA$peak132734+DHRS7B_apaTotProtRNA$peak132735+DHRS7B_apaTotProtRNA$peak132738+DHRS7B_apaTotProtRNA$peak132739+DHRS7B_apaTotProtRNA$peak132740+DHRS7B_apaTotProtRNA$peak132741+DHRS7B_apaTotProtRNA$peak132742+DHRS7B_apaTotProtRNA$peak132744+DHRS7B_apaTotProtRNA$peak132745 +DHRS7B_apaTotProtRNA$peak132746+DHRS7B_apaTotProtRNA$peak132747+DHRS7B_apaTotProtRNA$peak132748+DHRS7B_apaTotProtRNA$peak132749+DHRS7B_apaTotProtRNA$peak132750+DHRS7B_apaTotProtRNA$peak132751+DHRS7B_apaTotProtRNA$peak132753+DHRS7B_apaTotProtRNA$peak132754+ DHRS7B_apaTotProtRNA$peak132755+DHRS7B_apaTotProtRNA$peak132756+DHRS7B_apaTotProtRNA$peak132757+DHRS7B_apaTotProtRNA$peak132760+DHRS7B_apaTotProtRNA$peak132761+DHRS7B_apaTotProtRNA$peak132762+DHRS7B_apaTotProtRNA$peak132763+DHRS7B_apaTotProtRNA$peak132764+DHRS7B_apaTotProtRNA$peak132766+DHRS7B_apaTotProtRNA$peak132774+DHRS7B_apaTotProtRNA$peak132775+DHRS7B_apaTotProtRNA$peak132777+DHRS7B_apaTotProtRNA$peak132778+DHRS7B_apaTotProtRNA$peak132780)
+DHRS7B_lmResidRNA_sum=glance(DHRS7B_lmResidAPA)
+
+```
+
+####MMAB  
+
+```{r}
+MMAB_lmResidAPA=lm(MMAB_RNA_Resid ~ MMAB_apaTotProtRNA$peak78754+MMAB_apaTotProtRNA$peak78755+MMAB_apaTotProtRNA$peak78756+MMAB_apaTotProtRNA$peak78757+MMAB_apaTotProtRNA$peak78758+MMAB_apaTotProtRNA$peak78759+MMAB_apaTotProtRNA$peak78760+MMAB_apaTotProtRNA$peak78761+MMAB_apaTotProtRNA$peak78762+MMAB_apaTotProtRNA$peak78763+MMAB_apaTotProtRNA$peak78764+MMAB_apaTotProtRNA$peak78765+MMAB_apaTotProtRNA$peak78766)
+MMAB_lmResidRNA_sum=glance(MMAB_lmResidAPA)
+```
+
+
+####FYTTD1  
+
+```{r}
+FYTTD1_lmResidAPA=lm(FYTTD1_RNA_Resid ~ FYTTD1_apaTotProtRNA$peak234016 +FYTTD1_apaTotProtRNA$peak234082 +FYTTD1_apaTotProtRNA$peak234088+FYTTD1_apaTotProtRNA$peak234089+FYTTD1_apaTotProtRNA$peak234090+FYTTD1_apaTotProtRNA$peak234092+FYTTD1_apaTotProtRNA$peak234093+FYTTD1_apaTotProtRNA$peak234094+FYTTD1_apaTotProtRNA$peak234095+FYTTD1_apaTotProtRNA$peak234099+FYTTD1_apaTotProtRNA$peak234101+FYTTD1_apaTotProtRNA$peak234103+FYTTD1_apaTotProtRNA$peak234104+FYTTD1_apaTotProtRNA$peak234105+FYTTD1_apaTotProtRNA$peak234106+FYTTD1_apaTotProtRNA$peak234107+FYTTD1_apaTotProtRNA$peak234108+FYTTD1_apaTotProtRNA$peak234111+FYTTD1_apaTotProtRNA$peak234113+FYTTD1_apaTotProtRNA$peak234114+FYTTD1_apaTotProtRNA$peak234117+FYTTD1_apaTotProtRNA$peak234119+FYTTD1_apaTotProtRNA$peak234120+FYTTD1_apaTotProtRNA$peak234122+FYTTD1_apaTotProtRNA$peak234123+FYTTD1_apaTotProtRNA$peak234124+FYTTD1_apaTotProtRNA$peak234125+FYTTD1_apaTotProtRNA$peak234131+FYTTD1_apaTotProtRNA$peak234135)
+FYTTD1_lmResidRNA_sum=glance(FYTTD1_lmResidAPA)
+```
+###Plot with Residuals  
+
+```{r}
+RNA_Residuals=rbind(CCDC51_lmResidRNA_sum[1,2],DTD1_lmResidRNA_sum[1,2],DHRS7B_lmResidRNA_sum[1,2],MMAB_lmResidRNA_sum[1,2],FYTTD1_lmResidRNA_sum[1,2])
+adjR2_resid=cbind(adjR2,RNA_Residuals)
+colnames(adjR2_resid)=c("Gene", "RNA", "APA", "RNAandAPA", "APAinRNAResiduals")
+
+adjR2_resid_melt=melt(adjR2_resid, id.vars="Gene")
+colnames(adjR2_resid_melt)=c("Gene", "Model", "AdjR2")
+adjR2_resid_melt_sub=adjR2_resid_melt %>% filter(Model=="APAinRNAResiduals" | Model== "RNA")
+```
+
+
+```{r}
+ggplot(adjR2_resid_melt_sub, aes(x=Gene, y=AdjR2, by=Model, fill=Model)) + geom_bar(stat="identity", position = "dodge") + labs(title="Adjusted R2 for variation\n in protein effect sizes explained in each model",x="pQTL Gene") + scale_fill_brewer(palette="Paired") 
+
+
+```
+
+There is most likely an overfitting problem.  
+
+
+##Inference 
+
+RSS= residuial sum of squares  
+
+```{r}
+
+#subset model 
+RSS_sub=anova(CCDC51_lmProtRNA)["Residuals", "Sum Sq"]
+df_sub=1466
+
+#full model
+RSS_full=anova(CCDC51_lmProtAPARNA)["Residuals", "Sum Sq"]
+df_full=14661
+anova(CCDC51_lmProtAPARNA)
+
+F_CCDC51=((RSS_sub-RSS_full)/(df_sub-df_full))/(RSS_full/df_full)
+F_CCDC51
+
+#i can do this with the annova function 
+anova(CCDC51_lmProtRNA,CCDC51_lmProtAPARNA)
+```
+```{r}
+anova(MMAB_lmProtRNA,MMAB_lmProtAPARNA)
+```
+
+```{r}
+anova(DHRS7B_lmProtRNA,DHRS7B_lmProtAPARNA)
+```
+
+
+```{r}
+anova(DHRS7B_lmProtRNA,DHRS7B_lmProtAPARNA)
+
+```
+```{r}
+anova(FYTTD1_lmProtRNA,FYTTD1_lmProtAPARNA)
+```
+
+The models are significantly different 
