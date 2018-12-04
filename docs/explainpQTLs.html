@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a41224c2829e2fa98a7bc7ff9be28ffc276290c2" target="_blank">a41224c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4c378d627104364900ba0139062394a7980a9046" target="_blank">4c378d6</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -474,6 +474,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4c378d627104364900ba0139062394a7980a9046/analysis/explainpQTLs.Rmd" target="_blank">4c378d6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-04
+</td>
+<td style="text-align:left;">
+add second susie example
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/44a3e676f7d61d385ddbf1683869412448351379/docs/explainpQTLs.html" target="_blank">44a3e67</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-04
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1377,7 +1411,77 @@ NULL
 $coverage
 [1] 0.95</code></pre>
 <pre class="r"><code>susie_plot(fitted, y=&quot;PIP&quot;)</code></pre>
-<p><img src="figure/explainpQTLs.Rmd/unnamed-chunk-70-1.png" width="672" style="display: block; margin: auto;" /> The possterior inclusion probability (PIP)</p>
+<p><img src="figure/explainpQTLs.Rmd/unnamed-chunk-70-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-70-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/44a3e676f7d61d385ddbf1683869412448351379/docs/figure/explainpQTLs.Rmd/unnamed-chunk-70-1.png" target="_blank">44a3e67</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>The posterior inclusion probability (PIP)</p>
+<p>I want to try one more manual example with more peaks.</p>
+<p><em>DHRS7B</em> ENSG00000109016 This gene is in chr 17</p>
+<pre class="r"><code>TotApaChr17=read.table(&quot;../data/explainProtVar/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr17&quot;, header=T)
+
+TotApaChr17_DHRS7B= TotApaChr17 %&gt;% filter(str_detect(ID, &#39;DHRS7B&#39;)) %&gt;% select(all_samp_list) %&gt;% t()
+
+DHRS7B_peak= TotApaChr17 %&gt;% filter(str_detect(ID, &#39;DHRS7B&#39;)) %&gt;% separate(ID, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;Gene.name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% select(peaknum) 
+
+RNAPhen_DHRS7B=RNAPhen %&gt;% filter(str_detect(ID, &#39;ENSG00000109016&#39;)) %&gt;%  select(all_samp_list)%&gt;% t()
+
+ProtPhen_DHRS7B= ProtPhen %&gt;%  filter(str_detect(ID, &#39;ENSG00000109016&#39;)) %&gt;%  select(all_samp_list) %&gt;% t()
+
+DHRS7B_full=data.frame(cbind(ProtPhen_DHRS7B,RNAPhen_DHRS7B,TotApaChr17_DHRS7B))
+colnames(DHRS7B_full)=c(&quot;Protein&quot;, &quot;RNA&quot;,DHRS7B_peak$peaknum )</code></pre>
+<p>Run first lm</p>
+<pre class="r"><code>DHRS7B_lmbyInd=lm(Protein~RNA, data=DHRS7B_full)
+#named list of the residuals  
+DHRS7B_lmbyInd_Resid=as.vector(DHRS7B_lmbyInd$residuals)</code></pre>
+<p>susieR- can any of the peaks explain the reisduals</p>
+<pre class="r"><code>fitted_DHRS7B &lt;- susie(as.matrix(DHRS7B_full[,3:ncol(DHRS7B_full)]), DHRS7B_lmbyInd_Resid,
+                L = 5,
+                estimate_residual_variance = TRUE, 
+                scaled_prior_variance = 0.1,
+                verbose = TRUE)</code></pre>
+<pre><code>[1] &quot;objective:-31.9778046501692&quot;
+[1] &quot;objective:-31.9748539361582&quot;
+[1] &quot;objective:-31.9546607283256&quot;
+[1] &quot;objective:-31.9546281280884&quot;
+[1] &quot;objective:-31.9545633817041&quot;
+[1] &quot;objective:-31.9545629776244&quot;</code></pre>
+<p>Credible sets:</p>
+<pre class="r"><code>print(fitted_DHRS7B$sets)</code></pre>
+<pre><code>$cs
+NULL
+
+$coverage
+[1] 0.95</code></pre>
+<pre class="r"><code>susie_plot(fitted_DHRS7B, y=&quot;PIP&quot;)</code></pre>
+<p><img src="figure/explainpQTLs.Rmd/unnamed-chunk-74-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
