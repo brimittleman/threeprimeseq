@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-03</p>
+<p><strong>Last updated:</strong> 2018-12-04</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/17b336bff06fb3529bf11d09b97ee0de29434a22" target="_blank">17b336b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a41224c2829e2fa98a7bc7ff9be28ffc276290c2" target="_blank">a41224c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -390,6 +390,7 @@ Untracked files:
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -473,6 +474,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a41224c2829e2fa98a7bc7ff9be28ffc276290c2/analysis/explainpQTLs.Rmd" target="_blank">a41224c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-04
+</td>
+<td style="text-align:left;">
+phenotype data in model
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/36e39f3e5d865bcfe2e15e6f50e6d379341e702e/docs/explainpQTLs.html" target="_blank">36e39f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-03
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1257,6 +1292,93 @@ Multiple R-squared:  0.004125,  Adjusted R-squared:  0.0007196
 F-statistic: 1.211 on 5 and 1462 DF,  p-value: 0.3014</code></pre>
 </div>
 </div>
+<div id="start-again-use-individal-phenotypes" class="section level1">
+<h1>Start Again: Use individal phenotypes</h1>
+<p>I need to use the phenotypes rather than the effect sizes. I need to first look at the overlap of individuals in the protein, RNA, and APA data.</p>
+<p>/project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.Samples.txt</p>
+<p>Samples for apa:</p>
+<pre class="bash"><code>#python  
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/molecular_phenos/APA_SAMPLE.txt &quot;,&#39;w&#39;)
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_total_Transcript.txt&quot;, &quot;r&quot;):
+     bam, sample = ln.split()
+     line=sample[:-2]
+     fout.write(&quot;NA&quot;+line + &quot;\n&quot;)
+ 
+ fout.close()</code></pre>
+<p>Imput samples</p>
+<pre class="r"><code>samp_name=c(&quot;samples&quot;)
+RNA_samp=read.table(&quot;../data/pQTL_otherphen/fastqtl_qqnorm_RNAseq_phase2.Samples.txt&quot;, col.names = samp_name, stringsAsFactors = F)
+Prot_samp=read.table(&quot;../data/pQTL_otherphen/fastqtl_qqnorm_prot.fixed.noChr.SAMP.txt&quot;, col.names = samp_name, stringsAsFactors = F)
+APA_samp=read.table(&quot;../data/pQTL_otherphen/APA_SAMPLE.txt&quot;, stringsAsFactors = F, col.names = samp_name)</code></pre>
+<p>Inner Join these to see individuals with all data</p>
+<pre class="r"><code>all_samp=RNA_samp %&gt;% inner_join(Prot_samp, by=&quot;samples&quot;) %&gt;% inner_join(APA_samp, by=&quot;samples&quot;)
+nrow(all_samp)</code></pre>
+<pre><code>[1] 25</code></pre>
+<pre class="r"><code>all_samp_list=all_samp$samples
+write.table(all_samp, &quot;../data/pQTL_otherphen/ProtRNAAPA_samples.txt&quot;, quote = F, col.names = F, row.names = F)</code></pre>
+<p>This shows that we have 25 samples with data for all individuals. I can use this to subset the phenotype vector/matrics for each phenotype.</p>
+<div id="write-script-to-make-lm-matrix" class="section level3">
+<h3>Write script to make lm matrix</h3>
+<p>Necessary files:<br />
+* /project2/gilad/briana/threeprimeseq/data/explainProtVar/ProtRNAAPA_samples.txt</p>
+<ul>
+<li><p>/project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt</p></li>
+<li><p>/project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.txt</p></li>
+<li><p>/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr*.gz</p></li>
+</ul>
+<p>Input: This script will need to take in all of these files along with the chromosome, gene name, and ensg gene name. I will write this in R first by doing an example on my computer than making it a general script for midway.</p>
+<p><em>CCDC51</em> ENSG00000164051 Chr3</p>
+<p>Had to get rid of the # in the header to make it come into R.</p>
+<pre class="r"><code>TotApaChr3=read.table(&quot;../data/explainProtVar/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr3&quot;, header=T)
+
+RNAPhen=read.table(&quot;../data/mol_pheno/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt&quot;, header = T)
+
+ProtPhen=read.table(&quot;../data/mol_pheno/fastqtl_qqnorm_prot.fixed.noChr.txt&quot;, header=T)</code></pre>
+<p>selct for samples in all_samp and filter for the correct gene</p>
+<pre class="r"><code>TotApaChr3_CCDC51= TotApaChr3 %&gt;% filter(str_detect(ID, &#39;CCDC51&#39;)) %&gt;% select(all_samp_list) %&gt;% t()
+
+CCDC51_peak= TotApaChr3 %&gt;% filter(str_detect(ID, &#39;CCDC51&#39;)) %&gt;% separate(ID, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;Gene.name&quot;, &quot;strand&quot;, &quot;peaknum&quot;), sep=&quot;_&quot;) %&gt;% select(peaknum) 
+
+RNAPhen_CCDC51=RNAPhen %&gt;% filter(str_detect(ID, &#39;ENSG00000164051&#39;)) %&gt;%  select(all_samp_list)%&gt;% t()
+
+ProtPhen_CCDC51= ProtPhen %&gt;%  filter(str_detect(ID, &#39;ENSG00000164051&#39;)) %&gt;%  select(all_samp_list) %&gt;% t()
+
+CCDC51_full=data.frame(cbind(ProtPhen_CCDC51,RNAPhen_CCDC51,TotApaChr3_CCDC51))
+colnames(CCDC51_full)=c(&quot;Protein&quot;, &quot;RNA&quot;,CCDC51_peak$peaknum )</code></pre>
+<p>Now I have the data and I can run the linear model for protein~ RNA. This asks the question, is there variation in protein not explained by RNA</p>
+<pre class="r"><code>CCDC51_lmbyInd=lm(Protein~RNA, data=CCDC51_full)
+#named list of the residuals  
+CCDC51_lmbyInd_Resid=as.vector(CCDC51_lmbyInd$residuals)</code></pre>
+<p>Next step is to assess if APA can explain the residuals. I am asking if variation not explained by RNA explained by APA. To deal with the correlation structure in the peaks. I will use the Stephens lab method Susie.</p>
+<pre class="r"><code>#devtools::install_github(&quot;stephenslab/susieR&quot;)
+library(susieR)  
+set.seed(1)</code></pre>
+<p>My prior can be the total number of peaks (in this case 5)</p>
+<pre class="r"><code>fitted &lt;- susie(as.matrix(CCDC51_full[,3:ncol(CCDC51_full)]), CCDC51_lmbyInd_Resid,
+                L = 5,
+                estimate_residual_variance = TRUE, 
+                scaled_prior_variance = 0.1,
+                verbose = TRUE)</code></pre>
+<pre><code>[1] &quot;objective:-35.8428944689953&quot;
+[1] &quot;objective:-35.8017789815143&quot;
+[1] &quot;objective:-35.6832562642526&quot;
+[1] &quot;objective:-35.6830774074188&quot;
+[1] &quot;objective:-35.6764286074409&quot;
+[1] &quot;objective:-35.6764283743828&quot;
+[1] &quot;objective:-35.6750914759185&quot;
+[1] &quot;objective:-35.6750914677743&quot;
+[1] &quot;objective:-35.6747946648829&quot;
+[1] &quot;objective:-35.6747946648393&quot;</code></pre>
+<p>Get out the credible set:</p>
+<pre class="r"><code>print(fitted$sets)</code></pre>
+<pre><code>$cs
+NULL
+
+$coverage
+[1] 0.95</code></pre>
+<pre class="r"><code>susie_plot(fitted, y=&quot;PIP&quot;)</code></pre>
+<p><img src="figure/explainpQTLs.Rmd/unnamed-chunk-70-1.png" width="672" style="display: block; margin: auto;" /> The possterior inclusion probability (PIP)</p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -1275,29 +1397,32 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  cowplot_0.9.3   broom_0.5.0     reshape2_1.4.3 
- [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5    
- [9] readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0  
-[13] tidyverse_1.2.1 workflowr_1.1.1
+ [1] susieR_0.6.2.0394 bindrcpp_0.2.2    cowplot_0.9.3    
+ [4] broom_0.5.0       reshape2_1.4.3    forcats_0.3.0    
+ [7] stringr_1.3.1     dplyr_0.7.6       purrr_0.2.5      
+[10] readr_1.1.1       tidyr_0.8.1       tibble_1.4.2     
+[13] ggplot2_3.0.0     tidyverse_1.2.1   workflowr_1.1.1  
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4   haven_1.1.2        lattice_0.20-35   
- [4] colorspace_1.3-2   htmltools_0.3.6    yaml_2.2.0        
- [7] rlang_0.2.2        R.oo_1.22.0        pillar_1.3.0      
-[10] glue_1.3.0         withr_2.1.2        R.utils_2.7.0     
-[13] RColorBrewer_1.1-2 modelr_0.1.2       readxl_1.1.0      
-[16] bindr_0.1.1        plyr_1.8.4         munsell_0.5.0     
-[19] gtable_0.2.0       cellranger_1.1.0   rvest_0.3.2       
-[22] R.methodsS3_1.7.1  evaluate_0.11      labeling_0.3      
-[25] knitr_1.20         Rcpp_0.12.19       scales_1.0.0      
-[28] backports_1.1.2    jsonlite_1.5       hms_0.4.2         
-[31] digest_0.6.17      stringi_1.2.4      grid_3.5.1        
-[34] rprojroot_1.3-2    cli_1.0.1          tools_3.5.1       
-[37] magrittr_1.5       lazyeval_0.2.1     crayon_1.3.4      
-[40] whisker_0.3-2      pkgconfig_2.0.2    xml2_1.2.0        
-[43] lubridate_1.7.4    assertthat_0.2.0   rmarkdown_1.10    
-[46] httr_1.3.1         rstudioapi_0.8     R6_2.3.0          
-[49] nlme_3.1-137       git2r_0.23.0       compiler_3.5.1    </code></pre>
+ [4] expm_0.999-3       colorspace_1.3-2   htmltools_0.3.6   
+ [7] yaml_2.2.0         rlang_0.2.2        R.oo_1.22.0       
+[10] pillar_1.3.0       glue_1.3.0         withr_2.1.2       
+[13] R.utils_2.7.0      RColorBrewer_1.1-2 modelr_0.1.2      
+[16] readxl_1.1.0       matrixStats_0.54.0 bindr_0.1.1       
+[19] plyr_1.8.4         munsell_0.5.0      gtable_0.2.0      
+[22] cellranger_1.1.0   rvest_0.3.2        R.methodsS3_1.7.1 
+[25] evaluate_0.11      labeling_0.3       knitr_1.20        
+[28] Rcpp_0.12.19       scales_1.0.0       backports_1.1.2   
+[31] jsonlite_1.5       hms_0.4.2          digest_0.6.17     
+[34] stringi_1.2.4      grid_3.5.1         rprojroot_1.3-2   
+[37] cli_1.0.1          tools_3.5.1        magrittr_1.5      
+[40] lazyeval_0.2.1     crayon_1.3.4       whisker_0.3-2     
+[43] pkgconfig_2.0.2    Matrix_1.2-14      xml2_1.2.0        
+[46] lubridate_1.7.4    assertthat_0.2.0   rmarkdown_1.10    
+[49] httr_1.3.1         rstudioapi_0.8     R6_2.3.0          
+[52] nlme_3.1-137       git2r_0.23.0       compiler_3.5.1    </code></pre>
+</div>
 </div>
 
 <hr>
