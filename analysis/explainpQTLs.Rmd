@@ -814,4 +814,52 @@ print(fitted$sets)
 ```{r}
 susie_plot(fitted, y="PIP")
 ```
-The possterior inclusion probability (PIP)
+The posterior inclusion probability (PIP)
+
+I want to try one more manual example with more peaks.  
+
+*DHRS7B*  ENSG00000109016
+This gene is in chr 17 
+
+```{r}
+TotApaChr17=read.table("../data/explainProtVar/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr17", header=T)
+
+TotApaChr17_DHRS7B= TotApaChr17 %>% filter(str_detect(ID, 'DHRS7B')) %>% select(all_samp_list) %>% t()
+
+DHRS7B_peak= TotApaChr17 %>% filter(str_detect(ID, 'DHRS7B')) %>% separate(ID, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% select(peaknum) 
+
+RNAPhen_DHRS7B=RNAPhen %>% filter(str_detect(ID, 'ENSG00000109016')) %>%  select(all_samp_list)%>% t()
+
+ProtPhen_DHRS7B= ProtPhen %>%  filter(str_detect(ID, 'ENSG00000109016')) %>%  select(all_samp_list) %>% t()
+
+DHRS7B_full=data.frame(cbind(ProtPhen_DHRS7B,RNAPhen_DHRS7B,TotApaChr17_DHRS7B))
+colnames(DHRS7B_full)=c("Protein", "RNA",DHRS7B_peak$peaknum )
+```
+
+Run first lm  
+
+```{r}
+DHRS7B_lmbyInd=lm(Protein~RNA, data=DHRS7B_full)
+#named list of the residuals  
+DHRS7B_lmbyInd_Resid=as.vector(DHRS7B_lmbyInd$residuals)
+
+```
+
+
+susieR- can any of the peaks explain the reisduals  
+
+```{r}
+fitted_DHRS7B <- susie(as.matrix(DHRS7B_full[,3:ncol(DHRS7B_full)]), DHRS7B_lmbyInd_Resid,
+                L = 5,
+                estimate_residual_variance = TRUE, 
+                scaled_prior_variance = 0.1,
+                verbose = TRUE)
+```
+
+Credible sets: 
+
+
+```{r}
+print(fitted_DHRS7B$sets)
+susie_plot(fitted_DHRS7B, y="PIP")
+```
