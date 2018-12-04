@@ -702,4 +702,116 @@ CCDC51_lmProtAPA_rand=lm(CCDC51_RNA_Resid ~ CCDC51_apaTotProtRNA_rand$peak216857
 summary(CCDC51_lmProtAPA_rand)
 ```
 
+#Start Again: Use individal phenotypes  
 
+I need to use the phenotypes rather than the effect sizes. I need to first look at the overlap of individuals in the protein, RNA, and APA data.  
+
+/project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.Samples.txt
+
+Samples for apa: 
+
+```{bash,eval=F}
+#python  
+fout = open("/project2/gilad/briana/threeprimeseq/data/molecular_phenos/APA_SAMPLE.txt ",'w')
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/file_id_mapping_total_Transcript.txt", "r"):
+     bam, sample = ln.split()
+     line=sample[:-2]
+     fout.write("NA"+line + "\n")
+ 
+ fout.close()
+```
+Imput samples  
+```{r}
+samp_name=c("samples")
+RNA_samp=read.table("../data/pQTL_otherphen/fastqtl_qqnorm_RNAseq_phase2.Samples.txt", col.names = samp_name, stringsAsFactors = F)
+Prot_samp=read.table("../data/pQTL_otherphen/fastqtl_qqnorm_prot.fixed.noChr.SAMP.txt", col.names = samp_name, stringsAsFactors = F)
+APA_samp=read.table("../data/pQTL_otherphen/APA_SAMPLE.txt", stringsAsFactors = F, col.names = samp_name)
+```
+Inner Join these to see individuals with all data 
+
+```{r}
+all_samp=RNA_samp %>% inner_join(Prot_samp, by="samples") %>% inner_join(APA_samp, by="samples")
+nrow(all_samp)
+all_samp_list=all_samp$samples
+write.table(all_samp, "../data/pQTL_otherphen/ProtRNAAPA_samples.txt", quote = F, col.names = F, row.names = F)
+```
+
+This shows that we have 25 samples with data for all individuals. I can use this to subset the phenotype vector/matrics for each phenotype. 
+
+###Write script to make lm matrix   
+
+Necessary files:  
+* /project2/gilad/briana/threeprimeseq/data/explainProtVar/ProtRNAAPA_samples.txt  
+
+* /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt
+
+* /project2/gilad/briana/threeprimeseq/data/molecular_phenos/fastqtl_qqnorm_prot.fixed.noChr.txt
+
+* /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr*.gz
+
+
+Input: This script will need to take in all of these files along with the chromosome, gene name, and ensg gene name. I will write this in R first by doing an example on my computer than making it a general script for midway.  
+
+*CCDC51* 
+ENSG00000164051 Chr3 
+
+Had to get rid of the # in the header to make it come into R.  
+
+```{r}
+TotApaChr3=read.table("../data/explainProtVar/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr3", header=T)
+
+RNAPhen=read.table("../data/mol_pheno/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt", header = T)
+
+ProtPhen=read.table("../data/mol_pheno/fastqtl_qqnorm_prot.fixed.noChr.txt", header=T)
+```
+selct for samples in all_samp and filter for the correct gene  
+
+```{r}
+TotApaChr3_CCDC51= TotApaChr3 %>% filter(str_detect(ID, 'CCDC51')) %>% select(all_samp_list) %>% t()
+
+CCDC51_peak= TotApaChr3 %>% filter(str_detect(ID, 'CCDC51')) %>% separate(ID, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% select(peaknum) 
+
+RNAPhen_CCDC51=RNAPhen %>% filter(str_detect(ID, 'ENSG00000164051')) %>%  select(all_samp_list)%>% t()
+
+ProtPhen_CCDC51= ProtPhen %>%  filter(str_detect(ID, 'ENSG00000164051')) %>%  select(all_samp_list) %>% t()
+
+CCDC51_full=data.frame(cbind(ProtPhen_CCDC51,RNAPhen_CCDC51,TotApaChr3_CCDC51))
+colnames(CCDC51_full)=c("Protein", "RNA",CCDC51_peak$peaknum )
+```
+Now I have the data and I can run the linear model for protein~ RNA. This asks the question, is there variation in protein not explained by RNA  
+
+```{r}
+CCDC51_lmbyInd=lm(Protein~RNA, data=CCDC51_full)
+#named list of the residuals  
+CCDC51_lmbyInd_Resid=as.vector(CCDC51_lmbyInd$residuals)
+
+```
+
+
+Next step is to assess if APA can explain the residuals. I am asking if variation not explained by RNA explained by APA. To deal with the correlation structure in the peaks. I will use the Stephens lab method Susie.  
+
+```{r}
+#devtools::install_github("stephenslab/susieR")
+library(susieR)  
+set.seed(1)
+```
+
+My prior can be the total number of peaks (in this case 5)
+```{r}
+fitted <- susie(as.matrix(CCDC51_full[,3:ncol(CCDC51_full)]), CCDC51_lmbyInd_Resid,
+                L = 5,
+                estimate_residual_variance = TRUE, 
+                scaled_prior_variance = 0.1,
+                verbose = TRUE)
+```
+
+Get out the credible set:  
+
+```{r}
+print(fitted$sets)
+```
+
+```{r}
+susie_plot(fitted, y="PIP")
+```
+The possterior inclusion probability (PIP)
