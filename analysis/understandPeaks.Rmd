@@ -1,0 +1,114 @@
+---
+title: "Understand Peaks"
+author: "Briana Mittleman"
+date: "12/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The goal of this analysis is to understand the data a bit better at the peak level. I want to have the cleanest set of peaks when I perform the final anlyses for the paper.
+
+##Variation in peaks  
+
+First I will run PCA on the peak coverage. I will run this seperatly for the total and nuclear fractions. I do not expect large amount of separation.  
+
+
+I will use the peak coverage data before the ratios are created for leafcutter. These files were created using feature counts on the filtered peaks. At this point the peaks have been mapped to the closest refseq transcript on the opposite strand. 
+
+Relevant file:  
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc  
+
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc  
+
+These files are in /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/PeakCounts on my computer.  
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+library(reshape2)
+library(devtools)
+```
+
+Load data:  
+
+```{r}
+#only keep the counts 
+total_Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,7:45]
+nuclear_Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,7:45]
+
+```
+
+
+###Total:  
+Run PCA on the total coverage 
+
+```{r}
+pca_tot_peak=prcomp(total_Cov, center=T,scale=T)
+summary(pca_tot_peak)
+pca_tot_df=as.data.frame(pca_tot_peak$rotation) %>% rownames_to_column(var="lib") %>% mutate(line=substr(lib,2,6))
+pca_tot_df$line=as.integer(pca_tot_df$line)
+```
+
+I want to color these by library size. 
+
+```{r}
+map_stats=read.csv("../data/comb_map_stats_39ind.csv", header=T)
+
+map_stat_total=map_stats %>% filter(fraction=="total")
+map_stat_total$batch=as.factor(map_stat_total$batch)
+```
+
+Join the relevant stats with the pca dataframe.  
+
+```{r}
+pca_tot_df=pca_tot_df %>% full_join(map_stat_total, by="line")
+```
+
+Plot this PCA:  
+
+```{r}
+ggplot(pca_tot_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x="PC1:0.89", y="PC2:0.043", title="Raw PAS qunatification data Total \n colored by batch ")
+```
+
+
+###Nuclear  
+
+Run PCA on the Nuclear coverage 
+
+```{r}
+pca_nuc_peak=prcomp(nuclear_Cov, center=T,scale=T)
+summary(pca_nuc_peak)
+pca_nuc_df=as.data.frame(pca_nuc_peak$rotation) %>% rownames_to_column(var="lib") %>% mutate(line=substr(lib,2,6))
+pca_nuc_df$line=as.integer(pca_nuc_df$line)
+```
+
+I want to color these by library size. 
+
+```{r}
+map_stat_nuclear=map_stats %>% filter(fraction=="nuclear")
+map_stat_nuclear$batch=as.factor(map_stat_nuclear$batch)
+```
+
+Join the relevant stats with the pca dataframe.  
+
+```{r}
+pca_nuc_df=pca_nuc_df %>% full_join(map_stat_nuclear, by="line")
+```
+
+Plot this PCA:  
+
+```{r}
+ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x="PC1: 0.74", y="PC2: 0.09", title="Raw PAS qunatification data nuclear \n colored by batch ")
+```
+
+This shows that PC 2 is highly corrleated with batch,  
+
+```{r}
+ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=comb_mapped )) + geom_point() + labs(x="PC1: 0.74", y="PC2: 0.09", title="Raw PAS qunatification data nuclear \n colored by Mapped Read count")
+```
+
+

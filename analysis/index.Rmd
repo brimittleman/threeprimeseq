@@ -104,3 +104,8 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 * [Use flash and mash to look at sharing](flash2mash.html)
 
 * [Linear models to explain pQTLS](explainpQTLs.html)
+
+Until now I have been focusing on way to develop the story for the paper. The next steps will be to systematically understand the data in order to filter to high quality data to use in the final analysis. 
+
+
+* [Investigate Peak quality](understandPeaks.html)
