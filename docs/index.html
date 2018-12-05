@@ -221,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-29</p>
+<p><strong>Last updated:</strong> 2018-12-05</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/413c8fddd492447ac0d51a7b928c56a3c941f41f" target="_blank">413c8fd</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/655b58288654c0cff03f96faf4b235bb80d91391" target="_blank">655b582</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -273,6 +273,7 @@ Untracked files:
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -291,6 +292,7 @@ Untracked files:
     Untracked:  data/nom_QTL_trans/
     Untracked:  data/nuc6up/
     Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_opp/
@@ -312,12 +314,12 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
-    Modified:   analysis/39indQC.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
@@ -355,6 +357,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/655b58288654c0cff03f96faf4b235bb80d91391/analysis/index.Rmd" target="_blank">655b582</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-05
+</td>
+<td style="text-align:left;">
+PCA with batch and read count
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/index.html" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -2095,6 +2131,10 @@ Start workflowr project.
 <li><p><a href="apa_prot_overlap.html">Investigate APA protein RNA relationship</a></p></li>
 <li><p><a href="flash2mash.html">Use flash and mash to look at sharing</a></p></li>
 <li><p><a href="explainpQTLs.html">Linear models to explain pQTLS</a></p></li>
+</ul>
+<p>Until now I have been focusing on way to develop the story for the paper. The next steps will be to systematically understand the data in order to filter to high quality data to use in the final analysis.</p>
+<ul>
+<li><a href="understandPeaks.html">Investigate Peak quality</a></li>
 </ul>
 </div>
 </div>

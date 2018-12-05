@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Briana Mittleman" />
+
+
+<title>Understand Peaks</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Three Prime Sequencing in Human LCLs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brimittleman/threeprimeseq">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Understand Peaks</h1>
+<h4 class="author"><em>Briana Mittleman</em></h4>
+<h4 class="date"><em>12/5/2018</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-12-05</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/655b58288654c0cff03f96faf4b235bb80d91391" target="_blank">655b582</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
+    Ignored:    output/.DS_Store
+
+Untracked files:
+    Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
+    Untracked:  analysis/snake.config.notes.Rmd
+    Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  data/18486.genecov.txt
+    Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/GM12878.chromHMM.bed
+    Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LocusZoom/
+    Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
+    Untracked:  data/PeaksUsed/
+    Untracked:  data/RNAkalisto/
+    Untracked:  data/TotalApaQTLs.txt
+    Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/YL-SP-18486-T-combined-genecov.txt
+    Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/apaExamp/
+    Untracked:  data/bedgraph_peaks/
+    Untracked:  data/bin200.5.T.nuccov.bed
+    Untracked:  data/bin200.Anuccov.bed
+    Untracked:  data/bin200.nuccov.bed
+    Untracked:  data/clean_peaks/
+    Untracked:  data/comb_map_stats.csv
+    Untracked:  data/comb_map_stats.xlsx
+    Untracked:  data/comb_map_stats_39ind.csv
+    Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_trans/
+    Untracked:  data/ensemble_to_genename.txt
+    Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
+    Untracked:  data/first50lines_closest.txt
+    Untracked:  data/gencov.test.csv
+    Untracked:  data/gencov.test.txt
+    Untracked:  data/gencov_zero.test.csv
+    Untracked:  data/gencov_zero.test.txt
+    Untracked:  data/gene_cov/
+    Untracked:  data/joined
+    Untracked:  data/leafcutter/
+    Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/mol_overlap/
+    Untracked:  data/mol_pheno/
+    Untracked:  data/nom_QTL/
+    Untracked:  data/nom_QTL_opp/
+    Untracked:  data/nom_QTL_trans/
+    Untracked:  data/nuc6up/
+    Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
+    Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_opp/
+    Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
+    Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  data/smash.cov.results.bed
+    Untracked:  data/smash.cov.results.csv
+    Untracked:  data/smash.cov.results.txt
+    Untracked:  data/smash_testregion/
+    Untracked:  data/ssFC200.cov.bed
+    Untracked:  data/temp.file1
+    Untracked:  data/temp.file2
+    Untracked:  data/temp.gencov.test.txt
+    Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  output/picard/
+    Untracked:  output/plots/
+    Untracked:  output/qual.fig2.pdf
+
+Unstaged changes:
+    Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
+    Modified:   analysis/cleanupdtseq.internalpriming.Rmd
+    Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
+    Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
+    Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlap_qtls.Rmd
+    Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
+    Modified:   analysis/test.max2.Rmd
+    Modified:   code/Snakefile
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/655b58288654c0cff03f96faf4b235bb80d91391/analysis/understandPeaks.Rmd" target="_blank">655b582</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-05
+</td>
+<td style="text-align:left;">
+PCA with batch and read count
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<p>The goal of this analysis is to understand the data a bit better at the peak level. I want to have the cleanest set of peaks when I perform the final anlyses for the paper.</p>
+<div id="variation-in-peaks" class="section level2">
+<h2>Variation in peaks</h2>
+<p>First I will run PCA on the peak coverage. I will run this seperatly for the total and nuclear fractions. I do not expect large amount of separation.</p>
+<p>I will use the peak coverage data before the ratios are created for leafcutter. These files were created using feature counts on the filtered peaks. At this point the peaks have been mapped to the closest refseq transcript on the opposite strand.</p>
+<p>Relevant file:<br />
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc</p>
+<ul>
+<li>/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc</li>
+</ul>
+<p>These files are in /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/PeakCounts on my computer.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+<pre class="r"><code>library(devtools)</code></pre>
+<p>Load data:</p>
+<pre class="r"><code>#only keep the counts 
+total_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,7:45]
+nuclear_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,7:45]</code></pre>
+<div id="total" class="section level3">
+<h3>Total:</h3>
+<p>Run PCA on the total coverage</p>
+<pre class="r"><code>pca_tot_peak=prcomp(total_Cov, center=T,scale=T)
+summary(pca_tot_peak)</code></pre>
+<pre><code>Importance of components:
+                          PC1     PC2     PC3     PC4     PC5    PC6
+Standard deviation     5.9010 1.30000 0.81376 0.75658 0.47993 0.4501
+Proportion of Variance 0.8929 0.04333 0.01698 0.01468 0.00591 0.0052
+Cumulative Proportion  0.8929 0.93621 0.95319 0.96787 0.97378 0.9790
+                           PC7     PC8     PC9    PC10    PC11    PC12
+Standard deviation     0.42896 0.32313 0.30419 0.27984 0.23427 0.19916
+Proportion of Variance 0.00472 0.00268 0.00237 0.00201 0.00141 0.00102
+Cumulative Proportion  0.98369 0.98637 0.98874 0.99075 0.99216 0.99317
+                          PC13    PC14    PC15    PC16    PC17   PC18
+Standard deviation     0.18883 0.15913 0.15127 0.14309 0.12758 0.1254
+Proportion of Variance 0.00091 0.00065 0.00059 0.00053 0.00042 0.0004
+Cumulative Proportion  0.99409 0.99474 0.99532 0.99585 0.99626 0.9967
+                          PC19    PC20    PC21    PC22    PC23    PC24
+Standard deviation     0.12328 0.11035 0.10707 0.09979 0.09530 0.08797
+Proportion of Variance 0.00039 0.00031 0.00029 0.00026 0.00023 0.00020
+Cumulative Proportion  0.99706 0.99737 0.99766 0.99792 0.99815 0.99835
+                          PC25    PC26    PC27    PC28    PC29    PC30
+Standard deviation     0.08576 0.08086 0.07902 0.07535 0.07454 0.06907
+Proportion of Variance 0.00019 0.00017 0.00016 0.00015 0.00014 0.00012
+Cumulative Proportion  0.99854 0.99871 0.99887 0.99901 0.99916 0.99928
+                          PC31    PC32    PC33    PC34    PC35    PC36
+Standard deviation     0.06717 0.06441 0.06201 0.05666 0.05415 0.05261
+Proportion of Variance 0.00012 0.00011 0.00010 0.00008 0.00008 0.00007
+Cumulative Proportion  0.99939 0.99950 0.99960 0.99968 0.99976 0.99983
+                          PC37    PC38    PC39
+Standard deviation     0.05128 0.04839 0.04237
+Proportion of Variance 0.00007 0.00006 0.00005
+Cumulative Proportion  0.99989 0.99995 1.00000</code></pre>
+<pre class="r"><code>pca_tot_df=as.data.frame(pca_tot_peak$rotation) %&gt;% rownames_to_column(var=&quot;lib&quot;) %&gt;% mutate(line=substr(lib,2,6))
+pca_tot_df$line=as.integer(pca_tot_df$line)</code></pre>
+<p>I want to color these by library size.</p>
+<pre class="r"><code>map_stats=read.csv(&quot;../data/comb_map_stats_39ind.csv&quot;, header=T)
+
+map_stat_total=map_stats %&gt;% filter(fraction==&quot;total&quot;)
+map_stat_total$batch=as.factor(map_stat_total$batch)</code></pre>
+<p>Join the relevant stats with the pca dataframe.</p>
+<pre class="r"><code>pca_tot_df=pca_tot_df %&gt;% full_join(map_stat_total, by=&quot;line&quot;)</code></pre>
+<p>Plot this PCA:</p>
+<pre class="r"><code>ggplot(pca_tot_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x=&quot;PC1:0.89&quot;, y=&quot;PC2:0.043&quot;, title=&quot;Raw PAS qunatification data Total \n colored by batch &quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="nuclear" class="section level3">
+<h3>Nuclear</h3>
+<p>Run PCA on the Nuclear coverage</p>
+<pre class="r"><code>pca_nuc_peak=prcomp(nuclear_Cov, center=T,scale=T)
+summary(pca_nuc_peak)</code></pre>
+<pre><code>Importance of components:
+                          PC1     PC2     PC3     PC4     PC5     PC6
+Standard deviation     5.3861 1.87775 1.62240 0.99268 0.92998 0.63513
+Proportion of Variance 0.7438 0.09041 0.06749 0.02527 0.02218 0.01034
+Cumulative Proportion  0.7438 0.83425 0.90174 0.92701 0.94919 0.95953
+                           PC7    PC8    PC9    PC10    PC11    PC12
+Standard deviation     0.53149 0.4674 0.4095 0.36160 0.32862 0.28960
+Proportion of Variance 0.00724 0.0056 0.0043 0.00335 0.00277 0.00215
+Cumulative Proportion  0.96677 0.9724 0.9767 0.98003 0.98280 0.98495
+                          PC13    PC14   PC15    PC16    PC17    PC18
+Standard deviation     0.26862 0.25414 0.2333 0.22825 0.20329 0.19277
+Proportion of Variance 0.00185 0.00166 0.0014 0.00134 0.00106 0.00095
+Cumulative Proportion  0.98680 0.98845 0.9899 0.99118 0.99224 0.99320
+                          PC19    PC20    PC21    PC22    PC23    PC24
+Standard deviation     0.18620 0.17247 0.16092 0.14244 0.13630 0.12741
+Proportion of Variance 0.00089 0.00076 0.00066 0.00052 0.00048 0.00042
+Cumulative Proportion  0.99409 0.99485 0.99551 0.99603 0.99651 0.99693
+                          PC25    PC26    PC27    PC28    PC29    PC30
+Standard deviation     0.12025 0.11377 0.11306 0.10563 0.10228 0.09219
+Proportion of Variance 0.00037 0.00033 0.00033 0.00029 0.00027 0.00022
+Cumulative Proportion  0.99730 0.99763 0.99796 0.99824 0.99851 0.99873
+                          PC31    PC32    PC33    PC34    PC35    PC36
+Standard deviation     0.08916 0.08768 0.08144 0.07916 0.07412 0.07253
+Proportion of Variance 0.00020 0.00020 0.00017 0.00016 0.00014 0.00013
+Cumulative Proportion  0.99893 0.99913 0.99930 0.99946 0.99960 0.99974
+                          PC37    PC38    PC39
+Standard deviation     0.06394 0.05721 0.05416
+Proportion of Variance 0.00010 0.00008 0.00008
+Cumulative Proportion  0.99984 0.99992 1.00000</code></pre>
+<pre class="r"><code>pca_nuc_df=as.data.frame(pca_nuc_peak$rotation) %&gt;% rownames_to_column(var=&quot;lib&quot;) %&gt;% mutate(line=substr(lib,2,6))
+pca_nuc_df$line=as.integer(pca_nuc_df$line)</code></pre>
+<p>I want to color these by library size.</p>
+<pre class="r"><code>map_stat_nuclear=map_stats %&gt;% filter(fraction==&quot;nuclear&quot;)
+map_stat_nuclear$batch=as.factor(map_stat_nuclear$batch)</code></pre>
+<p>Join the relevant stats with the pca dataframe.</p>
+<pre class="r"><code>pca_nuc_df=pca_nuc_df %&gt;% full_join(map_stat_nuclear, by=&quot;line&quot;)</code></pre>
+<p>Plot this PCA:</p>
+<pre class="r"><code>ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x=&quot;PC1: 0.74&quot;, y=&quot;PC2: 0.09&quot;, title=&quot;Raw PAS qunatification data nuclear \n colored by batch &quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This shows that PC 2 is highly corrleated with batch,</p>
+<pre class="r"><code>ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=comb_mapped )) + geom_point() + labs(x=&quot;PC1: 0.74&quot;, y=&quot;PC2: 0.09&quot;, title=&quot;Raw PAS qunatification data nuclear \n colored by Mapped Read count&quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.14.1
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] bindrcpp_0.2.2  devtools_1.13.6 reshape2_1.4.3  cowplot_0.9.3  
+ [5] workflowr_1.1.1 forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
+ [9] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
+[13] ggplot2_3.0.0   tidyverse_1.2.1
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] memoise_1.1.0     evaluate_0.11     labeling_0.3     
+[25] knitr_1.20        broom_0.5.0       Rcpp_0.12.19     
+[28] scales_1.0.0      backports_1.1.2   jsonlite_1.5     
+[31] hms_0.4.2         digest_0.6.17     stringi_1.2.4    
+[34] grid_3.5.1        rprojroot_1.3-2   cli_1.0.1        
+[37] tools_3.5.1       magrittr_1.5      lazyeval_0.2.1   
+[40] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
+[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
+[46] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.8   
+[49] R6_2.3.0          nlme_3.1-137      git2r_0.23.0     
+[52] compiler_3.5.1   </code></pre>
+</div>
+
+<hr>
+<p>
+    
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
