@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-29</p>
+<p><strong>Last updated:</strong> 2018-12-05</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/413c8fddd492447ac0d51a7b928c56a3c941f41f" target="_blank">413c8fd</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e230640e18e2c841d3525567d36e24e94d21bdbb" target="_blank">e230640</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -390,6 +390,7 @@ Untracked files:
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -408,6 +409,7 @@ Untracked files:
     Untracked:  data/nom_QTL_trans/
     Untracked:  data/nuc6up/
     Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_opp/
@@ -429,12 +431,12 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
-    Modified:   analysis/39indQC.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
@@ -472,6 +474,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e230640e18e2c841d3525567d36e24e94d21bdbb/analysis/modifyLeafcutter.Rmd" target="_blank">e230640</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-05
+</td>
+<td style="text-align:left;">
+add code to save relevant figures
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/modifyLeafcutter.html" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -775,8 +811,41 @@ PASstats=data.frame(fraction, NoVariation, LowExpression)
 PASstats_melt=melt(PASstats)</code></pre>
 <pre><code>Using fraction as id variables</code></pre>
 <p>plot thid</p>
-<pre class="r"><code>ggplot(PASstats_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs(y=&quot;Proportion of PAS&quot;, title=&quot;PAS with low variation or low expression&quot;, x=&quot;Category&quot;) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))</code></pre>
+<pre class="r"><code>prefilter_pas_stat=ggplot(PASstats_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs(y=&quot;Proportion of PAS&quot;, title=&quot;PAS with low variation or low expression&quot;, x=&quot;Category&quot;) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))
+prefilter_pas_stat</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-7-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>ggsave(&quot;../output/plots/QC_plots/prefilter_PASstats.png&quot;, prefilter_pas_stat)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div id="do-this-de-novo" class="section level2">
 <h2>Do this de novo</h2>
@@ -799,16 +868,138 @@ totalPeakCov_cpm= cpm(as.matrix(totalPeakCov[,7:ncol(totalPeakCov)]),log=T, gene
 <p>Plot prefiltered density</p>
 <pre class="r"><code>plotDensities(totalPeakCov_cpm, legend = &quot;bottomright&quot;, main=&quot;Pre-filtering&quot;)
 abline(v = -1, lty = 3)</code></pre>
-<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /> Looks like filtering around -1 works. I can keep peaks with greater than -1 cpm in 2/3 of the samples (26)</p>
+<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-9-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Looks like filtering around -1 works. I can keep peaks with greater than -1 cpm in 2/3 of the samples (26)</p>
 <pre class="r"><code>keep.exprs_T=rowSums(totalPeakCov_cpm&gt;-1) &gt;= 26
 totalPeakCov_cpm_filt= totalPeakCov_cpm[keep.exprs_T,]
 
 plotDensities(totalPeakCov_cpm_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
-<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /> I can assess this with boxplots. It is interesting to see how different these data are from the RNA seq.</p>
+<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-10-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>I can assess this with boxplots. It is interesting to see how different these data are from the RNA seq.</p>
 <pre class="r"><code>boxplot(totalPeakCov_cpm, main=&quot;Log CPM Counts by library prefilter&quot;)</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-11-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>boxplot(totalPeakCov_cpm_filt, main=&quot;Log CPM Counts by library filtered&quot;)</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-11-2.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p><strong>Nuclear</strong></p>
 <p>Load data and convert to CPM with peak length.</p>
 <pre class="r"><code>nuclearPeakCov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header = T, stringsAsFactors = F)
@@ -820,16 +1011,137 @@ nuclearPeakCov_cpm= cpm(as.matrix(nuclearPeakCov[,7:ncol(nuclearPeakCov)]),log=T
 <p>Plot prefiltered density</p>
 <pre class="r"><code>plotDensities(nuclearPeakCov_cpm, legend = &quot;bottomright&quot;, main=&quot;Pre-filtering&quot;)
 abline(v = 0, lty = 3)</code></pre>
-<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /> Looks like filtering around -4.5 works. I can keep peaks with greater than -4.5 cpm in 2/3 of the samples (26)</p>
+<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-13-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Looks like filtering around -4.5 works. I can keep peaks with greater than -4.5 cpm in 2/3 of the samples (26)</p>
 <pre class="r"><code>keep.exprs_N=rowSums(nuclearPeakCov_cpm&gt;-4.5) &gt;= 26
 nuclearPeakCov_cpm_filt= nuclearPeakCov_cpm[keep.exprs_T,]
 
 plotDensities(nuclearPeakCov_cpm_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-14-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>boxplot(nuclearPeakCov_cpm, main=&quot;Log CPM Counts by library prefilter&quot;)</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-15-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>boxplot(nuclearPeakCov_cpm_filt, main=&quot;Log CPM Counts by library filtered&quot;)</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-15-2.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I had to filter stronger in the total fraction to get similar boxplot distributions. I can compare this method to using raw counts rather than CPM.</p>
 <p>With this scheme I have the following number of peaks remaining:<br />
 Total: 66,782 Nuclear: 124,196</p>
@@ -837,19 +1149,56 @@ Total: 66,782 Nuclear: 124,196</p>
 <div id="raw-counts" class="section level3">
 <h3>Raw counts</h3>
 <p><strong>Total</strong></p>
-<pre class="r"><code>totalPeakCov_logM=log10(as.matrix(totalPeakCov[,7:ncol(totalPeakCov)]))
+<pre class="r"><code>png(&quot;../output/plots/QC_plots/log10TotalPeakCov_prefilter.png&quot;)
+totalPeakCov_logM=log10(as.matrix(totalPeakCov[,7:ncol(totalPeakCov)]))
 plotDensities(totalPeakCov_logM, legend = &quot;bottomright&quot;, main=&quot;Raw Pre-filtering&quot;)
-abline(v = .55, lty = 3)</code></pre>
-<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /> I can filter 2/3 (26) individuals at .55.</p>
+abline(v = .55, lty = 3)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<p>I can filter 2/3 (26) individuals at .55.</p>
 <pre class="r"><code>keep.exprs_T_raw=rowSums(totalPeakCov_logM&gt;.55) &gt;= 26
 totalPeakCov_raw_filt= totalPeakCov_logM[keep.exprs_T_raw,]
 
-plotDensities(totalPeakCov_raw_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
-<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+png(&quot;../output/plots/QC_plots/log10TotalPeakCov_postfilter.png&quot;)
+plotDensities(totalPeakCov_raw_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
 <pre class="r"><code>boxplot(totalPeakCov_logM, main=&quot;log Counts by library prefilter&quot;)</code></pre>
 <pre><code>Warning in bplt(at[i], wid = width[i], stats = z$stats[, i], out =
 z$out[z$group == : Outlier (-Inf) in boxplot 9 is not drawn</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-18-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>boxplot(totalPeakCov_raw_filt, main=&quot;Log Counts by library filtered&quot;)</code></pre>
 <pre><code>Warning in bplt(at[i], wid = width[i], stats = z$stats[, i], out =
 z$out[z$group == : Outlier (-Inf) in boxplot 2 is not drawn</code></pre>
@@ -928,17 +1277,54 @@ z$out[z$group == : Outlier (-Inf) in boxplot 38 is not drawn</code></pre>
 <pre><code>Warning in bplt(at[i], wid = width[i], stats = z$stats[, i], out =
 z$out[z$group == : Outlier (-Inf) in boxplot 39 is not drawn</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-18-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-18-2.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This leaves 80554 rows.</p>
 <p><strong>Nuclear</strong></p>
-<pre class="r"><code>nuclearPeakCov_logM=log10(as.matrix(nuclearPeakCov[,7:ncol(nuclearPeakCov)]))
+<pre class="r"><code>png(&quot;../output/plots/QC_plots/log10NuclearPeakCov_prefilter.png&quot;)
+
+nuclearPeakCov_logM=log10(as.matrix(nuclearPeakCov[,7:ncol(nuclearPeakCov)]))
 plotDensities(nuclearPeakCov_logM, legend = &quot;bottomright&quot;, main=&quot;Raw Pre-filtering&quot;)
-abline(v = .55, lty = 3)</code></pre>
-<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /> I can filter 2/3 (26) individuals at .55.</p>
+abline(v = .55, lty = 3)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<p>I can filter 2/3 (26) individuals at .55.</p>
 <pre class="r"><code>keep.exprs_N_raw=rowSums(nuclearPeakCov_logM&gt;.55) &gt;= 26
 nuclearPeakCov_raw_filt= nuclearPeakCov_logM[keep.exprs_N_raw,]
-
-plotDensities(nuclearPeakCov_raw_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
-<p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+png(&quot;../output/plots/QC_plots/log10NuclearPeakCov_postfilter.png&quot;)
+plotDensities(nuclearPeakCov_raw_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
 <pre class="r"><code>boxplot(nuclearPeakCov_logM, main=&quot;log Counts by library prefilter&quot;)</code></pre>
 <pre><code>Warning in bplt(at[i], wid = width[i], stats = z$stats[, i], out =
 z$out[z$group == : Outlier (-Inf) in boxplot 2 is not drawn</code></pre>
@@ -1007,6 +1393,36 @@ z$out[z$group == : Outlier (-Inf) in boxplot 37 is not drawn</code></pre>
 <pre><code>Warning in bplt(at[i], wid = width[i], stats = z$stats[, i], out =
 z$out[z$group == : Outlier (-Inf) in boxplot 38 is not drawn</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-21-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>boxplot(nuclearPeakCov_raw_filt, main=&quot;Log Counts by library filtered&quot;)</code></pre>
 <pre><code>Warning in bplt(at[i], wid = width[i], stats = z$stats[, i], out =
 z$out[z$group == : Outlier (-Inf) in boxplot 1 is not drawn</code></pre>
@@ -1087,6 +1503,36 @@ z$out[z$group == : Outlier (-Inf) in boxplot 38 is not drawn</code></pre>
 <pre><code>Warning in bplt(at[i], wid = width[i], stats = z$stats[, i], out =
 z$out[z$group == : Outlier (-Inf) in boxplot 39 is not drawn</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-21-2.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This leaves 159308 peaks with coverage.</p>
 </div>
 <div id="filter-based-on-raw-coverage" class="section level3">
@@ -1393,13 +1839,79 @@ PASstatsFilt=data.frame(fraction, NoVariationFilt, LowExpressionFilt)
 PASstatsFilt_melt=melt(PASstatsFilt)</code></pre>
 <pre><code>Using fraction as id variables</code></pre>
 <p>plot thid</p>
-<pre class="r"><code>ggplot(PASstatsFilt_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs(y=&quot;Proportion of Filtered PAS&quot;, title=&quot;PAS with low variation or low expression after filtering&quot;, x=&quot;Category&quot;) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))</code></pre>
+<pre class="r"><code>postfilter_pas_stat=ggplot(PASstatsFilt_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs(y=&quot;Proportion of Filtered PAS&quot;, title=&quot;PAS with low variation or low expression after filtering&quot;, x=&quot;Category&quot;) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))
+postfilter_pas_stat</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-29-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-29-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>ggsave(&quot;../output/plots/QC_plots/postfilter_PASstats.png&quot;, postfilter_pas_stat)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <p>merge the pre and post filter into the same dataframe (did this in excel and saved it)</p>
 <pre class="r"><code>PasStats_all=read.csv(&quot;../data/PeakCounts/pasStats.csv&quot;, header=T, stringsAsFactors = F)
 
-ggplot(PasStats_all, aes(x=Category, y=Value,fill=Fraction))+ geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;)  +labs(y=&quot;Proportion of PAS&quot;, title=&quot;PAS with low variation or low expression before and after filtering&quot;, x=&quot;Category&quot;) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + facet_grid(~Filter)</code></pre>
+preandpostfilter_pas_stat=ggplot(PasStats_all, aes(x=Category, y=Value,fill=Fraction))+ geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;)  +labs(y=&quot;Proportion of PAS&quot;, title=&quot;PAS with low variation or low expression before and after filtering&quot;, x=&quot;Category&quot;) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + facet_grid(~Filter)
+preandpostfilter_pas_stat</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-30-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-30-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>ggsave(&quot;../output/plots/QC_plots/preandpostfilter_PASstats.png&quot;, preandpostfilter_pas_stat)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <p>Rerun QTL analysis.</p>
 <p>I can use the same sample list. /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt&quot;<br />
 APAqtl_nominal_transcript_filt.sh</p>
@@ -1519,9 +2031,69 @@ nuc.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()</code></pre>
 <pre class="r"><code>plot(tot.perm$ppval, tot.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-37-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-37-1.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot(nuc.perm$ppval, nuc.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Nuclear Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/modifyLeafcutter.Rmd/unnamed-chunk-37-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-37-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/figure/modifyLeafcutter.Rmd/unnamed-chunk-37-2.png" target="_blank">210b58b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-11-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -1529,7 +2101,7 @@ abline(0, 1, col=&quot;red&quot;)</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS  10.14
+Running under: macOS  10.14.1
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib

@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-29</p>
+<p><strong>Last updated:</strong> 2018-12-05</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/afb0ce901919c79bb2117f5548f0e2839c70aba6" target="_blank">afb0ce9</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e230640e18e2c841d3525567d36e24e94d21bdbb" target="_blank">e230640</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -358,7 +358,7 @@ Ignored files:
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
-    Untracked:  analysis/genometrack_figs.Rmd
+    Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -367,7 +367,9 @@ Untracked files:
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
     Untracked:  data/PeaksUsed/
     Untracked:  data/RNAkalisto/
     Untracked:  data/TotalApaQTLs.txt
@@ -386,6 +388,8 @@ Untracked files:
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
+    Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -404,10 +408,12 @@ Untracked files:
     Untracked:  data/nom_QTL_trans/
     Untracked:  data/nuc6up/
     Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -424,16 +430,19 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
-    Modified:   analysis/39indQC.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
     Modified:   code/Snakefile
 
@@ -464,6 +473,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e230640e18e2c841d3525567d36e24e94d21bdbb/analysis/PeakToGeneAssignment.Rmd" target="_blank">e230640</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-05
+</td>
+<td style="text-align:left;">
+add code to save relevant figures
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a5b4cf677cb4da813fbf7aee2733afe7dccfb8d6/docs/PeakToGeneAssignment.html" target="_blank">a5b4cf6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -844,12 +887,12 @@ test peak to gene transcript dist
 <p></details></p>
 <hr />
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -1158,7 +1201,7 @@ score50plot=ggplot(peak2transDist_score50, aes(x=abs(Distance + 1)))+ geom_densi
 peak2transDist_score20=peak2transDist_noties%&gt;% filter(PeakScore&gt;20)
 score20plot=ggplot(peak2transDist_score20, aes(x=abs(Distance + 1)))+ geom_density() + scale_x_log10() + labs(title=&quot;Peak Score &gt; 10&quot;)+ annotate(&quot;text&quot;, label=nrow(peak2transDist_score20), x=10, y=.4)
 
-plot_grid(allPeakplot,score20plot,score50plot,score100plot,score200plot, score500plot)</code></pre>
+distance2peak_all=plot_grid(allPeakplot,score20plot,score50plot,score100plot,score200plot, score500plot)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
 <pre><code>Warning: Removed 662 rows containing non-finite values (stat_density).</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
@@ -1171,37 +1214,7 @@ plot_grid(allPeakplot,score20plot,score50plot,score100plot,score200plot, score50
 <pre><code>Warning: Removed 150 rows containing non-finite values (stat_density).</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
 <pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/PeakToGeneAssignment.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/27a43dc8ec9a72661a87c54eb4232457e9d6e227/docs/figure/PeakToGeneAssignment.Rmd/unnamed-chunk-11-1.png" target="_blank">27a43dc</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-09-27
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<pre class="r"><code>ggsave(&quot;../output/plots/QC_plots/distance2peak_all.png&quot;, distance2peak_all, width=8, height=6)</code></pre>
 </div>
 <div id="call-qtls-with-this-assignment" class="section level2">
 <h2>Call QTLS with this assignment</h2>
@@ -2390,6 +2403,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a5b4cf677cb4da813fbf7aee2733afe7dccfb8d6/docs/figure/PeakToGeneAssignment.Rmd/unnamed-chunk-58-1.png" target="_blank">a5b4cf6</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-10-29
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/b78e12e3e2624d10d3900764e74fe77980f919da/docs/figure/PeakToGeneAssignment.Rmd/unnamed-chunk-58-1.png" target="_blank">b78e12e</a>
 </td>
 <td style="text-align:left;">
@@ -2446,7 +2470,7 @@ Briana Mittleman
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+Running under: macOS  10.14.1
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
