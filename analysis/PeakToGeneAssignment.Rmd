@@ -183,7 +183,9 @@ score50plot=ggplot(peak2transDist_score50, aes(x=abs(Distance + 1)))+ geom_densi
 peak2transDist_score20=peak2transDist_noties%>% filter(PeakScore>20)
 score20plot=ggplot(peak2transDist_score20, aes(x=abs(Distance + 1)))+ geom_density() + scale_x_log10() + labs(title="Peak Score > 10")+ annotate("text", label=nrow(peak2transDist_score20), x=10, y=.4)
 
-plot_grid(allPeakplot,score20plot,score50plot,score100plot,score200plot, score500plot)
+distance2peak_all=plot_grid(allPeakplot,score20plot,score50plot,score100plot,score200plot, score500plot)
+
+ggsave("../output/plots/QC_plots/distance2peak_all.png", distance2peak_all, width=8, height=6)
 ```
 
 

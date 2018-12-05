@@ -38,14 +38,15 @@ plot_grid(mapplot_prop, mapplot_mapped)
 Plot boxplots for total vs nuclear.  
 
 ```{r}
-box_mapprop=ggplot(prop_mapped, aes(y=value, x=fraction, fill=fraction)) + geom_boxplot() + geom_jitter(position = position_jitter(.3)) + labs( title="Map Proportion") + ylab("Mapped Proportion")
+box_mapprop=ggplot(prop_mapped, aes(y=value, x=fraction, fill=fraction)) + geom_boxplot(width=.3) + geom_jitter(position = position_jitter(.3)) + labs( title="Map Proportion") + ylab("Mapped Proportion") + scale_fill_manual(values=c("deepskyblue3","darkviolet"))
 
-box_map=ggplot(mapped_reads, aes(y=value, x=fraction, fill=fraction)) + geom_boxplot() + geom_jitter(position = position_jitter(.3)) + labs( title="Number of Mapped reads") + ylab("Mapped")
-
-
-plot_grid(box_map, box_mapprop)
+box_map=ggplot(mapped_reads, aes(y=value, x=fraction, fill=fraction)) + geom_boxplot(width=.3) + geom_jitter(position = position_jitter(.3)) + labs( title="Number of Mapped reads") + ylab("Mapped") + scale_fill_manual(values=c("deepskyblue3","darkviolet"))
 
 
+bothmapplots=plot_grid(box_map, box_mapprop)
+bothmapplots
+
+ggsave("../output/plots/MapBoxplots.png",bothmapplots)
 ```
 
 
@@ -86,7 +87,6 @@ tx2gene=read.table("../data/RNAkalisto/ncbiRefSeq.txn2gene.txt" ,header= F, sep=
 txi.kallisto.tsv <- tximport("../data/RNAkalisto/abundance.tsv", type = "kallisto", tx2gene = tx2gene)
 txi.kallisto.tsv$abundance= as.data.frame(txi.kallisto.tsv$abundance) %>% rownames_to_column(var="Name")
 colnames(txi.kallisto.tsv$abundance)= c("Name", "TPM")
-
 #genes with >0 TPM and at least 1 peak
 refPeakandRNA_withO_TPM=Opeakpergene %>% inner_join(txi.kallisto.tsv$abundance, by="Name") %>% filter(TPM>0, numPeaks>0)
 
@@ -104,5 +104,7 @@ Plot this as distributions.
 ```{r}
 comp_RNAtpm=ggplot(refPeakandRNA_withO_TPM, aes(x=log10(TPM))) + geom_histogram(binwidth=.5, alpha=.5) +geom_histogram(data = refPeakandRNA_noPeakw_withO_TPM, aes(x=log10(TPM)), fill="Red", alpha=.5, binwidth=.5) + labs(title="Comparing RNA expression for genes with a PAS vs no PAS") + annotate("text", x=-8, y=3000, col="Red", label="Genes without PAS") + annotate("text", x=-8.1, y=2700, col="Black", label="Genes with PAS") + geom_rect(linetype=1, xmin=-10, xmax=-6, ymin=2500, ymax=3200, color="Black", alpha=0)
 comp_RNAtpm
+
+ggsave("../output/plots/QC_plots/TPMcoverage4GenesbyPAS.png",comp_RNAtpm)
 ```
 

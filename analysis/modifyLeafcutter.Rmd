@@ -312,7 +312,9 @@ PASstats_melt=melt(PASstats)
 
 plot thid 
 ```{r}
-ggplot(PASstats_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat="identity",position="dodge") + labs(y="Proportion of PAS", title="PAS with low variation or low expression", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet"))
+prefilter_pas_stat=ggplot(PASstats_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat="identity",position="dodge") + labs(y="Proportion of PAS", title="PAS with low variation or low expression", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet"))
+prefilter_pas_stat
+ggsave("../output/plots/QC_plots/prefilter_PASstats.png", prefilter_pas_stat)
 ```
 
 ##Do this de novo
@@ -401,9 +403,11 @@ Nuclear: 124,196
 **Total**  
 
 ```{r}
+png("../output/plots/QC_plots/log10TotalPeakCov_prefilter.png")
 totalPeakCov_logM=log10(as.matrix(totalPeakCov[,7:ncol(totalPeakCov)]))
 plotDensities(totalPeakCov_logM, legend = "bottomright", main="Raw Pre-filtering")
 abline(v = .55, lty = 3)
+dev.off()
 ```
 I can filter 2/3 (26) individuals at .55.
 
@@ -412,7 +416,9 @@ I can filter 2/3 (26) individuals at .55.
 keep.exprs_T_raw=rowSums(totalPeakCov_logM>.55) >= 26
 totalPeakCov_raw_filt= totalPeakCov_logM[keep.exprs_T_raw,]
 
+png("../output/plots/QC_plots/log10TotalPeakCov_postfilter.png")
 plotDensities(totalPeakCov_raw_filt, legend = "bottomright", main="Post-filtering")
+dev.off()
 ```
 
 ```{r}
@@ -426,9 +432,12 @@ This leaves 80554 rows.
 
 
 ```{r}
+png("../output/plots/QC_plots/log10NuclearPeakCov_prefilter.png")
+
 nuclearPeakCov_logM=log10(as.matrix(nuclearPeakCov[,7:ncol(nuclearPeakCov)]))
 plotDensities(nuclearPeakCov_logM, legend = "bottomright", main="Raw Pre-filtering")
 abline(v = .55, lty = 3)
+dev.off()
 ```
 I can filter 2/3 (26) individuals at .55.
 
@@ -436,8 +445,9 @@ I can filter 2/3 (26) individuals at .55.
 ```{r}
 keep.exprs_N_raw=rowSums(nuclearPeakCov_logM>.55) >= 26
 nuclearPeakCov_raw_filt= nuclearPeakCov_logM[keep.exprs_N_raw,]
-
+png("../output/plots/QC_plots/log10NuclearPeakCov_postfilter.png")
 plotDensities(nuclearPeakCov_raw_filt, legend = "bottomright", main="Post-filtering")
+dev.off()
 ```
 
 ```{r}
@@ -791,14 +801,19 @@ PASstatsFilt_melt=melt(PASstatsFilt)
 
 plot thid 
 ```{r}
-ggplot(PASstatsFilt_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat="identity",position="dodge") + labs(y="Proportion of Filtered PAS", title="PAS with low variation or low expression after filtering", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet"))
+
+postfilter_pas_stat=ggplot(PASstatsFilt_melt, aes(x=variable, y=value,fill=fraction))+ geom_bar(stat="identity",position="dodge") + labs(y="Proportion of Filtered PAS", title="PAS with low variation or low expression after filtering", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet"))
+postfilter_pas_stat
+ggsave("../output/plots/QC_plots/postfilter_PASstats.png", postfilter_pas_stat)
 ```
 
 merge the pre and post filter into the same dataframe (did this in excel and saved it)
 ```{r}
 PasStats_all=read.csv("../data/PeakCounts/pasStats.csv", header=T, stringsAsFactors = F)
 
-ggplot(PasStats_all, aes(x=Category, y=Value,fill=Fraction))+ geom_bar(stat="identity",position="dodge")  +labs(y="Proportion of PAS", title="PAS with low variation or low expression before and after filtering", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet")) + facet_grid(~Filter)
+preandpostfilter_pas_stat=ggplot(PasStats_all, aes(x=Category, y=Value,fill=Fraction))+ geom_bar(stat="identity",position="dodge")  +labs(y="Proportion of PAS", title="PAS with low variation or low expression before and after filtering", x="Category") + scale_fill_manual(values=c("deepskyblue3","darkviolet")) + facet_grid(~Filter)
+preandpostfilter_pas_stat
+ggsave("../output/plots/QC_plots/preandpostfilter_PASstats.png", preandpostfilter_pas_stat)
 ```
 
 Rerun QTL analysis.
