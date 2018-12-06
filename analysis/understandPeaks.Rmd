@@ -31,6 +31,8 @@ library(workflowr)
 library(cowplot)
 library(reshape2)
 library(devtools)
+library(tximport)
+
 ```
 
 Load data:  
@@ -71,7 +73,11 @@ pca_tot_df=pca_tot_df %>% full_join(map_stat_total, by="line")
 Plot this PCA:  
 
 ```{r}
-ggplot(pca_tot_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x="PC1:0.89", y="PC2:0.043", title="Raw PAS qunatification data Total \n colored by batch ")
+totPCA_batch=ggplot(pca_tot_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x="PC1:0.89", y="PC2:0.043", title="Raw PAS qunatification data Total \n colored by batch ")
+ggsave("../output/plots/QC_plots/TotalPCA_colBatch.png",totPCA_batch)
+
+totPCA_mapped=ggplot(pca_tot_df, aes(x=PC1, y=PC2, col=comb_mapped )) + geom_point() + labs(x="PC1:0.89", y="PC2:0.043", title="Raw PAS qunatification data Total \n colored by Mapped Read count")
+ggsave("../output/plots/QC_plots/TotalPCA_colMapped.png",totPCA_mapped)
 ```
 
 
@@ -102,13 +108,252 @@ pca_nuc_df=pca_nuc_df %>% full_join(map_stat_nuclear, by="line")
 Plot this PCA:  
 
 ```{r}
-ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x="PC1: 0.74", y="PC2: 0.09", title="Raw PAS qunatification data nuclear \n colored by batch ")
+nucPCA_batch=ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x="PC1: 0.74", y="PC2: 0.09", title="Raw PAS qunatification data nuclear \n colored by batch ")
+ggsave("../output/plots/QC_plots/NuclearPCA_colBatch.png",nucPCA_batch)
+
 ```
 
 This shows that PC 2 is highly corrleated with batch,  
 
 ```{r}
-ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=comb_mapped )) + geom_point() + labs(x="PC1: 0.74", y="PC2: 0.09", title="Raw PAS qunatification data nuclear \n colored by Mapped Read count")
+nucPCA_mapped=ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=comb_mapped )) + geom_point() + labs(x="PC1: 0.74", y="PC2: 0.09", title="Raw PAS qunatification data nuclear \n colored by Mapped Read count")
+ggsave("../output/plots/QC_plots/NuclearlPCA_colMapped.png",nucPCA_mapped)
 ```
 
+
+##Q: Do the PAS read number recapitulate gene expression as it should?
+
+
+Plot: scatter plot + fit (x-axis: gene TPM, y-axis: gene normalized PAS counts) total/nuclear separate
+
+The TPM measurements come from the kalisto run I did on 18486. 
+
+```{r}
+tx2gene=read.table("../data/RNAkalisto/ncbiRefSeq.txn2gene.txt" ,header= F, sep="\t", stringsAsFactors = F)
+
+txi.kallisto.tsv <- tximport("../data/RNAkalisto/abundance.tsv", type = "kallisto", tx2gene = tx2gene)
+```
+
+
+##Q: For each gene, what percentage of reads assigned fall within 1, 2, 3, etc… peaks, we would expect that for many genes >90% of the reads fall within 1 peak, for a few 2 peaks, etc…? 
+
+Plot: Y-axis: Number of genes, X-axis: how many peaks is needed to “capture” 90%, 80%, … 50% of the reads assigned to that gene (using different colors). 
+
+##Q: What % of reads are assigned to a peak? Of these, what % of reads are assigned to a gene? 
+
+Within 50bp of an exon (more relevant for total)?
+
+
+I want to know the percent of reads that are assigned to our peaks. I can get this information from the peak feature counts summaries. In order to look at the reads assigned to genes I will need to use feature counts with the gene annotation file.  
+
+* File: /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.fc.summary
+
+Feature count takes in the bam files and an SAF annotation. For this one I used the peaks woth the transcript level annotation. I will fix the column names with python.  
+
+fix_fc_summary.py
+```{bash,eval=F}
+infile= open("/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.fc.summary", "r")
+fout = open("/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.fc.summary_fixed",'w')
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        libraries=[i_list[0]]
+        for sample in i_list[1:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        print(libraries)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n' )
+    else:
+        fout.write(i)
+fout.close()
+```
+
+
+I care about Unassigned_NoFeatures and Assigned. These numbers add to the number of reads that map to the genome.   
+
+```{r}
+fc_peaks=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.fc.summary_fixed", stringsAsFactors = F) %>% t()
+fc_peaks=as.data.frame(fc_peaks)
+colnames(fc_peaks)=as.character(unlist(fc_peaks[1,]))
+fc_peaks=fc_peaks[-1,]
+fc_peaks$Assigned=as.numeric(as.character(fc_peaks$Assigned))
+fc_peaks$Unassigned_NoFeatures=as.numeric(as.character(fc_peaks$Unassigned_NoFeatures))
+```
+
+I need to separate the libraries by line and fraction.  
+```{r}
+fc_peaks=fc_peaks %>% separate(Status, into=c("line", "fraction"), sep="_") %>% mutate(PerReadPeak=Assigned/(Assigned+Unassigned_NoFeatures))
+```
+
+
+This number is the reads assigned to peaks out of all reads mapping to genome.  
+
+I can now melt these data by line and fraction   
+
+```{r}
+fc_peaks_melt=melt(fc_peaks, id.vars = c("line", "fraction"))
+fc_peaks_melt_PerRead=fc_peaks_melt %>% filter(variable=="PerReadPeak")
+fc_peaks_melt_PerRead$value=as.numeric(fc_peaks_melt_PerRead$value)
+```
+
+```{r}
+ggplot(fc_peaks_melt_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos="dodge") +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("deepskyblue3","darkviolet")) + labs(title="Percent of reads mapping to peaks by line and fraction", y="Reads mapping to peaks/all mapping reads")
+```
+
+
+It may be more interesting to look at this by fraction, with error bars.
+
+
+```{r}
+fc_peaks_melt_PerRead_byfrac= fc_peaks_melt_PerRead %>% group_by(fraction) %>% summarise(mean=mean(value), sd=sd(value))
+```
+Plot this:  
+```{r}
+ggplot(fc_peaks_melt_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Percent of reads mapping to peaks by fraction", y="Reads mapping to peaks/all mapping reads")
+```
+
+Now I want to look at how many reads map to gene. I will use the transcript annotations that I used for the peaks.  
+
+* /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed 
+
+I need to make this an SAF file.  
+* GeneID
+* Chr
+* Start
+* End 
+* Strand  
+
+RefSeqmRNA2SAF.py
+```{bash,eval=F}
+#python
+from misc_helper import *
+fout = file("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.SAF","w")
+fout.write("GeneID\tChr\tStart\tEnd\tStrand\n")
+for ln in open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed"):
+    chrom, start, end, gene, score, strand = ln.split()
+    start_i=int(start)
+    end_i=int(end)
+    fout.write("%s\t%s\t%d\t%d\t%s\n"%(gene, chrom, start_i, end_i, strand))
+fout.close()
+```
+
+
+ref_geneTranscript_fc.sh   
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=ref_geneTranscript_fc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=ref_geneTranscript_fc.out
+#SBATCH --error=ref_geneTranscript_fc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/RefSeqTranscript_AllLibraries.fc /project2/gilad/briana/threeprimeseq/data/sort/*sort.bam -s 2
+```
+
+
+
+fix_Genefc_summary.py
+```{bash,eval=F}
+infile= open("/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/UnderstandPeaksQC/RefSeqTranscript_AllLibraries.fc.summary", "r")
+fout = open("/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/UnderstandPeaksQC/RefSeqTranscript_AllLibraries.fc.summary_fixed",'w')
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        libraries=[i_list[0]]
+        for sample in i_list[1:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        print(libraries)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n' )
+    else:
+        fout.write(i)
+fout.close()
+```
+
+
+```{r}
+fc_gene_peaks=read.table("../data/UnderstandPeaksQC/RefSeqTranscript_AllLibraries.fc.summary_fixed", stringsAsFactors = F) %>% t()
+fc_gene_peaks=as.data.frame(fc_gene_peaks)
+colnames(fc_gene_peaks)=as.character(unlist(fc_gene_peaks[1,]))
+fc_gene_peaks=fc_gene_peaks[-1,]
+fc_gene_peaks$Assigned=as.numeric(as.character(fc_gene_peaks$Assigned))
+fc_gene_peaks$Unassigned_NoFeatures=as.numeric(as.character(fc_gene_peaks$Unassigned_NoFeatures))
+
+```
+
+I need to separate the libraries by line and fraction.  
+```{r}
+fc_gene_peaks=fc_gene_peaks %>% separate(Status, into=c("line", "fraction"), sep="_") %>% mutate(PerReadPeak=Assigned/(Assigned+Unassigned_NoFeatures))
+```
+
+Melt this: 
+
+
+```{r}
+fc_gene_peaks_melt=melt(fc_gene_peaks, id.vars = c("line", "fraction"))
+fc_gene_peaks_PerRead=fc_gene_peaks_melt %>% filter(variable=="PerReadPeak")
+fc_gene_peaks_PerRead$value=as.numeric(fc_gene_peaks_PerRead$value)
+```
+
+
+GGplot:  
+
+```{r}
+ggplot(fc_gene_peaks_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos="dodge") +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("deepskyblue3","darkviolet")) + labs(title="Percent of reads mapping to Transcripts by line and fraction", y="Reads mapping to transcripts/all mapping reads")
+```
+
+Do this by fraction.   
+
+```{r}
+fc_gene_peaks_PerRead_byfrac= fc_gene_peaks_PerRead %>% group_by(fraction) %>% summarise(mean=mean(value), sd=sd(value))
+```
+Plot this:  
+```{r}
+ggplot(fc_gene_peaks_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Percent of reads mapping to Transcripts by fraction", y="Reads mapping to Transcripts/all mapping reads")
+```
+
+
+It would be nice to have this in one plot. In order to do this I want to join the PerReadPeak from both and melt. this way the variable can be peak or transcript.  
+
+```{r}
+fc_peaks_sel=fc_peaks %>% select(c("line", "fraction", "PerReadPeak"))
+
+fc_gene_peaks_sel=fc_gene_peaks %>% select(c("line", "fraction", "PerReadPeak"))
+
+fcGene_and_Transcript=fc_peaks_sel %>% left_join(fc_gene_peaks_sel, by=c("line","fraction"))
+
+colnames(fcGene_and_Transcript)=c("Line", "Fraction", "Peaks", "Genes")
+
+
+fcGene_and_Transcript_melt=melt(fcGene_and_Transcript, id.vars=c("Line","Fraction"))
+
+
+fcGene_and_Transcript_melt_sum=fcGene_and_Transcript_melt %>% group_by(Fraction,variable) %>% summarise(mean=mean(value), sd=sd(value))
+```
+
+
+```{r}
+
+reads2featuresPlot=ggplot(fcGene_and_Transcript_melt_sum,aes(x=Fraction, y=mean, fill=Fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Percent of reads mapping to feature by fraction", y="Reads mapping to Feature/all mapping reads") + facet_grid(~variable)
+
+reads2featuresPlot
+
+ggsave(file="../output/plots/QC_plots/reads2featuresPlot.png", reads2featuresPlot)
+```
 
