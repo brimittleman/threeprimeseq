@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-05</p>
+<p><strong>Last updated:</strong> 2018-12-06</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/655b58288654c0cff03f96faf4b235bb80d91391" target="_blank">655b582</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/ddde22bc2da70de441d2eaab214b6d56682f43a5" target="_blank">ddde22b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -374,6 +374,7 @@ Untracked files:
     Untracked:  data/RNAkalisto/
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/UnderstandPeaksQC/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/apaExamp/
@@ -478,6 +479,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ddde22bc2da70de441d2eaab214b6d56682f43a5/analysis/understandPeaks.Rmd" target="_blank">ddde22b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-06
+</td>
+<td style="text-align:left;">
+add peaks per feature plot
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/cdfa5b2f6c15a6820451283a9dd704e13f5d4e6f/docs/understandPeaks.html" target="_blank">cdfa5b2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/655b58288654c0cff03f96faf4b235bb80d91391/analysis/understandPeaks.Rmd" target="_blank">655b582</a>
 </td>
 <td style="text-align:left;">
@@ -530,7 +565,8 @@ Attaching package: &#39;reshape2&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:tidyr&#39;:
 
     smiths</code></pre>
-<pre class="r"><code>library(devtools)</code></pre>
+<pre class="r"><code>library(devtools)
+library(tximport)</code></pre>
 <p>Load data:</p>
 <pre class="r"><code>#only keep the counts 
 total_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,7:45]
@@ -579,8 +615,12 @@ map_stat_total$batch=as.factor(map_stat_total$batch)</code></pre>
 <p>Join the relevant stats with the pca dataframe.</p>
 <pre class="r"><code>pca_tot_df=pca_tot_df %&gt;% full_join(map_stat_total, by=&quot;line&quot;)</code></pre>
 <p>Plot this PCA:</p>
-<pre class="r"><code>ggplot(pca_tot_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x=&quot;PC1:0.89&quot;, y=&quot;PC2:0.043&quot;, title=&quot;Raw PAS qunatification data Total \n colored by batch &quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>totPCA_batch=ggplot(pca_tot_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x=&quot;PC1:0.89&quot;, y=&quot;PC2:0.043&quot;, title=&quot;Raw PAS qunatification data Total \n colored by batch &quot;)
+ggsave(&quot;../output/plots/QC_plots/TotalPCA_colBatch.png&quot;,totPCA_batch)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>totPCA_mapped=ggplot(pca_tot_df, aes(x=PC1, y=PC2, col=comb_mapped )) + geom_point() + labs(x=&quot;PC1:0.89&quot;, y=&quot;PC2:0.043&quot;, title=&quot;Raw PAS qunatification data Total \n colored by Mapped Read count&quot;)
+ggsave(&quot;../output/plots/QC_plots/TotalPCA_colMapped.png&quot;,totPCA_mapped)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div id="nuclear" class="section level3">
 <h3>Nuclear</h3>
@@ -624,12 +664,180 @@ map_stat_nuclear$batch=as.factor(map_stat_nuclear$batch)</code></pre>
 <p>Join the relevant stats with the pca dataframe.</p>
 <pre class="r"><code>pca_nuc_df=pca_nuc_df %&gt;% full_join(map_stat_nuclear, by=&quot;line&quot;)</code></pre>
 <p>Plot this PCA:</p>
-<pre class="r"><code>ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x=&quot;PC1: 0.74&quot;, y=&quot;PC2: 0.09&quot;, title=&quot;Raw PAS qunatification data nuclear \n colored by batch &quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>nucPCA_batch=ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=batch )) + geom_point() + labs(x=&quot;PC1: 0.74&quot;, y=&quot;PC2: 0.09&quot;, title=&quot;Raw PAS qunatification data nuclear \n colored by batch &quot;)
+ggsave(&quot;../output/plots/QC_plots/NuclearPCA_colBatch.png&quot;,nucPCA_batch)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <p>This shows that PC 2 is highly corrleated with batch,</p>
-<pre class="r"><code>ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=comb_mapped )) + geom_point() + labs(x=&quot;PC1: 0.74&quot;, y=&quot;PC2: 0.09&quot;, title=&quot;Raw PAS qunatification data nuclear \n colored by Mapped Read count&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>nucPCA_mapped=ggplot(pca_nuc_df, aes(x=PC1, y=PC2, col=comb_mapped )) + geom_point() + labs(x=&quot;PC1: 0.74&quot;, y=&quot;PC2: 0.09&quot;, title=&quot;Raw PAS qunatification data nuclear \n colored by Mapped Read count&quot;)
+ggsave(&quot;../output/plots/QC_plots/NuclearlPCA_colMapped.png&quot;,nucPCA_mapped)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
+</div>
+<div id="q-do-the-pas-read-number-recapitulate-gene-expression-as-it-should" class="section level2">
+<h2>Q: Do the PAS read number recapitulate gene expression as it should?</h2>
+<p>Plot: scatter plot + fit (x-axis: gene TPM, y-axis: gene normalized PAS counts) total/nuclear separate</p>
+<p>The TPM measurements come from the kalisto run I did on 18486.</p>
+<pre class="r"><code>tx2gene=read.table(&quot;../data/RNAkalisto/ncbiRefSeq.txn2gene.txt&quot; ,header= F, sep=&quot;\t&quot;, stringsAsFactors = F)
+
+txi.kallisto.tsv &lt;- tximport(&quot;../data/RNAkalisto/abundance.tsv&quot;, type = &quot;kallisto&quot;, tx2gene = tx2gene)</code></pre>
+<pre><code>Note: importing `abundance.h5` is typically faster than `abundance.tsv`</code></pre>
+<pre><code>reading in files with read_tsv</code></pre>
+<pre><code>1 
+removing duplicated transcript rows from tx2gene
+transcripts missing from tx2gene: 99
+summarizing abundance
+summarizing counts
+summarizing length</code></pre>
+</div>
+<div id="q-for-each-gene-what-percentage-of-reads-assigned-fall-within-1-2-3-etc-peaks-we-would-expect-that-for-many-genes-90-of-the-reads-fall-within-1-peak-for-a-few-2-peaks-etc" class="section level2">
+<h2>Q: For each gene, what percentage of reads assigned fall within 1, 2, 3, etc… peaks, we would expect that for many genes &gt;90% of the reads fall within 1 peak, for a few 2 peaks, etc…?</h2>
+<p>Plot: Y-axis: Number of genes, X-axis: how many peaks is needed to “capture” 90%, 80%, … 50% of the reads assigned to that gene (using different colors).</p>
+</div>
+<div id="q-what-of-reads-are-assigned-to-a-peak-of-these-what-of-reads-are-assigned-to-a-gene" class="section level2">
+<h2>Q: What % of reads are assigned to a peak? Of these, what % of reads are assigned to a gene?</h2>
+<p>Within 50bp of an exon (more relevant for total)?</p>
+<p>I want to know the percent of reads that are assigned to our peaks. I can get this information from the peak feature counts summaries. In order to look at the reads assigned to genes I will need to use feature counts with the gene annotation file.</p>
+<ul>
+<li>File: /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.fc.summary</li>
+</ul>
+<p>Feature count takes in the bam files and an SAF annotation. For this one I used the peaks woth the transcript level annotation. I will fix the column names with python.</p>
+<p>fix_fc_summary.py</p>
+<pre class="bash"><code>infile= open(&quot;/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.fc.summary&quot;, &quot;r&quot;)
+fout = open(&quot;/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.fc.summary_fixed&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        libraries=[i_list[0]]
+        for sample in i_list[1:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        print(libraries)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39; )
+    else:
+        fout.write(i)
+fout.close()</code></pre>
+<p>I care about Unassigned_NoFeatures and Assigned. These numbers add to the number of reads that map to the genome.</p>
+<pre class="r"><code>fc_peaks=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.fc.summary_fixed&quot;, stringsAsFactors = F) %&gt;% t()
+fc_peaks=as.data.frame(fc_peaks)
+colnames(fc_peaks)=as.character(unlist(fc_peaks[1,]))
+fc_peaks=fc_peaks[-1,]
+fc_peaks$Assigned=as.numeric(as.character(fc_peaks$Assigned))
+fc_peaks$Unassigned_NoFeatures=as.numeric(as.character(fc_peaks$Unassigned_NoFeatures))</code></pre>
+<p>I need to separate the libraries by line and fraction.</p>
+<pre class="r"><code>fc_peaks=fc_peaks %&gt;% separate(Status, into=c(&quot;line&quot;, &quot;fraction&quot;), sep=&quot;_&quot;) %&gt;% mutate(PerReadPeak=Assigned/(Assigned+Unassigned_NoFeatures))</code></pre>
+<p>This number is the reads assigned to peaks out of all reads mapping to genome.</p>
+<p>I can now melt these data by line and fraction</p>
+<pre class="r"><code>fc_peaks_melt=melt(fc_peaks, id.vars = c(&quot;line&quot;, &quot;fraction&quot;))</code></pre>
+<pre><code>Warning: attributes are not identical across measure variables; they will
+be dropped</code></pre>
+<pre class="r"><code>fc_peaks_melt_PerRead=fc_peaks_melt %&gt;% filter(variable==&quot;PerReadPeak&quot;)
+fc_peaks_melt_PerRead$value=as.numeric(fc_peaks_melt_PerRead$value)</code></pre>
+<pre class="r"><code>ggplot(fc_peaks_melt_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos=&quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Percent of reads mapping to peaks by line and fraction&quot;, y=&quot;Reads mapping to peaks/all mapping reads&quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>It may be more interesting to look at this by fraction, with error bars.</p>
+<pre class="r"><code>fc_peaks_melt_PerRead_byfrac= fc_peaks_melt_PerRead %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
+<p>Plot this:</p>
+<pre class="r"><code>ggplot(fc_peaks_melt_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to peaks by fraction&quot;, y=&quot;Reads mapping to peaks/all mapping reads&quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Now I want to look at how many reads map to gene. I will use the transcript annotations that I used for the peaks.</p>
+<ul>
+<li>/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed</li>
+</ul>
+<p>I need to make this an SAF file.<br />
+* GeneID * Chr * Start * End * Strand</p>
+<p>RefSeqmRNA2SAF.py</p>
+<pre class="bash"><code>#python
+from misc_helper import *
+fout = file(&quot;/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.SAF&quot;,&quot;w&quot;)
+fout.write(&quot;GeneID\tChr\tStart\tEnd\tStrand\n&quot;)
+for ln in open(&quot;/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed&quot;):
+    chrom, start, end, gene, score, strand = ln.split()
+    start_i=int(start)
+    end_i=int(end)
+    fout.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(gene, chrom, start_i, end_i, strand))
+fout.close()</code></pre>
+<p>ref_geneTranscript_fc.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=ref_geneTranscript_fc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=ref_geneTranscript_fc.out
+#SBATCH --error=ref_geneTranscript_fc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/RefSeqTranscript_AllLibraries.fc /project2/gilad/briana/threeprimeseq/data/sort/*sort.bam -s 2</code></pre>
+<p>fix_Genefc_summary.py</p>
+<pre class="bash"><code>infile= open(&quot;/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/UnderstandPeaksQC/RefSeqTranscript_AllLibraries.fc.summary&quot;, &quot;r&quot;)
+fout = open(&quot;/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/UnderstandPeaksQC/RefSeqTranscript_AllLibraries.fc.summary_fixed&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        libraries=[i_list[0]]
+        for sample in i_list[1:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        print(libraries)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39; )
+    else:
+        fout.write(i)
+fout.close()</code></pre>
+<pre class="r"><code>fc_gene_peaks=read.table(&quot;../data/UnderstandPeaksQC/RefSeqTranscript_AllLibraries.fc.summary_fixed&quot;, stringsAsFactors = F) %&gt;% t()
+fc_gene_peaks=as.data.frame(fc_gene_peaks)
+colnames(fc_gene_peaks)=as.character(unlist(fc_gene_peaks[1,]))
+fc_gene_peaks=fc_gene_peaks[-1,]
+fc_gene_peaks$Assigned=as.numeric(as.character(fc_gene_peaks$Assigned))
+fc_gene_peaks$Unassigned_NoFeatures=as.numeric(as.character(fc_gene_peaks$Unassigned_NoFeatures))</code></pre>
+<p>I need to separate the libraries by line and fraction.</p>
+<pre class="r"><code>fc_gene_peaks=fc_gene_peaks %&gt;% separate(Status, into=c(&quot;line&quot;, &quot;fraction&quot;), sep=&quot;_&quot;) %&gt;% mutate(PerReadPeak=Assigned/(Assigned+Unassigned_NoFeatures))</code></pre>
+<p>Melt this:</p>
+<pre class="r"><code>fc_gene_peaks_melt=melt(fc_gene_peaks, id.vars = c(&quot;line&quot;, &quot;fraction&quot;))</code></pre>
+<pre><code>Warning: attributes are not identical across measure variables; they will
+be dropped</code></pre>
+<pre class="r"><code>fc_gene_peaks_PerRead=fc_gene_peaks_melt %&gt;% filter(variable==&quot;PerReadPeak&quot;)
+fc_gene_peaks_PerRead$value=as.numeric(fc_gene_peaks_PerRead$value)</code></pre>
+<p>GGplot:</p>
+<pre class="r"><code>ggplot(fc_gene_peaks_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos=&quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Percent of reads mapping to Transcripts by line and fraction&quot;, y=&quot;Reads mapping to transcripts/all mapping reads&quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Do this by fraction.</p>
+<pre class="r"><code>fc_gene_peaks_PerRead_byfrac= fc_gene_peaks_PerRead %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
+<p>Plot this:</p>
+<pre class="r"><code>ggplot(fc_gene_peaks_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to Transcripts by fraction&quot;, y=&quot;Reads mapping to Transcripts/all mapping reads&quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>It would be nice to have this in one plot. In order to do this I want to join the PerReadPeak from both and melt. this way the variable can be peak or transcript.</p>
+<pre class="r"><code>fc_peaks_sel=fc_peaks %&gt;% select(c(&quot;line&quot;, &quot;fraction&quot;, &quot;PerReadPeak&quot;))
+
+fc_gene_peaks_sel=fc_gene_peaks %&gt;% select(c(&quot;line&quot;, &quot;fraction&quot;, &quot;PerReadPeak&quot;))
+
+fcGene_and_Transcript=fc_peaks_sel %&gt;% left_join(fc_gene_peaks_sel, by=c(&quot;line&quot;,&quot;fraction&quot;))
+
+colnames(fcGene_and_Transcript)=c(&quot;Line&quot;, &quot;Fraction&quot;, &quot;Peaks&quot;, &quot;Genes&quot;)
+
+
+fcGene_and_Transcript_melt=melt(fcGene_and_Transcript, id.vars=c(&quot;Line&quot;,&quot;Fraction&quot;))
+
+
+fcGene_and_Transcript_melt_sum=fcGene_and_Transcript_melt %&gt;% group_by(Fraction,variable) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
+<pre class="r"><code>reads2featuresPlot=ggplot(fcGene_and_Transcript_melt_sum,aes(x=Fraction, y=mean, fill=Fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to feature by fraction&quot;, y=&quot;Reads mapping to Feature/all mapping reads&quot;) + facet_grid(~variable)
+
+reads2featuresPlot</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/reads2featuresPlot.png&quot;, reads2featuresPlot)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -649,10 +857,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  devtools_1.13.6 reshape2_1.4.3  cowplot_0.9.3  
- [5] workflowr_1.1.1 forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
- [9] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
-[13] ggplot2_3.0.0   tidyverse_1.2.1
+ [1] bindrcpp_0.2.2  tximport_1.8.0  devtools_1.13.6 reshape2_1.4.3 
+ [5] cowplot_0.9.3   workflowr_1.1.1 forcats_0.3.0   stringr_1.3.1  
+ [9] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
+[13] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
