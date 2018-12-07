@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-06</p>
+<p><strong>Last updated:</strong> 2018-12-07</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/ddde22bc2da70de441d2eaab214b6d56682f43a5" target="_blank">ddde22b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/55c61ea57f3c6d07fe2c91fa3d6a2f67f1dbec57" target="_blank">55c61ea</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -474,6 +474,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/55c61ea57f3c6d07fe2c91fa3d6a2f67f1dbec57/analysis/understandPeaks.Rmd" target="_blank">55c61ea</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-07
+</td>
+<td style="text-align:left;">
+scatterplot TPM vs gene cov
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3cd438e1ddb0995e1868d52f50115b9eaaac4335/docs/understandPeaks.html" target="_blank">3cd438e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -688,6 +722,124 @@ transcripts missing from tx2gene: 99
 summarizing abundance
 summarizing counts
 summarizing length</code></pre>
+<p>I need to get all of the peaks for 18486 and which gene they are in. Then I will take the gene average and divide by the number of mapped reads.</p>
+<pre class="r"><code>total_Cov_18486=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T)) %&gt;% mutate(NormGenePeakCov=GeneSum/10819437)</code></pre>
+<p>Join with the transcript TPM</p>
+<pre class="r"><code>TXN_abund=as.data.frame(txi.kallisto.tsv$abundance) %&gt;% rownames_to_column(var=&quot;gene&quot;)
+colnames(TXN_abund)=c(&quot;gene&quot;, &quot;TPM&quot;)
+
+TXN_NormGene=TXN_abund %&gt;% inner_join(total_Cov_18486,by=&quot;gene&quot;)</code></pre>
+<p>Plot distribution of each variable seperatly first to understand distribution:</p>
+<pre class="r"><code>summary(TXN_NormGene$TPM)</code></pre>
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+    0.000     0.483     8.509    48.568    28.197 13863.400 </code></pre>
+<pre class="r"><code>summary(TXN_NormGene$TPM+ .001)</code></pre>
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+    0.001     0.484     8.510    48.569    28.198 13863.401 </code></pre>
+<pre class="r"><code>ggplot(TXN_NormGene, aes(x=TPM + .001)) + geom_density(kernel=&quot;gaussian&quot;) + scale_x_log10()</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(TXN_NormGene$NormGenePeakCov)</code></pre>
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+0.000e+00 1.756e-06 1.433e-05 5.319e-05 4.464e-05 1.708e-02 </code></pre>
+<pre class="r"><code>ggplot(TXN_NormGene, aes(x=NormGenePeakCov)) + geom_density(kernel=&quot;gaussian&quot;)+ scale_x_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
+<pre><code>Warning: Removed 1944 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Create a scatterplot:</p>
+<pre class="r"><code>ggplot(TXN_NormGene, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = &quot;lm&quot;,se=T) + labs(title=&quot;Total 3&#39; Libraries&quot;, x=&quot;RNA seq TPM&quot;, y=&quot;Normalized Peaks&quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3cd438e1ddb0995e1868d52f50115b9eaaac4335/docs/figure/understandPeaks.Rmd/unnamed-chunk-17-1.png" target="_blank">3cd438e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>summary(lm(TPM~NormGenePeakCov,TXN_NormGene)) </code></pre>
+<pre><code>
+Call:
+lm(formula = TPM ~ NormGenePeakCov, data = TXN_NormGene)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8652.8   -23.6   -20.6   -13.2 13409.8 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         20.71       2.30   9.003   &lt;2e-16 ***
+NormGenePeakCov 523774.61    8749.97  59.860   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 279.7 on 15415 degrees of freedom
+Multiple R-squared:  0.1886,    Adjusted R-squared:  0.1886 
+F-statistic:  3583 on 1 and 15415 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Maybe I need to get rid of the outliers. To do this I can look at the boxplots.</p>
+<pre class="r"><code>TXN_NormGene_melt = TXN_NormGene %&gt;% select(gene, TPM, NormGenePeakCov) %&gt;% melt(., id.vars=&quot;gene&quot;)</code></pre>
+<pre class="r"><code>ggplot(TXN_NormGene_melt, aes(x=variable, y=value)) + geom_boxplot() + scale_y_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning: Removed 3097 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3cd438e1ddb0995e1868d52f50115b9eaaac4335/docs/figure/understandPeaks.Rmd/unnamed-chunk-19-1.png" target="_blank">3cd438e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Let me try this with the nuclear fraction:</p>
+<pre class="r"><code>nuclear_Cov_18486=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) %&gt;% mutate(NormGenePeakCov=GeneSum/11405271)
+
+TXN_NormGene_Nuc=TXN_abund %&gt;% inner_join(nuclear_Cov_18486,by=&quot;gene&quot;)</code></pre>
+<p>Create a scatterplot:</p>
+<pre class="r"><code>ggplot(TXN_NormGene_Nuc, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = &quot;lm&quot;,se=T) + labs(title=&quot;Nuclear 3&#39; Libraries&quot;, x=&quot;RNA seq TPM&quot;, y=&quot;Normalized Peaks&quot;)  </code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="q-for-each-gene-what-percentage-of-reads-assigned-fall-within-1-2-3-etc-peaks-we-would-expect-that-for-many-genes-90-of-the-reads-fall-within-1-peak-for-a-few-2-peaks-etc" class="section level2">
 <h2>Q: For each gene, what percentage of reads assigned fall within 1, 2, 3, etc… peaks, we would expect that for many genes &gt;90% of the reads fall within 1 peak, for a few 2 peaks, etc…?</h2>
@@ -737,12 +889,72 @@ be dropped</code></pre>
 <pre class="r"><code>fc_peaks_melt_PerRead=fc_peaks_melt %&gt;% filter(variable==&quot;PerReadPeak&quot;)
 fc_peaks_melt_PerRead$value=as.numeric(fc_peaks_melt_PerRead$value)</code></pre>
 <pre class="r"><code>ggplot(fc_peaks_melt_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos=&quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Percent of reads mapping to peaks by line and fraction&quot;, y=&quot;Reads mapping to peaks/all mapping reads&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-26-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3cd438e1ddb0995e1868d52f50115b9eaaac4335/docs/figure/understandPeaks.Rmd/unnamed-chunk-26-1.png" target="_blank">3cd438e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>It may be more interesting to look at this by fraction, with error bars.</p>
 <pre class="r"><code>fc_peaks_melt_PerRead_byfrac= fc_peaks_melt_PerRead %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
 <p>Plot this:</p>
 <pre class="r"><code>ggplot(fc_peaks_melt_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to peaks by fraction&quot;, y=&quot;Reads mapping to peaks/all mapping reads&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-28-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3cd438e1ddb0995e1868d52f50115b9eaaac4335/docs/figure/understandPeaks.Rmd/unnamed-chunk-28-1.png" target="_blank">3cd438e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Now I want to look at how many reads map to gene. I will use the transcript annotations that I used for the peaks.</p>
 <ul>
 <li>/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed</li>
@@ -812,12 +1024,12 @@ be dropped</code></pre>
 fc_gene_peaks_PerRead$value=as.numeric(fc_gene_peaks_PerRead$value)</code></pre>
 <p>GGplot:</p>
 <pre class="r"><code>ggplot(fc_gene_peaks_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos=&quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Percent of reads mapping to Transcripts by line and fraction&quot;, y=&quot;Reads mapping to transcripts/all mapping reads&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Do this by fraction.</p>
 <pre class="r"><code>fc_gene_peaks_PerRead_byfrac= fc_gene_peaks_PerRead %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
 <p>Plot this:</p>
 <pre class="r"><code>ggplot(fc_gene_peaks_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to Transcripts by fraction&quot;, y=&quot;Reads mapping to Transcripts/all mapping reads&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>It would be nice to have this in one plot. In order to do this I want to join the PerReadPeak from both and melt. this way the variable can be peak or transcript.</p>
 <pre class="r"><code>fc_peaks_sel=fc_peaks %&gt;% select(c(&quot;line&quot;, &quot;fraction&quot;, &quot;PerReadPeak&quot;))
 
@@ -835,7 +1047,7 @@ fcGene_and_Transcript_melt_sum=fcGene_and_Transcript_melt %&gt;% group_by(Fracti
 <pre class="r"><code>reads2featuresPlot=ggplot(fcGene_and_Transcript_melt_sum,aes(x=Fraction, y=mean, fill=Fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to feature by fraction&quot;, y=&quot;Reads mapping to Feature/all mapping reads&quot;) + facet_grid(~variable)
 
 reads2featuresPlot</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/reads2featuresPlot.png&quot;, reads2featuresPlot)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
