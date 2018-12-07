@@ -134,6 +134,72 @@ tx2gene=read.table("../data/RNAkalisto/ncbiRefSeq.txn2gene.txt" ,header= F, sep=
 txi.kallisto.tsv <- tximport("../data/RNAkalisto/abundance.tsv", type = "kallisto", tx2gene = tx2gene)
 ```
 
+I need to get all of the peaks for 18486 and which gene they are in. Then I will take the gene average and divide by the number of mapped reads. 
+
+```{r}
+total_Cov_18486=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T) %>% group_by(gene) %>% summarize(GeneSum=sum(X18486_T)) %>% mutate(NormGenePeakCov=GeneSum/10819437)
+
+```
+
+Join with the transcript TPM  
+
+```{r}
+TXN_abund=as.data.frame(txi.kallisto.tsv$abundance) %>% rownames_to_column(var="gene")
+colnames(TXN_abund)=c("gene", "TPM")
+
+TXN_NormGene=TXN_abund %>% inner_join(total_Cov_18486,by="gene")
+```
+
+ 
+Plot distribution of each variable seperatly first to understand distribution:  
+```{r}
+summary(TXN_NormGene$TPM)
+summary(TXN_NormGene$TPM+ .001)
+ggplot(TXN_NormGene, aes(x=TPM + .001)) + geom_density(kernel="gaussian") + scale_x_log10()
+```
+```{r}
+summary(TXN_NormGene$NormGenePeakCov)
+ggplot(TXN_NormGene, aes(x=NormGenePeakCov)) + geom_density(kernel="gaussian")+ scale_x_log10()
+```
+
+
+Create a scatterplot:  
+```{r}
+ggplot(TXN_NormGene, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = "lm",se=T) + labs(title="Total 3' Libraries", x="RNA seq TPM", y="Normalized Peaks")
+summary(lm(TPM~NormGenePeakCov,TXN_NormGene)) 
+
+```
+Maybe I need to get rid of the outliers. To do this I can look at the boxplots.  
+
+```{r}
+TXN_NormGene_melt = TXN_NormGene %>% select(gene, TPM, NormGenePeakCov) %>% melt(., id.vars="gene")
+
+
+```
+
+```{r}
+ggplot(TXN_NormGene_melt, aes(x=variable, y=value)) + geom_boxplot() + scale_y_log10()
+```
+
+
+
+
+Let me try this with the nuclear fraction:  
+
+```{r}
+nuclear_Cov_18486=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% group_by(gene) %>% summarize(GeneSum=sum(X18486_N)) %>% mutate(NormGenePeakCov=GeneSum/11405271)
+
+TXN_NormGene_Nuc=TXN_abund %>% inner_join(nuclear_Cov_18486,by="gene")
+
+```
+
+Create a scatterplot:  
+```{r}
+ggplot(TXN_NormGene_Nuc, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = "lm",se=T) + labs(title="Nuclear 3' Libraries", x="RNA seq TPM", y="Normalized Peaks")  
+```
+
+
+
 
 ##Q: For each gene, what percentage of reads assigned fall within 1, 2, 3, etc… peaks, we would expect that for many genes >90% of the reads fall within 1 peak, for a few 2 peaks, etc…? 
 
