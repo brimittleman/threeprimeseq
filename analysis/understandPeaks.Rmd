@@ -256,9 +256,36 @@ This could be due to genes that we do not expect to have polyA tails?  Not sure 
 
 Plot: Y-axis: Number of genes, X-axis: how many peaks is needed to “capture” 90%, 80%, … 50% of the reads assigned to that gene (using different colors). 
 
+Start with analysis to see how many peaks are needed to capture 90% of the reads assigned to the gene. I will start by looking at the number of reads that map to peaks in genes. To do this I can group on genes in the peak coverage and get the sum.  
 
 
+```{r}
+nuclear_covBygene=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% group_by(gene) %>% summarize(GeneSum=sum(X18486_N)) %>% mutate(per90=GeneSum*.9)%>% mutate(per80=GeneSum*.8)%>% mutate(per70=GeneSum*.7)%>% mutate(per60=GeneSum*.6)%>% mutate(per50=GeneSum*.5) 
+total_covBygene=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T) %>% group_by(gene) %>% summarize(GeneSum=sum(X18486_T))%>% mutate(per90=GeneSum*.9)%>% mutate(per80=GeneSum*.8)%>% mutate(per70=GeneSum*.7)%>% mutate(per60=GeneSum*.6)%>% mutate(per50=GeneSum*.5)
+```
 
+
+Write these out to use them in the script:  
+
+```{r}
+write.table(file="../data/UnderstandPeaksQC/Nuclear_PerCovbyGene.txt", nuclear_covBygene, quote=F, col.names = T, row.names = F)
+write.table(file="../data/UnderstandPeaksQC/Total_PerCovbyGene.txt", total_covBygene, quote=F, col.names = T,row.names = F)
+```
+
+I think the next step will be best accomplished with a python script where I can go line by line. I want to order the peak counts in a dictionary. This will  be double dictionary because I need gene and individual. I want the key to be the gene and the value to be an ordered list of the peak counts. I can ask how many elements it took to acieve the % read coverage.
+
+1. Build dictionary
+
+2. Refer to the *_covBygene gene number pairs to ask how many peaks get you to that number.  
+
+3. Write out the gene and the number to capture the % of interest
+
+4. The file should take a percentage between 50 and 90 and total/nuclear. I can then run the script on each value and join the dataframes in R. 
+
+5. filter genes with 0 reads  
+
+
+File is code/PeaksToCoverPerReads.py. I am stuck with the dictionary creation because the same values are there for each gene. All values are being added. The gene key is not being recognized.
 
 
 ##Q: What % of reads are assigned to a peak? Of these, what % of reads are assigned to a gene? 
