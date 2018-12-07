@@ -153,13 +153,13 @@ TXN_NormGene=TXN_abund %>% inner_join(total_Cov_18486,by="gene")
  
 Plot distribution of each variable seperatly first to understand distribution:  
 ```{r}
-summary(TXN_NormGene$TPM)
-summary(TXN_NormGene$TPM+ .001)
-ggplot(TXN_NormGene, aes(x=TPM + .001)) + geom_density(kernel="gaussian") + scale_x_log10()
+summary(TXN_abund$TPM)
+summary(TXN_abund$TPM+ .001)
+ggplot(TXN_abund, aes(x=TPM + .001)) + geom_density(kernel="gaussian") + scale_x_log10()
 ```
 ```{r}
-summary(TXN_NormGene$NormGenePeakCov)
-ggplot(TXN_NormGene, aes(x=NormGenePeakCov)) + geom_density(kernel="gaussian")+ scale_x_log10()
+summary(total_Cov_18486$NormGenePeakCov)
+ggplot(total_Cov_18486, aes(x=NormGenePeakCov)) + geom_density(kernel="gaussian")+ scale_x_log10()
 ```
 
 
@@ -199,11 +199,67 @@ ggplot(TXN_NormGene_Nuc, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_s
 ```
 
 
+###Try filtering
 
+I want to fitler out the lowly expressed genes. I can use a cuttoff of TPM 10 because this is where the distribution starts to look normal.  
+
+```{r}
+TXN_abund_filter=TXN_abund %>% filter(TPM>10)
+
+ggplot(TXN_abund_filter, aes(x=TPM)) + geom_density() + scale_x_log10()
+```
+
+Filter the Total peaks  
+
+```{r}
+
+total_Cov_18486_filt=total_Cov_18486 %>% filter(NormGenePeakCov>.00001)
+ggplot(total_Cov_18486_filt, aes(x=NormGenePeakCov)) + geom_density(kernel="gaussian")+ scale_x_log10()
+```
+
+Filter nuclear  
+
+```{r}
+
+ggplot(nuclear_Cov_18486, aes(x=NormGenePeakCov)) + geom_density() + scale_x_log10()
+nuclear_Cov_18486_filter=nuclear_Cov_18486 %>% filter(NormGenePeakCov>.00001)
+ggplot(nuclear_Cov_18486_filter, aes(x=NormGenePeakCov)) + geom_density() + scale_x_log10()
+```
+
+
+
+```{r}
+TXN_NormGene_TotFilt=TXN_abund_filter %>% inner_join(total_Cov_18486_filt,by="gene")
+ggplot(TXN_NormGene_TotFilt, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = "lm",se=T) + labs(title="Total 3' Libraries- filtered TPM 5", x="RNA seq TPM", y="Normalized Peaks")
+summary(lm(TPM~NormGenePeakCov,TXN_NormGene_TotFilt)) 
+```
+Nuclear  
+
+```{r}
+TXN_NormGene_NucFilt=TXN_abund_filter %>% inner_join(nuclear_Cov_18486_filter,by="gene")
+ggplot(TXN_NormGene_NucFilt, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = "lm",se=T) + labs(title="Nuclear 3' Libraries- filtered TPM 5", x="RNA seq TPM", y="Normalized Peaks")
+summary(lm(TPM~NormGenePeakCov,TXN_NormGene_NucFilt)) 
+```
+```{r}
+TXN_NormGene_fiter_melt = TXN_NormGene_TotFilt %>% select(gene, TPM, NormGenePeakCov) %>% melt(., id.vars="gene")
+ggplot(TXN_NormGene_fiter_melt, aes(x=variable, y=value)) + geom_boxplot() + scale_y_log10()
+
+
+TXN_NormGene_Nuclear_fiter_melt = TXN_NormGene_NucFilt %>% select(gene, TPM, NormGenePeakCov) %>% melt(., id.vars="gene")
+ggplot(TXN_NormGene_Nuclear_fiter_melt, aes(x=variable, y=value)) + geom_boxplot() + scale_y_log10()
+
+
+```
+This could be due to genes that we do not expect to have polyA tails?  Not sure what is going on. 
 
 ##Q: For each gene, what percentage of reads assigned fall within 1, 2, 3, etc… peaks, we would expect that for many genes >90% of the reads fall within 1 peak, for a few 2 peaks, etc…? 
 
 Plot: Y-axis: Number of genes, X-axis: how many peaks is needed to “capture” 90%, 80%, … 50% of the reads assigned to that gene (using different colors). 
+
+
+
+
+
 
 ##Q: What % of reads are assigned to a peak? Of these, what % of reads are assigned to a gene? 
 
