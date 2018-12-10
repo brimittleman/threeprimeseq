@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-07</p>
+<p><strong>Last updated:</strong> 2018-12-10</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/38843d3a28b894df6eea3919e26ca7ce2460b006" target="_blank">38843d3</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/bc9f4cf4ae00e668b89733b0311ffa0d8fcf17cb" target="_blank">bc9f4cf</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -426,6 +426,7 @@ Untracked files:
     Untracked:  data/temp.file2
     Untracked:  data/temp.gencov.test.txt
     Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  data/threePrimeSeqMetaData.csv
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -475,6 +476,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/bc9f4cf4ae00e668b89733b0311ffa0d8fcf17cb/analysis/understandPeaks.Rmd" target="_blank">bc9f4cf</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-10
+</td>
+<td style="text-align:left;">
+add plot 2 peaks to get perc reads
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/1549daf8dec15168503e2e42df5fa88cb49f6cc3/docs/understandPeaks.html" target="_blank">1549daf</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-07
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -674,6 +709,9 @@ library(tximport)</code></pre>
 <pre class="r"><code>#only keep the counts 
 total_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,7:45]
 nuclear_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,7:45]</code></pre>
+<pre class="r"><code>ggplot(total_Cov, aes(x=log10(X18486_T))) + geom_density()</code></pre>
+<pre><code>Warning: Removed 233009 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="total" class="section level3">
 <h3>Total:</h3>
 <p>Run PCA on the total coverage</p>
@@ -782,7 +820,7 @@ ggsave(&quot;../output/plots/QC_plots/NuclearlPCA_colMapped.png&quot;,nucPCA_map
 <p>The TPM measurements come from the kalisto run I did on 18486.</p>
 <pre class="r"><code>tx2gene=read.table(&quot;../data/RNAkalisto/ncbiRefSeq.txn2gene.txt&quot; ,header= F, sep=&quot;\t&quot;, stringsAsFactors = F)
 
-txi.kallisto.tsv &lt;- tximport(&quot;../data/RNAkalisto/abundance.tsv&quot;, type = &quot;kallisto&quot;, tx2gene = tx2gene)</code></pre>
+txi.kallisto.tsv &lt;- tximport(&quot;../data/RNAkalisto/abundance.tsv&quot;, type = &quot;kallisto&quot;, tx2gene = tx2gene,countsFromAbundance=&quot;lengthScaledTPM&quot; )</code></pre>
 <pre><code>Note: importing `abundance.h5` is typically faster than `abundance.tsv`</code></pre>
 <pre><code>reading in files with read_tsv</code></pre>
 <pre><code>1 
@@ -792,7 +830,9 @@ summarizing abundance
 summarizing counts
 summarizing length</code></pre>
 <p>I need to get all of the peaks for 18486 and which gene they are in. Then I will take the gene average and divide by the number of mapped reads.</p>
-<pre class="r"><code>total_Cov_18486=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T)) %&gt;% mutate(NormGenePeakCov=GeneSum/10819437)</code></pre>
+<pre class="r"><code>total_Cov_18486=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% filter(X18486_T&gt;10) %&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T)) 
+
+#%&gt;% mutate(NormGenePeakCov=GeneSum/10819437)</code></pre>
 <p>Join with the transcript TPM</p>
 <pre class="r"><code>TXN_abund=as.data.frame(txi.kallisto.tsv$abundance) %&gt;% rownames_to_column(var=&quot;gene&quot;)
 colnames(TXN_abund)=c(&quot;gene&quot;, &quot;TPM&quot;)
@@ -802,58 +842,9 @@ TXN_NormGene=TXN_abund %&gt;% inner_join(total_Cov_18486,by=&quot;gene&quot;)</c
 <pre class="r"><code>summary(TXN_abund$TPM)</code></pre>
 <pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
      0.00      0.02      1.03     36.87     14.21 101438.00 </code></pre>
-<pre class="r"><code>summary(TXN_abund$TPM+ .001)</code></pre>
-<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-     0.00      0.02      1.03     36.87     14.21 101438.00 </code></pre>
-<pre class="r"><code>ggplot(TXN_abund, aes(x=TPM + .001)) + geom_density(kernel=&quot;gaussian&quot;) + scale_x_log10()</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-15-1.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/78484854eb375f2aa052113fcfe61def1bbe6460/docs/figure/understandPeaks.Rmd/unnamed-chunk-15-1.png" target="_blank">7848485</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<pre class="r"><code>summary(total_Cov_18486$NormGenePeakCov)</code></pre>
-<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-0.000e+00 1.756e-06 1.423e-05 5.382e-05 4.464e-05 1.708e-02 </code></pre>
-<pre class="r"><code>ggplot(total_Cov_18486, aes(x=NormGenePeakCov)) + geom_density(kernel=&quot;gaussian&quot;)+ scale_x_log10()</code></pre>
+<pre class="r"><code>ggplot(TXN_abund, aes(x=TPM)) + geom_density(kernel=&quot;gaussian&quot;) + scale_x_log10()</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
-<pre><code>Warning: Removed 1955 rows containing non-finite values (stat_density).</code></pre>
+<pre><code>Warning: Removed 6239 rows containing non-finite values (stat_density).</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-16-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -896,8 +887,10 @@ Briana Mittleman
 </tbody>
 </table>
 <p></details></p>
-<p>Create a scatterplot:</p>
-<pre class="r"><code>ggplot(TXN_NormGene, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = &quot;lm&quot;,se=T) + labs(title=&quot;Total 3&#39; Libraries&quot;, x=&quot;RNA seq TPM&quot;, y=&quot;Normalized Peaks&quot;)</code></pre>
+<pre class="r"><code>summary(total_Cov_18486$GeneSum)</code></pre>
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    11.0     86.0    248.0    736.2    610.8 184795.0 </code></pre>
+<pre class="r"><code>ggplot(total_Cov_18486, aes(x=GeneSum)) + geom_density(kernel=&quot;gaussian&quot;)+ scale_x_log10()</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -940,303 +933,110 @@ Briana Mittleman
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>summary(lm(TPM~NormGenePeakCov,TXN_NormGene)) </code></pre>
+<p>Create a scatterplot:</p>
+<pre class="r"><code>corr_18486Tot=ggplot(TXN_NormGene, aes(x=log10(TPM+ .001), y= log10(GeneSum+.001))) + geom_point() + labs(title=&quot;Total&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM +.001),y=log10(GeneSum+ .001)),method = &quot;lm&quot;) + xlim(-2,6) + annotate(&quot;text&quot;,x=5, y=5,label=&quot;R2=.36&quot;)
+       
+corr_18486Tot       </code></pre>
+<pre><code>Warning: Removed 436 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>Warning: Removed 436 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM +.001)~log10(GeneSum+ .001),TXN_NormGene)) </code></pre>
 <pre><code>
 Call:
-lm(formula = TPM ~ NormGenePeakCov, data = TXN_NormGene)
+lm(formula = log10(TPM + 0.001) ~ log10(GeneSum + 0.001), data = TXN_NormGene)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--8652.8   -23.6   -20.6   -13.2 13409.8 
+-5.8203 -0.2252  0.1609  0.5026  3.1060 
 
 Coefficients:
-                 Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)         20.71       2.30   9.003   &lt;2e-16 ***
-NormGenePeakCov 523774.61    8749.97  59.860   &lt;2e-16 ***
+                       Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)            -1.66435    0.03240  -51.37   &lt;2e-16 ***
+log10(GeneSum + 0.001)  1.08820    0.01324   82.17   &lt;2e-16 ***
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
-Residual standard error: 279.7 on 15415 degrees of freedom
-Multiple R-squared:  0.1886,    Adjusted R-squared:  0.1886 
-F-statistic:  3583 on 1 and 15415 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Maybe I need to get rid of the outliers. To do this I can look at the boxplots.</p>
-<pre class="r"><code>TXN_NormGene_melt = TXN_NormGene %&gt;% select(gene, TPM, NormGenePeakCov) %&gt;% melt(., id.vars=&quot;gene&quot;)</code></pre>
-<pre class="r"><code>ggplot(TXN_NormGene_melt, aes(x=variable, y=value)) + geom_boxplot() + scale_y_log10()</code></pre>
-<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
-<pre><code>Warning: Removed 3097 rows containing non-finite values (stat_boxplot).</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/78484854eb375f2aa052113fcfe61def1bbe6460/docs/figure/understandPeaks.Rmd/unnamed-chunk-19-1.png" target="_blank">7848485</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/3cd438e1ddb0995e1868d52f50115b9eaaac4335/docs/figure/understandPeaks.Rmd/unnamed-chunk-19-1.png" target="_blank">3cd438e</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-06
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+Residual standard error: 0.9111 on 11954 degrees of freedom
+Multiple R-squared:  0.3609,    Adjusted R-squared:  0.3609 
+F-statistic:  6752 on 1 and 11954 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Let me try this with the nuclear fraction:</p>
-<pre class="r"><code>nuclear_Cov_18486=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) %&gt;% mutate(NormGenePeakCov=GeneSum/11405271)
+<pre class="r"><code>nuclear_Cov_18486=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% filter(X18486_N&gt;10) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) 
+
+#%&gt;% mutate(NormGenePeakCov=GeneSum/11405271)
 
 TXN_NormGene_Nuc=TXN_abund %&gt;% inner_join(nuclear_Cov_18486,by=&quot;gene&quot;)</code></pre>
 <p>Create a scatterplot:</p>
-<pre class="r"><code>ggplot(TXN_NormGene_Nuc, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = &quot;lm&quot;,se=T) + labs(title=&quot;Nuclear 3&#39; Libraries&quot;, x=&quot;RNA seq TPM&quot;, y=&quot;Normalized Peaks&quot;)  </code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/78484854eb375f2aa052113fcfe61def1bbe6460/docs/figure/understandPeaks.Rmd/unnamed-chunk-21-1.png" target="_blank">7848485</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<div id="try-filtering" class="section level3">
-<h3>Try filtering</h3>
-<p>I want to fitler out the lowly expressed genes. I can use a cuttoff of TPM 10 because this is where the distribution starts to look normal.</p>
-<pre class="r"><code>TXN_abund_filter=TXN_abund %&gt;% filter(TPM&gt;10)
-
-ggplot(TXN_abund_filter, aes(x=TPM)) + geom_density() + scale_x_log10()</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-22-1.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<p>Filter the Total peaks</p>
-<pre class="r"><code>total_Cov_18486_filt=total_Cov_18486 %&gt;% filter(NormGenePeakCov&gt;.00001)
-ggplot(total_Cov_18486_filt, aes(x=NormGenePeakCov)) + geom_density(kernel=&quot;gaussian&quot;)+ scale_x_log10()</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-23-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-23-1.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<p>Filter nuclear</p>
-<pre class="r"><code>ggplot(nuclear_Cov_18486, aes(x=NormGenePeakCov)) + geom_density() + scale_x_log10()</code></pre>
-<pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
-<pre><code>Warning: Removed 763 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-24-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-24-1.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<pre class="r"><code>nuclear_Cov_18486_filter=nuclear_Cov_18486 %&gt;% filter(NormGenePeakCov&gt;.00001)
-ggplot(nuclear_Cov_18486_filter, aes(x=NormGenePeakCov)) + geom_density() + scale_x_log10()</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-24-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-24-2.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<pre class="r"><code>TXN_NormGene_TotFilt=TXN_abund_filter %&gt;% inner_join(total_Cov_18486_filt,by=&quot;gene&quot;)
-ggplot(TXN_NormGene_TotFilt, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = &quot;lm&quot;,se=T) + labs(title=&quot;Total 3&#39; Libraries- filtered TPM 5&quot;, x=&quot;RNA seq TPM&quot;, y=&quot;Normalized Peaks&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-25-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-25-1.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<pre class="r"><code>summary(lm(TPM~NormGenePeakCov,TXN_NormGene_TotFilt)) </code></pre>
+<pre class="r"><code>corr_18486Nuc=ggplot(TXN_NormGene_Nuc, aes(x=log(TPM+.001), y= log10(GeneSum+.001))) + geom_point() + geom_smooth(aes(x = log10(TPM +.001), y = log10(GeneSum+.001)),method = &quot;lm&quot;,se=T) + labs(title=&quot; Nuclear&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak Sum per gene&quot;) +xlim(-5,10) + annotate(&quot;text&quot;,x=-3, y=5,label=&quot;R2=.30&quot;)
+corr_18486Nuc</code></pre>
+<pre><code>Warning: Removed 495 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM +.001)~log10(GeneSum+ .001),TXN_NormGene_Nuc)) </code></pre>
 <pre><code>
 Call:
-lm(formula = TPM ~ NormGenePeakCov, data = TXN_NormGene_TotFilt)
+lm(formula = log10(TPM + 0.001) ~ log10(GeneSum + 0.001), data = TXN_NormGene_Nuc)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--8789.2   -57.3   -43.1   -23.4 13375.6 
+-5.3659 -0.3288  0.1401  0.5747  3.5594 
 
 Coefficients:
-                 Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)     4.963e+01  5.428e+00   9.143   &lt;2e-16 ***
-NormGenePeakCov 5.301e+05  1.382e+04  38.358   &lt;2e-16 ***
+                       Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)            -1.58670    0.03432  -46.23   &lt;2e-16 ***
+log10(GeneSum + 0.001)  1.01005    0.01380   73.21   &lt;2e-16 ***
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
-Residual standard error: 422.9 on 6583 degrees of freedom
-Multiple R-squared:  0.1827,    Adjusted R-squared:  0.1825 
-F-statistic:  1471 on 1 and 6583 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Nuclear</p>
-<pre class="r"><code>TXN_NormGene_NucFilt=TXN_abund_filter %&gt;% inner_join(nuclear_Cov_18486_filter,by=&quot;gene&quot;)
-ggplot(TXN_NormGene_NucFilt, aes(x=TPM, y= NormGenePeakCov)) + geom_point() + geom_smooth(aes(x = TPM, y = NormGenePeakCov),method = &quot;lm&quot;,se=T) + labs(title=&quot;Nuclear 3&#39; Libraries- filtered TPM 5&quot;, x=&quot;RNA seq TPM&quot;, y=&quot;Normalized Peaks&quot;)</code></pre>
+Residual standard error: 0.9916 on 12455 degrees of freedom
+Multiple R-squared:  0.3009,    Adjusted R-squared:  0.3008 
+F-statistic:  5360 on 1 and 12455 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>title &lt;- ggdraw() + draw_label(&quot;Correlation between TPM and 3&#39; Seq \nNA18486&quot;, fontface=&#39;bold&#39;)
+
+plots=plot_grid(corr_18486Tot,corr_18486Nuc)</code></pre>
+<pre><code>Warning: Removed 436 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>Warning: Removed 436 rows containing missing values (geom_point).</code></pre>
+<pre><code>Warning: Removed 495 rows containing missing values (geom_point).</code></pre>
+<pre class="r"><code>CorrelationPlot18486=plot_grid(title,plots, ncol=1 , rel_heights = c(.1,1))
+ggsave(file=&quot;../output/plots/QC_plots/CorrelationWKalisto18486.png&quot;,CorrelationPlot18486)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+<div id="q-for-each-gene-what-percentage-of-reads-assigned-fall-within-1-2-3-etc-peaks-we-would-expect-that-for-many-genes-90-of-the-reads-fall-within-1-peak-for-a-few-2-peaks-etc" class="section level2">
+<h2>Q: For each gene, what percentage of reads assigned fall within 1, 2, 3, etc… peaks, we would expect that for many genes &gt;90% of the reads fall within 1 peak, for a few 2 peaks, etc…?</h2>
+<p>Plot: Y-axis: Number of genes, X-axis: how many peaks is needed to “capture” 90%, 80%, … 50% of the reads assigned to that gene (using different colors).</p>
+<p>Start with analysis to see how many peaks are needed to capture 90% of the reads assigned to the gene. I will start by looking at the number of reads that map to peaks in genes. To do this I can group on genes in the peak coverage and get the sum.</p>
+<pre class="r"><code>nuclear_covBygene=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) %&gt;% mutate(per90=GeneSum*.9)%&gt;% mutate(per80=GeneSum*.8)%&gt;% mutate(per70=GeneSum*.7)%&gt;% mutate(per60=GeneSum*.6)%&gt;% mutate(per50=GeneSum*.5) 
+total_covBygene=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T))%&gt;% mutate(per90=GeneSum*.9)%&gt;% mutate(per80=GeneSum*.8)%&gt;% mutate(per70=GeneSum*.7)%&gt;% mutate(per60=GeneSum*.6)%&gt;% mutate(per50=GeneSum*.5)</code></pre>
+<p>Write these out to use them in the script:</p>
+<pre class="r"><code>write.table(file=&quot;../data/UnderstandPeaksQC/Nuclear_PerCovbyGene.txt&quot;, nuclear_covBygene, quote=F, col.names = T, row.names = F)
+write.table(file=&quot;../data/UnderstandPeaksQC/Total_PerCovbyGene.txt&quot;, total_covBygene, quote=F, col.names = T,row.names = F)</code></pre>
+<p><strong>Python method</strong><br />
+I think the next step will be best accomplished with a python script where I can go line by line. I want to order the peak counts in a dictionary. This will be double dictionary because I need gene and individual. I want the key to be the gene and the value to be an ordered list of the peak counts. I can ask how many elements it took to acieve the % read coverage.</p>
+<ol style="list-style-type: decimal">
+<li><p>Build dictionary</p></li>
+<li><p>Refer to the *_covBygene gene number pairs to ask how many peaks get you to that number.</p></li>
+<li><p>Write out the gene and the number to capture the % of interest</p></li>
+<li><p>The file should take a percentage between 50 and 90 and total/nuclear. I can then run the script on each value and join the dataframes in R.</p></li>
+<li><p>filter genes with 0 reads</p></li>
+</ol>
+<p>File is code/PeaksToCoverPerReads.py. I am stuck with the dictionary creation because the same values are there for each gene. All values are being added. The gene key is not being recognized.</p>
+<p><strong>Try in R</strong></p>
+<pre class="r"><code>#groupedNuclear=sumforeachgene %&gt;% sort(ind) %&gt;% cumulativesum %&gt;% dividebygenesum %&gt;% filter(only90) %&gt;% count()
+#remove genes with 0 count sum 
+nuclear_90Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_N)) %&gt;%  mutate(SUM = cumsum(X18486_N)) %&gt;% full_join(nuclear_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.9) %&gt;% tally() %&gt;% rename(&quot;90&quot;=n)
+
+nuclear_80Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_N)) %&gt;%  mutate(SUM = cumsum(X18486_N)) %&gt;% full_join(nuclear_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.8) %&gt;% tally() %&gt;% rename(&quot;80&quot;=n)
+
+nuclear_70Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_N)) %&gt;%  mutate(SUM = cumsum(X18486_N)) %&gt;% full_join(nuclear_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.7) %&gt;% tally() %&gt;% rename(&quot;70&quot;=n)
+
+nuclear_60Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_N)) %&gt;%  mutate(SUM = cumsum(X18486_N)) %&gt;% full_join(nuclear_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.6) %&gt;% tally() %&gt;% rename(&quot;60&quot;=n)
+
+nuclear_50Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_N)) %&gt;%  mutate(SUM = cumsum(X18486_N)) %&gt;% full_join(nuclear_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.5) %&gt;% tally() %&gt;% rename(&quot;50&quot;=n)</code></pre>
+<p>Join these to plot them:</p>
+<pre class="r"><code>nuclear_PercentPeakCov= nuclear_90Cov %&gt;% left_join(nuclear_80Cov, by=&quot;gene&quot;) %&gt;% left_join(nuclear_70Cov, by=&quot;gene&quot;) %&gt;% left_join(nuclear_60Cov, by=&quot;gene&quot;) %&gt;% left_join(nuclear_50Cov, by=&quot;gene&quot;)
+
+nuclear_PercentPeakCov_melt=melt(nuclear_PercentPeakCov,id.vars = &quot;gene&quot;)</code></pre>
+<pre class="r"><code>nucPeakCov=ggplot(nuclear_PercentPeakCov_melt, aes(x=value,fill=variable))+ geom_histogram(position=&quot;dodge&quot;, bins=30) + labs(y=&quot;Number of Genes&quot;, x=&quot;Number of Peaks&quot;, title=&quot;Nuclear: Number of Peaks to capture % of Gene count&quot;) + facet_grid(~variable) + xlim(0,30)
+
+ggplot(nuclear_PercentPeakCov_melt, aes(x=value,fill=variable, by=variable))+ geom_density(alpha=.4) + labs(y=&quot;Number of Genes&quot;, x=&quot;Number of Peaks&quot;, title=&quot;Nuclear: Number of Peaks to capture % of Gene count&quot;)</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-26-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1290,112 +1090,30 @@ Briana Mittleman
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>summary(lm(TPM~NormGenePeakCov,TXN_NormGene_NucFilt)) </code></pre>
-<pre><code>
-Call:
-lm(formula = TPM ~ NormGenePeakCov, data = TXN_NormGene_NucFilt)
+<p>Try this with total:</p>
+<pre class="r"><code>total_90Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_T)) %&gt;%  mutate(SUM = cumsum(X18486_T)) %&gt;% full_join(total_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.9) %&gt;% tally() %&gt;% rename(&quot;90&quot;=n)
 
-Residuals:
-    Min      1Q  Median      3Q     Max 
--3952.3   -74.5   -59.0   -34.1 13743.6 
+total_80Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_T)) %&gt;%  mutate(SUM = cumsum(X18486_T)) %&gt;% full_join(total_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.8) %&gt;% tally() %&gt;% rename(&quot;80&quot;=n)
 
-Coefficients:
-                 Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)     6.820e+01  6.014e+00   11.34   &lt;2e-16 ***
-NormGenePeakCov 3.754e+05  2.185e+04   17.18   &lt;2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+total_70Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_T)) %&gt;%  mutate(SUM = cumsum(X18486_T)) %&gt;% full_join(total_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.7) %&gt;% tally() %&gt;% rename(&quot;70&quot;=n)
 
-Residual standard error: 454.4 on 6580 degrees of freedom
-Multiple R-squared:  0.04292,   Adjusted R-squared:  0.04278 
-F-statistic: 295.1 on 1 and 6580 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>TXN_NormGene_fiter_melt = TXN_NormGene_TotFilt %&gt;% select(gene, TPM, NormGenePeakCov) %&gt;% melt(., id.vars=&quot;gene&quot;)
-ggplot(TXN_NormGene_fiter_melt, aes(x=variable, y=value)) + geom_boxplot() + scale_y_log10()</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-27-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-27-1.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<pre class="r"><code>TXN_NormGene_Nuclear_fiter_melt = TXN_NormGene_NucFilt %&gt;% select(gene, TPM, NormGenePeakCov) %&gt;% melt(., id.vars=&quot;gene&quot;)
-ggplot(TXN_NormGene_Nuclear_fiter_melt, aes(x=variable, y=value)) + geom_boxplot() + scale_y_log10()</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-27-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-27-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-27-2.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<p>This could be due to genes that we do not expect to have polyA tails? Not sure what is going on.</p>
-</div>
-</div>
-<div id="q-for-each-gene-what-percentage-of-reads-assigned-fall-within-1-2-3-etc-peaks-we-would-expect-that-for-many-genes-90-of-the-reads-fall-within-1-peak-for-a-few-2-peaks-etc" class="section level2">
-<h2>Q: For each gene, what percentage of reads assigned fall within 1, 2, 3, etc… peaks, we would expect that for many genes &gt;90% of the reads fall within 1 peak, for a few 2 peaks, etc…?</h2>
-<p>Plot: Y-axis: Number of genes, X-axis: how many peaks is needed to “capture” 90%, 80%, … 50% of the reads assigned to that gene (using different colors).</p>
-<p>Start with analysis to see how many peaks are needed to capture 90% of the reads assigned to the gene. I will start by looking at the number of reads that map to peaks in genes. To do this I can group on genes in the peak coverage and get the sum.</p>
-<pre class="r"><code>nuclear_covBygene=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) %&gt;% mutate(per90=GeneSum*.9)%&gt;% mutate(per80=GeneSum*.8)%&gt;% mutate(per70=GeneSum*.7)%&gt;% mutate(per60=GeneSum*.6)%&gt;% mutate(per50=GeneSum*.5) 
-total_covBygene=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T))%&gt;% mutate(per90=GeneSum*.9)%&gt;% mutate(per80=GeneSum*.8)%&gt;% mutate(per70=GeneSum*.7)%&gt;% mutate(per60=GeneSum*.6)%&gt;% mutate(per50=GeneSum*.5)</code></pre>
-<p>Write these out to use them in the script:</p>
-<pre class="r"><code>write.table(file=&quot;../data/UnderstandPeaksQC/Nuclear_PerCovbyGene.txt&quot;, nuclear_covBygene, quote=F, col.names = T, row.names = F)
-write.table(file=&quot;../data/UnderstandPeaksQC/Total_PerCovbyGene.txt&quot;, total_covBygene, quote=F, col.names = T,row.names = F)</code></pre>
-<p>I think the next step will be best accomplished with a python script where I can go line by line. I want to order the peak counts in a dictionary. This will be double dictionary because I need gene and individual. I want the key to be the gene and the value to be an ordered list of the peak counts. I can ask how many elements it took to acieve the % read coverage.</p>
-<ol style="list-style-type: decimal">
-<li><p>Build dictionary</p></li>
-<li><p>Refer to the *_covBygene gene number pairs to ask how many peaks get you to that number.</p></li>
-<li><p>Write out the gene and the number to capture the % of interest</p></li>
-<li><p>The file should take a percentage between 50 and 90 and total/nuclear. I can then run the script on each value and join the dataframes in R.</p></li>
-<li><p>filter genes with 0 reads</p></li>
-</ol>
-<p>File is code/PeaksToCoverPerReads.py. I am stuck with the dictionary creation because the same values are there for each gene. All values are being added. The gene key is not being recognized.</p>
+total_60Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_T)) %&gt;%  mutate(SUM = cumsum(X18486_T)) %&gt;% full_join(total_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.6) %&gt;% tally() %&gt;% rename(&quot;60&quot;=n)
+
+total_50Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_T)) %&gt;%  mutate(SUM = cumsum(X18486_T)) %&gt;% full_join(total_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.5) %&gt;% tally() %&gt;% rename(&quot;50&quot;=n)</code></pre>
+<p>Put together:</p>
+<pre class="r"><code>total_PercentPeakCov= total_90Cov %&gt;% left_join(total_80Cov, by=&quot;gene&quot;) %&gt;% left_join(total_70Cov, by=&quot;gene&quot;) %&gt;% left_join(total_60Cov, by=&quot;gene&quot;) %&gt;% left_join(total_50Cov, by=&quot;gene&quot;)
+
+total_PercentPeakCov_melt=melt(total_PercentPeakCov,id.vars = &quot;gene&quot;)</code></pre>
+<pre class="r"><code>totPeakCov=ggplot(total_PercentPeakCov_melt, aes(x=value,fill=variable))+ geom_histogram(position=&quot;dodge&quot;, bins=30) + labs(y=&quot;Number of Genes&quot;, x=&quot;Number of Peaks&quot;, title=&quot;Total: Number of Peaks to capture % of Gene count&quot;) + facet_grid(~variable) + xlim(0,30)
+
+
+ggplot(total_PercentPeakCov_melt, aes(x=value,fill=variable, by=variable))+ geom_density(alpha=.4) + labs(y=&quot;Number of Genes&quot;, x=&quot;Number of Peaks&quot;, title=&quot;Nuclear: Number of Peaks to capture % of Gene count&quot;)</code></pre>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>PeakCovPerGeneCount=plot_grid(totPeakCov,nucPeakCov, ncol = 1)</code></pre>
+<pre><code>Warning: Removed 85 rows containing non-finite values (stat_bin).</code></pre>
+<pre><code>Warning: Removed 810 rows containing non-finite values (stat_bin).</code></pre>
+<pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/PeakCovPerGeneCount.png&quot;,PeakCovPerGeneCount)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div id="q-what-of-reads-are-assigned-to-a-peak-of-these-what-of-reads-are-assigned-to-a-gene" class="section level2">
 <h2>Q: What % of reads are assigned to a peak? Of these, what % of reads are assigned to a gene?</h2>
@@ -1441,8 +1159,8 @@ be dropped</code></pre>
 <pre class="r"><code>fc_peaks_melt_PerRead=fc_peaks_melt %&gt;% filter(variable==&quot;PerReadPeak&quot;)
 fc_peaks_melt_PerRead$value=as.numeric(fc_peaks_melt_PerRead$value)</code></pre>
 <pre class="r"><code>ggplot(fc_peaks_melt_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos=&quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Percent of reads mapping to peaks by line and fraction&quot;, y=&quot;Reads mapping to peaks/all mapping reads&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-34-1.png:</em></summary>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-35-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
 <thead>
 <tr>
@@ -1460,7 +1178,7 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-34-1.png" target="_blank">daa5818</a>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/78484854eb375f2aa052113fcfe61def1bbe6460/docs/figure/understandPeaks.Rmd/unnamed-chunk-35-1.png" target="_blank">7848485</a>
 </td>
 <td style="text-align:left;">
 Briana Mittleman
@@ -1476,7 +1194,37 @@ Briana Mittleman
 <pre class="r"><code>fc_peaks_melt_PerRead_byfrac= fc_peaks_melt_PerRead %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
 <p>Plot this:</p>
 <pre class="r"><code>ggplot(fc_peaks_melt_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to peaks by fraction&quot;, y=&quot;Reads mapping to peaks/all mapping reads&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-37-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/78484854eb375f2aa052113fcfe61def1bbe6460/docs/figure/understandPeaks.Rmd/unnamed-chunk-37-1.png" target="_blank">7848485</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Now I want to look at how many reads map to gene. I will use the transcript annotations that I used for the peaks.</p>
 <ul>
 <li>/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed</li>
@@ -1546,72 +1294,12 @@ be dropped</code></pre>
 fc_gene_peaks_PerRead$value=as.numeric(fc_gene_peaks_PerRead$value)</code></pre>
 <p>GGplot:</p>
 <pre class="r"><code>ggplot(fc_gene_peaks_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos=&quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Percent of reads mapping to Transcripts by line and fraction&quot;, y=&quot;Reads mapping to transcripts/all mapping reads&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-43-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-43-1.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Do this by fraction.</p>
 <pre class="r"><code>fc_gene_peaks_PerRead_byfrac= fc_gene_peaks_PerRead %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
 <p>Plot this:</p>
 <pre class="r"><code>ggplot(fc_gene_peaks_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to Transcripts by fraction&quot;, y=&quot;Reads mapping to Transcripts/all mapping reads&quot;)</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-45-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-45-1.png" target="_blank">daa5818</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-12-07
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>It would be nice to have this in one plot. In order to do this I want to join the PerReadPeak from both and melt. this way the variable can be peak or transcript.</p>
 <pre class="r"><code>fc_peaks_sel=fc_peaks %&gt;% select(c(&quot;line&quot;, &quot;fraction&quot;, &quot;PerReadPeak&quot;))
 
@@ -1629,7 +1317,7 @@ fcGene_and_Transcript_melt_sum=fcGene_and_Transcript_melt %&gt;% group_by(Fracti
 <pre class="r"><code>reads2featuresPlot=ggplot(fcGene_and_Transcript_melt_sum,aes(x=Fraction, y=mean, fill=Fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to feature by fraction&quot;, y=&quot;Reads mapping to Feature/all mapping reads&quot;) + facet_grid(~variable)
 
 reads2featuresPlot</code></pre>
-<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/understandPeaks.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/reads2featuresPlot.png&quot;, reads2featuresPlot)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
