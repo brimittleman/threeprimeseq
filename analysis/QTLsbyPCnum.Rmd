@@ -1,0 +1,146 @@
+---
+title: "QTLs by number of Included PCs"
+author: "Briana Mittleman"
+date: "12/10/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+In this analysis I will rerun the FastQTL APAqtl calling including different PCs. In the original analysis I am including 2 PCs as covariates. First I will run without any PCs, then with 1, then with just the second 1.
+
+PCs are in /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/ 
+
+
+APAqtl_nominal_transcript_noPCs.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_transcript_noPC
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_transcriptnoPC.out
+#SBATCH --error=APAqtl_nominal_transcriptnoPC.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_noPC/NOPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_noPC/NOPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+```
+
+permuted  
+
+APAqtl_permuted_transcript_noPCs.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_permuted_transcript_noPC
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_permuted_transcript_noPC.out
+#SBATCH --error=APAqtl_permuted_transcript_noPC.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_noPC/NO_PCfiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_noPC/NOPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+```
+
+I can take the results and run it through the R script that give the BH corrected PValues. I will modify this to just output the significant ones at fdr 10%.  
+
+nQTLfromDifPC.R
+
+```{r,eval=F}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(optparse)
+
+#script takes the permuted resutls for total and nuclear then a PC info identifier. It iwll give the significant qtls for that condition  
+
+
+option_list = list(
+    make_option(c("-N", "--NucRes"), action="store", default=NA, type='character', help="nuclearRes"),
+    make_option(c("-T", "--TotRes"), action="store", default=NA, type='character', help="totalRes"),
+    make_option(c("-P", "--PC"), action="store", default=NA, type='character', help="PCs used in analysis")
+    
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+##total results
+tot.perm= read.table(opt$TotRes,head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+#BH correction
+tot.perm$bh=p.adjust(tot.perm$bpval, method="fdr")
+
+
+tot.perm=tot.perm %>% filter(-log10(bh) > 1)
+#write df with BH  
+
+write.table(tot.perm, file =paste("/project2/gilad/briana/threeprimeseq/data/diffPCAnalysis/", opt$PC, "PCs.totQTL", sep=""), col.names = T, row.names = F, quote = F)
+
+##nuclear results  
+
+
+nuc.perm= read.table(opt$NucRes,head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+nuc.perm$bh=p.adjust(nuc.perm$bpval, method="fdr")
+
+nuc.perm=nuc.perm %>% filter(-log10(bh) > 1)
+
+# write df with BH
+write.table(nuc.perm, file =paste("/project2/gilad/briana/threeprimeseq/data/diffPCAnalysis/", opt$PC, "PCs.NucQTL", sep=""), col.names = T, row.names = F, quote = F)
+```
+
+
+Script to run this:  
+nQTLfromDifPC.0PCs.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=nQTLfromDifPC.0PCs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nQTLfromDifPC.0PCs.out
+#SBATCH --error=nQTLfromDifPC.0PCs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript nQTLfromDifPC.R -N NUCRES -T TOTRES -P "0"
+```
+
