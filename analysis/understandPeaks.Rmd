@@ -141,7 +141,7 @@ txi.kallisto.tsv <- tximport("../data/RNAkalisto/abundance.tsv", type = "kallist
 I need to get all of the peaks for 18486 and which gene they are in. Then I will take the gene average and divide by the number of mapped reads. 
 
 ```{r}
-total_Cov_18486=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T) %>% filter(X18486_T>10) %>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_T)) 
+total_Cov_18486=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T) %>% filter(X18486_T>10) %>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_T)) %>% mutate(GeneSumNorm=GeneSum/10.8)
 
 #%>% mutate(NormGenePeakCov=GeneSum/10819437)
 
@@ -160,20 +160,25 @@ TXN_NormGene=TXN_abund %>% inner_join(total_Cov_18486,by="gene")
 Plot distribution of each variable seperatly first to understand distribution:  
 ```{r}
 summary(TXN_abund$TPM)
-ggplot(TXN_abund, aes(x=TPM)) + geom_density(kernel="gaussian") + scale_x_log10()
+ggplot(TXN_abund, aes(x=log10(TPM))) + geom_density(kernel="gaussian") + scale_x_log10()
 ```
+
+
+
 ```{r}
-summary(total_Cov_18486$GeneSum)
-ggplot(total_Cov_18486, aes(x=GeneSum)) + geom_density(kernel="gaussian")+ scale_x_log10()
+summary(total_Cov_18486$GeneSumNorm)
+ggplot(total_Cov_18486, aes(x=log10(GeneSumNorm))) + geom_density(kernel="gaussian")+ scale_x_log10()
 ```
 
 
 Create a scatterplot:  
 ```{r}
-corr_18486Tot=ggplot(TXN_NormGene, aes(x=log10(TPM+ .001), y= log10(GeneSum+.001))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM +.001),y=log10(GeneSum+ .001)),method = "lm") + xlim(-2,6) + annotate("text",x=5, y=5,label="R2=.36")
+
+TXN_NormGene=TXN_NormGene %>% filter(TPM>0) %>% filter(GeneSumNorm>0)
+corr_18486Tot=ggplot(TXN_NormGene, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=5, y=5,label="R2=.42")+ geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Tot       
-summary(lm(log10(TPM +.001)~log10(GeneSum+ .001),TXN_NormGene)) 
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_NormGene)) 
 
 ```
 
@@ -183,9 +188,7 @@ summary(lm(log10(TPM +.001)~log10(GeneSum+ .001),TXN_NormGene))
 Let me try this with the nuclear fraction:  
 
 ```{r}
-nuclear_Cov_18486=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% filter(X18486_N>10) %>% group_by(gene) %>% summarize(GeneSum=sum(X18486_N)) 
-
-#%>% mutate(NormGenePeakCov=GeneSum/11405271)
+nuclear_Cov_18486=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% filter(X18486_N>10) %>% group_by(gene) %>% summarize(GeneSum=sum(X18486_N)) %>% mutate(GeneSumNorm=GeneSum/11.4)
 
 TXN_NormGene_Nuc=TXN_abund %>% inner_join(nuclear_Cov_18486,by="gene")
 
@@ -196,10 +199,11 @@ TXN_NormGene_Nuc=TXN_abund %>% inner_join(nuclear_Cov_18486,by="gene")
 Create a scatterplot:  
 ```{r}
 
+TXN_NormGene_Nuc=TXN_NormGene_Nuc %>% filter(TPM>0) %>% filter(GeneSumNorm>0)
 
-corr_18486Nuc=ggplot(TXN_NormGene_Nuc, aes(x=log(TPM+.001), y= log10(GeneSum+.001))) + geom_point() + geom_smooth(aes(x = log10(TPM +.001), y = log10(GeneSum+.001)),method = "lm",se=T) + labs(title=" Nuclear", x="log10 RNA seq TPM", y="log10 Peak Sum per gene") +xlim(-5,10) + annotate("text",x=-3, y=5,label="R2=.30")
+corr_18486Nuc=ggplot(TXN_NormGene_Nuc, aes(x=log(TPM), y= log10(GeneSumNorm))) + geom_point() + geom_smooth(aes(x = log10(TPM +.001), y = log10(GeneSumNorm+.001)),method = "lm",se=T) + labs(title=" Nuclear", x="log10 RNA seq TPM", y="log10 Peak Sum per gene") + annotate("text",x=-3, y=5,label="R2=.32") +geom_text(aes(label=gene),hjust=0, vjust=0)
 corr_18486Nuc
-summary(lm(log10(TPM +.001)~log10(GeneSum+ .001),TXN_NormGene_Nuc)) 
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_NormGene_Nuc)) 
 ```
 
 
@@ -210,8 +214,157 @@ plots=plot_grid(corr_18486Tot,corr_18486Nuc)
 
 CorrelationPlot18486=plot_grid(title,plots, ncol=1 , rel_heights = c(.1,1))
 ggsave(file="../output/plots/QC_plots/CorrelationWKalisto18486.png",CorrelationPlot18486)
+CorrelationPlot18486
+```
+These do not look good. We expect higher correlations. I can make variants of these plots to diagnose the problem.  
+
+
+#### Just look at the count for the top peak for the gene.  
+
+Total:
+```{r}
+topPeakCov_total_18486=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T) %>% group_by(gene) %>%  arrange(gene,desc(X18486_T)) %>% top_n(1)
+
+TXN_TopPeak=TXN_abund %>% inner_join(topPeakCov_total_18486,by="gene")
+
+
+ggplot(TXN_TopPeak, aes(x=log(TPM+.001), y= log10(X18486_T+.001))) + geom_point() + geom_smooth(aes(x = log10(TPM +.001), y = log10(X18486_T+.001)),method = "lm",se=T) 
+
+summary(lm(log10(TPM +.001)~log10(X18486_T+ .001),TXN_TopPeak)) 
 ```
 
+Nuclear:  
+```{r}
+topPeakCov_nuclear_18486=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% group_by(gene) %>%  arrange(gene,desc(X18486_N)) %>% top_n(1) 
+
+TXN_TopPeak_nuc=TXN_abund %>% inner_join(topPeakCov_nuclear_18486,by="gene")
+
+
+ggplot(TXN_TopPeak_nuc, aes(x=log(TPM), y= log10(X18486_N))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_N)),method = "lm",se=T) +xlim(-1,10)
+
+summary(lm(log10(TPM+.001)~log10(X18486_N+.001),TXN_TopPeak_nuc)) 
+```
+
+Try removing genes with 0 in one the of the columns.  
+```{r}
+TXN_TopPeak_filt=TXN_TopPeak %>% filter(TPM>0) %>% filter(X18486_T>0)
+
+ggplot(TXN_TopPeak_filt, aes(x=log(TPM), y= log10(X18486_T))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_T)),method = "lm",se=T)+ geom_text(aes(label=gene),hjust=0, vjust=0)
+
+summary(lm(log10(TPM)~log10(X18486_T),TXN_TopPeak_filt)) 
+
+```
+
+```{r}
+TXN_TopPeak_filt_nuc=TXN_TopPeak_nuc %>% filter(TPM>0) %>% filter(X18486_N>0)
+
+ggplot(TXN_TopPeak_filt_nuc, aes(x=log(TPM), y= log10(X18486_N))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_N)),method = "lm",se=T)+ geom_text(aes(label=gene),hjust=0, vjust=0)
+
+summary(lm(log10(TPM)~log10(X18486_N),TXN_TopPeak_filt_nuc)) 
+```
+
+I should remove these genes because they are outliers:  
+
+```{r}
+outlier=c("POTEJ", "SPATA31A1", "TP53TG3B")
+
+TXN_TopPeak_filt2_nuc= TXN_TopPeak_filt_nuc %>% filter(!(gene %in% outlier))
+
+TXN_TopPeak_filt2= TXN_TopPeak_filt %>% filter(!(gene %in% outlier))
+
+```
+
+Replot:  
+
+```{r}
+
+#nuclear 
+ggplot(TXN_TopPeak_filt2_nuc, aes(x=log(TPM), y= log10(X18486_N))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_N)),method = "lm",se=T) 
+
+summary(lm(log10(TPM)~log10(X18486_N),TXN_TopPeak_filt2_nuc)) 
+
+
+#total
+ggplot(TXN_TopPeak_filt2, aes(x=log(TPM), y= log10(X18486_T))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_T)),method = "lm",se=T)
+
+summary(lm(log10(TPM)~log10(X18486_T),TXN_TopPeak_filt)) 
+```
+####Genes with 1 peak  
+**Nuclear**  
+
+First I need to get the genes with just 1 peak. 
+```{r}
+OnePeak_nuc=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% group_by(gene) %>% tally() %>% filter(n==1) %>% select(gene)
+```
+I can join this with the counts to get only the counts for these genes and join with the TXN df.    
+
+```{r}
+OnePeak_nuc_cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% inner_join(OnePeak_nuc, by="gene") %>% inner_join(TXN_abund, by="gene")
+```
+
+Plot and get the correlation:  
+
+```{r}
+OnePeak_nuc_cov=OnePeak_nuc_cov %>% filter(TPM>0) %>% filter(X18486_N>0)
+
+ggplot(OnePeak_nuc_cov, aes(x=log10(TPM), y= log10(X18486_N))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_N)),method = "lm",se=T) + geom_text(aes(label=gene),hjust=0, vjust=0)
+
+summary(lm(log10(TPM)~log10(X18486_N),OnePeak_nuc_cov)) 
+
+
+```
+Filter the outlier:   
+```{r}
+OnePeakN_outlier=c("POTEJ")
+
+
+OnePeak_nuc_cov_filt= OnePeak_nuc_cov %>% filter(!(gene %in% OnePeakN_outlier))
+
+
+ggplot(OnePeak_nuc_cov_filt, aes(x=log10(TPM), y= log10(X18486_N))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_N)),method = "lm",se=T) + geom_text(aes(label=gene),hjust=0, vjust=0)
+
+summary(lm(log10(TPM)~log10(X18486_N),OnePeak_nuc_cov_filt)) 
+```
+
+**Total**  
+
+First I need to get the genes with just 1 peak. 
+```{r}
+OnePeak_tot=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% group_by(gene) %>% tally() %>% filter(n==1) %>% select(gene)
+```
+I can join this with the counts to get only the counts for these genes and join with the TXN df.    
+
+```{r}
+OnePeak_tot_cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T) %>% inner_join(OnePeak_tot, by="gene") %>% inner_join(TXN_abund, by="gene")
+```
+
+Plot and get the correlation:  
+
+```{r}
+OnePeak_tot_cov=OnePeak_tot_cov %>% filter(TPM>0) %>% filter(X18486_T>0)
+
+ggplot(OnePeak_tot_cov, aes(x=log10(TPM), y= log10(X18486_T))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_T)),method = "lm",se=T) + geom_text(aes(label=gene),hjust=0, vjust=0)
+
+summary(lm(log10(TPM)~log10(X18486_T),OnePeak_tot_cov)) 
+
+
+```
+Total has the same outlier.  
+
+```{r}
+
+OnePeak_tot_cov_filt= OnePeak_tot_cov %>% filter(!(gene %in% OnePeakN_outlier))
+
+
+ggplot(OnePeak_tot_cov_filt, aes(x=log10(TPM), y= log10(X18486_T))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_T)),method = "lm",se=T) + geom_text(aes(label=gene),hjust=0, vjust=0)
+
+summary(lm(log10(TPM)~log10(X18486_T),OnePeak_tot_cov_filt)) 
+```
+
+I want to visualize some of these outliers.  
+
+
+These dont look great, I am continuing this section of the analysis by looking at the [Peak to gene assignment](InvestigatePeak2GeneAssignment.html)  
 
 
 ##Q: For each gene, what percentage of reads assigned fall within 1, 2, 3, etc… peaks, we would expect that for many genes >90% of the reads fall within 1 peak, for a few 2 peaks, etc…? 
@@ -235,27 +388,11 @@ write.table(file="../data/UnderstandPeaksQC/Total_PerCovbyGene.txt", total_covBy
 ```
 
 
-
-**Python method**  
-I think the next step will be best accomplished with a python script where I can go line by line. I want to order the peak counts in a dictionary. This will  be double dictionary because I need gene and individual. I want the key to be the gene and the value to be an ordered list of the peak counts. I can ask how many elements it took to acieve the % read coverage.
-
-1. Build dictionary
-
-2. Refer to the *_covBygene gene number pairs to ask how many peaks get you to that number.  
-
-3. Write out the gene and the number to capture the % of interest
-
-4. The file should take a percentage between 50 and 90 and total/nuclear. I can then run the script on each value and join the dataframes in R. 
-
-5. filter genes with 0 reads  
-
-
-File is code/PeaksToCoverPerReads.py. I am stuck with the dictionary creation because the same values are there for each gene. All values are being added. The gene key is not being recognized.
-
 **Try in R**
 ```{r}
 #groupedNuclear=sumforeachgene %>% sort(ind) %>% cumulativesum %>% dividebygenesum %>% filter(only90) %>% count()
 #remove genes with 0 count sum 
+
 nuclear_90Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% group_by(gene) %>%  arrange(gene,desc(X18486_N)) %>%  mutate(SUM = cumsum(X18486_N)) %>% full_join(nuclear_covBygene,by="gene") %>% filter(GeneSum >0) %>% mutate(perSum=SUM/GeneSum) %>% mutate(perSum_lag=lag(perSum,1)) %>%  replace_na(list(perSum_lag =0)) %>% filter(perSum_lag<.9) %>% tally() %>% rename("90"=n)
 
 nuclear_80Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% group_by(gene) %>%  arrange(gene,desc(X18486_N)) %>%  mutate(SUM = cumsum(X18486_N)) %>% full_join(nuclear_covBygene,by="gene") %>% filter(GeneSum >0) %>% mutate(perSum=SUM/GeneSum) %>% mutate(perSum_lag=lag(perSum,1)) %>%  replace_na(list(perSum_lag =0)) %>% filter(perSum_lag<.8) %>% tally() %>% rename("80"=n)
@@ -279,6 +416,9 @@ nuclear_PercentPeakCov_melt=melt(nuclear_PercentPeakCov,id.vars = "gene")
 
 ```{r}
 nucPeakCov=ggplot(nuclear_PercentPeakCov_melt, aes(x=value,fill=variable))+ geom_histogram(position="dodge", bins=30) + labs(y="Number of Genes", x="Number of Peaks", title="Nuclear: Number of Peaks to capture % of Gene count") + facet_grid(~variable) + xlim(0,30)
+
+
+nucPeakCov_cdf=ggplot(nuclear_PercentPeakCov_melt, aes(x=value,col=variable))+ stat_ecdf(geom="step")+ labs(y="Percent of Genes", x="Number of Peaks", title="Nuclear: Number of Peaks to capture % of Gene count") + scale_x_continuous(breaks=seq(1,30,2),limits=c(0,30))
 
 ggplot(nuclear_PercentPeakCov_melt, aes(x=value,fill=variable, by=variable))+ geom_density(alpha=.4) + labs(y="Number of Genes", x="Number of Peaks", title="Nuclear: Number of Peaks to capture % of Gene count")
 
@@ -311,7 +451,14 @@ total_PercentPeakCov_melt=melt(total_PercentPeakCov,id.vars = "gene")
 totPeakCov=ggplot(total_PercentPeakCov_melt, aes(x=value,fill=variable))+ geom_histogram(position="dodge", bins=30) + labs(y="Number of Genes", x="Number of Peaks", title="Total: Number of Peaks to capture % of Gene count") + facet_grid(~variable) + xlim(0,30)
 
 
+totPeakCov_cdf=ggplot(total_PercentPeakCov_melt, aes(x=value,col=variable))+ stat_ecdf(geom="step")+ labs(y="Percent of Genes", x="Number of Peaks", title="Total: Number of Peaks to capture % of Gene count") + scale_x_continuous(breaks=seq(1,30,2),limits=c(0,30))
+
+
+
+
 ggplot(total_PercentPeakCov_melt, aes(x=value,fill=variable, by=variable))+ geom_density(alpha=.4) + labs(y="Number of Genes", x="Number of Peaks", title="Nuclear: Number of Peaks to capture % of Gene count")
+
+
 
 ```
 
@@ -320,7 +467,12 @@ ggplot(total_PercentPeakCov_melt, aes(x=value,fill=variable, by=variable))+ geom
 PeakCovPerGeneCount=plot_grid(totPeakCov,nucPeakCov, ncol = 1)
 
 ggsave(file="../output/plots/QC_plots/PeakCovPerGeneCount.png",PeakCovPerGeneCount)
+
+PeakCovPerGeneCountCDF=plot_grid(totPeakCov_cdf,nucPeakCov_cdf,ncol=1)
+ggsave(file="../output/plots/QC_plots/PeakCovPerGeneCountCDF.png",PeakCovPerGeneCountCDF)
 ```
+These look good. We could use this to filter. I would compute the percent of the gene each peak covers in each individual then I could filter peaks that cover <X% of the coverage in all individuals.  
+
 
 ##Q: What % of reads are assigned to a peak? Of these, what % of reads are assigned to a gene? 
 

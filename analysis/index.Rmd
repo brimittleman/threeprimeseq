@@ -108,5 +108,10 @@ This is the site I will use for my human 3' seq project. I will have my workflow
 Until now I have been focusing on way to develop the story for the paper. The next steps will be to systematically understand the data in order to filter to high quality data to use in the final analysis. 
 
 
-* [Investigate Peak quality](understandPeaks.html)
-* [Investigate Effect of included PCs on QTL number](QTLsbyPCnum.html)
+* [Investigate Peak quality](understandPeaks.html)  
+
+* [Investigate Effect of included PCs on QTL number](QTLsbyPCnum.html)  
+
+* [Peak to gene assignment](InvestigatePeak2GeneAssignment.html)  
+
+

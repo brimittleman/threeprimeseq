@@ -1,0 +1,210 @@
+---
+title: "Investigate Peak to Gene Assignment"
+author: "Briana Mittleman"
+date: "12/11/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+In looking at correlations and some examples, there is evidence the peak to gene assignment may be a problem. I am going to visualize the peaks in IGV. I will name them by the gene and look at them in the browser. 
+
+The peak to gene annotations used in the feature counts to map reads back to the peaks is the following:  
+* /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed  
+
+I need to change this a bit to have the name be the gene rather than the score:  
+
+NamePeaksByGene.py
+```{bash, eval=F}
+#python  
+
+CovnamedPeaks=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed", "r")
+GeneNamedPeaks=open("/project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/PeaksNamedWithGeneAssignment.bed", "w")
+
+for ln in CovnamedPeaks:
+  chrom, start, end, num, cov, strand, transcript = ln.split()
+  gene=transcript.split("-")[1]
+  GeneNamedPeaks.write("%s\t%s\t%s\t%s\n"%(chrom,start,end,gene))
+
+GeneNamedPeaks.close()
+
+```
+
+
+This was made based on the transcript annotation: ncbiRefSeq.mRNA.named.bed  
+
+* /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named.bed  
+
+The ends of the transcripts specfically are in:  
+
+* /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes_sort.txt
+
+
+Ideas for Dilters:
+
+* Cant be upstream of the gene, ex: chr2:135,558,075-135,604,343  
+
+* maybe it cant be in another gene 
+
+* we should include LINCs
+
+* looks like we have a ton of low expressed intergenic peaks that should be filtered before we do the gene annotation
+
+
+###Filter out intergenic peaks
+
+As a first pass I want to filter out the peaks that are outside a gene body. While this may not be perfect it will help  alot with the intergenic noise.  
+
+I need to overlap the named peaks with /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named.bed  and only keep the matches. I can use bedtools intersect.  
+
+Rename the peaks according to convention to run an intesect.  
+
+RenamePeaks4Intersect.py
+```{bash,eval=F}
+#python  
+CovnamedPeaks=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed", "r")
+GeneNamedPeaks=open("/project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED.bed", "w")  
+
+for ln in CovnamedPeaks:
+  chrom, start, end, num, cov, strand, transcript = ln.split()
+  gene=transcript.split("-")[1]
+  start=int(start)
+  end=int(end)
+  GeneNamedPeaks.write("%s\t%d\t%d\t%s-%s\t%s\t%s\n"%(chrom,start,end,num,gene,cov,strand))
+
+GeneNamedPeaks.close()
+
+
+```
+
+Remove CHR from the refseq annpotation:  
+```{bash,eval=F}
+sed 's/^chr//' /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named.bed > /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed
+```
+
+
+
+Filter4GenicPeaks.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+
+#SBATCH --job-name=Filter4GenicPeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Filter4GenicPeaks.out
+#SBATCH --error=Filter4GenicPeaks.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools intersect -wa -s -a /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED.bed -b /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies.bed
+```
+
+This is printing them multiple times.  
+
+```{bash,eval=F}
+uniq /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodiesUNIQ.bed
+```
+
+Now I need to make this an SAF to run feature counts.  
+
+
+bed2saf_peaksInGenicReg.py
+ 
+ 
+```{bash,eval=F}
+from misc_helper import *
+
+fout = open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodiesUNIQ.SAF",'w')
+fout.write("GeneID\tChr\tStart\tEnd\tStrand\n")
+for ln in open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodiesUNIQ.bed"):
+    chrom, start, end, name, score, strand = ln.split()
+    namenum=name.split("-")[0]
+    name_i=int(namenum)
+    start_i=int(start)
+    end_i=int(end)
+    gene_only=name.split("-")[1]
+    ID = "peak%d:%s:%d:%d:%s:%s"%(name_i, chrom, start_i, end_i, strand, gene_only)
+    fout.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+fout.close()
+```
+
+Run Feature Counts  
+PeaksinGenicRegion_fc_TN.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=PeaksinGenicRegion_fc_TN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=PeaksinGenicRegion_fc_TN.out
+#SBATCH --error=PeaksinGenicRegion_fc_TN.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodiesUNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodiesUNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
+
+
+```
+
+Lastly I will need to fix the headers.  
+
+
+fix_head_fc_genicPeak_tot.py
+```{bash,eval=F}
+infile= open("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total.fc", "r")
+fout = file("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total_fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+```
+
+fix_head_fc_genicPeak_nuc.py
+```{bash,eval=F}
+infile= open("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear.fc", "r")
+fout = file("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear_fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+```
+
+
