@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-11</p>
+<p><strong>Last updated:</strong> 2018-12-12</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/035053cc723f45553a5d24d6fac63fb96cf51b19" target="_blank">035053c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/0e0840ef800bbe60330b5cabb91047974abed714" target="_blank">0e0840e</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -449,13 +449,94 @@ Unstaged changes:
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/understandPeaks.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
 </li>
 </ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0e0840ef800bbe60330b5cabb91047974abed714/analysis/InvestigatePeak2GeneAssignment.Rmd" target="_blank">0e0840e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-12
+</td>
+<td style="text-align:left;">
+remove overlaping genes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/InvestigatePeak2GeneAssignment.html" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
 <hr />
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>library(tximport)</code></pre>
 <p>In looking at correlations and some examples, there is evidence the peak to gene assignment may be a problem. I am going to visualize the peaks in IGV. I will name them by the gene and look at them in the browser.</p>
 <p>The peak to gene annotations used in the feature counts to map reads back to the peaks is the following:<br />
 * /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed</p>
@@ -569,7 +650,7 @@ featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_i
 <p>Lastly I will need to fix the headers.</p>
 <p>fix_head_fc_genicPeak_tot.py</p>
 <pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total.fc&quot;, &quot;r&quot;)
-fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total_fixed.fc&quot;,&#39;w&#39;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total_fixed.fc&quot;,&#39;w&#39;)
 for line, i in enumerate(infile):
     if line == 1:
         i_list=i.split()
@@ -587,7 +668,7 @@ for line, i in enumerate(infile):
 fout.close()</code></pre>
 <p>fix_head_fc_genicPeak_nuc.py</p>
 <pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear.fc&quot;, &quot;r&quot;)
-fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear_fixed.fc&quot;,&#39;w&#39;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear_fixed.fc&quot;,&#39;w&#39;)
 for line, i in enumerate(infile):
     if line == 1:
         i_list=i.split()
@@ -603,6 +684,209 @@ for line, i in enumerate(infile):
     else :
         fout.write(i)
 fout.close()</code></pre>
+<p>Pull these into R and look at the correlation between the sum of the peaks by gene and the transcripts counts from RNA seq.</p>
+<p>TPM counts from Kalisto</p>
+<pre class="r"><code>tx2gene=read.table(&quot;../data/RNAkalisto/ncbiRefSeq.txn2gene.txt&quot; ,header= F, sep=&quot;\t&quot;, stringsAsFactors = F)
+
+txi.kallisto.tsv &lt;- tximport(&quot;../data/RNAkalisto/abundance.tsv&quot;, type = &quot;kallisto&quot;, tx2gene = tx2gene,countsFromAbundance=&quot;lengthScaledTPM&quot; )</code></pre>
+<pre><code>Note: importing `abundance.h5` is typically faster than `abundance.tsv`</code></pre>
+<pre><code>reading in files with read_tsv</code></pre>
+<pre><code>1 
+removing duplicated transcript rows from tx2gene
+transcripts missing from tx2gene: 99
+summarizing abundance
+summarizing counts
+summarizing length</code></pre>
+<p>In previous analysis I did not account for gene length. Here I am going to standardize by length because I am taking a sum over a gene body.</p>
+<p>Import gene lengths:</p>
+<pre class="r"><code>geneLengthNames=c(&quot;CHR&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;, &quot;score&quot;, &quot;strand&quot;)
+geneLengths=read.table(&quot;../data/UnderstandPeaksQC/refseq.ProteinCoding.bed&quot;, header=F, stringsAsFactors = F, col.names = geneLengthNames) %&gt;% mutate(length=end-start) %&gt;% select(gene, length)</code></pre>
+<p>Look at the correlation with the total:</p>
+<p>I am using the sum of the counts in a gene divided by how many million reads mapped. I am also filtering out peaks with less than 10 reads in this individual.</p>
+<pre class="r"><code>total_Cov_18486=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% filter(X18486_T&gt;0) %&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T)) %&gt;% mutate(GeneSumNorm=GeneSum/10.8) %&gt;% inner_join(geneLengths, by=&quot;gene&quot;) %&gt;% mutate(GeneSumSt=GeneSum/length)</code></pre>
+<p>Join the data frames.</p>
+<pre class="r"><code>TXN_abund=as.data.frame(txi.kallisto.tsv$abundance) %&gt;% rownames_to_column(var=&quot;gene&quot;)
+colnames(TXN_abund)=c(&quot;gene&quot;, &quot;TPM&quot;)
+
+TXN_NormGene=TXN_abund %&gt;% inner_join(total_Cov_18486,by=&quot;gene&quot;)</code></pre>
+<p>Remove rows with 0 counts and Plot:</p>
+<pre class="r"><code>TXN_NormGene=TXN_NormGene %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
+corr_18486Tot=ggplot(TXN_NormGene, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Total&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.48&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot       </code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumSt), data = TXN_NormGene)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.5894 -0.2556  0.0856  0.3676  2.3387 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      2.407969   0.013563   177.5   &lt;2e-16 ***
+log10(GeneSumSt) 0.612175   0.005812   105.3   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.598 on 12053 degrees of freedom
+Multiple R-squared:  0.4793,    Adjusted R-squared:  0.4793 
+F-statistic: 1.11e+04 on 1 and 12053 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Try this with nuclear</p>
+<pre class="r"><code>nuclear_Cov_18486=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% filter(X18486_N&gt;10) %&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) %&gt;% mutate(GeneSumNorm=GeneSum/11.4) %&gt;% inner_join(geneLengths, by=&quot;gene&quot;) %&gt;% mutate(GeneSumSt=GeneSum/length)</code></pre>
+<p>Join the data frames.</p>
+<pre class="r"><code>TXN_NormGene_nuc=TXN_abund %&gt;% inner_join(nuclear_Cov_18486,by=&quot;gene&quot;)</code></pre>
+<p>Remove rows with 0 counts and Plot:</p>
+<pre class="r"><code>TXN_NormGene_nuc=TXN_NormGene_nuc %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
+corr_18486Nuc=ggplot(TXN_NormGene_nuc, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Nuclear&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.37&quot;) + geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Nuc    </code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_nuc)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumSt), data = TXN_NormGene_nuc)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.7211 -0.2691  0.0733  0.3789  2.5253 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      2.451150   0.017039  143.85   &lt;2e-16 ***
+log10(GeneSumSt) 0.654587   0.008008   81.74   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.6324 on 11567 degrees of freedom
+Multiple R-squared:  0.3661,    Adjusted R-squared:  0.3661 
+F-statistic:  6681 on 1 and 11567 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>This just said it had to be in a gene body not the specific gene body. This could be a problem still. For example in the SSPO locus chr7:149,521,993-149,543,749. Here the peaks are closer to the end of the SSPO but are in the gene body of the next gene downstream.</p>
+<p>Histones dont have a polyA tail- the HIST1H4C peak is most likely misprimming (chr6:26,102,306-26,110,443)</p>
+<p>Filter out overlapping genes:</p>
+<p>Count overlaps in origial file:<br />
+<code>bedtools merge -i IN.bed -c 1 -o count &gt; counted</code></p>
+<p>countGeneOverlap.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=countGeneOverlap
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=countGeneOverlap.out
+#SBATCH --error=countGeneOverlap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools merge -i /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -c 1 -o count &gt; /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap.bed  </code></pre>
+<p>Filter out these rows: <code>awk '/\t1$/{print}' counted &gt; filtered</code></p>
+<pre class="bash"><code>awk &#39;/\t1$/{print}&#39; /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap.bed &gt; /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap.filtered.bed</code></pre>
+<p>Intersect with original input to only keep the ones in both sets.<br />
+<code>bedtools intersect -a IN.bed -b filtered -wa &gt; OUT.bed</code></p>
+<p>findGeneswithoutOverlap.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=findGeneswithoutOverlap.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=findGeneswithoutOverlap.out
+#SBATCH --error=findGeneswithoutOverlap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools intersect -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -b /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap.filtered.bed -wa &gt; /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.NonOverlapGenes.bed 
+</code></pre>
+<p>Finally overlap with the mRNA file to only keep the transcripts in these genes. This may be easiest in python /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed</p>
+<p>subsetmRNAforNonOverlapGenes.py</p>
+<pre class="bash"><code>geneFile=open(&quot;/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.NonOverlapGenes.bed&quot;, &quot;r&quot;) 
+
+mRNAFile=open(&quot;/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed&quot;, &quot;r&quot;)
+
+outFile=open(&quot;/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR_NoneOverlapingGenes.bed&quot;, &quot;w&quot;)  
+
+#make list of non overlapping genes  
+
+keep=[]
+for ln in geneFile:
+  keep.append(ln.split()[3])
+
+for ln in mRNAFile: 
+  if ln.split()[4] in keep:
+    outFile.write(ln)
+outFile.close()
+</code></pre>
+<p>Filter peaks on this resutls</p>
+<p>Filter4GenicPeaks_noOverlap.sh</p>
+<pre class="bash"><code>
+#!/bin/bash
+
+
+#SBATCH --job-name=Filter4GenicPeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Filter4GenicPeaks.out
+#SBATCH --error=Filter4GenicPeaks.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools intersect -wa -s -a /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED.bed -b /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR_NoneOverlapingGenes.bed&gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap.bed</code></pre>
+<p>This is printing them multiple times.</p>
+<pre class="bash"><code>uniq /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.bed</code></pre>
+<p>Make this an SAF to run FC</p>
+<p>bed2saf_peaksInGenicReg_noOVERLAP.py</p>
+<pre class="bash"><code>from misc_helper import *
+
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.SAF&quot;,&#39;w&#39;)
+fout.write(&quot;GeneID\tChr\tStart\tEnd\tStrand\n&quot;)
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.bed&quot;):
+    chrom, start, end, name, score, strand = ln.split()
+    namenum=name.split(&quot;-&quot;)[0]
+    name_i=int(namenum)
+    start_i=int(start)
+    end_i=int(end)
+    gene_only=name.split(&quot;-&quot;)[1]
+    ID = &quot;peak%d:%s:%d:%d:%s:%s&quot;%(name_i, chrom, start_i, end_i, strand, gene_only)
+    fout.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+fout.close()</code></pre>
+<p>Run Feature Counts<br />
+PeaksinGenicRegion_NoneOverlapGenes_fc_TN.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=PeaksinGenicRegion_NoneOverlapGenes_fc_TN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=PeaksinGenicRegion_NoneOverlapGenes_fc_TN.out
+#SBATCH --error=PeaksinGenicRegion_NoneOverlapGenes_fc_TN.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
+</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -621,14 +905,31 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] bindrcpp_0.2.2  tximport_1.8.0  cowplot_0.9.3   workflowr_1.1.1
+ [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5    
+ [9] readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0  
+[13] tidyverse_1.2.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.1.1   Rcpp_0.12.19      digest_0.6.17    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.23.0      magrittr_1.5      evaluate_0.11    
-[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.7.0     rmarkdown_1.10    tools_3.5.1      
-[16] stringr_1.3.1     yaml_2.2.0        compiler_3.5.1   
-[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] evaluate_0.11     labeling_0.3      knitr_1.20       
+[25] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
+[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[31] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
+[34] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
+[37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[40] whisker_0.3-2     pkgconfig_2.0.2   MASS_7.3-50      
+[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
+[46] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.8   
+[49] R6_2.3.0          nlme_3.1-137      git2r_0.23.0     
+[52] compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
