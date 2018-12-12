@@ -10,6 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+```{r}
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+library(tximport)
+```
+
+
 In looking at correlations and some examples, there is evidence the peak to gene assignment may be a problem. I am going to visualize the peaks in IGV. I will name them by the gene and look at them in the browser. 
 
 The peak to gene annotations used in the feature counts to map reads back to the peaks is the following:  
@@ -168,7 +176,7 @@ Lastly I will need to fix the headers.
 fix_head_fc_genicPeak_tot.py
 ```{bash,eval=F}
 infile= open("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total.fc", "r")
-fout = file("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total_fixed.fc",'w')
+fout = open("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total_fixed.fc",'w')
 for line, i in enumerate(infile):
     if line == 1:
         i_list=i.split()
@@ -189,7 +197,7 @@ fout.close()
 fix_head_fc_genicPeak_nuc.py
 ```{bash,eval=F}
 infile= open("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear.fc", "r")
-fout = file("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear_fixed.fc",'w')
+fout = open("/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegion_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear_fixed.fc",'w')
 for line, i in enumerate(infile):
     if line == 1:
         i_list=i.split()
@@ -207,4 +215,243 @@ for line, i in enumerate(infile):
 fout.close()
 ```
 
+
+Pull these into R and look at the correlation between the sum of the peaks by gene and the transcripts counts from RNA seq.  
+
+TPM counts from Kalisto
+```{r}
+tx2gene=read.table("../data/RNAkalisto/ncbiRefSeq.txn2gene.txt" ,header= F, sep="\t", stringsAsFactors = F)
+
+txi.kallisto.tsv <- tximport("../data/RNAkalisto/abundance.tsv", type = "kallisto", tx2gene = tx2gene,countsFromAbundance="lengthScaledTPM" )
+```
+In previous analysis I did not account for gene length. Here I am going to standardize by length because I am taking a sum over a gene body.  
+
+Import gene lengths:  
+```{r}
+geneLengthNames=c("CHR", "start", "end", "gene", "score", "strand")
+geneLengths=read.table("../data/UnderstandPeaksQC/refseq.ProteinCoding.bed", header=F, stringsAsFactors = F, col.names = geneLengthNames) %>% mutate(length=end-start) %>% select(gene, length)
+```
+
+
+Look at the correlation with the total:  
+
+I am using the sum of the counts in a gene divided by how many million reads mapped. I am also filtering out peaks with less than 10 reads in this individual.  
+```{r}
+total_Cov_18486=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T) %>% filter(X18486_T>0) %>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_T)) %>% mutate(GeneSumNorm=GeneSum/10.8) %>% inner_join(geneLengths, by="gene") %>% mutate(GeneSumSt=GeneSum/length)
+
+```
+
+Join the data frames.  
+
+```{r}
+TXN_abund=as.data.frame(txi.kallisto.tsv$abundance) %>% rownames_to_column(var="gene")
+colnames(TXN_abund)=c("gene", "TPM")
+
+TXN_NormGene=TXN_abund %>% inner_join(total_Cov_18486,by="gene")
+```
+
+
+Remove rows with 0 counts and Plot:  
+
+```{r}
+TXN_NormGene=TXN_NormGene %>% filter(TPM>0) %>% filter(GeneSumSt>0)
+corr_18486Tot=ggplot(TXN_NormGene, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.48") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot       
+summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene)) 
+```
+
+Try this with nuclear  
+
+```{r}
+nuclear_Cov_18486=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>% filter(X18486_N>10) %>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_N)) %>% mutate(GeneSumNorm=GeneSum/11.4) %>% inner_join(geneLengths, by="gene") %>% mutate(GeneSumSt=GeneSum/length)
+
+```
+
+Join the data frames.  
+
+```{r}
+
+TXN_NormGene_nuc=TXN_abund %>% inner_join(nuclear_Cov_18486,by="gene")
+```
+
+
+Remove rows with 0 counts and Plot:  
+
+```{r}
+TXN_NormGene_nuc=TXN_NormGene_nuc %>% filter(TPM>0) %>% filter(GeneSumSt>0)
+corr_18486Nuc=ggplot(TXN_NormGene_nuc, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.37") + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Nuc    
+summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_nuc)) 
+```
+
+
+This just said it had to be in a gene body not the specific gene body. This could be a problem still. For example in the SSPO locus chr7:149,521,993-149,543,749. Here the peaks are closer to the end of the SSPO but are in the gene body of the next gene downstream. 
+
+Histones dont have a polyA tail- the HIST1H4C peak is most likely misprimming (chr6:26,102,306-26,110,443)  
+
+Filter out overlapping genes:  
+
+
+Count overlaps in origial file:  
+```bedtools merge -i IN.bed -c 1 -o count > counted```
+
+countGeneOverlap.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=countGeneOverlap
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=countGeneOverlap.out
+#SBATCH --error=countGeneOverlap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools merge -i /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -c 1 -o count > /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap.bed  
+```
+
+
+Filter out these rows: 
+```awk '/\t1$/{print}' counted > filtered```
+
+```{bash,eval=F}
+awk '/\t1$/{print}' /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap.bed > /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap.filtered.bed
+```
+
+Intersect with original input to only keep the ones in both sets.  
+```bedtools intersect -a IN.bed -b filtered -wa > OUT.bed```
+
+findGeneswithoutOverlap.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=findGeneswithoutOverlap.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=findGeneswithoutOverlap.out
+#SBATCH --error=findGeneswithoutOverlap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools intersect -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -b /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap.filtered.bed -wa > /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.NonOverlapGenes.bed 
+
+```
+
+
+Finally overlap with the mRNA file to only keep the transcripts in these genes. This may be easiest in python /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed
+
+
+subsetmRNAforNonOverlapGenes.py
+```{bash,eval=F}
+geneFile=open("/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.NonOverlapGenes.bed", "r") 
+
+mRNAFile=open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed", "r")
+
+outFile=open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR_NoneOverlapingGenes.bed", "w")  
+
+#make list of non overlapping genes  
+
+keep=[]
+for ln in geneFile:
+  keep.append(ln.split()[3])
+
+for ln in mRNAFile: 
+  if ln.split()[4] in keep:
+    outFile.write(ln)
+outFile.close()
+
+```
+Filter peaks on this resutls  
+
+Filter4GenicPeaks_noOverlap.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+
+#SBATCH --job-name=Filter4GenicPeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Filter4GenicPeaks.out
+#SBATCH --error=Filter4GenicPeaks.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools intersect -wa -s -a /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED.bed -b /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR_NoneOverlapingGenes.bed> /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap.bed
+```
+
+This is printing them multiple times.  
+
+```{bash,eval=F}
+uniq /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.bed
+```
+
+
+Make this an SAF to run FC  
+
+
+bed2saf_peaksInGenicReg_noOVERLAP.py
+ 
+ 
+```{bash,eval=F}
+from misc_helper import *
+
+fout = open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.SAF",'w')
+fout.write("GeneID\tChr\tStart\tEnd\tStrand\n")
+for ln in open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.bed"):
+    chrom, start, end, name, score, strand = ln.split()
+    namenum=name.split("-")[0]
+    name_i=int(namenum)
+    start_i=int(start)
+    end_i=int(end)
+    gene_only=name.split("-")[1]
+    ID = "peak%d:%s:%d:%d:%s:%s"%(name_i, chrom, start_i, end_i, strand, gene_only)
+    fout.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+fout.close()
+```
+
+
+Run Feature Counts  
+PeaksinGenicRegion_NoneOverlapGenes_fc_TN.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=PeaksinGenicRegion_NoneOverlapGenes_fc_TN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=PeaksinGenicRegion_NoneOverlapGenes_fc_TN.out
+#SBATCH --error=PeaksinGenicRegion_NoneOverlapGenes_fc_TN.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
+
+
+```
 
