@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/0e0840ef800bbe60330b5cabb91047974abed714" target="_blank">0e0840e</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/23123cfc46df693415721f21f253e3604d9f4ace" target="_blank">23123cf</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -484,6 +484,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/23123cfc46df693415721f21f253e3604d9f4ace/analysis/InvestigatePeak2GeneAssignment.Rmd" target="_blank">23123cf</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-12
+</td>
+<td style="text-align:left;">
+add only genes not nearby
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/558e8e88cd84b2803b254b0f60f9c72b2fc1a211/docs/InvestigatePeak2GeneAssignment.html" target="_blank">558e8e8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-12
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0e0840ef800bbe60330b5cabb91047974abed714/analysis/InvestigatePeak2GeneAssignment.Rmd" target="_blank">0e0840e</a>
 </td>
 <td style="text-align:left;">
@@ -519,12 +553,12 @@ Build site.
 <p></details></p>
 <hr />
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -717,6 +751,36 @@ corr_18486Tot=ggplot(TXN_NormGene, aes(x=log10(TPM), y= log10(GeneSumSt))) + geo
        
 corr_18486Tot       </code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-15-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/558e8e88cd84b2803b254b0f60f9c72b2fc1a211/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-15-1.png" target="_blank">558e8e8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-12
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene)) </code></pre>
 <pre><code>
 Call:
@@ -736,6 +800,18 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 Residual standard error: 0.598 on 12053 degrees of freedom
 Multiple R-squared:  0.4793,    Adjusted R-squared:  0.4793 
 F-statistic: 1.11e+04 on 1 and 12053 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_NormGene$TPM),log10(TXN_NormGene$GeneSumSt))</code></pre>
+<pre><code>
+    Pearson&#39;s product-moment correlation
+
+data:  log10(TXN_NormGene$TPM) and log10(TXN_NormGene$GeneSumSt)
+t = 105.34, df = 12053, p-value &lt; 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.6829262 0.7015184
+sample estimates:
+      cor 
+0.6923372 </code></pre>
 <p>Try this with nuclear</p>
 <pre class="r"><code>nuclear_Cov_18486=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Genic.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;% filter(X18486_N&gt;10) %&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) %&gt;% mutate(GeneSumNorm=GeneSum/11.4) %&gt;% inner_join(geneLengths, by=&quot;gene&quot;) %&gt;% mutate(GeneSumSt=GeneSum/length)</code></pre>
 <p>Join the data frames.</p>
@@ -748,6 +824,36 @@ corr_18486Nuc=ggplot(TXN_NormGene_nuc, aes(x=log10(TPM), y= log10(GeneSumSt))) +
        
 corr_18486Nuc    </code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/558e8e88cd84b2803b254b0f60f9c72b2fc1a211/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-18-1.png" target="_blank">558e8e8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-12
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_nuc)) </code></pre>
 <pre><code>
 Call:
@@ -767,6 +873,18 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 Residual standard error: 0.6324 on 11567 degrees of freedom
 Multiple R-squared:  0.3661,    Adjusted R-squared:  0.3661 
 F-statistic:  6681 on 1 and 11567 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_NormGene_nuc$TPM),log10(TXN_NormGene_nuc$GeneSumSt))</code></pre>
+<pre><code>
+    Pearson&#39;s product-moment correlation
+
+data:  log10(TXN_NormGene_nuc$TPM) and log10(TXN_NormGene_nuc$GeneSumSt)
+t = 81.74, df = 11567, p-value &lt; 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.593414 0.616518
+sample estimates:
+      cor 
+0.6050934 </code></pre>
 <p>This just said it had to be in a gene body not the specific gene body. This could be a problem still. For example in the SSPO locus chr7:149,521,993-149,543,749. Here the peaks are closer to the end of the SSPO but are in the gene body of the next gene downstream.</p>
 <p>Histones dont have a polyA tail- the HIST1H4C peak is most likely misprimming (chr6:26,102,306-26,110,443)</p>
 <p>Filter out overlapping genes:</p>
@@ -887,6 +1005,483 @@ featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_i
 
 featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlap_UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
 </code></pre>
+<p>Lastly I will need to fix the headers.</p>
+<p>fix_head_fc_genicPeakNoOverlap_tot.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Total.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Total_fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()</code></pre>
+<p>fix_head_fc_genicPeakNoOverlap_nuc.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Nuclear.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlap_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Nuclear_fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()
+</code></pre>
+<p>Pull these onto my computer:</p>
+<p>Use no filter and standardization scheme:</p>
+<pre class="r"><code>total_Cov_18486_noOver=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T)%&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T)) %&gt;% mutate(GeneSumNorm=GeneSum/10.8) %&gt;% inner_join(geneLengths, by=&quot;gene&quot;) %&gt;% mutate(GeneSumSt=GeneSum/length)</code></pre>
+<p>Join the data frames.</p>
+<pre class="r"><code>TXN_NormGene_noOverlap=TXN_abund %&gt;% inner_join(total_Cov_18486_noOver,by=&quot;gene&quot;)</code></pre>
+<p>Remove rows with 0 counts and Plot:</p>
+<pre class="r"><code>TXN_NormGene_noOverlap=TXN_NormGene_noOverlap %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
+corr_18486Tot_noOver=ggplot(TXN_NormGene_noOverlap, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Total&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.49&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) + geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot_noOver       </code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumSt), data = TXN_NormGene_noOverlap)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.3953 -0.2604  0.0768  0.3638  2.8920 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      2.435113   0.014849  163.99   &lt;2e-16 ***
+log10(GeneSumSt) 0.616937   0.006274   98.34   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.5973 on 10088 degrees of freedom
+Multiple R-squared:  0.4894,    Adjusted R-squared:  0.4894 
+F-statistic:  9671 on 1 and 10088 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_NormGene_noOverlap$TPM),log10(TXN_NormGene_noOverlap$GeneSumSt))</code></pre>
+<pre><code>
+    Pearson&#39;s product-moment correlation
+
+data:  log10(TXN_NormGene_noOverlap$TPM) and log10(TXN_NormGene_noOverlap$GeneSumSt)
+t = 98.339, df = 10088, p-value &lt; 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.6894966 0.7094251
+sample estimates:
+      cor 
+0.6995969 </code></pre>
+<pre class="r"><code>nuclear_Cov_18486_noOver=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) %&gt;% mutate(GeneSumNorm=GeneSum/11.4) %&gt;% inner_join(geneLengths, by=&quot;gene&quot;) %&gt;% mutate(GeneSumSt=GeneSum/length)</code></pre>
+<p>Join the data frames.</p>
+<pre class="r"><code>TXN_NormGene_noOverlap_nuc=TXN_abund %&gt;% inner_join(nuclear_Cov_18486_noOver,by=&quot;gene&quot;)</code></pre>
+<p>Remove rows with 0 counts and Plot:</p>
+<pre class="r"><code>TXN_NormGene_noOverlap_nuc=TXN_NormGene_noOverlap_nuc %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
+corr_18486Nuc_noOver=ggplot(TXN_NormGene_noOverlap_nuc, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Nuclear&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.5&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Nuc_noOver       </code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_nuc)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumSt), data = TXN_NormGene_noOverlap_nuc)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.6947 -0.2989  0.0630  0.3825  2.8300 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      2.530468   0.016063   157.5   &lt;2e-16 ***
+log10(GeneSumSt) 0.708816   0.006819   103.9   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.647 on 10965 degrees of freedom
+Multiple R-squared:  0.4963,    Adjusted R-squared:  0.4963 
+F-statistic: 1.08e+04 on 1 and 10965 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_NormGene_noOverlap_nuc$TPM),log10(TXN_NormGene_noOverlap_nuc$GeneSumSt),method=&quot;spearman&quot;)</code></pre>
+<pre><code>Warning in cor.test.default(log10(TXN_NormGene_noOverlap_nuc$TPM),
+log10(TXN_NormGene_noOverlap_nuc$GeneSumSt), : Cannot compute exact p-value
+with ties</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  log10(TXN_NormGene_noOverlap_nuc$TPM) and log10(TXN_NormGene_noOverlap_nuc$GeneSumSt)
+S = 6.8486e+10, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.6884764 </code></pre>
+<p>It looks like a more stringent RNA seq filter could help. Lets say log(TPM)&gt;-1.5</p>
+<pre class="r"><code>TXN_abund_filt=TXN_abund %&gt;% filter(log(TPM) &gt; -1.5)
+TXN_NormGene_noOverlap_filt=TXN_abund_filt %&gt;% inner_join(total_Cov_18486_noOver,by=&quot;gene&quot;)
+TXN_NormGene_noOverlap_filt=TXN_NormGene_noOverlap_filt %&gt;% filter(TPM &gt;0) %&gt;% filter(GeneSumSt&gt;0)
+corr_18486Tot_noOver_filt=ggplot(TXN_NormGene_noOverlap_filt, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Total filtered&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.49&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot_noOver_filt      </code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_filt)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumSt), data = TXN_NormGene_noOverlap_filt)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-3.05828 -0.26269  0.03857  0.31263  2.64091 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      2.344999   0.012950  181.08   &lt;2e-16 ***
+log10(GeneSumSt) 0.544908   0.005639   96.63   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.4998 on 9677 degrees of freedom
+Multiple R-squared:  0.4911,    Adjusted R-squared:  0.491 
+F-statistic:  9338 on 1 and 9677 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_NormGene_noOverlap_filt$TPM),log10(TXN_NormGene_noOverlap_filt$GeneSumSt),method=&quot;spearman&quot;)</code></pre>
+<pre><code>Warning in cor.test.default(log10(TXN_NormGene_noOverlap_filt$TPM),
+log10(TXN_NormGene_noOverlap_filt$GeneSumSt), : Cannot compute exact p-
+value with ties</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  log10(TXN_NormGene_noOverlap_filt$TPM) and log10(TXN_NormGene_noOverlap_filt$GeneSumSt)
+S = 4.7005e+10, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.6889706 </code></pre>
+<p>This does not take care of genes that are near each other such as what is going on with SSPO</p>
+</div>
+<div id="filter-genes-that-are-too-close-together" class="section level2">
+<h2>Filter genes that are too close together</h2>
+<p>This is similar to the overlap problem but I want to extend the genes.</p>
+<p>I can a python script to subtract 2000 bases from the start and add 2000 to the end</p>
+<p>*/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed</p>
+<p>extendGenes.py</p>
+<pre class="bash"><code>inFile=open(&quot;/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed&quot;, &quot;r&quot;)
+
+outFile=open(&quot;/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR_EXT.bed&quot;, &quot;w&quot;)\
+
+
+for ln in inFile:
+  chrom, start, end, gene, score, strand = ln.split()
+  start_ex=int(start)-2000
+  if start_ex &lt;0: 
+    start_ex=0
+  end_ex=int(end)+2000
+  outFile.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start_ex, end_ex, gene, score, strand))
+  
+outFile.close()</code></pre>
+<p>Now I can run the merge:</p>
+<p>countGeneOverlap_EXT.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=countGeneOverlap_EXT
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=countGeneOverlap_EXT.out
+#SBATCH --error=countGeneOverlap_EXT.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools merge -i /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR_EXT.bed -c 1 -o count &gt; /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap_EXT.bed  </code></pre>
+<p>Filter out these rows: <code>awk '/\t1$/{print}' counted &gt; filtered</code></p>
+<pre class="bash"><code>awk &#39;/\t1$/{print}&#39; /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap_EXT.bed &gt; /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap_EXT_filter.bed</code></pre>
+<p>Intersect with original input to only keep the ones in both sets.<br />
+<code>bedtools intersect -a IN.bed -b filtered -wa &gt; OUT.bed</code></p>
+<p>findGeneswithoutOverlap_EXT.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=findGeneswithoutOverlap_EXT.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=findGeneswithoutOverlap_EXT.out
+#SBATCH --error=findGeneswithoutOverlap_EXT.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools intersect -a /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed -b /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.countGeneOverlap_EXT_filter.bed -wa &gt; /project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.NonOverlapGenes_EXT.bed 
+</code></pre>
+<p>Finally overlap with the mRNA file to only keep the transcripts in these genes. This may be easiest in python /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed</p>
+<p>subsetmRNAforNonOverlapGenes_EXT.py</p>
+<pre class="bash"><code>geneFile=open(&quot;/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.NonOverlapGenes_EXT.bed&quot;, &quot;r&quot;) 
+
+mRNAFile=open(&quot;/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed&quot;, &quot;r&quot;)
+
+outFile=open(&quot;/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR_NoneOverlapingGenes_EXT.bed&quot;, &quot;w&quot;)  
+
+#make list of non overlapping genes  
+
+keep=[]
+for ln in geneFile:
+  keep.append(ln.split()[3])
+
+for ln in mRNAFile: 
+  if ln.split()[4] in keep:
+    outFile.write(ln)
+outFile.close()
+</code></pre>
+<p>Filter4GenicPeaks_noOverlap_EXT.sh</p>
+<pre class="bash"><code>
+#!/bin/bash
+
+
+#SBATCH --job-name=Filter4GenicPeaks_EXT
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Filter4GenicPeaks_EXT.out
+#SBATCH --error=Filter4GenicPeaks_EXT.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools intersect -wa -s -a /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED.bed -b /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR_NoneOverlapingGenes_EXT.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlapEXT.bed</code></pre>
+<p>This is printing them multiple times.</p>
+<pre class="bash"><code>uniq /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlapEXT.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlapEXT_UNIQ.bed</code></pre>
+<p>Make this an SAF to run FC</p>
+<p>bed2saf_peaksInGenicReg_noOVERLAPEXT.py</p>
+<pre class="bash"><code>from misc_helper import *
+
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlapEXT_UNIQ.SAF&quot;,&#39;w&#39;)
+fout.write(&quot;GeneID\tChr\tStart\tEnd\tStrand\n&quot;)
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlapEXT_UNIQ.bed&quot;):
+    chrom, start, end, name, score, strand = ln.split()
+    namenum=name.split(&quot;-&quot;)[0]
+    name_i=int(namenum)
+    start_i=int(start)
+    end_i=int(end)
+    gene_only=name.split(&quot;-&quot;)[1]
+    ID = &quot;peak%d:%s:%d:%d:%s:%s&quot;%(name_i, chrom, start_i, end_i, strand, gene_only)
+    fout.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+fout.close()</code></pre>
+<p>Run Feature Counts<br />
+PeaksinGenicRegion_NoneOverlapGenesEXT_fc_TN.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=PeaksinGenicRegion_NoneOverlapGenesEXT_fc_TN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=PeaksinGenicRegion_NoneOverlapGenesEXT_fc_TN.out
+#SBATCH --error=PeaksinGenicRegion_NoneOverlapGenesEXT_fc_TN.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlapEXT_UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlapEXT_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_inGeneBody/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_inGeneBodies_noGeneOverlapEXT_UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlapEXT_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
+</code></pre>
+<p>Lastly I will need to fix the headers.</p>
+<p>fix_head_fc_genicPeakNoOverlapEXT_tot.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlapEXT_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlapEXT_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()</code></pre>
+<p>fix_head_fc_genicPeakNoOverlapEXT_nuc.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlapEXT_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakInGenecRegionNoOverlapEXT_cov/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear_Fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()
+</code></pre>
+<p>Pull these onto my computer:</p>
+<p>Use no filter and standardization scheme:</p>
+<pre class="r"><code>total_Cov_18486_noOverEXT=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T)%&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T)) %&gt;% mutate(GeneSumNorm=GeneSum/10.8) %&gt;% inner_join(geneLengths, by=&quot;gene&quot;) %&gt;% mutate(GeneSumSt=GeneSum/length)</code></pre>
+<p>Join the data frames.</p>
+<pre class="r"><code>TXN_NormGene_noOverlapEXT=TXN_abund %&gt;% inner_join(total_Cov_18486_noOverEXT,by=&quot;gene&quot;)</code></pre>
+<p>Remove rows with 0 counts and Plot:</p>
+<pre class="r"><code>TXN_NormGene_noOverlapEXT=TXN_NormGene_noOverlapEXT %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
+corr_18486Tot_noOverEXT=ggplot(TXN_NormGene_noOverlapEXT, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Total&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.46&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot_noOverEXT       </code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlapEXT)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumSt), data = TXN_NormGene_noOverlapEXT)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4347 -0.2712  0.0722  0.3650  2.8310 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      2.446519   0.021730  112.58   &lt;2e-16 ***
+log10(GeneSumSt) 0.606463   0.008569   70.78   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.625 on 5869 degrees of freedom
+Multiple R-squared:  0.4605,    Adjusted R-squared:  0.4604 
+F-statistic:  5009 on 1 and 5869 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_NormGene_noOverlapEXT$TPM),log10(TXN_NormGene_noOverlapEXT$GeneSumSt),method=&quot;spearman&quot;)</code></pre>
+<pre><code>Warning in cor.test.default(log10(TXN_NormGene_noOverlapEXT$TPM),
+log10(TXN_NormGene_noOverlapEXT$GeneSumSt), : Cannot compute exact p-value
+with ties</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  log10(TXN_NormGene_noOverlapEXT$TPM) and log10(TXN_NormGene_noOverlapEXT$GeneSumSt)
+S = 1.0889e+10, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.6771579 </code></pre>
+<p>In this test, I was looking at 5871 genes.</p>
+<pre class="r"><code>nuclear_Cov_18486_noOverEXT=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear_Fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_N) %&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_N)) %&gt;% mutate(GeneSumNorm=GeneSum/11.4) %&gt;% inner_join(geneLengths, by=&quot;gene&quot;) %&gt;% mutate(GeneSumSt=GeneSum/length)</code></pre>
+<p>Join the data frames.</p>
+<pre class="r"><code>TXN_NormGene_noOverlap_nucEXT=TXN_abund %&gt;% inner_join(nuclear_Cov_18486_noOverEXT,by=&quot;gene&quot;)</code></pre>
+<p>Remove rows with 0 counts and Plot:</p>
+<pre class="r"><code>TXN_NormGene_noOverlap_nucEXT=TXN_NormGene_noOverlap_nucEXT %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
+corr_18486Nuc_noOverEXT=ggplot(TXN_NormGene_noOverlap_nucEXT, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Nuclear&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.5&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Nuc_noOverEXT       </code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_nucEXT)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumSt), data = TXN_NormGene_noOverlap_nucEXT)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.7205 -0.3139  0.0501  0.3733  3.4072 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      2.533807   0.022169  114.30   &lt;2e-16 ***
+log10(GeneSumSt) 0.697811   0.008837   78.97   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.6622 on 6473 degrees of freedom
+Multiple R-squared:  0.4907,    Adjusted R-squared:  0.4906 
+F-statistic:  6236 on 1 and 6473 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_NormGene_noOverlap_nucEXT$TPM),log10(TXN_NormGene_noOverlap_nucEXT$GeneSumSt),method=&quot;spearman&quot;)</code></pre>
+<pre><code>Warning in cor.test.default(log10(TXN_NormGene_noOverlap_nucEXT$TPM),
+log10(TXN_NormGene_noOverlap_nucEXT$GeneSumSt), : Cannot compute exact p-
+value with ties</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  log10(TXN_NormGene_noOverlap_nucEXT$TPM) and log10(TXN_NormGene_noOverlap_nucEXT$GeneSumSt)
+S = 1.425e+10, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.6850535 </code></pre>
+<p>In this test, I was looking at 6475 genes.</p>
+</div>
+<div id="check-another-line" class="section level2">
+<h2>Check another line</h2>
+<pre class="r"><code>total_Cov_18497_noOver=read.table(&quot;../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlap.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:8] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18497_T)%&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18497_T)) %&gt;% mutate(GeneSumNorm=GeneSum/10.8) %&gt;% inner_join(geneLengths, by=&quot;gene&quot;) %&gt;% mutate(GeneSumSt=GeneSum/length)</code></pre>
+<p>Join the data frames.</p>
+<pre class="r"><code>TXN_NormGene_noOverlap_497=TXN_abund %&gt;% inner_join(total_Cov_18497_noOver,by=&quot;gene&quot;)</code></pre>
+<p>Remove rows with 0 counts and Plot:</p>
+<pre class="r"><code>TXN_NormGene_noOverlap_497=TXN_NormGene_noOverlap_497 %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
+corr_18497Tot_noOver=ggplot(TXN_NormGene_noOverlap_497, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Total&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.49&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18497Tot_noOver       </code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_497)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumSt), data = TXN_NormGene_noOverlap_497)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.5597 -0.2929  0.0903  0.3993  2.8953 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      2.413566   0.015014   160.8   &lt;2e-16 ***
+log10(GeneSumSt) 0.650761   0.006389   101.9   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.6346 on 10739 degrees of freedom
+Multiple R-squared:  0.4914,    Adjusted R-squared:  0.4913 
+F-statistic: 1.037e+04 on 1 and 10739 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_NormGene_noOverlap_497$TPM),log10(TXN_NormGene_noOverlap_497$GeneSumSt),method=&quot;spearman&quot;)</code></pre>
+<pre><code>Warning in cor.test.default(log10(TXN_NormGene_noOverlap_497$TPM),
+log10(TXN_NormGene_noOverlap_497$GeneSumSt), : Cannot compute exact p-value
+with ties</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  log10(TXN_NormGene_noOverlap_497$TPM) and log10(TXN_NormGene_noOverlap_497$GeneSumSt)
+S = 6.3783e+10, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.6911702 </code></pre>
+<p>This shows me the effect is not line specific because the correlation is the same when i use the RNA from one line and 3’ from another.</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
