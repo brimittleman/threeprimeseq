@@ -586,7 +586,7 @@ This does not take care of genes that are near each other such as what is going 
 
 This is similar to the overlap problem but I want to extend the genes.  
 
-I can a python script to subtract 2000 bases from the start and add 2000 to the end 
+I can a python script to subtract 10000 bases from the start and add 10000 to the end 
 
 
 */project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.noCHR.bed
@@ -601,10 +601,10 @@ outFile=open("/project2/gilad/briana/genome_anotation_data/refseq.ProteinCoding.
 
 for ln in inFile:
   chrom, start, end, gene, score, strand = ln.split()
-  start_ex=int(start)-2000
+  start_ex=int(start)-10000
   if start_ex <0: 
     start_ex=0
-  end_ex=int(end)+2000
+  end_ex=int(end)+10000
   outFile.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_ex, end_ex, gene, score, strand))
   
 outFile.close()
@@ -829,17 +829,15 @@ TXN_NormGene_noOverlapEXT=TXN_abund %>% inner_join(total_Cov_18486_noOverEXT,by=
 Remove rows with 0 counts and Plot:  
 
 ```{r}
-TXN_NormGene_noOverlapEXT=TXN_NormGene_noOverlapEXT %>% filter(TPM>0) %>% filter(GeneSumSt>0)
-corr_18486Tot_noOverEXT=ggplot(TXN_NormGene_noOverlapEXT, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.46") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
-
-#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+TXN_NormGene_noOverlapEXT_n=TXN_NormGene_noOverlapEXT %>% filter(TPM>0) %>% filter(GeneSumSt>0)
+corr_18486Tot_noOverEXT=ggplot(TXN_NormGene_noOverlapEXT_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.45") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')+geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Tot_noOverEXT       
-summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlapEXT)) 
+summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlapEXT_n)) 
 
-cor.test(log10(TXN_NormGene_noOverlapEXT$TPM),log10(TXN_NormGene_noOverlapEXT$GeneSumSt),method="spearman")
+cor.test(log10(TXN_NormGene_noOverlapEXT_n$TPM),log10(TXN_NormGene_noOverlapEXT_n$GeneSumSt),method="spearman")
 ```
-In this test, I was looking at 5871 genes. 
+In this test, I was looking at 2600 genes. 
 
 ```{r}
 nuclear_Cov_18486_noOverEXT=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear_Fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_N)) %>% mutate(GeneSumNorm=GeneSum/11.4) %>% inner_join(geneLengths, by="gene") %>% mutate(GeneSumSt=GeneSum/length)
@@ -857,19 +855,217 @@ TXN_NormGene_noOverlap_nucEXT=TXN_abund %>% inner_join(nuclear_Cov_18486_noOverE
 Remove rows with 0 counts and Plot:  
 
 ```{r}
-TXN_NormGene_noOverlap_nucEXT=TXN_NormGene_noOverlap_nucEXT %>% filter(TPM>0) %>% filter(GeneSumSt>0)
-corr_18486Nuc_noOverEXT=ggplot(TXN_NormGene_noOverlap_nucEXT, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.5") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+TXN_NormGene_noOverlap_nucEXT_n=TXN_NormGene_noOverlap_nucEXT %>% filter(TPM>0) %>% filter(GeneSumSt>0)
+corr_18486Nuc_noOverEXT=ggplot(TXN_NormGene_noOverlap_nucEXT_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.53") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Nuc_noOverEXT       
+summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_nucEXT_n)) 
+
+cor.test(log10(TXN_NormGene_noOverlap_nucEXT_n$TPM),log10(TXN_NormGene_noOverlap_nucEXT_n$GeneSumSt),method="spearman")
+```
+
+In this test, I was looking at 2900 genes. 
+
+
+There are still problems with peaks in the downstream gene. I need to have a filter that a peak needs to be within a certain distance from the end of a gene.  I can change the end of gene file to have 2kb around each gene end and then work with peaks in this area. I want it to be 2kb into the gene. 
+
+I can filter the peaks to only those in these regions.  
+
+
+EndOfGenes_4kbaround.py
+```{bash,eval=F}
+#python  
+
+inFile=open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_endProtCodGenes_sort_withscore.bed", "r")
+
+outFile=open("/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_4KBaroundEnd_sort_withscore.bed", "w")\
+
+
+for ln in inFile:
+  chrom, start, end, gene, score, strand = ln.split()
+  start_ex=int(start)-2000
+  if start_ex <0: 
+    start_ex=0
+  end_ex=int(end)+2000
+  outFile.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_ex, end_ex, gene, score, strand))
+  
+outFile.close()
+```
+
+Now I intersect this with the peaks file.   
+
+FilterPeaks4KBaroundend.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=FilterPeaks4KBaroundend
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=FilterPeaks4KBaroundend.out
+#SBATCH --error=FilterPeaks4KBaroundend.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bedtools intersect -a /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED.bed -b /project2/gilad/briana/genome_anotation_data/ncbiRefSeq_4KBaroundEnd_sort_withscore.bed -wa -s  > /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED_4kbaroundEnd.bed
+```
+
+
+This is printing them multiple times.  
+
+```{bash,eval=F}
+uniq /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED_4kbaroundEnd.bed > /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED_4kbaroundEnd.UNIQ.bed
+```
+Make this an SAF to run FC  
+
+
+bed2saf_peaksInGenicReg_4kbaround.py
+ 
+ 
+```{bash,eval=F}
+from misc_helper import *
+
+fout = open("/project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED_4kbaroundEnd.UNIQ.SAF",'w')
+fout.write("GeneID\tChr\tStart\tEnd\tStrand\n")
+for ln in open("/project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED_4kbaroundEnd.UNIQ.bed"):
+    chrom, start, end, name, score, strand = ln.split()
+    namenum=name.split("-")[0]
+    name_i=int(namenum)
+    start_i=int(start)
+    end_i=int(end)
+    gene_only=name.split("-")[1]
+    ID = "peak%d:%s:%d:%d:%s:%s"%(name_i, chrom, start_i, end_i, strand, gene_only)
+    fout.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+fout.close()
+```
+
+Run feature counts with this.  
+Peaks4kbAround_fc_TN.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=Peaks4kbAround_fc_TN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=Peaks4kbAround_fc_TN.out
+#SBATCH --error=Peaks4kbAround_fc_TN.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED_4kbaroundEnd.UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/Peaks4kbAroundGeneEnd/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Peaks4kbAround.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
+
+featureCounts -O -a //project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_RENAMED_4kbaroundEnd.UNIQ.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/Peaks4kbAroundGeneEnd/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Peaks4kbAround.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
+
+
+```
+
+
+fix_head_fc_Peaks4kbAround_tot.py
+```{bash,eval=F}
+infile= open("/project2/gilad/briana/threeprimeseq/data/Peaks4kbAroundGeneEnd/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Peaks4kbAround.Total.fc", "r")
+fout = open("/project2/gilad/briana/threeprimeseq/data/Peaks4kbAroundGeneEnd/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Peaks4kbAround.Total_fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+```
+
+fix_head_fc_gPeaks4kbAround_nuc.py
+```{bash,eval=F}
+infile= open("/project2/gilad/briana/threeprimeseq/data/Peaks4kbAroundGeneEnd/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Peaks4kbAround.Nuclear.fc", "r")
+fout = open("/project2/gilad/briana/threeprimeseq/data/Peaks4kbAroundGeneEnd/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Peaks4kbAround.Nuclear_fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+
+```
+
+Use no filter and standardization scheme:  
+
+```{r}
+total_Cov_18486_4kb=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Peaks4kbAround.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T)%>%  group_by(gene) %>% filter(X18486_T>10) %>% summarize(GeneSum=sum(X18486_T)) %>% mutate(GeneSumNorm=GeneSum/10.8) %>% inner_join(geneLengths, by="gene") %>% mutate(GeneSumSt=GeneSum/length)
+
+```
+
+Join the data frames.  
+
+```{r}
+
+TXN_NormGene_4kb=TXN_abund %>% inner_join(total_Cov_18486_4kb,by="gene")
+```
+
+
+Remove rows with 0 counts and Plot:  
+
+```{r}
+TXN_NormGene_4kb_n=TXN_NormGene_4kb %>% filter(TPM>0) %>% filter(GeneSumSt>0)
+corr_18486Tot_noOver4kb=ggplot(TXN_NormGene_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.34") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')
+
+#+geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot_noOver4kb       
+summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_4kb_n)) 
+
+cor.test(log10(TXN_NormGene_4kb_n$TPM),log10(TXN_NormGene_4kb_n$GeneSumSt),method="spearman")
+```
+```{r}
+nuclear_Cov_18486_4kb=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_Peaks4kbAround.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>%  group_by(gene) %>%filter(X18486_N>10) %>%  summarize(GeneSum=sum(X18486_N)) %>% mutate(GeneSumNorm=GeneSum/11.4) %>% inner_join(geneLengths, by="gene") %>% mutate(GeneSumSt=GeneSum/length)
+
+```
+
+Join the data frames.  
+
+```{r}
+
+TXN_NormGene_noOverlap_4kb=TXN_abund %>% inner_join(nuclear_Cov_18486_4kb,by="gene")
+```
+
+
+Remove rows with 0 counts and Plot:  
+
+```{r}
+TXN_NormGene_noOverlap_4kb_n=TXN_NormGene_noOverlap_4kb %>% filter(TPM>0) %>% filter(GeneSumSt>0)
+corr_18486Nuc_4kb=ggplot(TXN_NormGene_noOverlap_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.26") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')
 
 #+ geom_text(aes(label=gene),hjust=0, vjust=0)
        
-corr_18486Nuc_noOverEXT       
-summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_nucEXT)) 
+corr_18486Nuc_4kb       
+summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_4kb_n)) 
 
-cor.test(log10(TXN_NormGene_noOverlap_nucEXT$TPM),log10(TXN_NormGene_noOverlap_nucEXT$GeneSumSt),method="spearman")
+cor.test(log10(TXN_NormGene_noOverlap_4kb_n$TPM),log10(TXN_NormGene_noOverlap_4kb_n$GeneSumSt),method="spearman")
 ```
-
-In this test, I was looking at 6475 genes. 
-
 ##Check another line  
 
 
