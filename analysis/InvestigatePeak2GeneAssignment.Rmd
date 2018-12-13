@@ -814,7 +814,7 @@ Pull these onto my computer:
 Use no filter and standardization scheme:  
 
 ```{r}
-total_Cov_18486_noOverEXT=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T)%>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_T)) %>% mutate(GeneSumNorm=GeneSum/10.8) %>% inner_join(geneLengths, by="gene") %>% mutate(GeneSumSt=GeneSum/length)
+total_Cov_18486_noOverEXT=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T)%>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_T)) %>% mutate(GeneSumNorm=GeneSum/10.8)
 
 ```
 
@@ -829,18 +829,20 @@ TXN_NormGene_noOverlapEXT=TXN_abund %>% inner_join(total_Cov_18486_noOverEXT,by=
 Remove rows with 0 counts and Plot:  
 
 ```{r}
-TXN_NormGene_noOverlapEXT_n=TXN_NormGene_noOverlapEXT %>% filter(TPM>0) %>% filter(GeneSumSt>0)
-corr_18486Tot_noOverEXT=ggplot(TXN_NormGene_noOverlapEXT_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.45") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')+geom_text(aes(label=gene),hjust=0, vjust=0)
+TXN_NormGene_noOverlapEXT_n=TXN_NormGene_noOverlapEXT %>% filter(TPM>0) %>% filter(GeneSumNorm>0)
+corr_18486Tot_noOverEXT=ggplot(TXN_NormGene_noOverlapEXT_n, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=3, y=5,label="R2=.42") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')
+
+#+geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Tot_noOverEXT       
-summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlapEXT_n)) 
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_NormGene_noOverlapEXT_n)) 
 
-cor.test(log10(TXN_NormGene_noOverlapEXT_n$TPM),log10(TXN_NormGene_noOverlapEXT_n$GeneSumSt),method="spearman")
+cor.test(log10(TXN_NormGene_noOverlapEXT_n$TPM),log10(TXN_NormGene_noOverlapEXT_n$GeneSumNorm),method="spearman")
 ```
 In this test, I was looking at 2600 genes. 
 
 ```{r}
-nuclear_Cov_18486_noOverEXT=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear_Fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_N)) %>% mutate(GeneSumNorm=GeneSum/11.4) %>% inner_join(geneLengths, by="gene") %>% mutate(GeneSumSt=GeneSum/length)
+nuclear_Cov_18486_noOverEXT=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear_Fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_N) %>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_N)) %>% mutate(GeneSumNorm=GeneSum/11.4) 
 
 ```
 
@@ -855,18 +857,48 @@ TXN_NormGene_noOverlap_nucEXT=TXN_abund %>% inner_join(nuclear_Cov_18486_noOverE
 Remove rows with 0 counts and Plot:  
 
 ```{r}
-TXN_NormGene_noOverlap_nucEXT_n=TXN_NormGene_noOverlap_nucEXT %>% filter(TPM>0) %>% filter(GeneSumSt>0)
-corr_18486Nuc_noOverEXT=ggplot(TXN_NormGene_noOverlap_nucEXT_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.53") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_text(aes(label=gene),hjust=0, vjust=0)
+TXN_NormGene_noOverlap_nucEXT_n=TXN_NormGene_noOverlap_nucEXT %>% filter(TPM>0) %>% filter(GeneSumNorm>0)
+corr_18486Nuc_noOverEXT=ggplot(TXN_NormGene_noOverlap_nucEXT_n, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=3, y=5,label="R2=.43") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+#+geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Nuc_noOverEXT       
-summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_nucEXT_n)) 
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_NormGene_noOverlap_nucEXT_n)) 
 
-cor.test(log10(TXN_NormGene_noOverlap_nucEXT_n$TPM),log10(TXN_NormGene_noOverlap_nucEXT_n$GeneSumSt),method="spearman")
+cor.test(log10(TXN_NormGene_noOverlap_nucEXT_n$TPM),log10(TXN_NormGene_noOverlap_nucEXT_n$GeneSumNorm),method="spearman")
 ```
 
 In this test, I was looking at 2900 genes. 
 
 
+I can further ssubset for genes with only 1 peak.  
+
+```{r}
+OnePeakGenesTotalnoOver=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T)%>%  group_by(gene) %>% tally() %>% filter(n>=3)
+
+total_Cov_18486_noOverEXT_1Peak=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc", header=T, stringsAsFactors = F)[,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X18486_T)%>%  group_by(gene) %>% summarize(GeneSum=sum(X18486_T)) %>% mutate(GeneSumNorm=GeneSum/10.8) %>% inner_join(geneLengths, by="gene") %>% mutate(GeneSumSt=GeneSum/length) %>% semi_join(OnePeakGenesTotalnoOver, by="gene")
+```
+
+```{r}
+
+TXN_NormGene_noOverlapEXT_1peak=TXN_abund %>% inner_join(total_Cov_18486_noOverEXT_1Peak,by="gene")
+```
+
+
+
+```{r}
+TXN_NormGene_noOverlapEXT_1peak_n=TXN_NormGene_noOverlapEXT_1peak %>% filter(TPM>0) %>% filter(GeneSumNorm>0)
+corr_18486Tot_noOverEXT=ggplot(TXN_NormGene_noOverlapEXT_1peak_n, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Total-nonOverlapping Genes with 3 peaks", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=3, y=5,label="R2=.4") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+#+geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot_noOverEXT       
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_NormGene_noOverlapEXT_1peak_n)) 
+
+cor.test(log10(TXN_NormGene_noOverlapEXT_1peak_n$TPM),log10(TXN_NormGene_noOverlapEXT_1peak_n$GeneSumNorm),method="spearman")
+```
+
+##Around gene end  
 There are still problems with peaks in the downstream gene. I need to have a filter that a peak needs to be within a certain distance from the end of a gene.  I can change the end of gene file to have 2kb around each gene end and then work with peaks in this area. I want it to be 2kb into the gene. 
 
 I can filter the peaks to only those in these regions.  
@@ -1066,6 +1098,40 @@ summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_4kb_n))
 
 cor.test(log10(TXN_NormGene_noOverlap_4kb_n$TPM),log10(TXN_NormGene_noOverlap_4kb_n$GeneSumSt),method="spearman")
 ```
+
+
+From here I can subset down to just the genes in the nonoverlapping set.  
+
+
+```{r}
+TXN_NormGene_noOverlap_4kb_noOver=TXN_NormGene_noOverlap_4kb_n %>% semi_join(TXN_NormGene_noOverlapEXT, by="gene")
+
+
+corr_18486Nuc_4kb_noOVer=ggplot(TXN_NormGene_noOverlap_4kb_noOver, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.27")
+
+
+#+geom_text(aes(label=gene),hjust=0, vjust=0)+geom_density2d(na.rm = TRUE, size = 1, colour = 'red')
+       
+corr_18486Nuc_4kb_noOVer 
+
+summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_4kb_noOver))
+
+cor.test(log10(TXN_NormGene_noOverlap_4kb_noOver$TPM),log10(TXN_NormGene_noOverlap_4kb_noOver$GeneSumSt) ,method="spearman")
+```
+
+
+Look at curves for the TPM and standards.  
+
+```{r}
+ ggplot(TXN_NormGene_noOverlap_4kb_noOver, aes(x=log10(GeneSumSt))) + geom_density()
+ggplot(TXN_NormGene_noOverlap_4kb_noOver, aes(x=log10(TPM))) + geom_density()
+```
+
+##Separate by percentile gene expression  
+
+
+
+
 ##Check another line  
 
 
@@ -1101,4 +1167,79 @@ cor.test(log10(TXN_NormGene_noOverlap_497$TPM),log10(TXN_NormGene_noOverlap_497$
 This shows me the effect is not line specific because the correlation is the same when i use the RNA from one line and 3' from another.  
 
 
+##Sum over all individals  
+
+First I will get the total counts for the non overlapping set: 
+
+```{r}
+TotCounts_nonOverlapEX=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc", header=T, stringsAsFactors = F)[,7:45]
+
+
+SumCounts_Tot=rowSums(TotCounts_nonOverlapEX)
+
+Alllib_Tot_nonOverlapEX=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") 
+ 
+Alllib_Tot_nonOverlapEX$SumCounts=SumCounts_Tot
+
+Alllib_Tot_nonOverlapEX_bygene=Alllib_Tot_nonOverlapEX %>% select(gene, SumCounts) %>%  group_by(gene)  %>%  summarize(GeneSum=sum(SumCounts)) %>% mutate(GeneSumNorm=GeneSum/11.4) 
+
+
+TXN_abund_combLibs_tot=TXN_abund %>% inner_join(Alllib_Tot_nonOverlapEX_bygene,by="gene")
+
+
+TXN_abund_combLibs_tot_n0=TXN_abund_combLibs_tot %>% filter(TPM>0) %>% filter(GeneSumNorm>0)
+corr_AllLibTot_noOver=ggplot(TXN_abund_combLibs_tot_n0, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Total All ind", x="log10 RNA seq TPM", y="log10 Peak count sum per gene All Ind.")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=-2, y=5,label="R2=.55") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_AllLibTot_noOver       
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_abund_combLibs_tot_n0)) 
+
+cor.test(log10(TXN_abund_combLibs_tot_n0$TPM),log10(TXN_abund_combLibs_tot_n0$GeneSumNorm),method="spearman")
+```
+
+Same for nuclear  
+
+
+```{r}
+NucCounts_nonOverlapEX=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear_Fixed.fc", header=T, stringsAsFactors = F)[,7:45]
+
+
+SumCounts_Nuc=rowSums(NucCounts_nonOverlapEX)
+
+Alllib_Nuc_nonOverlapEX=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Nuclear_Fixed.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") 
+ 
+Alllib_Nuc_nonOverlapEX$SumCounts=SumCounts_Nuc
+
+Alllib_Nuc_nonOverlapEX_bygene=Alllib_Nuc_nonOverlapEX %>% select(gene, SumCounts) %>%  group_by(gene)  %>%  summarize(GeneSum=sum(SumCounts)) %>% mutate(GeneSumNorm=GeneSum/10.8) 
+
+
+TXN_abund_combLibs_Nuc=TXN_abund %>% inner_join(Alllib_Nuc_nonOverlapEX_bygene,by="gene")
+
+
+TXN_abund_combLibs_Nuc_n0=TXN_abund_combLibs_Nuc%>% filter(TPM>0) %>% filter(GeneSumNorm>0)
+corr_AllLibNuc_noOver=ggplot(TXN_abund_combLibs_Nuc_n0, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Nuclear All ind", x="log10 RNA seq TPM", y="log10 Peak count sum per gene All Ind.")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=-2, y=5,label="R2=.48") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_AllLibNuc_noOver       
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_abund_combLibs_Nuc_n0)) 
+
+cor.test(log10(TXN_abund_combLibs_Nuc_n0$TPM),log10(TXN_abund_combLibs_Nuc_n0$GeneSumNorm),method="spearman")
+```
+
+
+##Compare 2 3' Seq.  
+
+```{r}
+TotCounts_nonOverlapEX=read.table("../data/UnderstandPeaksQC/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_GenicNoOverlapEXT.Total_fixed.fc", header=T, stringsAsFactors = F)
+
+summary(lm(TotCounts_nonOverlapEX$X18486_T~TotCounts_nonOverlapEX$X19238_T))
+
+
+summary(lm(TotCounts_nonOverlapEX$X18486_T~TotCounts_nonOverlapEX$X19238_T))
+
+summary(lm(TotCounts_nonOverlapEX$X19238_T~TotCounts_nonOverlapEX$X19225_T))
+
+
+plot(log10(TotCounts_nonOverlapEX$X19238_T)~log10(TotCounts_nonOverlapEX$X19225_T))
+```
 
