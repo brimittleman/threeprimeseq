@@ -14,7 +14,7 @@ In this analysis I will rerun the FastQTL APAqtl calling including different PCs
 
 PCs are in /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/ 
 
-
+##No PCs
 APAqtl_nominal_transcript_noPCs.sh
 
 ```{bash,eval=F}
@@ -38,7 +38,7 @@ done
 
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
-/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.OppStrand_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_noPC/NOPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_noPC/NOPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
 done
 
 ```
@@ -141,6 +141,297 @@ module load Anaconda3
 source activate three-prime-env
 
 
-Rscript nQTLfromDifPC.R -N NUCRES -T TOTRES -P "0"
+Rscript nQTLfromDifPC.R -N /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_noPC/NOPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.allChrom.txt -T /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_noPC/NOPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.allChrom.txt -P "0"
 ```
+
+
+This analysis results in 690 Nuclear QTLs and 96 Total QTLs.  
+
+##One PC
+
+
+
+/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.1PC
+
+/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.1PC
+
+APAqtl_nominal_transcript_ONEPC.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_transcript_ONEPC
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_transcriptONEPC.out
+#SBATCH --error=APAqtl_nominal_transcriptONEPC.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.1PC --bed  /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_ONEPC/ONEPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.1PC --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_ONEPC/ONEPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+```
+
+
+APAqtl_permuted_transcript_ONEPC.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_permuted_transcript_ONEPC
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_permuted_transcript_ONEPC.out
+#SBATCH --error=APAqtl_permuted_transcript_ONEPC.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.1PC --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_ONEPC/ONEPC_PCfiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.1PC --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_ONEPC/ONEPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+```
+
+Run processing script:  
+
+nQTLfromDifPC.ONEPC.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=nQTLfromDifPC.1PCs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nQTLfromDifPC.1PCs.out
+#SBATCH --error=nQTLfromDifPC.1PCs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript nQTLfromDifPC.R -N /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_ONEPC/ONEPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.allChrom.txt -T /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_ONEPC/ONEPC_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.allChrom.txt -P "One"
+```
+
+Total QTLs:  119
+Nuclear QTLs: 752  
+
+
+##Only PC2  
+
+I need to keep just lines 1 and 3 from /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs and /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs  
+
+
+I can use sed to delete the second line 
+```{bash,eval=F}
+sed '2d' /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.2PCs > /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.OnlyPC2
+ 
+sed '2d' /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs > /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.OnlyPC2
+ 
+```
+
+APAqtl_nominal_transcript_OnlyPC2.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_transcript_OnlyPC2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_transcriptOnlyPC2.out
+#SBATCH --error=APAqtl_nominal_transcriptOnlyPC2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.OnlyPC --bed  /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_OnlyPC2/OnlyPC2_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.OnlyPC2 --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_OnlyPC2/OnlyPC2_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+```
+
+APAqtl_permuted_transcript_OnlyPC2.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_permuted_transcript_OnlyPC2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_permuted_transcript_OnlyPC2.out
+#SBATCH --error=APAqtl_permuted_transcript_OnlyPC2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.OnlyPC2 --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_OnlyPC2/OnlyPC2_PCfiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.OnlyPC2 --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_OnlyPC2/OnlyPC2_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+```
+
+
+
+
+Run processing script:  
+
+nQTLfromDifPC.OnlyPC2.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=nQTLfromDifPC.OnlyPC2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nQTLfromDifPC.OnlyPC2.out
+#SBATCH --error=nQTLfromDifPC.OnlyPC2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript nQTLfromDifPC.R -N /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_OnlyPC2/OnlyPC2_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.allChrom.txt -T /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_OnlyPC2/OnlyPC2_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.allChrom.txt -P "OnlyPC2"
+```
+
+* Nuclear QTLs: 702  
+
+* Total QTLs: 104  
+
+
+##Top 3 PCs  
+
+* filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.top3PCs  
+
+* filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.top3PCs  
+
+
+APAqtl_nominal_transcript_3PCs.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_transcript_3PCs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_transcript3PCs.out
+#SBATCH --error=APAqtl_nominal_transcript3PCs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.top3PCs --bed  /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_3PCs/3PCs_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.top3PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_3PCs/3PCs_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+```
+
+APAqtl_permuted_transcrip_3PCs.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_permuted_transcript_3PCs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_permuted_transcript_3PCs.out
+#SBATCH --error=APAqtl_permuted_transcript_3PCs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.top3PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_3PCs/3PCs_PCfiltered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000  --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.top3PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_3PCs/3PCs_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+```
+
+
+
+
+Run processing script:  
+
+nQTLfromDifPC.3PCs.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=nQTLfromDifPC.3PCs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nQTLfromDifPC.3PCs.out
+#SBATCH --error=nQTLfromDifPC.3PCs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript nQTLfromDifPC.R -N /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_3PCs/3PCs_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.allChrom.txt -T /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_3PCs/3PCs_filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.allChrom.txt -P "3PCs"
+```
+
+
+* Nuclear  945
+
+* Total 98  
+
+This is interesting. There are more for nuclear but less fo total. I think I need to wait until we finish the filtering to finish this analysis. The filtering will improve the power in the total.  
 
