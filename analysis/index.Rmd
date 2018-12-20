@@ -114,4 +114,6 @@ Until now I have been focusing on way to develop the story for the paper. The ne
 
 * [Peak to gene assignment](InvestigatePeak2GeneAssignment.html)  
 
+* [Look at our peaks compared to peaks from Lianogluo et al](CompareLianoglouData.html)
+
 
