@@ -347,13 +347,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d99a6f3a3875fd4b2482084467c9875b1579f9ca" target="_blank">d99a6f3</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/892532067dc7e6560bd77493b948aac17900c3ad" target="_blank">8925320</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -485,6 +486,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/892532067dc7e6560bd77493b948aac17900c3ad/analysis/CompareLianoglouData.Rmd" target="_blank">8925320</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-20
+</td>
+<td style="text-align:left;">
+filter annotated clusters
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/785b8216e916fcc9ecfa66ee7f35622fd210b602/docs/CompareLianoglouData.html" target="_blank">785b821</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-20
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/d99a6f3a3875fd4b2482084467c9875b1579f9ca/analysis/CompareLianoglouData.Rmd" target="_blank">d99a6f3</a>
 </td>
 <td style="text-align:left;">
@@ -516,6 +551,9 @@ Run ?workflowr for help getting started</code></pre>
 <pre><code>── Conflicts ───────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(edgeR)</code></pre>
+<pre><code>Loading required package: limma</code></pre>
+<pre class="r"><code>library(tximport)</code></pre>
 <pre class="r"><code>LianoglouLCL=read.table(&quot;../data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.bed&quot;, stringsAsFactors = F, col.names =c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;Status&quot;, &quot;Score&quot;, &quot;Strand&quot;)) </code></pre>
 <pre class="r"><code>LianoglouLCL %&gt;% group_by(Status) %&gt;% tally()</code></pre>
 <pre><code># A tibble: 3 x 2
@@ -650,6 +688,353 @@ okoverip=ok.intersect(ip, u=True)
 okoverip.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL/myPeaksInLiangoluLCL_OkandIP.bed&quot;)</code></pre>
 <p>This results in 16459 peaks.</p>
 <p>One problem is thier peaks are only one base pair and we have peaks tat are 1 bp away, ex chr7:5,528,801-5,528,844.</p>
+<p>I can expand thier peaks by 5bp on each side and see how much different the results are. I will do this first for the OK peaks only.</p>
+<pre class="bash"><code>inFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort_fixed.bed&quot;, &quot;r&quot;)
+outFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort_fixed_EXTEND.bed&quot;, &quot;w&quot;)
+for ln in inFile:
+  chrom, start, end, stat, score, strand = ln.split()
+  start_i=int(start) - 5
+  end_i=int(end) + 5
+  outFile.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start_i, end_i, stat, score, strand))
+outFile.close()
+
+
+import pybedtools
+lian=pybedtools.BedTool(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort_fixed_EXTEND.bed&quot;)
+Peak=pybedtools.BedTool(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed&quot;) 
+
+lianOverPeak=Peak.intersect(lian, u=True)
+
+#this only results in one overlap:  
+lianOverPeak.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL/myPeaksInExtendedLiangoluLCL.bed&quot;)</code></pre>
+<p>No we have 227975 of our peaks out of 338141 overlapping. This is 67%</p>
+</div>
+<div id="change-annotations-to-full-atlas" class="section level2">
+<h2>Change Annotations to full atlas</h2>
+<div id="quantify-coverage-at-annotated-clusters" class="section level3">
+<h3>Quantify coverage at annotated clusters</h3>
+<p>The full atlas has peaks mapped to genes. (<a href="http://www.polyasite.unibas.ch" class="uri">http://www.polyasite.unibas.ch</a>) I will use these and map our data to them. I can then run the QC metrics I had done previously as well as the QTL analysis.</p>
+<p>The first step will be processing the data into a format like mine with peakIDs including the gene name. Then I will run feature counts and filter the non used peaks.</p>
+<p>Information from site about columns</p>
+<ul>
+<li><p>The first column stores the chromosome name.</p></li>
+<li><p>The second and the third column mark the start and end positions of poly(A) site cluster, respectively.</p></li>
+<li><p>The fourth column is the unqiue cluster ID composed of the chromosome name, the strand, the representative poly(A) site of the cluster, and a two letter code for the cluster annotation (TE: terminal exon, DS: 1,000 nt downstream of a terminal exon, EX: exonic, IN: intronic, AU: 1,000 nt upstream in anti-sense direction of a transcription start site, AE: anti-sense to an exon, AI: anti-sense to an intron, IG: intergenic).</p></li>
+<li><p>The fifth column stores the number different 3’ end sequencing protocols that support the particular cluster.</p></li>
+<li><p>The sixth column stores the strand.</p></li>
+<li><p>The seventh column stores information about the poly(A) signal(s) per poly(A) site, including the motif, the location with respect to the cleavage site and the genomic coordinate.</p></li>
+</ul>
+<p>I am going to use clusters.bed</p>
+<p>I am only going to keep PAS with an annotated gene. This is in column 8.</p>
+<p>The goal is a dataset like /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.SAF for feature counts. I need to number the peaks here. To do this I can add a column with a number like I did for my peaks.</p>
+<p>First sort the clusters file:</p>
+<pre class="bash"><code>sort -k 1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters.bed &gt; /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters_sort.bed  
+
+x = wc -l /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters_sort.bed  
+
+seq 1 392912 &gt; cluster.peak.num.txt
+
+paste /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters_sort.bed   cluster.peak.num.txt | column -s $&#39;\t&#39; -t &gt; /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters_sort_named.bed  
+</code></pre>
+<p>Python script to make a SAF.</p>
+<p>clusterBed2SAF.py</p>
+<pre class="bash"><code>fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters_sort_named.SAF&quot;,&#39;w&#39;)
+fout.write(&quot;GeneID\tChr\tStart\tEnd\tStrand\n&quot;)
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters_sort_named.bed&quot;):
+    chrom, start, end, uniq, score, strand, extra, gene, name = ln.split()
+    if gene==&quot;.&quot;:
+      continue
+    else:
+      chrom_o=chrom[3:]
+      name_i=int(name)
+      start_i=int(start)
+      end_i=int(end)
+      ID = &quot;peak%d:%s:%d:%d:%s:%s&quot;%(name_i, chrom_o, start_i, end_i, strand, gene)
+      fout.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom_o, start_i, end_i, strand))
+fout.close()</code></pre>
+<p>I can now use this to run feature counts with my bam files.</p>
+<p>AnnotatedClustersFC_TN.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=AnnotatedClustersFC_TN
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=AnnotatedClustersFC_TN.out
+#SBATCH --error=AnnotatedClustersFC_TN.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters_sort_named.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fc /project2/gilad/briana/threeprimeseq/data/sort/*-T-*-sort.bam -s 2
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/clusters_sort_named.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/sort/*-N-*-sort.bam -s 2
+</code></pre>
+<p>I will next need to fix the headers for the total and nuclear files.</p>
+<p>FixHeader_TotalAnnotatedClustersFC.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()</code></pre>
+<p>FixHeader_NucelarAnnotatedClustersFC.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Nuclear.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Nuclear.fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()</code></pre>
+<p>This results in 7-11 million reads mapping to the features in the total fraction. This is in comparison to over 10 mill in our peaks.</p>
+<div id="look-at-total-coverage" class="section level4">
+<h4>Look at total coverage</h4>
+<p>With these results I need to filter the lowley expressed clusters. I will start with one line as I did before.</p>
+<pre class="r"><code>total_Cov=read.table(&quot;../data/LianoglouLCL/AnnotatedClusters.Total.fixed.fc&quot;, header=T, stringsAsFactors = F)
+
+peakLength=total_Cov[,6]
+
+
+total_Cov_m= as.matrix(total_Cov[,7:ncol(total_Cov)])
+total_Cov_m=log10(total_Cov_m)</code></pre>
+<p>Plot the densities</p>
+<pre class="r"><code>plotDensities(total_Cov_m, legend = &quot;bottomright&quot;, main=&quot;Pre-filtering&quot;)
+abline(v = .5, lty = 3)</code></pre>
+<p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /> The cuttoff should be log10=.5. I want to filter on this.</p>
+<pre class="r"><code>keep.exprs_T=rowSums(total_Cov_m&gt;.5) &gt;= 26
+total_Cov_m_filt= total_Cov_m[keep.exprs_T,]
+
+plotDensities(total_Cov_m_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
+<p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This looks a lot better and results in 35,197 peaks. Now I can filter the full dataframe and start comparing this to the RNA seq.</p>
+<pre class="r"><code>total_Cov_18486_filt=total_Cov[keep.exprs_T,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T)%&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T))</code></pre>
+<p>Pull in the kalisto counts.</p>
+<p>TPM counts from Kalisto</p>
+<pre class="r"><code>tx2gene=read.table(&quot;../data/RNAkalisto/ncbiRefSeq.txn2gene.txt&quot; ,header= F, sep=&quot;\t&quot;, stringsAsFactors = F)
+
+txi.kallisto.tsv &lt;- tximport(&quot;../data/RNAkalisto/abundance.tsv&quot;, type = &quot;kallisto&quot;, tx2gene = tx2gene,countsFromAbundance=&quot;lengthScaledTPM&quot; )</code></pre>
+<pre><code>Note: importing `abundance.h5` is typically faster than `abundance.tsv`</code></pre>
+<pre><code>reading in files with read_tsv</code></pre>
+<pre><code>1 
+removing duplicated transcript rows from tx2gene
+transcripts missing from tx2gene: 99
+summarizing abundance
+summarizing counts
+summarizing length</code></pre>
+<p>Join the data frames.</p>
+<pre class="r"><code>TXN_abund=as.data.frame(txi.kallisto.tsv$abundance) %&gt;% rownames_to_column(var=&quot;gene&quot;)
+colnames(TXN_abund)=c(&quot;gene&quot;, &quot;TPM&quot;)
+
+Overlap=TXN_abund %&gt;% inner_join(total_Cov_18486_filt,by=&quot;gene&quot;)</code></pre>
+<p>Remove rows with 0 counts and Plot:</p>
+<pre class="r"><code>Overlap=Overlap %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSum&gt;0)
+corr_18486Tot=ggplot(Overlap, aes(x=log10(TPM), y= log10(GeneSum))) + geom_point() + labs(title=&quot;Total 18486 with Annotated Peaks&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSum)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=-5, y=5,label=&quot;R2=.47&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;)
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot       </code></pre>
+<p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSum),Overlap)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSum), data = Overlap)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.8184 -0.2344  0.0135  0.2620  2.5192 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    -0.070619   0.015141  -4.664 3.14e-06 ***
+log10(GeneSum)  0.594440   0.006294  94.449  &lt; 2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.4692 on 9865 degrees of freedom
+Multiple R-squared:  0.4749,    Adjusted R-squared:  0.4748 
+F-statistic:  8921 on 1 and 9865 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(Overlap$TPM),log10(Overlap$GeneSum))</code></pre>
+<pre><code>
+    Pearson&#39;s product-moment correlation
+
+data:  log10(Overlap$TPM) and log10(Overlap$GeneSum)
+t = 94.449, df = 9865, p-value &lt; 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.6785988 0.6993264
+sample estimates:
+      cor 
+0.6891035 </code></pre>
+<p>This is looking at 9,867 genes.</p>
+</div>
+</div>
+<div id="create-mapping-pheno" class="section level3">
+<h3>Create mapping pheno</h3>
+<p>Now I can create the File ID file I will use to make the phenotype</p>
+<p>create_fileid_AnnotatedCluster_total.py</p>
+<pre class="bash"><code>fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/file_id_mapping_total_AnnotatedCluster_head.txt&quot;,&#39;w&#39;)
+infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.fc&quot;, &quot;r&quot;)
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + &quot;\t&quot; + samp_st
+            fout.write(outLine + &quot;\n&quot;)
+fout.close()</code></pre>
+<p>I need to remove the first lines of these files:</p>
+<pre class="bash"><code>awk &#39;{if (NR!=1) {print}}&#39; /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/file_id_mapping_total_AnnotatedCluster_head.txt &gt; /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/file_id_mapping_total_AnnotatedCluster.txt
+</code></pre>
+<p>I want to use the filtered peaks for the QTL analysis so I can write out the FC filtered file.</p>
+<pre class="r"><code>total_Cov_filt=total_Cov[keep.exprs_T,]
+
+
+#write.table(total_Cov_filt, file=&quot;../data/LianoglouLCL/AnnotatedClusters.Total.fixed.filtered.fc&quot;, quote=F, col.names = T, row.names = F)</code></pre>
+<p>I need to manually remove the X that was added to the header. I then copy this file to the /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/ directory.</p>
+<p>I dont have thier gene file. I can have the phenotpye stay the start and end of the peaks for the QTL analysis. This means I will be calling QTLs 1mb around the start of the peak.</p>
+<p>makePheno_AnnotatedClusters_Total.py</p>
+<pre class="bash"><code>#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/file_id_mapping_total_AnnotatedCluster.txt&quot;):
+    bam, IND = ln.split()
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#list of genes   
+
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered.fc&quot;, &quot;r&quot;)
+genes=[]
+for line , i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered.fc&quot;, &quot;r&quot;)
+for line, i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt&quot;,&quot;w&quot;)
+peak=[&quot;PeakID&quot;]
+fout.write(&quot; &quot;.join(peak + inds) + &#39;\n&#39; )
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered.fc&quot;, &quot;r&quot;)
+for line , i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        gene=id_list[5]
+        buff=[id]
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append(&quot;%d/%d&quot;%(t,b))
+        fout.write(&quot; &quot;.join(buff)+ &#39;\n&#39;)
+        
+fout.close()</code></pre>
+<p>Make a script to run this:</p>
+<p>run_makePhen_AnnotatedCluster.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_makePhen_AnnotatedCluster
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_makePhen_AnnotatedCluster.out
+#SBATCH --error=run_makePhen_AnnotatedCluster.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python makePheno_AnnotatedClusters_Total.py 
+</code></pre>
+<p>Use leafcutter to prepare this for fastQTL</p>
+<pre class="bash"><code>module load samtools
+#zip file 
+gzip /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt 
+
+module load python
+#leafcutter script
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz
+
+#source activate three-prime-env
+sh filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz_prepare.sh
+
+
+
+#keep only 2 PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.PCs &gt; filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs
+</code></pre>
+<p>Error:</p>
+<p>Traceback (most recent call last): File “/project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py”, line 171, in <module> main(args[0], int(options.npcs) ) File “/project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py”, line 60, in main chrom = dic[‘chrom’].replace(“chr”,‘’) KeyError: ’chrom’</p>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -669,29 +1054,31 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
- [5] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
- [9] ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.1.1
+ [1] bindrcpp_0.2.2  tximport_1.8.0  edgeR_3.22.5    limma_3.36.5   
+ [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5    
+ [9] readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0  
+[13] tidyverse_1.2.1 workflowr_1.1.1
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] utf8_1.1.4        rlang_0.2.2       R.oo_1.22.0      
-[10] pillar_1.3.0      glue_1.3.0        withr_2.1.2      
-[13] R.utils_2.7.0     modelr_0.1.2      readxl_1.1.0     
-[16] bindr_0.1.1       plyr_1.8.4        munsell_0.5.0    
-[19] gtable_0.2.0      cellranger_1.1.0  rvest_0.3.2      
-[22] R.methodsS3_1.7.1 evaluate_0.11     knitr_1.20       
-[25] fansi_0.4.0       broom_0.5.0       Rcpp_0.12.19     
-[28] scales_1.0.0      backports_1.1.2   jsonlite_1.5     
-[31] hms_0.4.2         digest_0.6.17     stringi_1.2.4    
-[34] grid_3.5.1        rprojroot_1.3-2   cli_1.0.1        
-[37] tools_3.5.1       magrittr_1.5      lazyeval_0.2.1   
-[40] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
-[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
-[46] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.8   
-[49] R6_2.3.0          nlme_3.1-137      git2r_0.23.0     
-[52] compiler_3.5.1   </code></pre>
+ [1] locfit_1.5-9.1    tidyselect_0.2.4  haven_1.1.2      
+ [4] lattice_0.20-35   colorspace_1.3-2  htmltools_0.3.6  
+ [7] yaml_2.2.0        utf8_1.1.4        rlang_0.2.2      
+[10] R.oo_1.22.0       pillar_1.3.0      glue_1.3.0       
+[13] withr_2.1.2       R.utils_2.7.0     modelr_0.1.2     
+[16] readxl_1.1.0      bindr_0.1.1       plyr_1.8.4       
+[19] munsell_0.5.0     gtable_0.2.0      cellranger_1.1.0 
+[22] rvest_0.3.2       R.methodsS3_1.7.1 evaluate_0.11    
+[25] labeling_0.3      knitr_1.20        fansi_0.4.0      
+[28] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
+[31] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[34] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
+[37] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
+[40] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[43] whisker_0.3-2     pkgconfig_2.0.2   MASS_7.3-50      
+[46] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
+[49] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.8   
+[52] R6_2.3.0          nlme_3.1-137      git2r_0.23.0     
+[55] compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
