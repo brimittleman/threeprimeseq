@@ -593,7 +593,11 @@ for line, i in enumerate(count_file):
 
 fout=open("/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt","w")
 peak=["chrom"]
-fout.write(" ".join(peak + inds) + '\n' )
+inds_noL=[]
+for each in inds:
+    indsNA= "NA" + each[:-2]
+    inds_noL.append(indsNA)  
+fout.write(" ".join(peak + inds_noL) + '\n' )
 count_file=open("/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered.fc", "r")
 for line , i in enumerate(count_file):
     if line > 1:
@@ -642,7 +646,7 @@ Use leafcutter to prepare this for fastQTL
 ```{bash,eval=F}
 module load samtools
 #zip file 
-gzip /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt 
+gzip /project2/gilad/briana/threeprimeseq/data/c/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt 
 
 module load python
 #leafcutter script
