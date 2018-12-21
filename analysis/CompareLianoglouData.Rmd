@@ -688,8 +688,8 @@ done
 
 ```
 
+ APAqtl_permuted_annotatedClusters.sh
 
-APAqtl_permuted_annotatedClusters.sh
 ```{bash,eval=F}
 #!/bin/bash
 
@@ -706,6 +706,75 @@ APAqtl_permuted_annotatedClusters.sh
 for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
 do
 /home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Annotated/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+```
+
+
+
+
+
+
+APAqtlpermCorrectQQplot_Annotated.R
+
+```{r,eval=F}
+
+library(dplyr)
+
+
+##total results
+tot.perm= read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Annotated/AnnotatedClusters.Total.fixed.filtered_pheno_Total_permRes.txt",head=F, stringsAsFactors=F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval"))
+
+#BH correction
+tot.perm$bh=p.adjust(tot.perm$bpval, method="fdr")
+
+#plot qqplot
+png("/project2/gilad/briana/threeprimeseq/output/plots/qqplot_total_APAperm_AnnotatedClusters.png") 
+qqplot_total= qqplot(-log10(runif(nrow(tot.perm))), -log10(tot.perm$bpval),ylab="-log10 Total permuted pvalue", xlab="Uniform expectation", main="Total permuted pvalues for all snps with Annotated Clusters")
+abline(0,1)
+dev.off()
+
+#write df with BH  
+
+write.table(tot.perm, file = "/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Annotated/AnnotatedClusters.Total.fixed.filtered_pheno_Total_permRes.BH.txt", col.names = T, row.names = F, quote = F)
 
 ```
+
+run_APAqtlpermCorrectQQplot_Annotated.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_APAqtlpermCorrectQQplot_Annotated
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_APAqtlpermCorrectQQplot_Annotated.out
+#SBATCH --error=run_APAqtlpermCorrectQQplot_Annotated.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript APAqtlpermCorrectQQplot_Annotated.R
+```
+
+```{r}
+tot.perm= read.table("../data/LianoglouLCL/AnnotatedClusters.Total.fixed.filtered_pheno_Total_permRes.BH.txt",head=T, stringsAsFactors=F)
+
+plot(tot.perm$ppval, tot.perm$bpval, xlab="Direct method", ylab="Beta approximation", main="Total Check plot")
+abline(0, 1, col="red")
+```
+
+```{r}
+
+```
+
+```{r}
+tot_qtl_10= tot.perm %>% filter(-log10(bh) > 1) %>% nrow()
+tot_qtl_10
+```
+
 
