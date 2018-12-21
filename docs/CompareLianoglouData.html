@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/895acea6c27f49736c24cf4a5d3517702c88107f" target="_blank">895acea</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/490f857dbd3b79b9786210940bdba6e856cebc95" target="_blank">490f857</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -480,6 +480,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/490f857dbd3b79b9786210940bdba6e856cebc95/analysis/CompareLianoglouData.Rmd" target="_blank">490f857</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-21
+</td>
+<td style="text-align:left;">
+add QTL map code
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/8d6e55ea94bdac813222ef47ecbc0d4b6f346900/docs/CompareLianoglouData.html" target="_blank">8d6e55e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-21
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1037,6 +1071,36 @@ corr_AllLibTot=ggplot(TXN_abund_combLibs_tot_n0, aes(x=log10(TPM), y= log10(Gene
        
 corr_AllLibTot      </code></pre>
 <p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-28-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8d6e55ea94bdac813222ef47ecbc0d4b6f346900/docs/figure/CompareLianoglouData.Rmd/unnamed-chunk-28-1.png" target="_blank">8d6e55e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-21
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSum),TXN_abund_combLibs_tot_n0)) </code></pre>
 <pre><code>
 Call:
@@ -1078,6 +1142,36 @@ corr_AllLibTot_noPYRUF=ggplot(TXN_abund_combLibs_tot_n0_noPYRUF, aes(x=log10(TPM
        
 corr_AllLibTot_noPYRUF      </code></pre>
 <p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-29-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8d6e55ea94bdac813222ef47ecbc0d4b6f346900/docs/figure/CompareLianoglouData.Rmd/unnamed-chunk-29-1.png" target="_blank">8d6e55e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-21
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSum),TXN_abund_combLibs_tot_n0_noPYRUF)) </code></pre>
 <pre><code>
 Call:
@@ -1201,7 +1295,11 @@ for line, i in enumerate(count_file):
 
 fout=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt&quot;,&quot;w&quot;)
 peak=[&quot;chrom&quot;]
-fout.write(&quot; &quot;.join(peak + inds) + &#39;\n&#39; )
+inds_noL=[]
+for each in inds:
+    indsNA= &quot;NA&quot; + each[:-2]
+    inds_noL.append(indsNA)  
+fout.write(&quot; &quot;.join(peak + inds_noL) + &#39;\n&#39; )
 count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered.fc&quot;, &quot;r&quot;)
 for line , i in enumerate(count_file):
     if line &gt; 1:
@@ -1242,7 +1340,7 @@ python makePheno_AnnotatedClusters_Total.py
 <p>Use leafcutter to prepare this for fastQTL</p>
 <pre class="bash"><code>module load samtools
 #zip file 
-gzip /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt 
+gzip /project2/gilad/briana/threeprimeseq/data/c/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt 
 
 module load python
 #leafcutter script
