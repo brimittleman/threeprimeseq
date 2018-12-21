@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-20</p>
+<p><strong>Last updated:</strong> 2018-12-21</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,14 +347,13 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/892532067dc7e6560bd77493b948aac17900c3ad" target="_blank">8925320</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/895acea6c27f49736c24cf4a5d3517702c88107f" target="_blank">895acea</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -481,6 +480,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/895acea6c27f49736c24cf4a5d3517702c88107f/analysis/CompareLianoglouData.Rmd" target="_blank">895acea</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-21
+</td>
+<td style="text-align:left;">
+add QTL map code
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b49ffd93794c69c8be122f59f958c268d21643ad/docs/CompareLianoglouData.html" target="_blank">b49ffd9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-20
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -823,12 +856,73 @@ total_Cov_m=log10(total_Cov_m)</code></pre>
 <p>Plot the densities</p>
 <pre class="r"><code>plotDensities(total_Cov_m, legend = &quot;bottomright&quot;, main=&quot;Pre-filtering&quot;)
 abline(v = .5, lty = 3)</code></pre>
-<p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /> The cuttoff should be log10=.5. I want to filter on this.</p>
+<p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b49ffd93794c69c8be122f59f958c268d21643ad/docs/figure/CompareLianoglouData.Rmd/unnamed-chunk-22-1.png" target="_blank">b49ffd9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-20
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>The cuttoff should be log10=.5. I want to filter on this.</p>
 <pre class="r"><code>keep.exprs_T=rowSums(total_Cov_m&gt;.5) &gt;= 26
 total_Cov_m_filt= total_Cov_m[keep.exprs_T,]
 
 plotDensities(total_Cov_m_filt, legend = &quot;bottomright&quot;, main=&quot;Post-filtering&quot;)</code></pre>
 <p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-23-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b49ffd93794c69c8be122f59f958c268d21643ad/docs/figure/CompareLianoglouData.Rmd/unnamed-chunk-23-1.png" target="_blank">b49ffd9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-20
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This looks a lot better and results in 35,197 peaks. Now I can filter the full dataframe and start comparing this to the RNA seq.</p>
 <pre class="r"><code>total_Cov_18486_filt=total_Cov[keep.exprs_T,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T)%&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X18486_T))</code></pre>
 <p>Pull in the kalisto counts.</p>
@@ -857,6 +951,36 @@ corr_18486Tot=ggplot(Overlap, aes(x=log10(TPM), y= log10(GeneSum))) + geom_point
        
 corr_18486Tot       </code></pre>
 <p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-27-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b49ffd93794c69c8be122f59f958c268d21643ad/docs/figure/CompareLianoglouData.Rmd/unnamed-chunk-27-1.png" target="_blank">b49ffd9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-20
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSum),Overlap)) </code></pre>
 <pre><code>
 Call:
@@ -889,6 +1013,102 @@ sample estimates:
       cor 
 0.6891035 </code></pre>
 <p>This is looking at 9,867 genes.</p>
+<p>Look at this sum overed all individuals.</p>
+<pre class="r"><code>TotCounts_allind=total_Cov[keep.exprs_T,7:45]
+
+
+SumCounts_Tot=rowSums(TotCounts_allind)
+
+Alllib_Tot_Filt=total_Cov[keep.exprs_T,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;)
+
+
+Alllib_Tot_Filt$SumCounts=SumCounts_Tot
+
+Alllib_Tot_Filtbygene=Alllib_Tot_Filt %&gt;% select(gene, SumCounts) %&gt;%  group_by(gene)  %&gt;%  summarize(GeneSum=sum(SumCounts))
+
+
+TXN_abund_combLibs_tot=TXN_abund %&gt;% inner_join(Alllib_Tot_Filtbygene,by=&quot;gene&quot;)
+
+
+TXN_abund_combLibs_tot_n0=TXN_abund_combLibs_tot %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSum&gt;0)
+
+
+corr_AllLibTot=ggplot(TXN_abund_combLibs_tot_n0, aes(x=log10(TPM), y= log10(GeneSum))) + geom_point() + labs(title=&quot;Total All ind Filtered Annotated Clusters&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene All Ind.&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSum)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=-5, y=5,label=&quot;R2=.53&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) + geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_AllLibTot      </code></pre>
+<p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSum),TXN_abund_combLibs_tot_n0)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSum), data = TXN_abund_combLibs_tot_n0)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.8186 -0.2245  0.0180  0.2594  2.4471 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    -1.57143    0.02637  -59.58   &lt;2e-16 ***
+log10(GeneSum)  0.70927    0.00654  108.45   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.4606 on 10322 degrees of freedom
+Multiple R-squared:  0.5326,    Adjusted R-squared:  0.5326 
+F-statistic: 1.176e+04 on 1 and 10322 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_abund_combLibs_tot_n0$TPM),log10(TXN_abund_combLibs_tot_n0$GeneSum),method=&quot;spearman&quot;)</code></pre>
+<pre><code>Warning in cor.test.default(log10(TXN_abund_combLibs_tot_n0$TPM),
+log10(TXN_abund_combLibs_tot_n0$GeneSum), : Cannot compute exact p-value
+with ties</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  log10(TXN_abund_combLibs_tot_n0$TPM) and log10(TXN_abund_combLibs_tot_n0$GeneSum)
+S = 4.5983e+10, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.7492704 </code></pre>
+<p>The outlier is PYURF. Let me remove this gene.</p>
+<pre class="r"><code>TXN_abund_combLibs_tot_n0_noPYRUF= TXN_abund_combLibs_tot_n0 %&gt;% filter(gene !=&quot;PYURF&quot;)
+
+corr_AllLibTot_noPYRUF=ggplot(TXN_abund_combLibs_tot_n0_noPYRUF, aes(x=log10(TPM), y= log10(GeneSum))) + geom_point() + labs(title=&quot;Total All ind Filtered Annotated Clusters&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene All Ind.&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSum)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=-5, y=5,label=&quot;R2=.54&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_AllLibTot_noPYRUF      </code></pre>
+<p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSum),TXN_abund_combLibs_tot_n0_noPYRUF)) </code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSum), data = TXN_abund_combLibs_tot_n0_noPYRUF)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.5931 -0.2252  0.0172  0.2588  2.4468 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    -1.572873   0.026004  -60.48   &lt;2e-16 ***
+log10(GeneSum)  0.709829   0.006448  110.08   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.4542 on 10321 degrees of freedom
+Multiple R-squared:   0.54, Adjusted R-squared:   0.54 
+F-statistic: 1.212e+04 on 1 and 10321 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>cor.test(log10(TXN_abund_combLibs_tot_n0_noPYRUF$TPM),log10(TXN_abund_combLibs_tot_n0_noPYRUF$GeneSum),method=&quot;spearman&quot;)</code></pre>
+<pre><code>Warning in cor.test.default(log10(TXN_abund_combLibs_tot_n0_noPYRUF$TPM), :
+Cannot compute exact p-value with ties</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  log10(TXN_abund_combLibs_tot_n0_noPYRUF$TPM) and log10(TXN_abund_combLibs_tot_n0_noPYRUF$GeneSum)
+S = 4.5925e+10, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.7495161 </code></pre>
 </div>
 </div>
 <div id="create-mapping-pheno" class="section level3">
@@ -980,7 +1200,7 @@ for line, i in enumerate(count_file):
         
 
 fout=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt&quot;,&quot;w&quot;)
-peak=[&quot;PeakID&quot;]
+peak=[&quot;chrom&quot;]
 fout.write(&quot; &quot;.join(peak + inds) + &#39;\n&#39; )
 count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered.fc&quot;, &quot;r&quot;)
 for line , i in enumerate(count_file):
@@ -990,6 +1210,10 @@ for line , i in enumerate(count_file):
         id_list=id.split(&quot;:&quot;)
         gene=id_list[5]
         buff=[id]
+        start=int(id_list[2])
+        end=int(id_list[3])
+        buff=[]
+        buff.append(&quot;chr%s:%d:%d:%s_%s_%s&quot;%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
         for x,y in zip(i_list[6:], inds):
             b=int(dic_dub[gene][y])
             t=int(x)
@@ -1025,15 +1249,52 @@ module load python
 python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz
 
 #source activate three-prime-env
-sh filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz_prepare.sh
-
+sh /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz_prepare.sh
 
 
 #keep only 2 PCs
-head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.PCs &gt; filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs
+head -n 3 AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.PCs &gt; /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.2PCs
 </code></pre>
-<p>Error:</p>
-<p>Traceback (most recent call last): File “/project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py”, line 171, in <module> main(args[0], int(options.npcs) ) File “/project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py”, line 60, in main chrom = dic[‘chrom’].replace(“chr”,‘’) KeyError: ’chrom’</p>
+<p>Sample list for Fastqtl is /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt</p>
+</div>
+<div id="run-fastqtl" class="section level3">
+<h3>Run FastQTL</h3>
+<p>APAqtl_nominal_annotatedClusters.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_transcript
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_transcript.out
+#SBATCH --error=APAqtl_nominal_transcript.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_Annotated/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+</code></pre>
+<p>APAqtl_permuted_annotatedClusters.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_permuted_annotatedClusters
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_permuted_annotatedClusters.out
+#SBATCH --error=APAqtl_permuted_annotatedClusters.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Annotated/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
