@@ -441,6 +441,49 @@ cor.test(log10(Overlap$TPM),log10(Overlap$GeneSum))
 
 This is looking at 9,867 genes.  
 
+Look at this sum overed all individuals.  
+
+```{r}
+TotCounts_allind=total_Cov[keep.exprs_T,7:45]
+
+
+SumCounts_Tot=rowSums(TotCounts_allind)
+
+Alllib_Tot_Filt=total_Cov[keep.exprs_T,1:7] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":")
+
+
+Alllib_Tot_Filt$SumCounts=SumCounts_Tot
+
+Alllib_Tot_Filtbygene=Alllib_Tot_Filt %>% select(gene, SumCounts) %>%  group_by(gene)  %>%  summarize(GeneSum=sum(SumCounts))
+
+
+TXN_abund_combLibs_tot=TXN_abund %>% inner_join(Alllib_Tot_Filtbygene,by="gene")
+
+
+TXN_abund_combLibs_tot_n0=TXN_abund_combLibs_tot %>% filter(TPM>0) %>% filter(GeneSum>0)
+
+
+corr_AllLibTot=ggplot(TXN_abund_combLibs_tot_n0, aes(x=log10(TPM), y= log10(GeneSum))) + geom_point() + labs(title="Total All ind Filtered Annotated Clusters", x="log10 RNA seq TPM", y="log10 Peak count sum per gene All Ind.")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSum)),method = "lm") + annotate("text",x=-5, y=5,label="R2=.53") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_AllLibTot      
+summary(lm(log10(TPM)~log10(GeneSum),TXN_abund_combLibs_tot_n0)) 
+
+cor.test(log10(TXN_abund_combLibs_tot_n0$TPM),log10(TXN_abund_combLibs_tot_n0$GeneSum),method="spearman")
+```
+The outlier is PYURF. Let me remove this gene.  
+
+```{r}
+TXN_abund_combLibs_tot_n0_noPYRUF= TXN_abund_combLibs_tot_n0 %>% filter(gene !="PYURF")
+
+corr_AllLibTot_noPYRUF=ggplot(TXN_abund_combLibs_tot_n0_noPYRUF, aes(x=log10(TPM), y= log10(GeneSum))) + geom_point() + labs(title="Total All ind Filtered Annotated Clusters", x="log10 RNA seq TPM", y="log10 Peak count sum per gene All Ind.")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSum)),method = "lm") + annotate("text",x=-5, y=5,label="R2=.54") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_AllLibTot_noPYRUF      
+summary(lm(log10(TPM)~log10(GeneSum),TXN_abund_combLibs_tot_n0_noPYRUF)) 
+
+cor.test(log10(TXN_abund_combLibs_tot_n0_noPYRUF$TPM),log10(TXN_abund_combLibs_tot_n0_noPYRUF$GeneSum),method="spearman")
+```
 
 
 ###Create mapping pheno 
@@ -549,7 +592,7 @@ for line, i in enumerate(count_file):
         
 
 fout=open("/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt","w")
-peak=["PeakID"]
+peak=["chrom"]
 fout.write(" ".join(peak + inds) + '\n' )
 count_file=open("/project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered.fc", "r")
 for line , i in enumerate(count_file):
@@ -559,6 +602,10 @@ for line , i in enumerate(count_file):
         id_list=id.split(":")
         gene=id_list[5]
         buff=[id]
+        start=int(id_list[2])
+        end=int(id_list[3])
+        buff=[]
+        buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
         for x,y in zip(i_list[6:], inds):
             b=int(dic_dub[gene][y])
             t=int(x)
@@ -602,21 +649,59 @@ module load python
 python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz
 
 #source activate three-prime-env
-sh filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz_prepare.sh
-
+sh /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz_prepare.sh
 
 
 #keep only 2 PCs
-head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.PCs > filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz.2PCs
+head -n 3 AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.PCs > /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.2PCs
 
 ```
 
-Error:  
+Sample list for Fastqtl is /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt  
 
-Traceback (most recent call last):
-  File "/project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py", line 171, in <module>
-    main(args[0], int(options.npcs) )
-  File "/project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py", line 60, in main
-    chrom = dic['chrom'].replace("chr",'')
-KeyError: 'chrom'
+###Run FastQTL  
+
+APAqtl_nominal_annotatedClusters.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_transcript
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_transcript.out
+#SBATCH --error=APAqtl_nominal_transcript.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_Annotated/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+```
+
+
+APAqtl_permuted_annotatedClusters.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_permuted_annotatedClusters
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_permuted_annotatedClusters.out
+#SBATCH --error=APAqtl_permuted_annotatedClusters.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --permute 1000 --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/LianoglouLCL_quant/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_Annotated/AnnotatedClusters.Total.fixed.filtered_pheno_Total.txt.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+
+```
 
