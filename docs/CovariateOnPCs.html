@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Briana Mittleman" />
+
+
+<title>MetaData to explain PCs</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Three Prime Sequencing in Human LCLs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brimittleman/threeprimeseq">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">MetaData to explain PCs</h1>
+<h4 class="author"><em>Briana Mittleman</em></h4>
+<h4 class="date"><em>1/3/2019</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2019-01-03</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c3b3bbb4729ecbebed9f1b530d086b5a8f6024d9" target="_blank">c3b3bbb</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
+    Ignored:    output/.DS_Store
+
+Untracked files:
+    Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
+    Untracked:  analysis/snake.config.notes.Rmd
+    Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
+    Untracked:  data/18486.genecov.txt
+    Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/GM12878.chromHMM.bed
+    Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LianoglouLCL/
+    Untracked:  data/LocusZoom/
+    Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
+    Untracked:  data/PeaksUsed/
+    Untracked:  data/RNAkalisto/
+    Untracked:  data/TotalApaQTLs.txt
+    Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/YL-SP-18486-T-combined-genecov.txt
+    Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/apaExamp/
+    Untracked:  data/bedgraph_peaks/
+    Untracked:  data/bin200.5.T.nuccov.bed
+    Untracked:  data/bin200.Anuccov.bed
+    Untracked:  data/bin200.nuccov.bed
+    Untracked:  data/clean_peaks/
+    Untracked:  data/comb_map_stats.csv
+    Untracked:  data/comb_map_stats.xlsx
+    Untracked:  data/comb_map_stats_39ind.csv
+    Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_trans/
+    Untracked:  data/ensemble_to_genename.txt
+    Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
+    Untracked:  data/first50lines_closest.txt
+    Untracked:  data/gencov.test.csv
+    Untracked:  data/gencov.test.txt
+    Untracked:  data/gencov_zero.test.csv
+    Untracked:  data/gencov_zero.test.txt
+    Untracked:  data/gene_cov/
+    Untracked:  data/joined
+    Untracked:  data/leafcutter/
+    Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/mol_overlap/
+    Untracked:  data/mol_pheno/
+    Untracked:  data/nom_QTL/
+    Untracked:  data/nom_QTL_opp/
+    Untracked:  data/nom_QTL_trans/
+    Untracked:  data/nuc6up/
+    Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
+    Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_opp/
+    Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
+    Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  data/smash.cov.results.bed
+    Untracked:  data/smash.cov.results.csv
+    Untracked:  data/smash.cov.results.txt
+    Untracked:  data/smash_testregion/
+    Untracked:  data/ssFC200.cov.bed
+    Untracked:  data/temp.file1
+    Untracked:  data/temp.file2
+    Untracked:  data/temp.gencov.test.txt
+    Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  output/picard/
+    Untracked:  output/plots/
+    Untracked:  output/qual.fig2.pdf
+
+Unstaged changes:
+    Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/InvestigatePeak2GeneAssignment.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
+    Modified:   analysis/cleanupdtseq.internalpriming.Rmd
+    Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
+    Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
+    Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlap_qtls.Rmd
+    Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
+    Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/understandPeaks.Rmd
+    Modified:   code/Snakefile
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c3b3bbb4729ecbebed9f1b530d086b5a8f6024d9/analysis/CovariateOnPCs.Rmd" target="_blank">c3b3bbb</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-03
+</td>
+<td style="text-align:left;">
+start covariate correlation with pc analysis
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<p>In this analysis I will look at which collected covariates help explain the variation in the peak data. I am using code from Ben Strobers github, available at <a href="https://github.com/BennyStrobes/ipsc_preprocess_pipeline" class="uri">https://github.com/BennyStrobes/ipsc_preprocess_pipeline</a>. Specifcially I am looking at the covariate_pc_pve_heatmap function.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+<p>Load in coverage files:</p>
+<pre class="r"><code>total_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,7:45]
+nuclear_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[,7:45]</code></pre>
+<p>Perform PCA:<br />
+<strong>Total</strong></p>
+<pre class="r"><code>pca_tot_peak=prcomp(total_Cov, center=T,scale=T)
+pca_tot_df=as.data.frame(pca_tot_peak$rotation) %&gt;% rownames_to_column(var=&quot;lib&quot;) %&gt;% select(1:11) %&gt;% mutate(line=substr(lib,2,6))
+
+pca_tot_df_fix=bind_cols(line=pca_tot_df[,dim(pca_tot_df)[[2]]],pca_tot_df[,3:dim(pca_tot_df)[[2]]-1])</code></pre>
+<p><strong>Nuclear</strong></p>
+<pre class="r"><code>pca_nuc_peak=prcomp(nuclear_Cov, center=T,scale=T)
+pca_nuc_df=as.data.frame(pca_nuc_peak$rotation) %&gt;% rownames_to_column(var=&quot;lib&quot;) %&gt;% select(1:11) %&gt;% mutate(line=substr(lib,2,6))
+
+pca_nuc_df_fix=bind_cols(line=pca_nuc_df[,dim(pca_nuc_df)[[2]]],pca_nuc_df[,3:dim(pca_nuc_df)[[2]]-1])</code></pre>
+<p>Get the line order as a vector</p>
+<pre class="r"><code>line_order=pca_nuc_df_fix[[&quot;line&quot;]]</code></pre>
+<p>Load covariate File- filter out lines not yet sequenced and reorder.</p>
+<pre class="r"><code>covar=read.csv(&quot;../data/threePrimeSeqMetaData.csv&quot;)[1:78,]</code></pre>
+<p>Subset by fraction:</p>
+<pre class="r"><code>tot_covar=covar %&gt;% filter(fraction==&quot;total&quot;) %&gt;% slice(match(line_order, line))
+
+nuc_covar=covar %&gt;% filter(fraction==&quot;nuclear&quot;)%&gt;% slice(match(line_order, line))</code></pre>
+<p>Subset only a few covariates to try first:</p>
+<pre class="r"><code>tot_covar_filt=tot_covar %&gt;% select(batch,comb_mapped,Sex, alive_avg, undiluted_avg, cycles)
+
+nuc_covar_filt=nuc_covar %&gt;% select(batch,Sex, alive_avg, undiluted_avg, cycles)</code></pre>
+<p>Update Ben’s Function for my data:</p>
+<pre class="r"><code>covariate_pc_pve_heatmap &lt;- function(pc_df, covariate_df, output_file, title) {
+  # Load in data
+  pcs &lt;- pc_df
+  covs &lt;- covariate_df
+
+
+# Remove unimportant columns
+  pcs &lt;- as.matrix(pcs[,2:dim(pcs)[[2]]])
+  covs &lt;- data.frame(as.matrix(covs[,1:dim(covs)[[2]]]))
+
+  # Initialize PVE heatmap
+  pve_map &lt;- matrix(0, dim(covs)[2], dim(pcs)[2])
+  colnames(pve_map) &lt;- colnames(pcs)
+  rownames(pve_map) &lt;- colnames(covs)
+
+  # Loop through each PC, COV Pair and take correlation
+  num_pcs &lt;- dim(pcs)[2]
+  num_covs &lt;- dim(covs)[2]
+  for (num_pc in 1:num_pcs) {
+    for (num_cov in 1:num_covs) {
+      pc_vec &lt;- pcs[,num_pc]
+      cov_vec &lt;- covs[,num_cov]
+      lin_model &lt;- lm(pc_vec ~ cov_vec)
+      pve_map[num_cov, num_pc] &lt;- summary(lin_model)$adj.r.squared
+    }
+  }
+  pve_map
+  ord &lt;- hclust( dist(scale(pve_map), method = &quot;euclidean&quot;), method = &quot;ward.D&quot; )$order
+
+  melted_mat &lt;- melt(pve_map)
+  colnames(melted_mat) &lt;- c(&quot;Covariate&quot;, &quot;PC&quot;,&quot;PVE&quot;)
+
+  #  Use factors to represent covariate and pc name
+  melted_mat$Covariate &lt;- factor(melted_mat$Covariate, levels = rownames(pve_map)[ord])
+  melted_mat$PC &lt;- factor(melted_mat$PC)
+  if (dim(pcs)[2] == 10) {
+    levels(melted_mat$PC) &lt;- c(levels(melted_mat$PC)[1],levels(melted_mat$PC)[3:10],levels(melted_mat$PC)[2])
+  }
+  if (dim(pcs)[2] == 21) {
+    levels(melted_mat$PC) &lt;- c(levels(melted_mat$PC)[1],levels(melted_mat$PC)[12],levels(melted_mat$PC)[15:21],levels(melted_mat$PC)[2:11], levels(melted_mat$PC)[13:14])
+  }
+
+  #  PLOT!
+  heatmap &lt;- ggplot(data=melted_mat, aes(x=Covariate, y=PC)) + geom_tile(aes(fill=PVE)) + scale_fill_gradient2(midpoint=-.05, guide=&quot;colorbar&quot;)
+  heatmap &lt;- heatmap + theme(text = element_text(size=14), panel.background = element_blank(), axis.text.x = element_text(angle = 90, vjust=.5))
+  heatmap &lt;- heatmap + labs(y=&quot;latent factor&quot;, title=title)
+
+  # Save File
+  ggsave(heatmap, file=output_file,width = 19,height=13.5,units=&quot;cm&quot;)
+}</code></pre>
+<p>Try it:</p>
+<p><strong>Total</strong></p>
+<pre class="r"><code>covariate_pc_pve_heatmap(pca_tot_df_fix, tot_covar_filt, &quot;../output/plots/TotalCovariatesagainstPCs.39ind.png&quot;, &quot;Total Covariates&quot;)</code></pre>
+<p>Try it: <strong>Nuclear</strong></p>
+<pre class="r"><code>covariate_pc_pve_heatmap(pca_nuc_df_fix, nuc_covar_filt, &quot;../output/plots/NuclearCovariatesagainstPCs.39ind.png&quot;, &quot;Nuclear Covariates&quot;)</code></pre>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.14.1
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] bindrcpp_0.2.2  reshape2_1.4.3  cowplot_0.9.3   workflowr_1.1.1
+ [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5    
+ [9] readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0  
+[13] tidyverse_1.2.1
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] evaluate_0.11     labeling_0.3      knitr_1.20       
+[25] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
+[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[31] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
+[34] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
+[37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[40] whisker_0.3-2     pkgconfig_2.0.2   xml2_1.2.0       
+[43] lubridate_1.7.4   assertthat_0.2.0  rmarkdown_1.10   
+[46] httr_1.3.1        rstudioapi_0.8    R6_2.3.0         
+[49] nlme_3.1-137      git2r_0.23.0      compiler_3.5.1   </code></pre>
+</div>
+
+<hr>
+<p>
+    
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
