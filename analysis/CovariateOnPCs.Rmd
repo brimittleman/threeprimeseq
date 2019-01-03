@@ -1,0 +1,148 @@
+---
+title: "MetaData to explain PCs"
+author: "Briana Mittleman"
+date: "1/3/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this analysis I will look at which collected covariates help explain the variation in the peak data. I am using code from Ben Strobers github, available at https://github.com/BennyStrobes/ipsc_preprocess_pipeline. Specifcially I am looking at the covariate_pc_pve_heatmap function.  
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+library(reshape2)
+```
+
+
+
+Load in coverage files:  
+
+```{r}
+total_Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[,7:45]
+nuclear_Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[,7:45]
+```
+
+
+Perform PCA:  
+**Total**
+```{r}
+pca_tot_peak=prcomp(total_Cov, center=T,scale=T)
+pca_tot_df=as.data.frame(pca_tot_peak$rotation) %>% rownames_to_column(var="lib") %>% select(1:11) %>% mutate(line=substr(lib,2,6))
+
+pca_tot_df_fix=bind_cols(line=pca_tot_df[,dim(pca_tot_df)[[2]]],pca_tot_df[,3:dim(pca_tot_df)[[2]]-1])
+```
+**Nuclear**  
+```{r}
+pca_nuc_peak=prcomp(nuclear_Cov, center=T,scale=T)
+pca_nuc_df=as.data.frame(pca_nuc_peak$rotation) %>% rownames_to_column(var="lib") %>% select(1:11) %>% mutate(line=substr(lib,2,6))
+
+pca_nuc_df_fix=bind_cols(line=pca_nuc_df[,dim(pca_nuc_df)[[2]]],pca_nuc_df[,3:dim(pca_nuc_df)[[2]]-1])
+```
+
+Get the line order as a vector  
+
+```{r}
+line_order=pca_nuc_df_fix[["line"]]
+```
+
+Load covariate File- filter out lines not yet sequenced and reorder. 
+
+```{r}
+covar=read.csv("../data/threePrimeSeqMetaData.csv")[1:78,]
+```
+
+Subset by fraction:  
+
+```{r}
+tot_covar=covar %>% filter(fraction=="total") %>% slice(match(line_order, line))
+
+nuc_covar=covar %>% filter(fraction=="nuclear")%>% slice(match(line_order, line))
+```
+
+Subset only a few covariates to try first:  
+```{r}
+tot_covar_filt=tot_covar %>% select(batch,comb_mapped,Sex, alive_avg, undiluted_avg, cycles)
+
+nuc_covar_filt=nuc_covar %>% select(batch,Sex, alive_avg, undiluted_avg, cycles)
+```
+
+
+Update Ben's Function for my data:
+```{r}
+covariate_pc_pve_heatmap <- function(pc_df, covariate_df, output_file, title) {
+  # Load in data
+  pcs <- pc_df
+  covs <- covariate_df
+
+
+# Remove unimportant columns
+  pcs <- as.matrix(pcs[,2:dim(pcs)[[2]]])
+  covs <- data.frame(as.matrix(covs[,1:dim(covs)[[2]]]))
+
+  # Initialize PVE heatmap
+  pve_map <- matrix(0, dim(covs)[2], dim(pcs)[2])
+  colnames(pve_map) <- colnames(pcs)
+  rownames(pve_map) <- colnames(covs)
+
+  # Loop through each PC, COV Pair and take correlation
+  num_pcs <- dim(pcs)[2]
+  num_covs <- dim(covs)[2]
+  for (num_pc in 1:num_pcs) {
+    for (num_cov in 1:num_covs) {
+      pc_vec <- pcs[,num_pc]
+      cov_vec <- covs[,num_cov]
+      lin_model <- lm(pc_vec ~ cov_vec)
+      pve_map[num_cov, num_pc] <- summary(lin_model)$adj.r.squared
+    }
+  }
+  pve_map
+  ord <- hclust( dist(scale(pve_map), method = "euclidean"), method = "ward.D" )$order
+
+  melted_mat <- melt(pve_map)
+  colnames(melted_mat) <- c("Covariate", "PC","PVE")
+
+  #  Use factors to represent covariate and pc name
+  melted_mat$Covariate <- factor(melted_mat$Covariate, levels = rownames(pve_map)[ord])
+  melted_mat$PC <- factor(melted_mat$PC)
+  if (dim(pcs)[2] == 10) {
+    levels(melted_mat$PC) <- c(levels(melted_mat$PC)[1],levels(melted_mat$PC)[3:10],levels(melted_mat$PC)[2])
+  }
+  if (dim(pcs)[2] == 21) {
+    levels(melted_mat$PC) <- c(levels(melted_mat$PC)[1],levels(melted_mat$PC)[12],levels(melted_mat$PC)[15:21],levels(melted_mat$PC)[2:11], levels(melted_mat$PC)[13:14])
+  }
+
+  #  PLOT!
+  heatmap <- ggplot(data=melted_mat, aes(x=Covariate, y=PC)) + geom_tile(aes(fill=PVE)) + scale_fill_gradient2(midpoint=-.05, guide="colorbar")
+  heatmap <- heatmap + theme(text = element_text(size=14), panel.background = element_blank(), axis.text.x = element_text(angle = 90, vjust=.5))
+  heatmap <- heatmap + labs(y="latent factor", title=title)
+
+  # Save File
+  ggsave(heatmap, file=output_file,width = 19,height=13.5,units="cm")
+}
+```
+
+
+Try it:  
+
+**Total**
+
+```{r}
+covariate_pc_pve_heatmap(pca_tot_df_fix, tot_covar_filt, "../output/plots/TotalCovariatesagainstPCs.39ind.png", "Total Covariates")
+```
+
+
+Try it:
+**Nuclear**  
+
+
+```{r}
+covariate_pc_pve_heatmap(pca_nuc_df_fix, nuc_covar_filt, "../output/plots/NuclearCovariatesagainstPCs.39ind.png", "Nuclear Covariates")
+
+```
+
+
