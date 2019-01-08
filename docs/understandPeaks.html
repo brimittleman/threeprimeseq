@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-11</p>
+<p><strong>Last updated:</strong> 2019-01-08</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,13 +346,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/035053cc723f45553a5d24d6fac63fb96cf51b19" target="_blank">035053c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/47f115d1f210a43737ca80316214f2568113f47f" target="_blank">47f115d</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -363,11 +364,13 @@ Untracked files:
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
     Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
@@ -433,7 +436,7 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
-    Modified:   analysis/QTLsbyPCnum.Rmd
+    Modified:   analysis/InvestigatePeak2GeneAssignment.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -477,6 +480,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/47f115d1f210a43737ca80316214f2568113f47f/analysis/understandPeaks.Rmd" target="_blank">47f115d</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-08
+</td>
+<td style="text-align:left;">
+code for deeptools plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/understandPeaks.html" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -715,12 +752,12 @@ PCA with batch and read count
 </ul>
 <p>These files are in /Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/PeakCounts on my computer.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -930,6 +967,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-16-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/afafcc3d9a18f0e90ef2fe28439d9a6d69d2ed24/docs/figure/understandPeaks.Rmd/unnamed-chunk-16-1.png" target="_blank">afafcc3</a>
 </td>
 <td style="text-align:left;">
@@ -985,6 +1033,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-17-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/afafcc3d9a18f0e90ef2fe28439d9a6d69d2ed24/docs/figure/understandPeaks.Rmd/unnamed-chunk-17-1.png" target="_blank">afafcc3</a>
@@ -1043,6 +1102,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-18-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/afafcc3d9a18f0e90ef2fe28439d9a6d69d2ed24/docs/figure/understandPeaks.Rmd/unnamed-chunk-18-1.png" target="_blank">afafcc3</a>
@@ -1104,6 +1174,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-20-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/afafcc3d9a18f0e90ef2fe28439d9a6d69d2ed24/docs/figure/understandPeaks.Rmd/unnamed-chunk-20-1.png" target="_blank">afafcc3</a>
 </td>
 <td style="text-align:left;">
@@ -1162,6 +1243,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-21-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/78484854eb375f2aa052113fcfe61def1bbe6460/docs/figure/understandPeaks.Rmd/unnamed-chunk-21-1.png" target="_blank">7848485</a>
 </td>
 <td style="text-align:left;">
@@ -1201,6 +1293,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-22-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-22-1.png" target="_blank">daa5818</a>
@@ -1262,6 +1365,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-23-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-23-1.png" target="_blank">daa5818</a>
 </td>
 <td style="text-align:left;">
@@ -1316,6 +1430,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-24-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-24-1.png" target="_blank">daa5818</a>
 </td>
 <td style="text-align:left;">
@@ -1367,6 +1492,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-25-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-25-1.png" target="_blank">daa5818</a>
@@ -1428,6 +1564,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-27-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-27-1.png" target="_blank">daa5818</a>
 </td>
 <td style="text-align:left;">
@@ -1478,6 +1625,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-27-2.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/daa58189478cc9777d322492e048d763e72beb27/docs/figure/understandPeaks.Rmd/unnamed-chunk-27-2.png" target="_blank">daa5818</a>
@@ -1542,6 +1700,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-30-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/3cd438e1ddb0995e1868d52f50115b9eaaac4335/docs/figure/understandPeaks.Rmd/unnamed-chunk-30-1.png" target="_blank">3cd438e</a>
 </td>
 <td style="text-align:left;">
@@ -1582,6 +1751,36 @@ OnePeak_nuc_cov_filt= OnePeak_nuc_cov %&gt;% filter(!(gene %in% OnePeakN_outlier
 
 ggplot(OnePeak_nuc_cov_filt, aes(x=log10(TPM), y= log10(X18486_N))) + geom_point() + geom_smooth(aes(x = log10(TPM), y = log10(X18486_N)),method = &quot;lm&quot;,se=T) + geom_text(aes(label=gene),hjust=0, vjust=0)</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-31-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-31-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(X18486_N),OnePeak_nuc_cov_filt)) </code></pre>
 <pre><code>
 Call:
@@ -1627,6 +1826,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-34-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/1549daf8dec15168503e2e42df5fa88cb49f6cc3/docs/figure/understandPeaks.Rmd/unnamed-chunk-34-1.png" target="_blank">1549daf</a>
@@ -1693,6 +1903,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-35-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/afafcc3d9a18f0e90ef2fe28439d9a6d69d2ed24/docs/figure/understandPeaks.Rmd/unnamed-chunk-35-1.png" target="_blank">afafcc3</a>
@@ -1774,6 +1995,36 @@ nucPeakCov_cdf=ggplot(nuclear_PercentPeakCov_melt, aes(x=value,col=variable))+ s
 
 ggplot(nuclear_PercentPeakCov_melt, aes(x=value,fill=variable, by=variable))+ geom_density(alpha=.4) + labs(y=&quot;Number of Genes&quot;, x=&quot;Number of Peaks&quot;, title=&quot;Nuclear: Number of Peaks to capture % of Gene count&quot;)</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-40-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-40-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Try this with total:</p>
 <pre class="r"><code>total_90Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[,1:7] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X18486_T) %&gt;% group_by(gene) %&gt;%  arrange(gene,desc(X18486_T)) %&gt;%  mutate(SUM = cumsum(X18486_T)) %&gt;% full_join(total_covBygene,by=&quot;gene&quot;) %&gt;% filter(GeneSum &gt;0) %&gt;% mutate(perSum=SUM/GeneSum) %&gt;% mutate(perSum_lag=lag(perSum,1)) %&gt;%  replace_na(list(perSum_lag =0)) %&gt;% filter(perSum_lag&lt;.9) %&gt;% tally() %&gt;% rename(&quot;90&quot;=n)
 
@@ -1816,6 +2067,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-43-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/1549daf8dec15168503e2e42df5fa88cb49f6cc3/docs/figure/understandPeaks.Rmd/unnamed-chunk-43-1.png" target="_blank">1549daf</a>
 </td>
 <td style="text-align:left;">
@@ -1850,7 +2112,6 @@ Briana Mittleman
 <pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/PeakCovPerGeneCountCDF.png&quot;,PeakCovPerGeneCountCDF)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <p>These look good. We could use this to filter. I would compute the percent of the gene each peak covers in each individual then I could filter peaks that cover <X% of the coverage in all individuals.  
-
 
 ##Q: What % of reads are assigned to a peak? Of these, what % of reads are assigned to a gene? 
 
@@ -1903,11 +2164,71 @@ be dropped</code></pre>
 fc_peaks_melt_PerRead$value=as.numeric(fc_peaks_melt_PerRead$value)</code></pre>
 <pre class="r"><code>ggplot(fc_peaks_melt_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos=&quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Percent of reads mapping to peaks by line and fraction&quot;, y=&quot;Reads mapping to peaks/all mapping reads&quot;)</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-49-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-49-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>It may be more interesting to look at this by fraction, with error bars.</p>
 <pre class="r"><code>fc_peaks_melt_PerRead_byfrac= fc_peaks_melt_PerRead %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
 <p>Plot this:</p>
 <pre class="r"><code>ggplot(fc_peaks_melt_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to peaks by fraction&quot;, y=&quot;Reads mapping to peaks/all mapping reads&quot;)</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-51-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-51-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Now I want to look at how many reads map to gene. I will use the transcript annotations that I used for the peaks.</p>
 <ul>
 <li>/project2/gilad/briana/genome_anotation_data/ncbiRefSeq_sm_noChr.sort.mRNA.bed</li>
@@ -1978,11 +2299,71 @@ fc_gene_peaks_PerRead$value=as.numeric(fc_gene_peaks_PerRead$value)</code></pre>
 <p>GGplot:</p>
 <pre class="r"><code>ggplot(fc_gene_peaks_PerRead,aes( x=line, y=value, by=fraction, fill=fraction))+ geom_col(pos=&quot;dodge&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Percent of reads mapping to Transcripts by line and fraction&quot;, y=&quot;Reads mapping to transcripts/all mapping reads&quot;)</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-58-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-58-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Do this by fraction.</p>
 <pre class="r"><code>fc_gene_peaks_PerRead_byfrac= fc_gene_peaks_PerRead %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))</code></pre>
 <p>Plot this:</p>
 <pre class="r"><code>ggplot(fc_gene_peaks_PerRead_byfrac,aes(x=fraction, y=mean, fill=fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Percent of reads mapping to Transcripts by fraction&quot;, y=&quot;Reads mapping to Transcripts/all mapping reads&quot;)</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-60-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-60-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>It would be nice to have this in one plot. In order to do this I want to join the PerReadPeak from both and melt. this way the variable can be peak or transcript.</p>
 <pre class="r"><code>fc_peaks_sel=fc_peaks %&gt;% select(c(&quot;line&quot;, &quot;fraction&quot;, &quot;PerReadPeak&quot;))
 
@@ -2001,8 +2382,67 @@ fcGene_and_Transcript_melt_sum=fcGene_and_Transcript_melt %&gt;% group_by(Fracti
 
 reads2featuresPlot</code></pre>
 <p><img src="figure/understandPeaks.Rmd/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-62-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/figure/understandPeaks.Rmd/unnamed-chunk-62-1.png" target="_blank">6da90e9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/reads2featuresPlot.png&quot;, reads2featuresPlot)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+<div id="misspriming" class="section level2">
+<h2>Misspriming:</h2>
+<p>Sheppard et al. cited 2 other papers, Beaudoing et al 2000 and Tian et al 2005. Thet excluded reads with 6 consequitive upstream As or those with 7 in a 10nt window. They did this at the read level.</p>
+<p>We need to think about if this is appropriate at the read level or if we can do it at the peak level</p>
+<div id="data-along-transcrip-bodies" class="section level3">
+<h3>Data along transcrip bodies</h3>
+<p>I can use deeptools to plot enrichment over gene bodies. The tool will automatically scale the genes/transcripts to be the same length.</p>
+<p>BothFracDTPlotGeneRegions.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPlotGeneRegions.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracDTPlotGeneRegions.out
+#SBATCH --error=BothFracDTPlotGeneRegions.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix scale-regions -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed -b 1000  -a 1000 --transcript_id_designator 3 -out /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/BothFrac_Transcript.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/BothFrac_Transcript.gz --plotTitle &quot;Combined Reads Transcript&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/BothFrac_Transcript.png
+</code></pre>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>

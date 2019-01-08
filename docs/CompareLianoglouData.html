@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-21</p>
+<p><strong>Last updated:</strong> 2019-01-08</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/479293dbaff3181baf092ae2257ac1cef89685d4" target="_blank">479293d</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/47f115d1f210a43737ca80316214f2568113f47f" target="_blank">47f115d</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -364,6 +364,7 @@ Untracked files:
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
     Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
     Untracked:  data/ChromHmmOverlap/
@@ -450,7 +451,6 @@ Unstaged changes:
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
-    Modified:   analysis/understandPeaks.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
@@ -480,6 +480,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/dfb2cb741021d7ae77715910327f53586714c40e/docs/CompareLianoglouData.html" target="_blank">dfb2cb7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-21
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -644,12 +661,12 @@ initializa comparison analysis
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ───────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(edgeR)</code></pre>
@@ -1469,9 +1486,276 @@ Rscript APAqtlpermCorrectQQplot_Annotated.R</code></pre>
 plot(tot.perm$ppval, tot.perm$bpval, xlab=&quot;Direct method&quot;, ylab=&quot;Beta approximation&quot;, main=&quot;Total Check plot&quot;)
 abline(0, 1, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/CompareLianoglouData.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-40-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/dfb2cb741021d7ae77715910327f53586714c40e/docs/figure/CompareLianoglouData.Rmd/unnamed-chunk-40-1.png" target="_blank">dfb2cb7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-21
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>tot_qtl_10= tot.perm %&gt;% filter(-log10(bh) &gt; 1) %&gt;% nrow()
 tot_qtl_10</code></pre>
 <pre><code>[1] 149</code></pre>
+</div>
+<div id="use-deeptools-to-look-at-enrichment-at-these-peaks" class="section level3">
+<h3>Use deeptools to look at enrichment at these peaks</h3>
+<p><a href="https://brimittleman.github.io/Net-seq/use_deeptools.html" class="uri">https://brimittleman.github.io/Net-seq/use_deeptools.html</a></p>
+<p>I can reuse code from the analysis above.</p>
+<p>I want to merge the total and nuclear bam files then convert them to bw.</p>
+<p>mergebamfiles.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mergebamfiles
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergebamfiles.out
+#SBATCH --error=mergebamfiles.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#total  
+
+samtools merge /project2/gilad/briana/threeprimeseq/data/mergedBams/Total_MergedBams.bam  /project2/gilad/briana/threeprimeseq/data/sort/*T-combined-sort.bam 
+
+#nuclear  
+samtools merge /project2/gilad/briana/threeprimeseq/data/mergedBams/Nuclear_MergedBams.bam  /project2/gilad/briana/threeprimeseq/data/sort/*N-combined-sort.bam   </code></pre>
+<p>sort and index the bams</p>
+<p>SortIndexMergedBams.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=SortIndexMergedBams
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=SortIndexMergedBams.out
+#SBATCH --error=SortIndexMergedBams.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/mergedBams/Total_MergedBams.bam &gt; /project2/gilad/briana/threeprimeseq/data/mergedBams/Total_MergedBams.sort.bam
+
+samtools index /project2/gilad/briana/threeprimeseq/data/mergedBams/Total_MergedBams.sort.bam
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/mergedBams/Nuclear_MergedBams.bam &gt; /project2/gilad/briana/threeprimeseq/data/mergedBams/Nuclear_MergedBams.sort.bam
+
+samtools index /project2/gilad/briana/threeprimeseq/data/mergedBams/Nuclear_MergedBams.sort.bam
+</code></pre>
+<p>Create bw from each</p>
+<p>mergeBam2BW.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mergeBam2BW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeBam2BW.out
+#SBATCH --error=mergeBam2BW.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#total  
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/mergedBams/Total_MergedBams.sort.bam -o /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw  
+
+#nuclear  
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/mergedBams/Nuclear_MergedBams.sort.bam -o /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw    
+</code></pre>
+<p>Make a deep tools plot by computing the matrix then making the plot:</p>
+<p>totalDTPlotLianoglouData.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=totalDTPlotLianoglouData.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=totalDTPlotLianoglouData.sh.out
+#SBATCH --error=totalDTPlotLianoglouData.sh.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort_tabsep.bed -b 1000 -a 1000 -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_LianoglouOKPeaks.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_LianoglouOKPeaks.gz -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_LianoglouOKPeaks.png</code></pre>
+<p>not recongiizing /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR.bed</p>
+<pre class="bash"><code>
+awk &#39;{ print ($1&quot;\t&quot;$2&quot;\t&quot;$3&quot;\t&quot;$4&quot;\t&quot;$5&quot;\t&quot;$6&quot;\t&quot;)  }&#39; /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort.bed &gt; /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort_tabsep.bed
+</code></pre>
+<p>Do this with the nuclear as well.</p>
+<p>nucelarDTPlotLianoglouData.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuclearDTPlotLianoglouData.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuclearDTPlotLianoglouData.sh.out
+#SBATCH --error=nuclearDTPlotLianoglouData.sh.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort_tabsep.bed -b 1000 -a 1000 --outFileName /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_LianoglouOKPeaks.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_LianoglouOKPeaks.gz --outFileName /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_LianoglouOKPeaks.png
+</code></pre>
+<p>I can do this in the same plot by making the matrix with both:</p>
+<p>BothFracDTPlotLianoglouData.sh</p>
+<pre class="bash"><code>
+#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPlotLianoglouData.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracDTPlotLianoglouData.out
+#SBATCH --error=BothFracDTPlotLianoglouData.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort_tabsep.bed -b 1000 -a 1000  -~out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_LianoglouOKPeaks.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_LianoglouOKPeaks.gz --refPointLabel &quot;Annotated PAS&quot; --plotTitle &quot;Combined Reads at annotated PAS&quot;  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_LianoglouOKPeaks.png
+</code></pre>
+<p>–regionsLabel</p>
+<p>As a control, I will make a plot using the TSS of genes. I will do this at a transcript level with the file ncbiRefSeq.mRNA.named_noCHR.bed. If the transcript is on the positive strand the TSS is the start and the start +1. If the transcript is on the negative strand the TSS is the end-1 and the end. I can make a bed file in python.</p>
+<p>refseqTSS.py</p>
+<pre class="bash"><code>inFile=open(&quot;/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed&quot;,&quot;r&quot;)
+outFile=open(&quot;/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed&quot;, &quot;w&quot;)
+
+for ln in inFile:
+  chrom, start, end, transcript, gene, strand = ln.split()
+  if strand ==&quot;+&quot;:
+    start_i=int(start)
+    end_i=int(start)+1
+    outFile.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom,start_i,end_i, transcript, gene, strand))
+  else:
+    start_i=int(end)-1
+    end_i=int(end)
+    outFile.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom,start_i,end_i, transcript, gene, strand))
+outFile.close</code></pre>
+<p>Use this in deeptools command.</p>
+<p>totalDTPlotTSS.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=totalDTPlotTSS.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=totalDTPlotTSS.out
+#SBATCH --error=totalDTPlotTSS.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed -b 1000 -a 1000 -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_RefSeqTSS.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_RefSeqTSS.gz -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_RefSeqTSS.png</code></pre>
+<p>Do this with the nuclear as well.</p>
+<p>nuclearDTPlotTSS.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nuclearDTPlotTSS.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=nuclearDTPlotTSS.out
+#SBATCH --error=nuclearDTPlotTSS.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed -b 1000 -a 1000 -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_RefSeqTSS.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_RefSeqTSS.gz -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_RefSeqTSS.png
+</code></pre>
+<p>Make both of these on the same plot like I did for the annotated clusters.</p>
+<p>BothFracDTPlotTSS.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPlotTSS.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracDTPlotTSS.out
+#SBATCH --error=BothFracDTPlotTSS.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_RefSeqTSS.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_RefSeqTSS.gz --refPointLabel &quot;TSS&quot; --plotTitle &quot;Combined Reads at TSS&quot; --regionsLabel &quot;RefSeq Transcript&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_RefseqTSS.png
+</code></pre>
+<p>I should also do this with our peaks. Then we will have all of them to compare:</p>
+<p>BothFracDTPlotmyPeaks.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPlotmyPeaks.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracDTPlotmyPeaks.out
+#SBATCH --error=BothFracDTPlotmyPeaks.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed -b 1000 -a 1000  --out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_myPeaks.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_myPeaks.gz --refPointLabel &quot;Called Peaks&quot; --plotTitle &quot;Combined Reads at All Called Peaks&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_myPeaks.png
+</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
