@@ -473,7 +473,6 @@ ggsave(file="../output/plots/QC_plots/PeakCovPerGeneCountCDF.png",PeakCovPerGene
 ```
 These look good. We could use this to filter. I would compute the percent of the gene each peak covers in each individual then I could filter peaks that cover <X% of the coverage in all individuals.  
 
-
 ##Q: What % of reads are assigned to a peak? Of these, what % of reads are assigned to a gene? 
 
 Within 50bp of an exon (more relevant for total)?
@@ -691,4 +690,45 @@ reads2featuresPlot
 
 ggsave(file="../output/plots/QC_plots/reads2featuresPlot.png", reads2featuresPlot)
 ```
+
+
+
+##Misspriming:
+
+Sheppard et al. cited 2 other papers, Beaudoing et al 2000 and Tian et al 2005. Thet excluded reads with 6 consequitive upstream As or those with 7 in a 10nt window. They did this at the read level. 
+
+We need to think about if this is appropriate at the read level or if we can do it at the peak level
+
+
+###Data along transcrip bodies  
+
+I can use deeptools to plot enrichment over gene bodies. The tool will automatically scale the genes/transcripts to be the same length.  
+
+
+BothFracDTPlotGeneRegions.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPlotGeneRegions.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracDTPlotGeneRegions.out
+#SBATCH --error=BothFracDTPlotGeneRegions.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix scale-regions -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.named_noCHR.bed -b 1000  -a 1000 --transcript_id_designator 3 -out /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/BothFrac_Transcript.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/BothFrac_Transcript.gz --plotTitle "Combined Reads Transcript" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/UnderstandPeaksQC/BothFrac_Transcript.png
+
+
+
+
+```
+
 
