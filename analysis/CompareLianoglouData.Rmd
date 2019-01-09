@@ -236,6 +236,64 @@ lianOverPeak.saveas("/project2/gilad/briana/threeprimeseq/data/LianoglouLCL/myPe
 No we have 227975 of our peaks out of 338141 overlapping. This is 67%
 
 
+I want to do an analysis where I sperate the overlapping and non overlapping peaks (using thier OK peaks) and look at read distributions. To do this I will pull in the overlapping peaks and intersect them with my full peak data. I want to make a data frame with the peak, if it is in their ok list, and the sum coverage in my data (ill do this for total)  
+
+
+```{r}
+OverlapPeaks=read.table("../data/LianoglouLCL/myPeaksInExtendedLiangoluLCL.bed",stringsAsFactors = F, col.names = c("chr", "start", "end", "name", "score", "strand", "gene")) %>% mutate(peak=paste("peak", name, sep = "")) 
+overlapPeaklist=as.vector(OverlapPeaks$peak)
+total_Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into=c("peak", "chrom", "start", "end", "strand", "gene"), sep=":") %>% mutate(inLian=ifelse(peak %in% overlapPeaklist, "Yes", "No"))
+
+total_Cov_num=total_Cov[,12:50] 
+PeakSum=rowSums(total_Cov_num)
+
+peakCovSum=as.data.frame(cbind(Annotated=total_Cov$inLian, PeakSum=PeakSum))
+peakCovSum$Annotated=as.factor(peakCovSum$Annotated)
+peakCovSum$PeakSum=as.numeric(as.character(peakCovSum$PeakSum))
+```
+
+Plot the data:  
+```{r}
+library(ggpubr)
+covbyannoation=ggplot(peakCovSum, aes(x=Annotated, y=log10(PeakSum + 1), by=Annotated, fill=Annotated))+ geom_violin() + stat_compare_means(method = "t.test") + labs(title="Sum of peak read count by annotation status", x="In Lianoglou Annitation")
+covbyannoation
+ggsave(file="../output/plots/PeakCoverageByAnnotationTotal.png", covbyannoation)
+```
+plot cdf  stat_ecdf(geom = "point")
+
+
+```{r}
+ggplot(peakCovSum, aes(x=log10(PeakSum + 1), by=Annotated, col=Annotated))+ stat_ecdf(geom="point")  + labs(title="Sum of peak read count by annotation status")
+```
+
+I will do this in nuclear. I expect results to be a bit difference because we expect some peaks not to be in the annotation.  
+
+```{r}
+nuc_Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into=c("peak", "chrom", "start", "end", "strand", "gene"), sep=":") %>% mutate(inLian=ifelse(peak %in% overlapPeaklist, "Yes", "No"))
+
+nuc_Cov_num=nuc_Cov[,12:50] 
+PeakSumNuc=rowSums(nuc_Cov_num)
+
+peakCovSumNuc=as.data.frame(cbind(Annotated=nuc_Cov$inLian, PeakSum=PeakSumNuc))
+peakCovSumNuc$Annotated=as.factor(peakCovSumNuc$Annotated)
+peakCovSumNuc$PeakSum=as.numeric(as.character(peakCovSumNuc$PeakSum))
+```
+
+
+```{r}
+covbyannoationnuc=ggplot(peakCovSumNuc, aes(x=Annotated, y=log10(PeakSum + 1), by=Annotated, fill=Annotated))+ geom_violin() + stat_compare_means(method = "t.test") + labs(title="Sum of peak read count by annotation status- Nuclear", x="In Lianoglou Annitation")
+covbyannoationnuc
+```
+
+look at them next to eachother:  
+
+```{r}
+
+```
+
+
+
+
 ##Change Annotations to full atlas  
 
 
@@ -1079,3 +1137,150 @@ plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/L
 
 ```
 
+###Use Deeptools to make the same plots but with RNA seq  
+First I need to merge the bam files. 
+
+mergeRNAseqbamfiles.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeRNAseqbamfiles
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeRNAseqbamfiles.out
+#SBATCH --error=mergeRNAseqbamfiles.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+samtools merge /project2/gilad/briana/threeprimeseq/data/rnaseq_bam/RNAseqGeuvadis_STAR_6samp_MergedBams.bam /project2/yangili1/LCL/RNAseqGeuvadisBams/RNAseqGeuvadis_STAR_184*.final.bam
+
+```
+
+
+Sort and index the bam file:  
+
+SortIndexRNAseqMergedBams.sh 
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=SortIndexRNAseqMergedBams
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=SortIndexRNAseqMergedBams.out
+#SBATCH --error=SortIndexRNAseqMergedBams.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/rnaseq_bam/RNAseqGeuvadis_STAR_6samp_MergedBams.bam > /project2/gilad/briana/threeprimeseq/data/rnaseq_bam/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bam
+
+samtools index /project2/gilad/briana/threeprimeseq/data/rnaseq_bam/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bam
+
+```
+
+Make BW file from the bam  
+
+mergeRNAseqBam2BW.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeRNAseqBam2BW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeRNAseqBam2BW.out
+#SBATCH --error=mergeRNAseqBam2BW.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/rnaseq_bam/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bam -o /project2/gilad/briana/threeprimeseq/data/rnaseq_bw//RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw  
+
+```
+Run the 3 deeptools plots  
+
+RNAseqDTPlotLianoglouData.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=RNAseqDTPlotLianoglouData.sh.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNAseqDTPlotLianoglouData.out
+#SBATCH --error=RNAseqDTPlotLianoglouData.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw//RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/LianoglouLCL/SRR1005684.3pSites.highconfidence.ip.OK_noCHR_sort_tabsep.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_LianoglouOKPeaks.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_LianoglouOKPeaks.gz --refPointLabel "Annotated PAS" --plotTitle "Combined RNAseq Reads at annotated PAS"  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_LianoglouOKPeaks.png
+
+```
+
+RNAseqDTPlotTSS.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RNAseqDTPlotTSS.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNAseqDTPlotTSS.out
+#SBATCH --error=RNAseqDTPlotTSS.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw//RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_RefSeqTSS.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_RefSeqTSS.gz --refPointLabel "TSS" --plotTitle "Combined RNAseq Reads at TSS" --regionsLabel "RefSeq Transcript" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_RefSeqTSS.png  
+
+
+```
+
+
+
+RNAseqDTPlotmyPeaks.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RNAseqDTPlotmyPeaks.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNAseqDTPlotmyPeaks.out
+#SBATCH --error=RNAseqDTPlotmyPeaks.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw//RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks.gz --refPointLabel "Called Peaks" --plotTitle "Combined RNAseq Reads at All Called Peaks" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks.png
+
+```
