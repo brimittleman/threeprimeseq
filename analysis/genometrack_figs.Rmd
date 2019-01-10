@@ -96,12 +96,40 @@ bedGraphToBigWig /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuva
 make_tracks_file --trackFiles  /project2/gilad/briana/threeprimeseq/data/bigwig/YL-SP-19257-T-combined.bw  /project2/gilad/briana/threeprimeseq/data/bigwig/YL-SP-19257-N-combined.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_19257.final.sort.bw /project2/gilad/briana/genome_anotation_data/NCBI_refseq_forPyGenTrack_sort.bed -o /project2/gilad/briana/threeprimeseq/data/genome_tracks/NA19257.RNA.BW.tracks.ini
 
 
-pyGenomeTracks --tracks /project2/gilad/briana/threeprimeseq/data/genome_tracks/NA19257.RNA.BW.tracks.ini --region chr17:27900300-27916800 --outFileName /project2/gilad/briana/threeprimeseq/data/genome_tracks/git1_19257_rna_BW_.png
+pyGenomeTracks --tracks /project2/gilad/briana/threeprimeseq/data/genome_tracks/NA19257.RNA.BW.tracks.ini --region chr17:27900300-27916800 --outFileName /project2/gilad/briana/threeprimeseq/data/genome_tracks/git1_19257_rna_BW.png
 ```
 
 
 Zoom into UTR for all individuals to show replicability  
 ```{bash,eval=F}
 pyGenomeTracks --tracks /project2/gilad/briana/threeprimeseq/data/genome_tracks/allInd.BW.tracks.ini --region chr17:27900300-27902000 --outFileName /project2/gilad/briana/threeprimeseq/data/genome_tracks/git1_allind_UTR_BW_.png
+```
+
+
+##merged bam file  
+
+```{bash,eval=F}
+
+make_tracks_file --trackFiles /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw /project2/gilad/briana/genome_anotation_data/NCBI_refseq_forPyGenTrack_sort.bed -o /project2/gilad/briana/threeprimeseq/data/genome_tracks/MergedBW.RNA.BW.tracks.ini
+
+
+pyGenomeTracks --tracks /project2/gilad/briana/threeprimeseq/data/genome_tracks/MergedBW.RNA.BW.tracks.ini --region chr17:27900300-27916800 --outFileName /project2/gilad/briana/threeprimeseq/data/genome_tracks/git1_MergedBW_rna_BW.png
+
+```
+
+zoom in with this one:  
+
+```{bash,eval=F}
+pyGenomeTracks --tracks /project2/gilad/briana/threeprimeseq/data/genome_tracks/MergedBW.RNA.BW.tracks.ini --region chr17:27900300-27902000 --outFileName /project2/gilad/briana/threeprimeseq/data/genome_tracks/git1_UTR_MergedBW_rna_BW.png
+
+```
+
+
+Specificity plot? RNA without 3'  
+
+
+```{bash,eval=F}
+pyGenomeTracks --tracks /project2/gilad/briana/threeprimeseq/data/genome_tracks/MergedBW.RNA.BW.tracks.ini --region chr3:169482033-169483209 --outFileName /project2/gilad/briana/threeprimeseq/data/genome_tracks/terc_MergedBW_rna_BW.png
+
 ```
 
