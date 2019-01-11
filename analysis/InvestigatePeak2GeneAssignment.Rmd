@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(workflowr)
 library(cowplot)
+library(reshape2)
 library(tximport)
 ```
 
@@ -1063,9 +1064,7 @@ Remove rows with 0 counts and Plot:
 
 ```{r}
 TXN_NormGene_4kb_n=TXN_NormGene_4kb %>% filter(TPM>0) %>% filter(GeneSumSt>0)
-corr_18486Tot_noOver4kb=ggplot(TXN_NormGene_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.34") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')
-
-#+geom_text(aes(label=gene),hjust=0, vjust=0)
+corr_18486Tot_noOver4kb=ggplot(TXN_NormGene_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.34") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') +geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Tot_noOver4kb       
 summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_4kb_n)) 
@@ -1089,9 +1088,7 @@ Remove rows with 0 counts and Plot:
 
 ```{r}
 TXN_NormGene_noOverlap_4kb_n=TXN_NormGene_noOverlap_4kb %>% filter(TPM>0) %>% filter(GeneSumSt>0)
-corr_18486Nuc_4kb=ggplot(TXN_NormGene_noOverlap_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.26") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')
-
-#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+corr_18486Nuc_4kb=ggplot(TXN_NormGene_noOverlap_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title="Nuclear", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = "lm") + annotate("text",x=3, y=5,label="R2=.26") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Nuc_4kb       
 summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_4kb_n)) 
@@ -1188,7 +1185,9 @@ TXN_abund_combLibs_tot=TXN_abund %>% inner_join(Alllib_Tot_nonOverlapEX_bygene,b
 
 
 TXN_abund_combLibs_tot_n0=TXN_abund_combLibs_tot %>% filter(TPM>0) %>% filter(GeneSumNorm>0)
-corr_AllLibTot_noOver=ggplot(TXN_abund_combLibs_tot_n0, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Total All ind", x="log10 RNA seq TPM", y="log10 Peak count sum per gene All Ind.")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=-2, y=5,label="R2=.55") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_text(aes(label=gene),hjust=0, vjust=0)
+corr_AllLibTot_noOver=ggplot(TXN_abund_combLibs_tot_n0, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Total All ind", x="log10 RNA seq TPM", y="log10 Peak count sum per gene All Ind.")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=-2, y=5,label="R2=.55") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_AllLibTot_noOver       
 summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_abund_combLibs_tot_n0)) 
@@ -1243,3 +1242,79 @@ summary(lm(TotCounts_nonOverlapEX$X19238_T~TotCounts_nonOverlapEX$X19225_T))
 plot(log10(TotCounts_nonOverlapEX$X19238_T)~log10(TotCounts_nonOverlapEX$X19225_T))
 ```
 
+
+Do this withough filter:  
+
+```{r}
+
+total_Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc", header=T, stringsAsFactors = F)[7:45]
+
+plot(log10(total_Cov$X19238_T)~log10(total_Cov$X19225_T))
+
+summary(lm(total_Cov$X19238_T~total_Cov$X19225_T))
+```
+
+Do this with ggplot  
+
+```{r}
+ggplot(total_Cov, aes(x = log10(X19238_T) , y=log10(X19225_T))) + geom_point() + labs(title="Relationship between 2 Total 3' Seq Peak Counts", x="log10(19238)",y="log10(19225)")
+```
+
+I want to do this for all and make a heat plot with the correlations:  
+
+
+```{r}
+cor_function=function(data){
+  corr_matrix= matrix(0,39,39)
+  for (i in seq(1,39)){
+    for (j in seq(1,39)){
+      x=cor.test(data[,i],  data[,j], method='pearson')
+      cor_ij=as.numeric(x$estimate)
+      corr_matrix[i,j]=cor_ij
+    }
+  }
+  return(corr_matrix)
+}
+```
+
+```{r}
+total_corr=cor_function(as.matrix(total_Cov))
+```
+
+```{r}
+total_corr_melt=melt(total_corr)
+ggheatmap=ggplot(data = total_corr_melt, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title="Library Peak Count Correlation Heatplot: Total", x="", y="")+ 
+  scale_fill_continuous(limits=c(0, 1), breaks=seq(0,1,by=0.15),name = "Correlation",
+                      low = "#FFFFFF",
+                      high = "darkviolet")
+
+ggheatmap
+```
+mean correlation .89  
+
+
+DO this for nuclear:  
+
+```{r}
+nuclear_Cov=read.table("../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc", header=T, stringsAsFactors = F)[7:45]  
+```
+
+```{r}
+nuclear_corr=cor_function(as.matrix(nuclear_Cov))
+
+nuclear_corr_melt=melt(nuclear_corr)
+ggheatmap_nuc=ggplot(data = nuclear_corr_melt, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title="Library Peak Count Correlation Heatplot: Nuclear", x="", y="")+ 
+  scale_fill_continuous(limits=c(0, 1), breaks=seq(0,1,by=0.15),name = "Correlation",
+                      low = "#FFFFFF",
+                      high = "deepskyblue3")
+
+ggheatmap_nuc
+
+```
+
+
+Mean correlation is .74
