@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/42fcbdd1ff21ebf0e08b3df26501f37430f2290c" target="_blank">42fcbdd</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/ec05274615efa5e97d1cb448731ad09d9b229750" target="_blank">ec05274</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -439,7 +439,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
-    Modified:   analysis/InvestigatePeak2GeneAssignment.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -489,6 +488,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ec05274615efa5e97d1cb448731ad09d9b229750/analysis/mispriming_approach.Rmd" target="_blank">ec05274</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+<td style="text-align:left;">
+approach to extract bases
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/580e24472c52b98efb062d7a15c0b436b2079a78/docs/mispriming_approach.html" target="_blank">580e244</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/42fcbdd1ff21ebf0e08b3df26501f37430f2290c/analysis/mispriming_approach.Rmd" target="_blank">42fcbdd</a>
 </td>
 <td style="text-align:left;">
@@ -529,14 +562,17 @@ def main(Fin, Fout):
     if strand==&quot;+&quot;:
       start_new=int(start)-10
       if start_new &lt;= 1:
-        start_new = 1 
+        start_new = 0 
       end_new= int(start)
+      if end_new == 0:
+        end_new=1
       outBed.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start_new, end_new, name, score, strand))
     if strand == &quot;-&quot;:
       start_new=int(end)
       end_new=int(end) + 10
       if end_new &gt;= length_dic[chrom]:
-        end_new = length_dic[chrom]  
+        end_new = length_dic[chrom]
+        start_new=end_new-1
       outBed.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start_new, end_new, name, score, strand))
   outBed.close()  
 
@@ -571,6 +607,7 @@ for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/*-combined-sort
             python  Upstream10Bases.py  $i 
         done
 </code></pre>
+<p>I need to sort the files:</p>
 <p>Next step is running the nuc function to get the sequences of the positions I just put in the bed files.</p>
 <p>bedtools nuc</p>
 <ul>
@@ -594,10 +631,29 @@ for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/*-combined-sort
 #SBATCH --mem=36G
 #SBATCH --mail-type=END
 
-for i in $( ls /project2/gilad/briana/threeprimeseq/data/bed_10up/*);do
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_10up/*);do
    describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/-combined-sort10up.bed$//&quot;)
-   bedtools nuc -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed $i &gt; /project2/gilad/briana/threeprimeseq/data/nuc_10up/TenBaseUP.${describer}.txt   
+   bedtools nuc -s -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed $i &gt; /project2/gilad/briana/threeprimeseq/data/nuc_10up/TenBaseUP.${describer}.txt   
 done</code></pre>
+<div id="extra-not-using" class="section level2">
+<h2>Extra not using</h2>
+<p>sort_10upbedFile.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=sort_10upbedFile
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=sort_10upbedFile.out
+#SBATCH --error=sort_10upbedFile.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+for i in $( ls /project2/gilad/briana/threeprimeseq/data/bed_10up/*);do
+  describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/-combined-sort10up.bed$//&quot;)
+  sort -k 1,1 -k2,2n $i &gt; /project2/gilad/briana/threeprimeseq/data/bed_10up_sort/YL-SP-${describer}-combined-sort10up.sort.bed
+  done</code></pre>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
