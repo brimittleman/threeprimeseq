@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-13</p>
+<p><strong>Last updated:</strong> 2019-01-11</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,28 +347,33 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2a6944b21270570229a60a1d83f84ccbcd6644bc" target="_blank">2a6944b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d64db58222b47c184a4253170ea8b6fdfe262cec" target="_blank">d64db58</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
     Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/PreAshExplore.Rmd
+    Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
     Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
@@ -379,6 +384,7 @@ Untracked files:
     Untracked:  data/UnderstandPeaksQC/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/YL_QTL_test/
     Untracked:  data/apaExamp/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
@@ -434,7 +440,7 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
-    Modified:   analysis/QTLsbyPCnum.Rmd
+    Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -443,6 +449,7 @@ Unstaged changes:
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
@@ -479,6 +486,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d64db58222b47c184a4253170ea8b6fdfe262cec/analysis/InvestigatePeak2GeneAssignment.Rmd" target="_blank">d64db58</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+<td style="text-align:left;">
+add correlation plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/InvestigatePeak2GeneAssignment.html" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -621,12 +662,12 @@ Build site.
 <p></details></p>
 <hr />
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -638,6 +679,12 @@ Attaching package: &#39;cowplot&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:ggplot2&#39;:
 
     ggsave</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
 <pre class="r"><code>library(tximport)</code></pre>
 <p>In looking at correlations and some examples, there is evidence the peak to gene assignment may be a problem. I am going to visualize the peaks in IGV. I will name them by the gene and look at them in the browser.</p>
 <p>The peak to gene annotations used in the feature counts to map reads back to the peaks is the following:<br />
@@ -1534,6 +1581,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-49-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c3fd2c47561749e66251dd7c462d1fd3c9a8a8a5/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-49-1.png" target="_blank">c3fd2c4</a>
 </td>
 <td style="text-align:left;">
@@ -1619,6 +1677,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-52-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c3fd2c47561749e66251dd7c462d1fd3c9a8a8a5/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-52-1.png" target="_blank">c3fd2c4</a>
 </td>
 <td style="text-align:left;">
@@ -1702,6 +1771,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-55-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/cbf986cbdc4f24e92c4c8be50f550dcf9257c7b5/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-55-1.png" target="_blank">cbf986c</a>
@@ -1869,9 +1949,7 @@ fout.close()
 <pre class="r"><code>TXN_NormGene_4kb=TXN_abund %&gt;% inner_join(total_Cov_18486_4kb,by=&quot;gene&quot;)</code></pre>
 <p>Remove rows with 0 counts and Plot:</p>
 <pre class="r"><code>TXN_NormGene_4kb_n=TXN_NormGene_4kb %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
-corr_18486Tot_noOver4kb=ggplot(TXN_NormGene_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Total&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.34&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;)
-
-#+geom_text(aes(label=gene),hjust=0, vjust=0)
+corr_18486Tot_noOver4kb=ggplot(TXN_NormGene_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Total&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.34&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) +geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Tot_noOver4kb       </code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-65-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1891,6 +1969,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-65-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c3fd2c47561749e66251dd7c462d1fd3c9a8a8a5/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-65-1.png" target="_blank">c3fd2c4</a>
@@ -1942,9 +2031,7 @@ sample estimates:
 <pre class="r"><code>TXN_NormGene_noOverlap_4kb=TXN_abund %&gt;% inner_join(nuclear_Cov_18486_4kb,by=&quot;gene&quot;)</code></pre>
 <p>Remove rows with 0 counts and Plot:</p>
 <pre class="r"><code>TXN_NormGene_noOverlap_4kb_n=TXN_NormGene_noOverlap_4kb %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumSt&gt;0)
-corr_18486Nuc_4kb=ggplot(TXN_NormGene_noOverlap_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Nuclear&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.26&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;)
-
-#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+corr_18486Nuc_4kb=ggplot(TXN_NormGene_noOverlap_4kb_n, aes(x=log10(TPM), y= log10(GeneSumSt))) + geom_point() + labs(title=&quot;Nuclear&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumSt)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=3, y=5,label=&quot;R2=.26&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) + geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Nuc_4kb       </code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-68-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1964,6 +2051,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-68-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c3fd2c47561749e66251dd7c462d1fd3c9a8a8a5/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-68-1.png" target="_blank">c3fd2c4</a>
@@ -2021,6 +2119,36 @@ corr_18486Nuc_4kb_noOVer=ggplot(TXN_NormGene_noOverlap_4kb_noOver, aes(x=log10(T
        
 corr_18486Nuc_4kb_noOVer </code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-69-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-69-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-69-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_4kb_noOver))</code></pre>
 <pre><code>
 Call:
@@ -2055,8 +2183,68 @@ sample estimates:
 <p>Look at curves for the TPM and standards.</p>
 <pre class="r"><code> ggplot(TXN_NormGene_noOverlap_4kb_noOver, aes(x=log10(GeneSumSt))) + geom_density()</code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-70-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-70-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-70-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(TXN_NormGene_noOverlap_4kb_noOver, aes(x=log10(TPM))) + geom_density()</code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-70-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-70-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-70-2.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="separate-by-percentile-gene-expression" class="section level2">
 <h2>Separate by percentile gene expression</h2>
@@ -2074,6 +2262,36 @@ corr_18497Tot_noOver=ggplot(TXN_NormGene_noOverlap_497, aes(x=log10(TPM), y= log
        
 corr_18497Tot_noOver       </code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-73-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-73-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-73-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumSt),TXN_NormGene_noOverlap_497)) </code></pre>
 <pre><code>
 Call:
@@ -2127,10 +2345,42 @@ TXN_abund_combLibs_tot=TXN_abund %&gt;% inner_join(Alllib_Tot_nonOverlapEX_bygen
 
 
 TXN_abund_combLibs_tot_n0=TXN_abund_combLibs_tot %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumNorm&gt;0)
-corr_AllLibTot_noOver=ggplot(TXN_abund_combLibs_tot_n0, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title=&quot;Total All ind&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene All Ind.&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=-2, y=5,label=&quot;R2=.55&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) + geom_text(aes(label=gene),hjust=0, vjust=0)
+corr_AllLibTot_noOver=ggplot(TXN_abund_combLibs_tot_n0, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title=&quot;Total All ind&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene All Ind.&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=-2, y=5,label=&quot;R2=.55&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;)
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_AllLibTot_noOver       </code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-74-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-74-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-74-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_abund_combLibs_tot_n0)) </code></pre>
 <pre><code>
 Call:
@@ -2186,6 +2436,36 @@ corr_AllLibNuc_noOver=ggplot(TXN_abund_combLibs_Nuc_n0, aes(x=log10(TPM), y= log
        
 corr_AllLibNuc_noOver       </code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-75-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-75-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-75-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_abund_combLibs_Nuc_n0)) </code></pre>
 <pre><code>
 Call:
@@ -2282,6 +2562,101 @@ Multiple R-squared:  0.8882,    Adjusted R-squared:  0.8882
 F-statistic: 6.555e+05 on 1 and 82478 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre class="r"><code>plot(log10(TotCounts_nonOverlapEX$X19238_T)~log10(TotCounts_nonOverlapEX$X19225_T))</code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-76-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-76-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-76-1.png" target="_blank">69b5162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2018-12-13
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Do this withough filter:</p>
+<pre class="r"><code>total_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total_fixed.fc&quot;, header=T, stringsAsFactors = F)[7:45]
+
+plot(log10(total_Cov$X19238_T)~log10(total_Cov$X19225_T))</code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-77-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(lm(total_Cov$X19238_T~total_Cov$X19225_T))</code></pre>
+<pre><code>
+Call:
+lm(formula = total_Cov$X19238_T ~ total_Cov$X19225_T)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-28832.1     -8.0     -6.3     -2.6  25408.6 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        6.3159764  0.2977179   21.21   &lt;2e-16 ***
+total_Cov$X19225_T 0.8266119  0.0004396 1880.39   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 172.9 on 338139 degrees of freedom
+Multiple R-squared:  0.9127,    Adjusted R-squared:  0.9127 
+F-statistic: 3.536e+06 on 1 and 338139 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Do this with ggplot</p>
+<pre class="r"><code>ggplot(total_Cov, aes(x = log10(X19238_T) , y=log10(X19225_T))) + geom_point() + labs(title=&quot;Relationship between 2 Total 3&#39; Seq Peak Counts&quot;, x=&quot;log10(19238)&quot;,y=&quot;log10(19225)&quot;)</code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-78-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I want to do this for all and make a heat plot with the correlations:</p>
+<pre class="r"><code>cor_function=function(data){
+  corr_matrix= matrix(0,39,39)
+  for (i in seq(1,39)){
+    for (j in seq(1,39)){
+      x=cor.test(data[,i],  data[,j], method=&#39;pearson&#39;)
+      cor_ij=as.numeric(x$estimate)
+      corr_matrix[i,j]=cor_ij
+    }
+  }
+  return(corr_matrix)
+}</code></pre>
+<pre class="r"><code>total_corr=cor_function(as.matrix(total_Cov))</code></pre>
+<pre class="r"><code>total_corr_melt=melt(total_corr)
+ggheatmap=ggplot(data = total_corr_melt, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title=&quot;Library Peak Count Correlation Heatplot: Total&quot;, x=&quot;&quot;, y=&quot;&quot;)+ 
+  scale_fill_continuous(limits=c(0, 1), breaks=seq(0,1,by=0.15),name = &quot;Correlation&quot;,
+                      low = &quot;#FFFFFF&quot;,
+                      high = &quot;darkviolet&quot;)
+
+ggheatmap</code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-81-1.png" width="672" style="display: block; margin: auto;" /> mean correlation .89</p>
+<p>DO this for nuclear:</p>
+<pre class="r"><code>nuclear_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[7:45]  </code></pre>
+<pre class="r"><code>nuclear_corr=cor_function(as.matrix(nuclear_Cov))
+
+nuclear_corr_melt=melt(nuclear_corr)
+ggheatmap_nuc=ggplot(data = nuclear_corr_melt, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title=&quot;Library Peak Count Correlation Heatplot: Nuclear&quot;, x=&quot;&quot;, y=&quot;&quot;)+ 
+  scale_fill_continuous(limits=c(0, 1), breaks=seq(0,1,by=0.15),name = &quot;Correlation&quot;,
+                      low = &quot;#FFFFFF&quot;,
+                      high = &quot;deepskyblue3&quot;)
+
+ggheatmap_nuc</code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-83-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Mean correlation is .74</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -2301,10 +2676,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  tximport_1.8.0  cowplot_0.9.3   workflowr_1.1.1
- [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5    
- [9] readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0  
-[13] tidyverse_1.2.1
+ [1] bindrcpp_0.2.2  tximport_1.8.0  reshape2_1.4.3  cowplot_0.9.3  
+ [5] workflowr_1.1.1 forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
+ [9] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
+[13] ggplot2_3.0.0   tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
