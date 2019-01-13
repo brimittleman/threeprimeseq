@@ -22,6 +22,8 @@ I will assess the problem then will create a blacklist to get rid of the reads. 
 I can start by updating 6up_bed.sh. To make a new script that grabs the upstream 10 bases. I will look for7 of 10 T's in this region. I am going to do this in python because it is more straight forward to read then an awk script. I can also wrap it easier this way. I can also account for negative values and values larger than the chromosome this way. 
 
 
+##Retreive 10 upstream bases for each read
+
 Upstream10Bases.py
 ```{bash,eval=F}
 #python  
@@ -131,9 +133,159 @@ for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_10up/*);do
 done
 ```
 
+##Evaluate problem in 1 line  
+
+
+```{r}
+library(data.table)
+require(ggseqlogo)
+library(workflowr)
+library(tidyverse)
+```
+
+###Nuclear 
+Goals for this section:  
+
+
+* make a seq logo plot 
+
+I made logo plot in https://brimittleman.github.io/Net-seq/explore_umi_usage.html with ggseq logo. 
+
+	        
+	        
+```{r}
+res_colNames=c("chrom","start", "end", "name", "score", "strand", "pctAT", "pctGC", "A", "C", "G", "T", "N", "Other", "Length", "Seq")
+```
+
+
+```{r}
+
+nuc_18486_N= fread("../data/nuc_10up/TenBaseUP.18486-N.txt", col.names = res_colNames)
+```
+Extract seq for seq logo plot:  
+
+```{r}
+#filter for full 10 bp  - removes 422 reads (too close to ends)
+nuc_18486_N=nuc_18486_N %>% filter(Length==10)
+seqs_18486N= nuc_18486_N$Seq
+```
+Scheme for logo plot:  
+
+
+```{r}
+cs1 = make_col_scheme(chars=c('A', 'T', 'C', 'G', 'N'), groups=c('A', 'T', 'C', 'G', 'N'), cols=c('red', 'blue', 'green', 'yellow', 'pink'))
+```
+Create plot:  
+
+```{r}
+ggseqlogo(seqs_18486N, col_scheme=cs1,  method = 'prob')
+```
+
+This is not overwhelming:  
+
+
+* count number of non passing reads with 6 T's in a row
+
+```{r}
+SixT="TTTTTT"
+nuc_18486_N_6Ts=nuc_18486_N %>% filter(grepl(SixT, Seq)) 
+
+perc_Bad6T= nrow(nuc_18486_N_6Ts)/nrow(nuc_18486_N)
+perc_Bad6T
+```
+
+
+* count number of non passing with 7 of 10 T's
+
+
+```{r}
+nuc_18486_N_70perc= nuc_18486_N%>% mutate(percT=T/Length) %>% filter(percT>=.7) 
+
+perc_Bad70= nrow(nuc_18486_N_70perc)/nrow(nuc_18486_N)
+
+perc_Bad70
+```
 
 
 
+* count number of total non passing reads  
+
+For this I need to use an or statement.  
+
+```{r}
+nuc_18486_N_bad=  nuc_18486_N%>% mutate(percT=T/Length) %>% filter(percT>=.7 |grepl(SixT, Seq) )
+
+perc_Bad=nrow(nuc_18486_N_bad)/nrow(nuc_18486_N)
+
+perc_Bad
+```
+This shows us that 46% of reads pass these filters.  
+
+###Total  
+
+```{r}
+nuc_18486_T= fread("../data/nuc_10up/TenBaseUP.18486-T.txt", col.names = res_colNames)
+``` 
+
+* Seqlogo plot  
+
+Filter less than 10 base pair in length for seqlogo  
+
+```{r}
+nuc_18486_T=nuc_18486_T %>% filter(Length==10)
+seqs_18486T= nuc_18486_T$Seq
+```
+
+
+Create plot:  
+
+```{r}
+ggseqlogo(seqs_18486T, col_scheme=cs1,  method = 'prob')
+```
+
+
+
+* count number of non passing reads with 6 T's in a row
+
+```{r}
+
+nuc_18486_T_6Ts=nuc_18486_T %>% filter(grepl(SixT, Seq)) 
+
+perc_Bad6T_tot= nrow(nuc_18486_T_6Ts)/nrow(nuc_18486_T)
+perc_Bad6T_tot
+```
+
+
+* count number of non passing with 7 of 10 T's
+
+
+```{r}
+nuc_18486_T_70perc= nuc_18486_T%>% mutate(percT=T/Length) %>% filter(percT>=.7) 
+
+perc_Bad70_tot= nrow(nuc_18486_T_70perc)/nrow(nuc_18486_T)
+
+perc_Bad70_tot
+```
+
+
+
+* count number of total non passing reads  
+
+For this I need to use an or statement.  
+
+```{r}
+nuc_18486_T_bad=  nuc_18486_T%>% mutate(percT=T/Length) %>% filter(percT>=.7 |grepl(SixT, Seq) )
+
+perc_Bad_tot=nrow(nuc_18486_T_bad)/nrow(nuc_18486_T)
+
+perc_Bad_tot
+```
+This shows us that 25% of reads pass these filters   
+
+
+
+##For all
+I may have to use python when i look at all beacuse this is not fast.
 
 ##Extra not using
 
@@ -155,3 +307,5 @@ for i in $( ls /project2/gilad/briana/threeprimeseq/data/bed_10up/*);do
   sort -k 1,1 -k2,2n $i > /project2/gilad/briana/threeprimeseq/data/bed_10up_sort/YL-SP-${describer}-combined-sort10up.sort.bed
   done
 ```
+
+
