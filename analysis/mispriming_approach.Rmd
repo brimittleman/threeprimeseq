@@ -207,19 +207,29 @@ perc_Bad70
 ```
 
 
-
 * count number of total non passing reads  
 
 For this I need to use an or statement.  
 
 ```{r}
-nuc_18486_N_bad=  nuc_18486_N%>% mutate(percT=T/Length) %>% filter(percT>=.7 |grepl(SixT, Seq) )
+nuc_18486_N_bad=  nuc_18486_N%>% mutate(percT=T/Length) %>% filter(percT>=.7 | grepl(SixT, Seq) )
 
 perc_Bad=nrow(nuc_18486_N_bad)/nrow(nuc_18486_N)
 
 perc_Bad
+
 ```
 This shows us that 46% of reads pass these filters.  
+
+Make a logo plot for clean reads.  
+
+```{r}
+nuc_18486_N_good=nuc_18486_N%>% mutate(percT=T/Length) %>% filter(percT<.7,  !grepl(SixT, Seq) )
+
+
+ggseqlogo(nuc_18486_N_good$Seq, col_scheme=cs1,  method = 'prob')
+```
+
 
 ###Total  
 
@@ -274,7 +284,7 @@ perc_Bad70_tot
 For this I need to use an or statement.  
 
 ```{r}
-nuc_18486_T_bad=  nuc_18486_T%>% mutate(percT=T/Length) %>% filter(percT>=.7 |grepl(SixT, Seq) )
+nuc_18486_T_bad=  nuc_18486_T%>% mutate(percT=T/Length) %>% filter(percT>=.7, grepl(SixT, Seq) )
 
 perc_Bad_tot=nrow(nuc_18486_T_bad)/nrow(nuc_18486_T)
 
@@ -283,9 +293,100 @@ perc_Bad_tot
 This shows us that 25% of reads pass these filters   
 
 
+Make a logo plot for clean reads.  
+
+```{r}
+nuc_18486_T_good=nuc_18486_T%>% mutate(percT=T/Length) %>% filter(percT<.7 | !grepl(SixT, Seq) )
+
+
+ggseqlogo(nuc_18486_T_good$Seq, col_scheme=cs1,  method = 'prob')
+```
+
+
+These dont look super different.  
+
 
 ##For all
 I may have to use python when i look at all beacuse this is not fast.
+
+I will look at each read in a file and check if for 70% Ts or 6Ts in a row.  
+
+
+filterMissprimingInNuc10.py
+```{bash,eval=F}
+#python  
+def main(Fin, Fout):
+  outBed=open(Fout, "w")
+  inBed=open(Fin, "r")
+  for ind, ln in enumerate(inBed):
+    if ind >=1:
+      chrom,start, end, name, score, strand, pctAT, pctGC, A, C, G, T, N, Other, Length, Sequence = ln.split()
+      Tperc= float(T) / float(Length)
+      if Tperc < .7:
+          if "TTTTTT" not in Sequence:
+              start_new=int(start)
+              end_new=int(end)
+              outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new , end_new , name, score, strand))
+  outBed.close()
+
+if __name__ == "__main__":
+    import sys
+    inFile = sys.argv[1]
+    fileNoPath=inFile.split("/")[-1]
+    sampleName=fileNoPath.split(".")[1]
+    outFile="/project2/gilad/briana/threeprimeseq/data/nuc_10up_CleanReads/TenBaseUP." + sampleName + ".CleanReads.bed"
+    main(inFile, outFile)
+```
+
+
+run_filterMissprimingInNuc10.sh  
+
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=Nrun_filterMissprimingInNuc10
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=run_filterMissprimingInNuc10.out
+#SBATCH --error=run_filterMissprimingInNuc10.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/nuc_10up/*);do
+    python filterMissprimingInNuc10.py $i  
+done 
+```
+
+I will look at these stats then move to getting rid ofthe peaks from these reads.  
+
+
+
+```{r}
+CleanStats=read.csv("../data/nuc_10up/CleanCount_stats.csv", header = T) %>% separate(Sample_ID, into=c("Sample", "Fraction"), by="_") %>% mutate(Perc_PostFilter=PostMPFilter/mappedReads)
+
+
+cleanStatPlot=ggplot(CleanStats, aes(x=Sample, by=Fraction, fill=Fraction, y=Perc_PostFilter)) + geom_bar(stat="identity", position = "Dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("deepskyblue3","darkviolet")) + labs(y="Percent Reads Passing Misprime Filter", title="Accounting for mispriming in 3' Seq Data")
+
+ggsave(filename = "../output/plots/CleanStatsPlot.png", plot = cleanStatPlot)
+```
+
+
+Plot number of clean reads per ind:  
+
+```{r}
+ggplot(CleanStats, aes(x=Sample, by=Fraction, fill=Fraction, y=PostMPFilter)) + geom_bar(stat="identity", position = "Dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+scale_fill_manual(values=c("deepskyblue3","darkviolet")) + labs(y="Reads Passing Misprime Filter", title="Accounting for mispriming in 3' Seq Data") + scale_y_log10()
+```
+
+```{r}
+CleanStatsMelt= melt(CleanStats, id.vars=c("Sample", "Fraction")) %>% filter(variable=="PostMPFilter") %>%  group_by(Fraction) %>% summarise(mean=mean(value), sd=sd(value))
+
+ggplot(CleanStatsMelt,aes(x=Fraction, y=mean, fill=Fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Clean Reads by Fraction", y="Clean Reads")
+
+
+```
+
 
 ##Extra not using
 
@@ -307,5 +408,3 @@ for i in $( ls /project2/gilad/briana/threeprimeseq/data/bed_10up/*);do
   sort -k 1,1 -k2,2n $i > /project2/gilad/briana/threeprimeseq/data/bed_10up_sort/YL-SP-${describer}-combined-sort10up.sort.bed
   done
 ```
-
-

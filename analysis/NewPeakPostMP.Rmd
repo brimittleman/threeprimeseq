@@ -1,0 +1,127 @@
+---
+title: "New Peaks After Misprime Approach"
+author: "Briana Mittleman"
+date: "1/14/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In the previous analysis I looked at a mispriming approach. Now I am going to use these filtered reads to create new BAM files, BW files, coverage files, and finally a peak list. After, I will evaluate the differences in the peak lists.  
+
+
+Now I need to filter the sorted bed files based on these clean reads.  
+
+I can make an R script that uses filter join:  
+
+Infile1 is the sorted bed,
+Infile2 is cleaned bed,
+Filter on read name  
+
+I can sue the number_T/N as the identifer.  
+
+
+filterSortBedbyCleanedBed.R
+
+```{r,eval=F}
+#!/bin/rscripts
+
+# usage: Rscirpt --vanilla  filterSortBedbyCleanedBed.R identifier
+
+#this script takes in the sorted bed file and the clean reads, it will clean the bed file   
+
+
+library(dplyr)
+library(tidyr)
+library(data.table)
+
+
+args = commandArgs(trailingOnly=TRUE)
+identifier=args[1]
+
+
+sortBedName= paste("/project2/gilad/briana/threeprimeseq/data/bed_sort/YL-SP-", identifier, "-combined-sort.bed", sep="")
+
+CleanName= paste("/project2/gilad/briana/threeprimeseq/data/nuc_10up_CleanReads/TenBaseUP.", identifier, ".CleanReads.bed", sep="")
+
+outFile= paste("/project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/YL-SP-", identifier, "-combined-sort.clean.bed", sep="")  
+
+bedFile=fread(sortBedName, col.names = c("Chrom", "start", "end", "name", "score", "strand"))
+
+cleanFile=fread(CleanName, col.names = c("Chrom", "start", "end", "name", "score", "strand"))
+
+intersection=bedFile %>% semi_join(cleanFile, by="name")
+
+fwrite(intersection, file=outFile,quote = F, col.names = F, row.names = F)
+
+
+
+```
+
+I need to call this in a bash script that gets just the identifier:  
+
+
+run_filterSortBedbyCleanedBed.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_filterSortBedbyCleanedBed
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=run_filterSortBedbyCleanedBed.out
+#SBATCH --error=run_filterSortBedbyCleanedBed.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/nuc_10up_CleanReads/*);do
+   describer=$(echo ${i} | sed -e 's/.*TenBaseUP.//' | sed -e "s/.CleanReads.bed//")
+   Rscript --vanilla  filterSortBedbyCleanedBed.R  ${describer}
+done 
+   
+
+```
+
+Next I can use bedtools intersect to filter the bam files from these bed files. I will write the code then wrap it.  
+
+
+filterOnlyOKPrimeFromBam.sh  
+
+
+a is the bam, b is the clean bed , stranded, sorted, -wa
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=filterOnlyOKPrimeFromBam
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=filterOnlyOKPrimeFromBam.out
+#SBATCH --error=filterOnlyOKPrimeFromBam.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+$1 = describer
+
+bedtools intersect -wa -sorted -s -abam /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-${desciber}-combined-sort.bam -b /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/YL-SP-${descirber}-combined-sort.clean.bed > /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${desciber}-combined-sort.noMP.bam
+
+
+
+```
+
+
+I will sort and index these:  
+
+/project2/gilad/briana/threeprimeseq/data/sort_NoMP/  
+
+
+

@@ -119,3 +119,5 @@ Until now I have been focusing on way to develop the story for the paper. The ne
 * [Explore cofactors agaisnt PCs for 39ind](CovariateOnPCs.html)  
 
 * [Deal with Mispriming problem](mispriming_approach.html)
+
+* [Create new peaks after mispriming filter](NewPeakPostMP.html)
