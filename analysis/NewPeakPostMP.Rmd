@@ -54,7 +54,7 @@ cleanFile=fread(CleanName, col.names = c("Chrom", "start", "end", "name", "score
 
 intersection=bedFile %>% semi_join(cleanFile, by="name")
 
-fwrite(intersection, file=outFile,quote = F, col.names = F, row.names = F)
+fwrite(intersection, file=outFile,quote = F, col.names = F, row.names = F, sep="\t")
 
 
 
@@ -103,25 +103,49 @@ a is the bam, b is the clean bed , stranded, sorted, -wa
 #SBATCH --output=filterOnlyOKPrimeFromBam.out
 #SBATCH --error=filterOnlyOKPrimeFromBam.err
 #SBATCH --partition=broadwl
-#SBATCH --mem=36G
+#SBATCH --mem=50G
 #SBATCH --mail-type=END
 
 module load Anaconda3
 source activate three-prime-env  
 
 
-$1 = describer
+desciber=$1
 
-bedtools intersect -wa -sorted -s -abam /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-${desciber}-combined-sort.bam -b /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/YL-SP-${descirber}-combined-sort.clean.bed > /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${desciber}-combined-sort.noMP.bam
+bedtools intersect -wa -sorted -s -abam /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-${desciber}-combined-sort.bam -b /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/YL-SP-${desciber}-combined-sort.clean.bed > /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${desciber}-combined-sort.noMP.bam
 
 
 
 ```
 
+Wrap this:  
 
-I will sort and index these:  
 
-/project2/gilad/briana/threeprimeseq/data/sort_NoMP/  
+wrap_filterOnlyOKPrimeFromBam.sh  
+
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_filterOnlyOKPrimeFromBam
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_filterOnlyOKPrimeFromBam.out
+#SBATCH --error=w_filterOnlyOKPrimeFromBam.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/*);do
+   describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/-combined-sort.clean.bed//")
+   sbatch filterOnlyOKPrimeFromBam.sh ${describer}
+done
+
+```
 
 
 
