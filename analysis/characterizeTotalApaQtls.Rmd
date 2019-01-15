@@ -147,7 +147,7 @@ This means there is about 50/50 distribution around the peak start.
 I am going to plot a violin plot for just the significant ones.  
 
 ```{r}
-ggplot(totalAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density(fill="darkviolet") + labs(title="Total: Distance from QTL to PAS Peak", x="Distance from SNP to PAS")
+ggplot(totalAPA_peakdist_sig, aes(x=log10(abs(DisttoPeak)+1))) + geom_density(fill="darkviolet") + labs(title="Total: Distance from QTL to PAS Peak", x="Distance from SNP to PAS")
 ```
 Within 1000 bases of the peak center.  
 

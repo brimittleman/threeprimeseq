@@ -131,7 +131,7 @@ ggplot(NuclearAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_den
 I am going to plot a violin plot for just the significant ones.  
 
 ```{r}
-ggplot(NuclearAPA_peakdist_sig, aes(x=DisttoPeak)) + geom_density(fill="deepskyblue3")+ labs(title="Nuclear: Distance from QTL to PAS Peak", x="Distance from SNP to PAS")
+ggplot(NuclearAPA_peakdist_sig, aes(x=log10(abs(DisttoPeak)+1))) + geom_density(fill="deepskyblue3")+ labs(title="Nuclear: Distance from QTL to PAS Peak", x="Distance from SNP to PAS") 
 ```
 
 Within 1000 bases of the peak center.  
