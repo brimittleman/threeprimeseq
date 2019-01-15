@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-11</p>
+<p><strong>Last updated:</strong> 2019-01-15</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,14 +347,13 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d64db58222b47c184a4253170ea8b6fdfe262cec" target="_blank">d64db58</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d26e5485872212953667d4928890c4b6b766ea83" target="_blank">d26e548</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -416,6 +415,7 @@ Untracked files:
     Untracked:  data/nom_QTL_opp/
     Untracked:  data/nom_QTL_trans/
     Untracked:  data/nuc6up/
+    Untracked:  data/nuc_10up/
     Untracked:  data/other_qtls/
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
@@ -441,6 +441,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/NewPeakPostMP.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -449,7 +450,6 @@ Unstaged changes:
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/flash2mash.Rmd
-    Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
@@ -486,6 +486,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d26e5485872212953667d4928890c4b6b766ea83/analysis/InvestigatePeak2GeneAssignment.Rmd" target="_blank">d26e548</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-15
+</td>
+<td style="text-align:left;">
+add correlation plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b5a37f3ed662b0f28780079601d389535b2c529c/docs/InvestigatePeak2GeneAssignment.html" target="_blank">b5a37f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -662,12 +696,12 @@ Build site.
 <p></details></p>
 <hr />
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -1971,6 +2005,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b5a37f3ed662b0f28780079601d389535b2c529c/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-65-1.png" target="_blank">b5a37f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-65-1.png" target="_blank">69b5162</a>
 </td>
 <td style="text-align:left;">
@@ -2051,6 +2096,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b5a37f3ed662b0f28780079601d389535b2c529c/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-68-1.png" target="_blank">b5a37f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-68-1.png" target="_blank">69b5162</a>
@@ -2369,6 +2425,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b5a37f3ed662b0f28780079601d389535b2c529c/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-74-1.png" target="_blank">b5a37f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/69b51620dfe0a0ce05d7085c92f5949fd26fae4a/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-74-1.png" target="_blank">69b5162</a>
 </td>
 <td style="text-align:left;">
@@ -2597,6 +2664,36 @@ Briana Mittleman
 
 plot(log10(total_Cov$X19238_T)~log10(total_Cov$X19225_T))</code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-77-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-77-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b5a37f3ed662b0f28780079601d389535b2c529c/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-77-1.png" target="_blank">b5a37f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(lm(total_Cov$X19238_T~total_Cov$X19225_T))</code></pre>
 <pre><code>
 Call:
@@ -2619,11 +2716,41 @@ F-statistic: 3.536e+06 on 1 and 338139 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Do this with ggplot</p>
 <pre class="r"><code>ggplot(total_Cov, aes(x = log10(X19238_T) , y=log10(X19225_T))) + geom_point() + labs(title=&quot;Relationship between 2 Total 3&#39; Seq Peak Counts&quot;, x=&quot;log10(19238)&quot;,y=&quot;log10(19225)&quot;)</code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-78-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-78-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b5a37f3ed662b0f28780079601d389535b2c529c/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-78-1.png" target="_blank">b5a37f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I want to do this for all and make a heat plot with the correlations:</p>
 <pre class="r"><code>cor_function=function(data){
-  corr_matrix= matrix(0,39,39)
-  for (i in seq(1,39)){
-    for (j in seq(1,39)){
+  corr_matrix= matrix(0,dim(data)[[2]],dim(data)[[2]])
+  for (i in seq(1,dim(data)[[2]])){
+    for (j in seq(1,dim(data)[[2]])){
       x=cor.test(data[,i],  data[,j], method=&#39;pearson&#39;)
       cor_ij=as.numeric(x$estimate)
       corr_matrix[i,j]=cor_ij
@@ -2641,7 +2768,38 @@ ggheatmap=ggplot(data = total_corr_melt, aes(x=Var1, y=Var2, fill=value)) +
                       high = &quot;darkviolet&quot;)
 
 ggheatmap</code></pre>
-<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-81-1.png" width="672" style="display: block; margin: auto;" /> mean correlation .89</p>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-81-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-81-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b5a37f3ed662b0f28780079601d389535b2c529c/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-81-1.png" target="_blank">b5a37f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>mean correlation .89</p>
 <p>DO this for nuclear:</p>
 <pre class="r"><code>nuclear_Cov=read.table(&quot;../data/PeakCounts/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear_fixed.fc&quot;, header=T, stringsAsFactors = F)[7:45]  </code></pre>
 <pre class="r"><code>nuclear_corr=cor_function(as.matrix(nuclear_Cov))
@@ -2656,7 +2814,66 @@ ggheatmap_nuc=ggplot(data = nuclear_corr_melt, aes(x=Var1, y=Var2, fill=value)) 
 
 ggheatmap_nuc</code></pre>
 <p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-83-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-83-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b5a37f3ed662b0f28780079601d389535b2c529c/docs/figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-83-1.png" target="_blank">b5a37f3</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-11
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Mean correlation is .74</p>
+<p>Make a full one with both:</p>
+<pre class="r"><code>bothFrac=cbind(nuclear_Cov,total_Cov)
+bothFrac_corr=cor_function(bothFrac)
+
+
+bothFrac_corr_melt=melt(bothFrac_corr)
+ggheatmap_both=ggplot(data = bothFrac_corr_melt, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title=&quot;Library Peak Count Correlation Heatplot&quot;, x=&quot;&quot;, y=&quot;&quot;)+ 
+  scale_fill_continuous(limits=c(0, 1), breaks=seq(0,1,by=0.15),name = &quot;Correlation&quot;,
+                      low = &quot;#FFFFFF&quot;,
+                      high = &quot;coral1&quot;)
+
+ggheatmap_both</code></pre>
+<p><img src="figure/InvestigatePeak2GeneAssignment.Rmd/unnamed-chunk-84-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Make a boxplot with the correlations:</p>
+<pre class="r"><code>Fraction=c(&quot;Total&quot;, &quot;Nuclear&quot;, &quot;Both&quot;)
+CorrelationMean=c(mean(total_corr),mean(nuclear_corr), mean(bothFrac_corr))
+CorrelationSD=c(sd(total_corr), sd(nuclear_corr), sd(bothFrac_corr))
+
+CorrelationDF=as.data.frame(cbind(Fraction,CorrelationMean,CorrelationSD))
+CorrelationDF$CorrelationMean=as.numeric(as.character(CorrelationDF$CorrelationMean))
+CorrelationDF$CorrelationSD=as.numeric(as.character(CorrelationDF$CorrelationSD))
+
+corrBarPlot=ggplot(CorrelationDF, aes(x=Fraction, y=CorrelationMean, fill=Fraction)) + geom_bar(stat=&quot;Identity&quot;, position=&quot;dodge&quot;, width=.5) + geom_errorbar(aes(ymin=CorrelationMean-CorrelationSD, ymax=CorrelationMean+CorrelationSD), width=.2) + labs(y=&quot;Mean Correlation between Libraries&quot;, title=&quot;Correlation between Peak Counts across libraries&quot;) + scale_fill_manual(values=c(&quot;grey&quot;,&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) +theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=15,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))
+
+
+ggsave(corrBarPlot, file=&quot;../output/plots/QC_plots/BarPlot4PeakCountCorrelation.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
