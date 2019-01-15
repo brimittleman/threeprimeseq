@@ -1265,9 +1265,9 @@ I want to do this for all and make a heat plot with the correlations:
 
 ```{r}
 cor_function=function(data){
-  corr_matrix= matrix(0,39,39)
-  for (i in seq(1,39)){
-    for (j in seq(1,39)){
+  corr_matrix= matrix(0,dim(data)[[2]],dim(data)[[2]])
+  for (i in seq(1,dim(data)[[2]])){
+    for (j in seq(1,dim(data)[[2]])){
       x=cor.test(data[,i],  data[,j], method='pearson')
       cor_ij=as.numeric(x$estimate)
       corr_matrix[i,j]=cor_ij
@@ -1318,3 +1318,39 @@ ggheatmap_nuc
 
 
 Mean correlation is .74
+
+
+Make a full one with both:  
+```{r}
+bothFrac=cbind(nuclear_Cov,total_Cov)
+bothFrac_corr=cor_function(bothFrac)
+
+
+bothFrac_corr_melt=melt(bothFrac_corr)
+ggheatmap_both=ggplot(data = bothFrac_corr_melt, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile() +
+  labs(title="Library Peak Count Correlation Heatplot", x="", y="")+ 
+  scale_fill_continuous(limits=c(0, 1), breaks=seq(0,1,by=0.15),name = "Correlation",
+                      low = "#FFFFFF",
+                      high = "coral1")
+
+ggheatmap_both
+```
+
+Make a boxplot with the correlations:  
+
+```{r}
+Fraction=c("Total", "Nuclear", "Both")
+CorrelationMean=c(mean(total_corr),mean(nuclear_corr), mean(bothFrac_corr))
+CorrelationSD=c(sd(total_corr), sd(nuclear_corr), sd(bothFrac_corr))
+
+CorrelationDF=as.data.frame(cbind(Fraction,CorrelationMean,CorrelationSD))
+CorrelationDF$CorrelationMean=as.numeric(as.character(CorrelationDF$CorrelationMean))
+CorrelationDF$CorrelationSD=as.numeric(as.character(CorrelationDF$CorrelationSD))
+
+corrBarPlot=ggplot(CorrelationDF, aes(x=Fraction, y=CorrelationMean, fill=Fraction)) + geom_bar(stat="Identity", position="dodge", width=.5) + geom_errorbar(aes(ymin=CorrelationMean-CorrelationSD, ymax=CorrelationMean+CorrelationSD), width=.2) + labs(y="Mean Correlation between Libraries", title="Correlation between Peak Counts across libraries") + scale_fill_manual(values=c("grey","deepskyblue3","darkviolet")) +theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=15,face="bold"), axis.title.x=element_text(size=12,face="bold"))
+
+
+ggsave(corrBarPlot, file="../output/plots/QC_plots/BarPlot4PeakCountCorrelation.png")
+```
+
