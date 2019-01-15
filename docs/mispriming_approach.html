@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-12</p>
+<p><strong>Last updated:</strong> 2019-01-14</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/7a08009e4051cbe4c76d285282747de6158f7275" target="_blank">7a08009</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6bc9243ded950fc7e317fd6ef901657801c66b46" target="_blank">6bc9243</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -485,6 +485,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6bc9243ded950fc7e317fd6ef901657801c66b46/analysis/mispriming_approach.Rmd" target="_blank">6bc9243</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-14
+</td>
+<td style="text-align:left;">
+evaluate clean reads, make new file for misprime filter
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/49ad9e16ad5dd53e98e627a47d2a98bac08852c4/docs/mispriming_approach.html" target="_blank">49ad9e1</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-12
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -683,12 +717,12 @@ require(ggseqlogo)</code></pre>
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::between()   masks data.table::between()
 ✖ dplyr::filter()    masks stats::filter()
 ✖ dplyr::first()     masks data.table::first()
@@ -713,6 +747,36 @@ seqs_18486N= nuc_18486_N$Seq</code></pre>
 <p>Create plot:</p>
 <pre class="r"><code>ggseqlogo(seqs_18486N, col_scheme=cs1,  method = &#39;prob&#39;)</code></pre>
 <p><img src="figure/mispriming_approach.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/49ad9e16ad5dd53e98e627a47d2a98bac08852c4/docs/figure/mispriming_approach.Rmd/unnamed-chunk-9-1.png" target="_blank">49ad9e1</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-12
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This is not overwhelming:</p>
 <ul>
 <li>count number of non passing reads with 6 T’s in a row</li>
@@ -736,13 +800,19 @@ perc_Bad70</code></pre>
 <li>count number of total non passing reads</li>
 </ul>
 <p>For this I need to use an or statement.</p>
-<pre class="r"><code>nuc_18486_N_bad=  nuc_18486_N%&gt;% mutate(percT=T/Length) %&gt;% filter(percT&gt;=.7 |grepl(SixT, Seq) )
+<pre class="r"><code>nuc_18486_N_bad=  nuc_18486_N%&gt;% mutate(percT=T/Length) %&gt;% filter(percT&gt;=.7 | grepl(SixT, Seq) )
 
 perc_Bad=nrow(nuc_18486_N_bad)/nrow(nuc_18486_N)
 
 perc_Bad</code></pre>
 <pre><code>[1] 0.4622981</code></pre>
 <p>This shows us that 46% of reads pass these filters.</p>
+<p>Make a logo plot for clean reads.</p>
+<pre class="r"><code>nuc_18486_N_good=nuc_18486_N%&gt;% mutate(percT=T/Length) %&gt;% filter(percT&lt;.7,  !grepl(SixT, Seq) )
+
+
+ggseqlogo(nuc_18486_N_good$Seq, col_scheme=cs1,  method = &#39;prob&#39;)</code></pre>
+<p><img src="figure/mispriming_approach.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="total" class="section level3">
 <h3>Total</h3>
@@ -755,7 +825,7 @@ perc_Bad</code></pre>
 seqs_18486T= nuc_18486_T$Seq</code></pre>
 <p>Create plot:</p>
 <pre class="r"><code>ggseqlogo(seqs_18486T, col_scheme=cs1,  method = &#39;prob&#39;)</code></pre>
-<p><img src="figure/mispriming_approach.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/mispriming_approach.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <ul>
 <li>count number of non passing reads with 6 T’s in a row</li>
 </ul>
@@ -777,18 +847,79 @@ perc_Bad70_tot</code></pre>
 <li>count number of total non passing reads</li>
 </ul>
 <p>For this I need to use an or statement.</p>
-<pre class="r"><code>nuc_18486_T_bad=  nuc_18486_T%&gt;% mutate(percT=T/Length) %&gt;% filter(percT&gt;=.7 |grepl(SixT, Seq) )
+<pre class="r"><code>nuc_18486_T_bad=  nuc_18486_T%&gt;% mutate(percT=T/Length) %&gt;% filter(percT&gt;=.7, grepl(SixT, Seq) )
 
 perc_Bad_tot=nrow(nuc_18486_T_bad)/nrow(nuc_18486_T)
 
 perc_Bad_tot</code></pre>
-<pre><code>[1] 0.2514094</code></pre>
+<pre><code>[1] 0.01466245</code></pre>
 <p>This shows us that 25% of reads pass these filters</p>
+<p>Make a logo plot for clean reads.</p>
+<pre class="r"><code>nuc_18486_T_good=nuc_18486_T%&gt;% mutate(percT=T/Length) %&gt;% filter(percT&lt;.7 | !grepl(SixT, Seq) )
+
+
+ggseqlogo(nuc_18486_T_good$Seq, col_scheme=cs1,  method = &#39;prob&#39;)</code></pre>
+<p><img src="figure/mispriming_approach.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>These dont look super different.</p>
 </div>
 </div>
 <div id="for-all" class="section level2">
 <h2>For all</h2>
 <p>I may have to use python when i look at all beacuse this is not fast.</p>
+<p>I will look at each read in a file and check if for 70% Ts or 6Ts in a row.</p>
+<p>filterMissprimingInNuc10.py</p>
+<pre class="bash"><code>#python  
+def main(Fin, Fout):
+  outBed=open(Fout, &quot;w&quot;)
+  inBed=open(Fin, &quot;r&quot;)
+  for ind, ln in enumerate(inBed):
+    if ind &gt;=1:
+      chrom,start, end, name, score, strand, pctAT, pctGC, A, C, G, T, N, Other, Length, Sequence = ln.split()
+      Tperc= float(T) / float(Length)
+      if Tperc &lt; .7:
+          if &quot;TTTTTT&quot; not in Sequence:
+              start_new=int(start)
+              end_new=int(end)
+              outBed.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start_new , end_new , name, score, strand))
+  outBed.close()
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    inFile = sys.argv[1]
+    fileNoPath=inFile.split(&quot;/&quot;)[-1]
+    sampleName=fileNoPath.split(&quot;.&quot;)[1]
+    outFile=&quot;/project2/gilad/briana/threeprimeseq/data/nuc_10up_CleanReads/TenBaseUP.&quot; + sampleName + &quot;.CleanReads.bed&quot;
+    main(inFile, outFile)</code></pre>
+<p>run_filterMissprimingInNuc10.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=Nrun_filterMissprimingInNuc10
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=run_filterMissprimingInNuc10.out
+#SBATCH --error=run_filterMissprimingInNuc10.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/nuc_10up/*);do
+    python filterMissprimingInNuc10.py $i  
+done </code></pre>
+<p>I will look at these stats then move to getting rid ofthe peaks from these reads.</p>
+<pre class="r"><code>CleanStats=read.csv(&quot;../data/nuc_10up/CleanCount_stats.csv&quot;, header = T) %&gt;% separate(Sample_ID, into=c(&quot;Sample&quot;, &quot;Fraction&quot;), by=&quot;_&quot;) %&gt;% mutate(Perc_PostFilter=PostMPFilter/mappedReads)
+
+
+cleanStatPlot=ggplot(CleanStats, aes(x=Sample, by=Fraction, fill=Fraction, y=Perc_PostFilter)) + geom_bar(stat=&quot;identity&quot;, position = &quot;Dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(y=&quot;Percent Reads Passing Misprime Filter&quot;, title=&quot;Accounting for mispriming in 3&#39; Seq Data&quot;)
+
+ggsave(filename = &quot;../output/plots/CleanStatsPlot.png&quot;, plot = cleanStatPlot)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<p>Plot number of clean reads per ind:</p>
+<pre class="r"><code>ggplot(CleanStats, aes(x=Sample, by=Fraction, fill=Fraction, y=PostMPFilter)) + geom_bar(stat=&quot;identity&quot;, position = &quot;Dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(y=&quot;Reads Passing Misprime Filter&quot;, title=&quot;Accounting for mispriming in 3&#39; Seq Data&quot;) + scale_y_log10()</code></pre>
+<p><img src="figure/mispriming_approach.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>CleanStatsMelt= melt(CleanStats, id.vars=c(&quot;Sample&quot;, &quot;Fraction&quot;)) %&gt;% filter(variable==&quot;PostMPFilter&quot;) %&gt;%  group_by(Fraction) %&gt;% summarise(mean=mean(value), sd=sd(value))
+
+ggplot(CleanStatsMelt,aes(x=Fraction, y=mean, fill=Fraction)) + geom_col()+ geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Clean Reads by Fraction&quot;, y=&quot;Clean Reads&quot;)</code></pre>
+<p><img src="figure/mispriming_approach.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="extra-not-using" class="section level2">
 <h2>Extra not using</h2>
@@ -834,23 +965,24 @@ other attached packages:
 [13] data.table_1.11.8
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] withr_2.1.2       glue_1.3.0        R.utils_2.7.0    
-[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
-[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
-[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
-[22] evaluate_0.11     labeling_0.3      knitr_1.20       
-[25] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
-[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
-[31] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
-[34] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
-[37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
-[40] whisker_0.3-2     pkgconfig_2.0.2   xml2_1.2.0       
-[43] lubridate_1.7.4   rstudioapi_0.8    assertthat_0.2.0 
-[46] rmarkdown_1.10    httr_1.3.1        R6_2.3.0         
-[49] nlme_3.1-137      git2r_0.23.0      compiler_3.5.1   </code></pre>
+ [1] tidyselect_0.2.4  reshape2_1.4.3    haven_1.1.2      
+ [4] lattice_0.20-35   colorspace_1.3-2  htmltools_0.3.6  
+ [7] yaml_2.2.0        rlang_0.2.2       R.oo_1.22.0      
+[10] pillar_1.3.0      withr_2.1.2       glue_1.3.0       
+[13] R.utils_2.7.0     modelr_0.1.2      readxl_1.1.0     
+[16] bindr_0.1.1       plyr_1.8.4        munsell_0.5.0    
+[19] gtable_0.2.0      cellranger_1.1.0  rvest_0.3.2      
+[22] R.methodsS3_1.7.1 evaluate_0.11     labeling_0.3     
+[25] knitr_1.20        broom_0.5.0       Rcpp_0.12.19     
+[28] scales_1.0.0      backports_1.1.2   jsonlite_1.5     
+[31] hms_0.4.2         digest_0.6.17     stringi_1.2.4    
+[34] grid_3.5.1        rprojroot_1.3-2   cli_1.0.1        
+[37] tools_3.5.1       magrittr_1.5      lazyeval_0.2.1   
+[40] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
+[43] xml2_1.2.0        lubridate_1.7.4   rstudioapi_0.8   
+[46] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
+[49] R6_2.3.0          nlme_3.1-137      git2r_0.23.0     
+[52] compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
