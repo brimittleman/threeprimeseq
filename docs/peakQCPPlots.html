@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-16</p>
+<p><strong>Last updated:</strong> 2019-01-17</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,13 +346,14 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6aa94e46191d361cdb422647f48195789fdcf789" target="_blank">6aa94e4</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/04c7dc578e7fbc55e67b46e97c83116aa67a0b5c" target="_blank">04c7dc5</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    output/.DS_Store
 
@@ -494,6 +495,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/04c7dc578e7fbc55e67b46e97c83116aa67a0b5c/analysis/peakQCPPlots.Rmd" target="_blank">04c7dc5</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-17
+</td>
+<td style="text-align:left;">
+add second way to filter peaks
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a5d48fd8f5408c3f49eadb94058a4b57b576e3a6/docs/peakQCPPlots.html" target="_blank">a5d48fd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-16
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/6aa94e46191d361cdb422647f48195789fdcf789/analysis/peakQCPPlots.Rmd" target="_blank">6aa94e4</a>
 </td>
 <td style="text-align:left;">
@@ -538,6 +573,12 @@ Attaching package: &#39;data.table&#39;</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
 <pre class="r"><code>totalPeakUs=read.table(&quot;../data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz&quot;, header = T, stringsAsFactors = F) %&gt;% separate(chrom, sep = &quot;:&quot;, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;))
 nuclearPeakUs=read.table(&quot;../data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz&quot;, header = T, stringsAsFactors = F) %&gt;% separate(chrom, sep = &quot;:&quot;, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;))</code></pre>
 <p>There are 338141 called peaks in the data.</p>
@@ -592,6 +633,36 @@ NuclearPeakUSMean=as.data.frame(cbind(nuclearPeakUs[,1:6],nuclearPeakUs_CountNum
 
 ggplot(totalPeaksPerGene,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;darkviolet&quot;) + labs(x=&quot;Number Peaks with &gt;5% usage&quot;, y=&quot;Number of Genes&quot;, title=&quot;Genes with peaks covering &gt; 5% in Total&quot;)</code></pre>
 <p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a5d48fd8f5408c3f49eadb94058a4b57b576e3a6/docs/figure/peakQCPPlots.Rmd/unnamed-chunk-10-1.png" target="_blank">a5d48fd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Nuclear:</p>
 <pre class="r"><code>NuclearPeakUSMean_filt=NuclearPeakUSMean %&gt;% filter(nuclearPeakUs_CountNum_mean&gt;=.05) %&gt;% group_by(gene) %&gt;% summarise(Npeaks=n())</code></pre>
 <p>I want to get how many genes have 1,2,3,4 ect:</p>
@@ -599,6 +670,36 @@ ggplot(totalPeaksPerGene,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat=&quot;
 nuclearPeaksPerGene$GenesWithNPeaks=as.integer(nuclearPeaksPerGene$GenesWithNPeaks)
 ggplot(nuclearPeaksPerGene,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;deepskyblue3&quot;) + labs(x=&quot;Number Peaks with &gt;5% usage&quot;, y=&quot;Number of Genes&quot;, title=&quot;Genes with peaks covering &gt; 5% in Nuclear&quot;)</code></pre>
 <p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a5d48fd8f5408c3f49eadb94058a4b57b576e3a6/docs/figure/peakQCPPlots.Rmd/unnamed-chunk-12-1.png" target="_blank">a5d48fd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Genes with at least 1:</p>
 <pre class="r"><code>#nuclear
 nrow(NuclearPeakUSMean_filt)  </code></pre>
@@ -611,7 +712,32 @@ gene level</p>
 <pre class="r"><code>nPeaksBoth_gene=TotalPeakUSMean_filt %&gt;% full_join(NuclearPeakUSMean_filt, by=&quot;gene&quot;)
 colnames(nPeaksBoth_gene)= c(&quot;Gene&quot;, &quot;Total&quot;, &quot;Nuclear&quot;)
 nPeaksBoth_gene$Nuclear= nPeaksBoth_gene$Nuclear %&gt;% replace_na(0)
-nPeaksBoth_gene$Total= nPeaksBoth_gene$Total %&gt;% replace_na(0)</code></pre>
+nPeaksBoth_gene$Total= nPeaksBoth_gene$Total %&gt;% replace_na(0)
+nPeaksBoth_gene=nPeaksBoth_gene %&gt;% mutate(Difference=Nuclear-Total)
+
+ggplot(nPeaksBoth_gene, aes(x=Difference)) + geom_histogram() + labs(title=&quot;Distribution of difference in number of \n Peaks &gt;5% between Nuclear and Total&quot;, y=&quot;Genes&quot;, x=&quot;Nuclear - Total&quot;)</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(nPeaksBoth_gene$Difference)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-6.0000  0.0000  0.0000  0.5998  1.0000  8.0000 </code></pre>
+<p>WHich genes is this most affecting:</p>
+<pre class="r"><code>nPeaksBoth_gene %&gt;% arrange(desc(Difference)) %&gt;% slice(1:10)</code></pre>
+<pre><code># A tibble: 10 x 4
+   Gene    Total Nuclear Difference
+   &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+ 1 C3orf67     3      11          8
+ 2 OLIG3       1       9          8
+ 3 API5        1       8          7
+ 4 ARL3        2       9          7
+ 5 ATE1        1       8          7
+ 6 HNF1B       1       8          7
+ 7 MPV17L2     1       8          7
+ 8 SHQ1        3      10          7
+ 9 ARMC10      2       8          6
+10 ATF1        3       9          6</code></pre>
+<p><strong>Look at some of these in IGV</strong></p>
+<p>Good examples: API5,ARL3, SHQ1</p>
 <p>peak number level:</p>
 <pre class="r"><code>nPeaksBoth=totalPeaksPerGene %&gt;% full_join(nuclearPeaksPerGene, by=&quot;Npeaks&quot;)
 colnames(nPeaksBoth)= c(&quot;Peaks&quot;, &quot;Total&quot;, &quot;Nuclear&quot;)
@@ -624,7 +750,7 @@ colnames(nPeaksBoth_melt)= c(&quot;Peaks&quot;, &quot;Fraction&quot;, &quot;Gene
 <pre class="r"><code>peakUsage5perc=ggplot(nPeaksBoth_melt, aes(x=Peaks, y=Genes, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + labs(title=&quot;Number of Genes with &gt;5% Peak Usage&quot;) + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + facet_grid(~Fraction)
 
 peakUsage5perc</code></pre>
-<p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggsave(peakUsage5perc, file=&quot;../output/plots/QC_plots/peakUsage5perc.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <p>Peaks with &gt;5 per not at gene level:</p>
@@ -634,6 +760,101 @@ NuclearPeakUSMean %&gt;% filter(nuclearPeakUs_CountNum_mean&gt;=.05) %&gt;% nrow
 <pre class="r"><code>#total
 TotalPeakUSMean %&gt;% filter(totalPeakUs_CountNum_mean&gt;=.05) %&gt;% nrow()</code></pre>
 <pre><code>[1] 49234</code></pre>
+<p>Plot distributions priots to filtering:</p>
+<pre class="r"><code>NuclearPeakUSMean_sm=NuclearPeakUSMean %&gt;% select(peak, nuclearPeakUs_CountNum_mean)
+TotalPeakUSMean_sm=TotalPeakUSMean %&gt;% select(peak, totalPeakUs_CountNum_mean)
+BothPeakUSMean=TotalPeakUSMean_sm %&gt;% full_join(NuclearPeakUSMean_sm, by=c(&quot;peak&quot;))
+summary(BothPeakUSMean)</code></pre>
+<pre><code>     peak           totalPeakUs_CountNum_mean nuclearPeakUs_CountNum_mean
+ Length:338141      Min.   :0.000000          Min.   :0.000000           
+ Class :character   1st Qu.:0.001538          1st Qu.:0.002051           
+ Mode  :character   Median :0.005641          Median :0.008718           
+                    Mean   :0.042354          Mean   :0.043827           
+                    3rd Qu.:0.021795          3rd Qu.:0.029487           
+                    Max.   :1.000000          Max.   :1.000000           </code></pre>
+<pre class="r"><code>colnames(BothPeakUSMean)=c(&quot;Peak&quot;, &quot;Total&quot;, &quot;Nuclear&quot;)
+BothPeakUSMean_melt=melt(BothPeakUSMean, id.vars = &quot;Peak&quot;)
+colnames(BothPeakUSMean_melt)=c(&quot;Peak&quot;, &quot;Fraction&quot;, &quot;MeanUsage&quot;)
+meanUsBox=ggplot(BothPeakUSMean_melt,aes(y=MeanUsage, x=Fraction, fill=Fraction)) +geom_boxplot() +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))
+meanUsBoxZoom=ggplot(BothPeakUSMean_melt,aes(y=MeanUsage, x=Fraction, fill=Fraction)) +geom_boxplot() +ylim(c(0,.05))+scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))
+
+meanUsBoxBoth=plot_grid(meanUsBox,meanUsBoxZoom)</code></pre>
+<pre><code>Warning: Removed 107335 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/meanPeakUsageBoxPlots.png&quot;,meanUsBoxBoth)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>meanUs_den=ggplot(BothPeakUSMean_melt,aes(x=MeanUsage, by=Fraction, fill=Fraction)) +geom_density(alpha=.4) +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))
+meanUs_denZoom=ggplot(BothPeakUSMean_melt,aes(x=MeanUsage, by=Fraction, fill=Fraction)) +geom_density(alpha=.4) +xlim(c(0,.05)) + scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))
+
+meanUs_denBoth=plot_grid(meanUs_den,meanUs_denZoom)</code></pre>
+<pre><code>Warning: Removed 107335 rows containing non-finite values (stat_density).</code></pre>
+<pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/meanPeakUsagDensityPlots.png&quot;,meanUs_denBoth,)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<p>With means at about 4%. I may remake these plots with 1 %</p>
+<pre class="r"><code>TotalPeakUSMean_filt1=TotalPeakUSMean %&gt;% filter(totalPeakUs_CountNum_mean&gt;=.01) %&gt;% group_by(gene) %&gt;% summarise(Npeaks=n())
+
+totalPeaksPerGene1=TotalPeakUSMean_filt1 %&gt;% group_by(Npeaks) %&gt;% summarise(GenesWithNPeaks=n())
+
+ggplot(totalPeaksPerGene1,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;darkviolet&quot;) + labs(x=&quot;Number Peaks with &gt;1% usage&quot;, y=&quot;Number of Genes&quot;, title=&quot;Genes with peaks covering &gt; 1% in Total&quot;)</code></pre>
+<p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nuclear:</p>
+<pre class="r"><code>NuclearPeakUSMean_filt1=NuclearPeakUSMean %&gt;% filter(nuclearPeakUs_CountNum_mean&gt;=.01) %&gt;% group_by(gene) %&gt;% summarise(Npeaks=n())</code></pre>
+<p>I want to get how many genes have 1,2,3,4 ect:</p>
+<pre class="r"><code>nuclearPeaksPerGene1=NuclearPeakUSMean_filt1 %&gt;% group_by(Npeaks) %&gt;% summarise(GenesWithNPeaks=n())
+nuclearPeaksPerGene1$GenesWithNPeaks=as.integer(nuclearPeaksPerGene1$GenesWithNPeaks)
+ggplot(nuclearPeaksPerGene1,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;deepskyblue3&quot;) + labs(x=&quot;Number Peaks with &gt;1% usage&quot;, y=&quot;Number of Genes&quot;, title=&quot;Genes with peaks covering &gt; 1% in Nuclear&quot;)</code></pre>
+<p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Try to do this with 5% in 2/3 of the libraries instead:</p>
+<pre class="r"><code>keep.exprs_T=rowSums(as.matrix(totalPeakUs_CountNum&gt;=.05)) &gt;= 26
+TotalPeakUS_filt= as.data.frame(cbind(totalPeakUs[,1:6], totalPeakUs_CountNum))[keep.exprs_T,]
+
+
+
+keep.exprs_N=rowSums(as.matrix(nuclearPeakUs_CountNum&gt;=.05)) &gt;= 26
+nuclearPeakUS_filt= as.data.frame(cbind(nuclearPeakUs[,1:6],nuclearPeakUs_CountNum))[keep.exprs_N,]</code></pre>
+<p>Total: 30657 peaks pass this filter Nuclear:44030 peaks pass</p>
+<p>Now I can group by gene and see what happens:</p>
+<pre class="r"><code>TotalPeakUS_filt_gene=TotalPeakUS_filt %&gt;% group_by(gene) %&gt;% summarise(nPeaks=n())
+
+TotalPeaksPerGene2=TotalPeakUS_filt_gene %&gt;% group_by(nPeaks) %&gt;% summarise(GenesWithNPeaks=n())
+ggplot(TotalPeaksPerGene2,aes(x=nPeaks,y=GenesWithNPeaks)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;darkviolet&quot;) + labs(x=&quot;Number Peaks with &gt;5% usage in 2/3 ind&quot;, y=&quot;Number of Genes&quot;, title=&quot;Genes with peaks covering &gt; 5% in 2/3 Ind Total&quot;)</code></pre>
+<p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>In this filter there are 13497 genes.</p>
+<pre class="r"><code>nuclearPeakUS_filt_gene=nuclearPeakUS_filt %&gt;% group_by(gene) %&gt;% summarise(nPeaks=n())
+
+nuclearPeaksPerGene2=nuclearPeakUS_filt_gene %&gt;% group_by(nPeaks) %&gt;% summarise(GenesWithNPeaks=n())
+ggplot(nuclearPeaksPerGene2,aes(x=nPeaks,y=GenesWithNPeaks)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;deepskyblue3&quot;) + labs(x=&quot;Number Peaks with &gt;5% usage in 2/3 ind&quot;, y=&quot;Number of Genes&quot;, title=&quot;Genes with peaks covering &gt; 5% in 2/3 Ind Nuclear&quot;)</code></pre>
+<p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /> 14690</p>
+<p>Melt these to put on one plot:</p>
+<pre class="r"><code>nPeaksBoth_filt2=TotalPeaksPerGene2 %&gt;% full_join(nuclearPeaksPerGene2, by=&quot;nPeaks&quot;)
+colnames(nPeaksBoth_filt2)= c(&quot;Peaks&quot;, &quot;Total&quot;, &quot;Nuclear&quot;)
+nPeaksBoth_filt2$Total= nPeaksBoth_filt2$Total %&gt;% replace_na(0)
+
+#melt nPeaksBoth
+nPeaksBoth_melt2=melt(nPeaksBoth_filt2, id.var=&quot;Peaks&quot;)
+colnames(nPeaksBoth_melt2)= c(&quot;Peaks&quot;, &quot;Fraction&quot;, &quot;Genes&quot;)</code></pre>
+<p>Plot:</p>
+<pre class="r"><code>peakUsage5perc2=ggplot(nPeaksBoth_melt2, aes(x=Peaks, y=Genes, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + labs(title=&quot;Number of Genes with &gt;5% peak usage in 2/3 Ind&quot;) + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + facet_grid(~Fraction)
+
+peakUsage5perc2</code></pre>
+<p><img src="figure/peakQCPPlots.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(peakUsage5perc2, file=&quot;../output/plots/QC_plots/peakUsage5perc2.3ind.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>nPeaksBoth2_gene=TotalPeakUS_filt_gene %&gt;% full_join(nuclearPeakUS_filt_gene, by=&quot;gene&quot;)
+
+
+colnames(nPeaksBoth2_gene)= c(&quot;Gene&quot;, &quot;Total&quot;, &quot;Nuclear&quot;)
+nPeaksBoth2_gene$Nuclear= nPeaksBoth2_gene$Nuclear %&gt;% replace_na(0)
+nPeaksBoth2_gene$Total= nPeaksBoth2_gene$Total %&gt;% replace_na(0)
+nPeaksBoth2_gene=nPeaksBoth2_gene %&gt;% mutate(Difference=Nuclear-Total)
+
+PeakDiffPlot_5perc2.3ind=ggplot(nPeaksBoth2_gene, aes(x=Difference)) + geom_histogram() + labs(title=&quot;Distribution of difference in number of \n Peaks &gt;5% Usage in 2/3 Individuals \n between Nuclear and Total&quot;, y=&quot;Genes&quot;, x=&quot;Nuclear - Total&quot;)
+summary(nPeaksBoth2_gene$Difference)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -5.000   0.000   1.000   0.903   2.000   8.000 </code></pre>
+<pre class="r"><code>ggsave(file=&quot;../output/plots/QC_plots/PeakDiffPlot_5perc2.3ind.png&quot;, PeakDiffPlot_5perc2.3ind)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p>The mean is this set is .9</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -652,30 +873,31 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2    workflowr_1.1.1   data.table_1.11.8
- [4] forcats_0.3.0     stringr_1.3.1     dplyr_0.7.6      
- [7] purrr_0.2.5       readr_1.1.1       tidyr_0.8.1      
-[10] tibble_1.4.2      ggplot2_3.0.0     tidyverse_1.2.1  
+ [1] bindrcpp_0.2.2    cowplot_0.9.3     workflowr_1.1.1  
+ [4] data.table_1.11.8 forcats_0.3.0     stringr_1.3.1    
+ [7] dplyr_0.7.6       purrr_0.2.5       readr_1.1.1      
+[10] tidyr_0.8.1       tibble_1.4.2      ggplot2_3.0.0    
+[13] tidyverse_1.2.1  
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4  reshape2_1.4.3    haven_1.1.2      
  [4] lattice_0.20-35   colorspace_1.3-2  htmltools_0.3.6  
- [7] yaml_2.2.0        rlang_0.2.2       R.oo_1.22.0      
-[10] pillar_1.3.0      glue_1.3.0        withr_2.1.2      
-[13] R.utils_2.7.0     modelr_0.1.2      readxl_1.1.0     
-[16] bindr_0.1.1       plyr_1.8.4        munsell_0.5.0    
-[19] gtable_0.2.0      cellranger_1.1.0  rvest_0.3.2      
-[22] R.methodsS3_1.7.1 evaluate_0.11     labeling_0.3     
-[25] knitr_1.20        broom_0.5.0       Rcpp_0.12.19     
-[28] scales_1.0.0      backports_1.1.2   jsonlite_1.5     
-[31] hms_0.4.2         digest_0.6.17     stringi_1.2.4    
-[34] grid_3.5.1        rprojroot_1.3-2   cli_1.0.1        
-[37] tools_3.5.1       magrittr_1.5      lazyeval_0.2.1   
-[40] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
-[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
-[46] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.8   
-[49] R6_2.3.0          nlme_3.1-137      git2r_0.23.0     
-[52] compiler_3.5.1   </code></pre>
+ [7] yaml_2.2.0        utf8_1.1.4        rlang_0.2.2      
+[10] R.oo_1.22.0       pillar_1.3.0      glue_1.3.0       
+[13] withr_2.1.2       R.utils_2.7.0     modelr_0.1.2     
+[16] readxl_1.1.0      bindr_0.1.1       plyr_1.8.4       
+[19] munsell_0.5.0     gtable_0.2.0      cellranger_1.1.0 
+[22] rvest_0.3.2       R.methodsS3_1.7.1 evaluate_0.11    
+[25] labeling_0.3      knitr_1.20        fansi_0.4.0      
+[28] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
+[31] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[34] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
+[37] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
+[40] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[43] whisker_0.3-2     pkgconfig_2.0.2   xml2_1.2.0       
+[46] lubridate_1.7.4   assertthat_0.2.0  rmarkdown_1.10   
+[49] httr_1.3.1        rstudioapi_0.8    R6_2.3.0         
+[52] nlme_3.1-137      git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
