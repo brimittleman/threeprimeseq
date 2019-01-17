@@ -121,3 +121,5 @@ Until now I have been focusing on way to develop the story for the paper. The ne
 * [Deal with Mispriming problem](mispriming_approach.html)
 
 * [Create new peaks after mispriming filter](NewPeakPostMP.html)
+
+* [QC plots peaks >5% usage](peakQCPPlots.html)

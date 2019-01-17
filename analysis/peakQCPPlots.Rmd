@@ -1,0 +1,198 @@
+---
+title: "Peak QC data and figures"
+author: "Briana Mittleman"
+date: "1/16/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to do some QC and filtering on the peaks to go along with the number of peaks to cover % of a gene figure.  
+
+
+* Number of called peaks  
+
+* peaks used at X% in total/nuclear  
+
+* number of genes  
+
+
+```{r}
+library(tidyverse)
+library(data.table)
+library(workflowr)
+```
+
+```{r}
+totalPeakUs=read.table("../data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.txt.gz", header = T, stringsAsFactors = F) %>% separate(chrom, sep = ":", into = c("chr", "start", "end", "id")) %>% separate(id, sep="_", into=c("gene", "strand", "peak"))
+nuclearPeakUs=read.table("../data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.txt.gz", header = T, stringsAsFactors = F) %>% separate(chrom, sep = ":", into = c("chr", "start", "end", "id")) %>% separate(id, sep="_", into=c("gene", "strand", "peak"))
+```
+
+There are 338141 called peaks in the data. 
+
+I need to make the fractions numeric, I will do this in python because I can go through each value, split them and get the numeric.  
+
+
+It will be easiest if I write the counts out:  
+
+```{r}
+#write.table(totalPeakUs[,7:45], file="../data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.CountsOnly",quote=FALSE, col.names = F, row.names = F)
+
+#write.table(nuclearPeakUs[,7:45], file="../data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.CountsOnly",quote=FALSE, col.names = F, row.names = F)
+
+```
+
+Move these to /project2/gilad/briana/threeprimeseq/data/PeakUsage
+
+convertCount2Numeric.py
+```{bash,eval=F}
+def convert(infile, outfile):
+  final=open(outfile, "w")
+  for ln in open(infile, "r"):
+    line_list=ln.split()
+    new_list=[]
+    for i in line_list:
+      num, dem = i.split("/")
+      if dem == "0":
+        perc = "0.00"
+      else:
+        perc = int(num)/int(dem)
+        perc=round(perc,2)
+        perc= str(perc)
+      new_list.append(perc)
+    final.write("\t".join(new_list)+ '\n')
+  final.close()
+  
+convert("/project2/gilad/briana/threeprimeseq/data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.CountsOnly","/project2/gilad/briana/threeprimeseq/data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.CountsOnlyNUMERIC.txt" )
+
+
+convert("/project2/gilad/briana/threeprimeseq/data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.CountsOnly","/project2/gilad/briana/threeprimeseq/data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.CountsOnlyNUMERIC.txt")
+
+```
+
+
+Because any value less than .001 becomes 0, all peaks for a gene will not add to zero.  
+
+
+```{r}
+ind=colnames(totalPeakUs)[7:dim(totalPeakUs)[2]]
+totalPeakUs_CountNum=read.table("../data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Total.pheno_fixed.CountsOnlyNUMERIC.txt", col.names = ind)
+
+nuclearPeakUs_CountNum=read.table("../data/PeakUsage/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant.Nuclear.pheno_fixed.CountsOnlyNUMERIC.txt", col.names = ind)
+```
+
+Numeric values with the annotations:  
+
+```{r}
+totalPeak=as.data.frame(cbind(totalPeakUs[,1:6], totalPeakUs_CountNum))
+nuclearPeak=as.data.frame(cbind(nuclearPeakUs[,1:6], nuclearPeakUs_CountNum))
+```
+
+Get the mean coverage for each peak.
+
+```{r}
+totalPeakUs_CountNum_mean=rowMeans(totalPeakUs_CountNum)
+nuclearPeakUs_CountNum_mean=rowMeans(nuclearPeakUs_CountNum)
+```
+
+Append these to the inforamtion about the peak.   
+
+
+```{r}
+TotalPeakUSMean=as.data.frame(cbind(totalPeakUs[,1:6],totalPeakUs_CountNum_mean))
+NuclearPeakUSMean=as.data.frame(cbind(nuclearPeakUs[,1:6],nuclearPeakUs_CountNum_mean))
+                              
+```
+
+
+Get the number of genes with mean(usage > 5%)  
+
+Total:  
+```{r}
+TotalPeakUSMean_filt=TotalPeakUSMean %>% filter(totalPeakUs_CountNum_mean>=.05) %>% group_by(gene) %>% summarise(Npeaks=n())
+
+```
+
+I want to get how many genes have 1,2,3,4 ect:  
+
+```{r}
+totalPeaksPerGene=TotalPeakUSMean_filt %>% group_by(Npeaks) %>% summarise(GenesWithNPeaks=n())
+
+ggplot(totalPeaksPerGene,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat="identity",fill="darkviolet") + labs(x="Number Peaks with >5% usage", y="Number of Genes", title="Genes with peaks covering > 5% in Total")
+```
+
+
+
+Nuclear:  
+```{r}
+NuclearPeakUSMean_filt=NuclearPeakUSMean %>% filter(nuclearPeakUs_CountNum_mean>=.05) %>% group_by(gene) %>% summarise(Npeaks=n())
+
+```
+
+I want to get how many genes have 1,2,3,4 ect:  
+
+```{r}
+nuclearPeaksPerGene=NuclearPeakUSMean_filt %>% group_by(Npeaks) %>% summarise(GenesWithNPeaks=n())
+nuclearPeaksPerGene$GenesWithNPeaks=as.integer(nuclearPeaksPerGene$GenesWithNPeaks)
+ggplot(nuclearPeaksPerGene,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat="identity", fill="deepskyblue3") + labs(x="Number Peaks with >5% usage", y="Number of Genes", title="Genes with peaks covering > 5% in Nuclear")
+```
+
+Genes with at least 1: 
+
+```{r}
+#nuclear
+nrow(NuclearPeakUSMean_filt)  
+
+#total
+nrow(TotalPeakUSMean_filt)  
+
+```
+
+Join them to put on the same plot:  
+gene level
+
+```{r}
+nPeaksBoth_gene=TotalPeakUSMean_filt %>% full_join(NuclearPeakUSMean_filt, by="gene")
+colnames(nPeaksBoth_gene)= c("Gene", "Total", "Nuclear")
+nPeaksBoth_gene$Nuclear= nPeaksBoth_gene$Nuclear %>% replace_na(0)
+nPeaksBoth_gene$Total= nPeaksBoth_gene$Total %>% replace_na(0)
+```
+
+
+
+
+peak number level: 
+```{r}
+nPeaksBoth=totalPeaksPerGene %>% full_join(nuclearPeaksPerGene, by="Npeaks")
+colnames(nPeaksBoth)= c("Peaks", "Total", "Nuclear")
+nPeaksBoth$Total= nPeaksBoth$Total %>% replace_na(0)
+
+#melt nPeaksBoth
+nPeaksBoth_melt=melt(nPeaksBoth, id.var="Peaks")
+colnames(nPeaksBoth_melt)= c("Peaks", "Fraction", "Genes")
+```
+
+Make a plot:
+
+```{r}
+peakUsage5perc=ggplot(nPeaksBoth_melt, aes(x=Peaks, y=Genes, fill=Fraction)) + geom_bar(stat="identity", position = "dodge") + labs(title="Number of Genes with >5% Peak Usage") + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + facet_grid(~Fraction)
+
+peakUsage5perc
+
+ggsave(peakUsage5perc, file="../output/plots/QC_plots/peakUsage5perc.png")
+```
+
+
+Peaks with >5 per not at gene level:  
+
+
+```{r}
+#nuclear  
+NuclearPeakUSMean %>% filter(nuclearPeakUs_CountNum_mean>=.05) %>% nrow()
+
+#total
+TotalPeakUSMean %>% filter(totalPeakUs_CountNum_mean>=.05) %>% nrow()
+```
+
