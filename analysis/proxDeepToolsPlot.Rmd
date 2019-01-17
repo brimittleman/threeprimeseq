@@ -1,0 +1,89 @@
+---
+title: "Distal vs Proximal Peak DeepTools"
+author: "Briana Mittleman"
+date: "1/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to show RNA seq vs 3' seq in peaks that are internal. 
+
+To do this I need to pull in the peaks (use the filtered ones from peakQCPlots) to get peaks that are used but are not the most distal for the gene. I need to split by strand when i do this becasue most distal is different in both cases. 
+ 
+ 
+ 
+Load Libraries
+```{r}
+library(data.table)
+library(tidyverse)
+library(workflowr)
+library(cowplot)
+```
+
+
+
+Load peaks for total and nuclear post filter:  
+
+```{r}
+total_PeakUsMean=read.table("../data/PeakUsage/PeakUsageMeanPost5percFilter.Total.txt", head = T)
+nuclear_PeakUsMean=read.table("../data/PeakUsage/PeakUsageMeanPost5percFilter.Nuclear.txt", head=T)
+```
+
+Seperate positive and negative:
+
+* Total  
+
+```{r}
+total_PeakUsMean_pos=total_PeakUsMean %>% filter(strand=="+")
+total_PeakUsMean_neg=total_PeakUsMean %>% filter(strand=="-")
+```
+
+
+
+* Nuclear  
+
+```{r}
+nuclear_PeakUsMean_pos=nuclear_PeakUsMean %>% filter(strand=="+")
+nuclear_PeakUsMean_neg=nuclear_PeakUsMean %>% filter(strand=="-")
+```
+
+
+Group by gene and keep internal (remove genes with only 1)
+
+* For positive strand keep bottom one with top_n() peak #  (most internal)
+
+```{r}
+total_PeakUsMean_pos_internal=total_PeakUsMean_pos %>% group_by(gene) %>% mutate(n=n()) %>% filter(n>1) %>% top_n(1,peak)
+
+nuclear_PeakUsMean_pos_internal=nuclear_PeakUsMean_pos %>% group_by(gene) %>% mutate(n=n()) %>% filter(n>1) %>% top_n(1,peak)
+```
+
+
+*For negative strand use top_n(-1)   
+
+
+```{r}
+total_PeakUsMean_neg_internal=total_PeakUsMean_neg %>% group_by(gene) %>% mutate(n=n()) %>% filter(n>1) %>% top_n(-1,peak)
+
+nuclear_PeakUsMean_neg_internal=nuclear_PeakUsMean_neg %>% group_by(gene) %>% mutate(n=n()) %>% filter(n>1) %>% top_n(-1,peak)
+```
+
+
+Bind the total and nuclear rows back together:  
+
+Total  
+
+```{r}
+total_PeakUsMean_internal=as.data.frame(rbind(total_PeakUsMean_pos_internal,total_PeakUsMean_neg_internal)) %>% arrange(chr, start, end)
+```
+
+Nuclear:  
+```{r}
+nuclear_PeakUsMean_internal=as.data.frame(rbind(nuclear_PeakUsMean_pos_internal,nuclear_PeakUsMean_neg_internal)) %>% arrange(chr, start, end)
+```
+
+
+Use these peak numbers to filter the bed file that I use for deep tools. I can do this in python with a dictionary of the peaks to keep. 
