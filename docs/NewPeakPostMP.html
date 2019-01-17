@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-14</p>
+<p><strong>Last updated:</strong> 2019-01-17</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c9ad11ec99fce15d07a450340c3b84cfbd50b6d0" target="_blank">c9ad11e</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1ec3c084c574b47b2457a6ea20ab9661f3f02849" target="_blank">1ec3c08</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -359,6 +359,7 @@ Ignored files:
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
     Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/PreAshExplore.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
@@ -375,6 +376,7 @@ Untracked files:
     Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
+    Untracked:  data/PeakUsage/
     Untracked:  data/PeaksUsed/
     Untracked:  data/RNAkalisto/
     Untracked:  data/TotalApaQTLs.txt
@@ -440,7 +442,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
-    Modified:   analysis/InvestigatePeak2GeneAssignment.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -449,9 +450,12 @@ Unstaged changes:
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlapMolQTL.opposite.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/peakQCPPlots.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
@@ -485,6 +489,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1ec3c084c574b47b2457a6ea20ab9661f3f02849/analysis/NewPeakPostMP.Rmd" target="_blank">1ec3c08</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-17
+</td>
+<td style="text-align:left;">
+fix subset bam script to a dictionary
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/ed31ebab056c93e2f7e1e4f0e2c05cc09a7880c7/docs/NewPeakPostMP.html" target="_blank">ed31eba</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-14
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -598,6 +636,41 @@ for i in $(ls /project2/gilad/briana/threeprimeseq/data/nuc_10up_CleanReads/*);d
 done 
    
 </code></pre>
+<p>SOrt the new bed files:</p>
+<p>sort_filterSortBedbyCleanedBed.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=sort_filterSortBedbyCleanedBed
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=sort_filterSortBedbyCleanedBed.out
+#SBATCH --error=sort_filterSortBedbyCleanedBed.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/*);do
+  describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/-combined-sort.clean.bed//&quot;)
+  bedtools sort -faidx /project2/gilad/briana/threeprimeseq/code/chromOrder.num.txt -i  /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/YL-SP-${describer}-combined-sort.clean.bed &gt; /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP_sorted/YL-SP-${describer}-combined-sort.clean.sorted.bed
+done</code></pre>
+<p><strong>Problems with Order Try on one file to save time. sort with faidx order of bam then overlap</strong> describer=“18486-N”</p>
+<p>check that i filtered with</p>
+<p>NB501189:272:HGWL5BGX5:1:11109:9097:13183</p>
+<p>samtools view -c -F 4 /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-${describer}-combined-sort.bam 11405271</p>
+<p>samtools view -c -F 4 /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${describer}-combined-sort.noMP.bam</p>
+<pre class="bash"><code>
+describer=&quot;18486-N&quot;
+
+
+bedtools sort -faidx /project2/gilad/briana/threeprimeseq/code/chromOrder.num.txt -i  /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/YL-SP-${describer}-combined-sort.clean.bed  &gt;  /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP_sorted/YL-SP-${describer}-combined-sort.clean.sorted.bed
+
+
+bedtools intersect -wa -sorted -s -abam /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-${describer}-combined-sort.bam -b /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP_sorted/YL-SP-${describer}-combined-sort.clean.sorted.bed &gt; /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${describer}-combined-sort.noMP.bam
+</code></pre>
 <p>Next I can use bedtools intersect to filter the bam files from these bed files. I will write the code then wrap it.</p>
 <p>filterOnlyOKPrimeFromBam.sh</p>
 <p>a is the bam, b is the clean bed , stranded, sorted, -wa</p>
@@ -605,7 +678,7 @@ done
 
 #SBATCH --job-name=filterOnlyOKPrimeFromBam
 #SBATCH --account=pi-yangili1
-#SBATCH --time=8:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=filterOnlyOKPrimeFromBam.out
 #SBATCH --error=filterOnlyOKPrimeFromBam.err
 #SBATCH --partition=broadwl
@@ -616,10 +689,325 @@ module load Anaconda3
 source activate three-prime-env  
 
 
-desciber=$1
+describer=$1
 
-bedtools intersect -wa -sorted -s -abam /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-${desciber}-combined-sort.bam -b /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/YL-SP-${desciber}-combined-sort.clean.bed &gt; /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${desciber}-combined-sort.noMP.bam
+bedtools intersect -wa -sorted -s -abam /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-${describer}-combined-sort.bam -b /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP_sorted/YL-SP-${describer}-combined-sort.clean.sorted.bed &gt; /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${desrciber}-combined-sort.noMP.bam
 </code></pre>
+<p>This is slow! I want to try to use pysam to do this. I need to make a list of the ok reads from the bed file then filter on these as I read the bam file.</p>
+<p>Add pysam to my environement</p>
+<p>filterBamforMP.pysam2.py</p>
+<pre class="bash"><code>#!/usr/bin/env python
+
+
+&quot;&quot;&quot;
+Usage: python filterBamforMP.pysam2.py &lt;describer&gt;
+&quot;&quot;&quot;
+
+
+def main(Bin, Bamin, out):
+    okRead={}
+    for ln in open(Bin, &quot;r&quot;):
+        chrom, start_new , end_new , name, score, strand = ln.split()
+        okRead[name] = &quot;&quot;
+    #pysam to read in bam allignments
+    bamfile = pysam.AlignmentFile(Bamin, &quot;rb&quot;)
+    finalBam =  pysam.AlignmentFile(out, &quot;wb&quot;, template=bamfile)
+    #read name is the first col in each bam file
+    n=0
+    for read in bamfile.fetch():
+        read_name=read.query_name
+        #if statement about name  
+        if read_name  in okRead.keys():
+            finalBam.write(read)
+        if n % 1000 == 0 : print(n)
+        n+=1 
+    bamfile.close()
+    finalBam.close()
+
+    
+if __name__ == &quot;__main__&quot;:
+    import sys, pysam
+    describer = sys.argv[1]
+    inBed= &quot;/project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP_sorted/YL-SP-&quot; + describer + &quot;-combined-sort.clean.sorted.bed&quot;
+    inBam=&quot;/project2/gilad/briana/threeprimeseq/data/sort/YL-SP-&quot; + describer + &quot;-combined-sort.bam&quot;
+    outBam=&quot;/project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-&quot; + describer + &quot;-combined-sort.noMP.bam&quot;
+    main(inBed, inBam, outBam)</code></pre>
+<p>run_filterBamforMP.pysam2.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=dic_test_filterBamforMP.pysam2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_filterBamforMP.pysam2.out
+#SBATCH --error=run_filterBamforMP.pysam2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=32G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+describer=$1
+python filterBamforMP.pysam2.py ${describer}
+</code></pre>
+<p>wrap_filterBamforMP.pysam2.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=wrap_filterBamforMP.pysam2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=wrap_filterBamforMP.pysam2.out
+#SBATCH --error=wrap_filterBamforMP.pysam2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=32G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP_sorted/*);do
+   describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/-combined-sort.clean.sorted.bed//&quot;)
+   sbatch run_filterBamforMP.pysam2.sh ${describer}
+done
+</code></pre>
+<p>Sort and index bam files:</p>
+<p>SortIndexBam_noMP.sh</p>
+<pre class="bash"><code>
+#!/bin/bash
+
+#SBATCH --job-name=SortIndexBam_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=SortIndexBam_noMP.out
+#SBATCH --error=SortIndexBam_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load samtools
+#source activate three-prime-env 
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bam_NoMP/*);do
+ describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/-combined-sort.noMP.bam//&quot;)
+  samtools sort /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${describer}-combined-sort.noMP.bam &gt;  /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/YL-SP-${describer}-combined-sort.noMP.sort.bam  
+  samtools index /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/YL-SP-${describer}-combined-sort.noMP.sort.bam 
+done  </code></pre>
+<p>Merge bams:</p>
+<p>I will merge all of the bam files to vreate the BW and coverage files</p>
+<p>mergeBamFiles_noMP.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mergeBamFiles_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=mergeBamFiles_noMP.out
+#SBATCH --error=mergeBamFiles_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+samtools merge  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllSamples.MergedBamFiles.noMP.bam /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*.bam
+</code></pre>
+<p>SortIndexMergedBam_noMP.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=SortIndexMergedBam_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=SortIndexMergedBam_noMP.out
+#SBATCH --error=SortIndexMergedBam_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllSamples.MergedBamFiles.noMP.bam &gt; /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllSamples.MergedBamFiles.noMP.sort.bam
+
+samtools index /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllSamples.MergedBamFiles.noMP.sort.bam</code></pre>
+<p>Create bigwig and coverage files from the merged bam</p>
+<p>mergedBam2Bedgraph.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mergedBam2Bedgraph
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=mergedBam2Bedgraph.out
+#SBATCH --error=mergedBam2Bedgraph.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+bedtools genomecov -ibam /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllSamples.MergedBamFiles.noMP.sort.bam -bg -split &gt; /project2/gilad/briana/threeprimeseq/data/mergeBG_noMP/AllSamples.MergedBamFiles.noMP.sort.bg  
+</code></pre>
+<p>Use my bg_to_cov.py script. This script takes the infile and output file</p>
+<p>run_bgtocov_noMP.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_bgtocov_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_bgtocov_noMP.out
+#SBATCH --error=run_bgtocov_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+python bg_to_cov.py &quot;/project2/gilad/briana/threeprimeseq/data/mergeBG_noMP/AllSamples.MergedBamFiles.noMP.sort.bg&quot; &quot;/project2/gilad/briana/threeprimeseq/data/mergeBG_coverage_noMP/AllSamples.MergedBamFiles.noMP.sort.coverage.txt&quot;
+
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/mergeBG_coverage_noMP/AllSamples.MergedBamFiles.noMP.sort.coverage.txt &gt; /project2/gilad/briana/threeprimeseq/data/mergeBG_coverage_noMP/AllSamples.MergedBamFiles.noMP.sort.coverage.sort.txt</code></pre>
+<p>THen I will be able to call peaks</p>
+<p>callPeaksYL_noMP.py</p>
+<pre class="bash"><code>def main(inFile, outFile, ctarget):
+    fout = open(outFile,&#39;w&#39;)
+    mincount = 10
+    ov = 20
+    current_peak = []
+    
+    currentChrom = None
+    prevPos = 0
+    for ln in open(inFile):
+        chrom, pos, count = ln.split()
+        if chrom != ctarget: continue
+        count = float(count)
+
+        if currentChrom == None:
+            currentChrom = chrom
+            
+        if count == 0 or currentChrom != chrom or int(pos) &gt; prevPos + 1:
+            if len(current_peak) &gt; 0:
+                print (current_peak)
+                M = max([x[1] for x in current_peak])
+                if M &gt; mincount:
+                    all_peaks = refine_peak(current_peak, M, M*0.1,M*0.05)
+                    #refined_peaks = [(x[0][0],x[-1][0], np.mean([y[1] for y in x])) for x in all_peaks]  
+                    rpeaks = [(int(x[0][0])-ov,int(x[-1][0])+ov, np.mean([y[1] for y in x])) for x in all_peaks]
+                    if len(rpeaks) &gt; 1:
+                        for clu in cluster_intervals(rpeaks)[0]:
+                            M = max([x[2] for x in clu])
+                            merging = []
+                            for x in clu:
+                                if x[2] &gt; M *0.5:
+                                    #print x, M
+                                    merging.append(x)
+                            c, s,e,mean =  chrom, min([x[0] for x in merging])+ov, max([x[1] for x in merging])-ov, np.mean([x[2] for x in merging])
+                            #print c,s,e,mean
+                            fout.write(&quot;chr%s\t%d\t%d\t%d\t+\t.\n&quot;%(c,s,e,mean))
+                            fout.flush()
+                    elif len(rpeaks) == 1:
+                        s,e,mean = rpeaks[0]
+                        fout.write(&quot;chr%s\t%d\t%d\t%f\t+\t.\n&quot;%(chrom,s+ov,e-ov,mean))
+                        print(&quot;chr%s&quot;%chrom+&quot;\t%d\t%d\t%f\t+\t.\n&quot;%rpeaks[0])
+                    #print refined_peaks
+            current_peak = [(pos,count)]
+        else:
+            current_peak.append((pos,count))
+        currentChrom = chrom
+        prevPos = int(pos)
+
+def refine_peak(current_peak, M, thresh, noise, minpeaksize=30):
+    
+    cpeak = []
+    opeak = []
+    allcpeaks = []
+    allopeaks = []
+
+    for pos, count in current_peak:
+        if count &gt; thresh:
+            cpeak.append((pos,count))
+            opeak = []
+            continue
+        elif count &gt; noise: 
+            opeak.append((pos,count))
+        else:
+            if len(opeak) &gt; minpeaksize:
+                allopeaks.append(opeak) 
+            opeak = []
+
+        if len(cpeak) &gt; minpeaksize:
+            allcpeaks.append(cpeak)
+            cpeak = []
+        
+    if len(cpeak) &gt; minpeaksize:
+        allcpeaks.append(cpeak)
+    if len(opeak) &gt; minpeaksize:
+        allopeaks.append(opeak)
+
+    allpeaks = allcpeaks
+    for opeak in allopeaks:
+        M = max([x[1] for x in opeak])
+        allpeaks += refine_peak(opeak, M, M*0.3, noise)
+
+    #print [(x[0],x[-1]) for x in allcpeaks], [(x[0],x[-1]) for x in allopeaks], [(x[0],x[-1]) for x in allpeaks]
+    #print &#39;---\n&#39;
+    return(allpeaks)
+
+if __name__ == &quot;__main__&quot;:
+    import numpy as np
+    from misc_helper import *
+    import sys
+
+    chrom = sys.argv[1]
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/mergeBG_coverage_noMP/AllSamples.MergedBamFiles.noMP.sort.coverage.sort.txt&quot;
+    outFile = &quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/APApeaks_noMP_chr%s.bed&quot;%chrom
+    main(inFile, outFile, chrom)</code></pre>
+<p>Run this over all chroms:</p>
+<p>run_callPeaksYL_noMP.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_callPeaksYL_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_callPeaksYL_noMP.out
+#SBATCH --error=run_callPeaksYL_noMP.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(seq 1 22); do 
+  python callPeaksYL_noMP.py $i
+done</code></pre>
+<div id="extra-not-using" class="section level2">
+<h2>Extra not using</h2>
+<p>filterOnlyOKPrimeFromBam.sh</p>
+<p>a is the bam, b is the clean bed , stranded, sorted, -wa</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=filterOnlyOKPrimeFromBam
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=filterOnlyOKPrimeFromBam.out
+#SBATCH --error=filterOnlyOKPrimeFromBam.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+describer=$1
+
+bedtools intersect -wa -sorted -s -abam /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-${describer}-combined-sort.bam -b /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP_sorted/YL-SP-${describer}-combined-sort.clean.sorted.bed &gt; /project2/gilad/briana/threeprimeseq/data/bam_NoMP/YL-SP-${desrciber}-combined-sort.noMP.bam
+</code></pre>
+<p>This is slow! I want to try to use pysam to do this. I need to make a list of the ok reads from the bed file then filter on these as I read the bam file.</p>
 <p>Wrap this:</p>
 <p>wrap_filterOnlyOKPrimeFromBam.sh</p>
 <pre class="bash"><code>#!/bin/bash
@@ -637,11 +1025,12 @@ module load Anaconda3
 source activate three-prime-env  
 
 
-for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP/*);do
-   describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/-combined-sort.clean.bed//&quot;)
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort_CleanedMP_sorted/*);do
+   describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/-combined-sort.clean.sorted.bed//&quot;)
    sbatch filterOnlyOKPrimeFromBam.sh ${describer}
 done
 </code></pre>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
