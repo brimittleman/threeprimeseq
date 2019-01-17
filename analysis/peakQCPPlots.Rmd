@@ -23,6 +23,7 @@ I want to do some QC and filtering on the peaks to go along with the number of p
 library(tidyverse)
 library(data.table)
 library(workflowr)
+library(cowplot)
 ```
 
 ```{r}
@@ -158,7 +159,25 @@ nPeaksBoth_gene=TotalPeakUSMean_filt %>% full_join(NuclearPeakUSMean_filt, by="g
 colnames(nPeaksBoth_gene)= c("Gene", "Total", "Nuclear")
 nPeaksBoth_gene$Nuclear= nPeaksBoth_gene$Nuclear %>% replace_na(0)
 nPeaksBoth_gene$Total= nPeaksBoth_gene$Total %>% replace_na(0)
+nPeaksBoth_gene=nPeaksBoth_gene %>% mutate(Difference=Nuclear-Total)
+
+ggplot(nPeaksBoth_gene, aes(x=Difference)) + geom_histogram() + labs(title="Distribution of difference in number of \n Peaks >5% between Nuclear and Total", y="Genes", x="Nuclear - Total")
+summary(nPeaksBoth_gene$Difference)
 ```
+
+
+WHich genes is this most affecting:
+```{r}
+nPeaksBoth_gene %>% arrange(desc(Difference)) %>% slice(1:10)
+```
+
+
+
+
+
+**Look at some of these in IGV**  
+
+Good examples: API5,ARL3, SHQ1
 
 
 
@@ -196,3 +215,144 @@ NuclearPeakUSMean %>% filter(nuclearPeakUs_CountNum_mean>=.05) %>% nrow()
 TotalPeakUSMean %>% filter(totalPeakUs_CountNum_mean>=.05) %>% nrow()
 ```
 
+
+
+Plot distributions priots to filtering:  
+```{r}
+NuclearPeakUSMean_sm=NuclearPeakUSMean %>% select(peak, nuclearPeakUs_CountNum_mean)
+TotalPeakUSMean_sm=TotalPeakUSMean %>% select(peak, totalPeakUs_CountNum_mean)
+BothPeakUSMean=TotalPeakUSMean_sm %>% full_join(NuclearPeakUSMean_sm, by=c("peak"))
+summary(BothPeakUSMean)
+
+```
+
+
+```{r}
+colnames(BothPeakUSMean)=c("Peak", "Total", "Nuclear")
+BothPeakUSMean_melt=melt(BothPeakUSMean, id.vars = "Peak")
+colnames(BothPeakUSMean_melt)=c("Peak", "Fraction", "MeanUsage")
+meanUsBox=ggplot(BothPeakUSMean_melt,aes(y=MeanUsage, x=Fraction, fill=Fraction)) +geom_boxplot() +scale_fill_manual(values=c("darkviolet","deepskyblue3"))
+meanUsBoxZoom=ggplot(BothPeakUSMean_melt,aes(y=MeanUsage, x=Fraction, fill=Fraction)) +geom_boxplot() +ylim(c(0,.05))+scale_fill_manual(values=c("darkviolet","deepskyblue3"))
+
+meanUsBoxBoth=plot_grid(meanUsBox,meanUsBoxZoom)
+
+ggsave(file="../output/plots/QC_plots/meanPeakUsageBoxPlots.png",meanUsBoxBoth)
+```
+```{r}
+
+meanUs_den=ggplot(BothPeakUSMean_melt,aes(x=MeanUsage, by=Fraction, fill=Fraction)) +geom_density(alpha=.4) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))
+meanUs_denZoom=ggplot(BothPeakUSMean_melt,aes(x=MeanUsage, by=Fraction, fill=Fraction)) +geom_density(alpha=.4) +xlim(c(0,.05)) + scale_fill_manual(values=c("darkviolet","deepskyblue3"))
+
+meanUs_denBoth=plot_grid(meanUs_den,meanUs_denZoom)
+
+ggsave(file="../output/plots/QC_plots/meanPeakUsagDensityPlots.png",meanUs_denBoth,)
+```
+
+
+
+
+
+With means at about 4%. I may remake these plots with 1 %  
+
+```{r}
+TotalPeakUSMean_filt1=TotalPeakUSMean %>% filter(totalPeakUs_CountNum_mean>=.01) %>% group_by(gene) %>% summarise(Npeaks=n())
+
+totalPeaksPerGene1=TotalPeakUSMean_filt1 %>% group_by(Npeaks) %>% summarise(GenesWithNPeaks=n())
+
+ggplot(totalPeaksPerGene1,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat="identity",fill="darkviolet") + labs(x="Number Peaks with >1% usage", y="Number of Genes", title="Genes with peaks covering > 1% in Total")
+
+```
+
+Nuclear:  
+```{r}
+NuclearPeakUSMean_filt1=NuclearPeakUSMean %>% filter(nuclearPeakUs_CountNum_mean>=.01) %>% group_by(gene) %>% summarise(Npeaks=n())
+
+```
+
+I want to get how many genes have 1,2,3,4 ect:  
+
+```{r}
+nuclearPeaksPerGene1=NuclearPeakUSMean_filt1 %>% group_by(Npeaks) %>% summarise(GenesWithNPeaks=n())
+nuclearPeaksPerGene1$GenesWithNPeaks=as.integer(nuclearPeaksPerGene1$GenesWithNPeaks)
+ggplot(nuclearPeaksPerGene1,aes(x=Npeaks,y=GenesWithNPeaks)) + geom_bar(stat="identity", fill="deepskyblue3") + labs(x="Number Peaks with >1% usage", y="Number of Genes", title="Genes with peaks covering > 1% in Nuclear")
+```
+
+
+Try to do this with 5% in 2/3 of the libraries instead:  
+
+```{r}
+keep.exprs_T=rowSums(as.matrix(totalPeakUs_CountNum>=.05)) >= 26
+TotalPeakUS_filt= as.data.frame(cbind(totalPeakUs[,1:6], totalPeakUs_CountNum))[keep.exprs_T,]
+
+
+
+keep.exprs_N=rowSums(as.matrix(nuclearPeakUs_CountNum>=.05)) >= 26
+nuclearPeakUS_filt= as.data.frame(cbind(nuclearPeakUs[,1:6],nuclearPeakUs_CountNum))[keep.exprs_N,]
+
+
+```
+Total: 30657 peaks pass this filter
+Nuclear:44030 peaks pass 
+
+
+
+Now I can group by gene and see what happens:  
+
+```{r}
+TotalPeakUS_filt_gene=TotalPeakUS_filt %>% group_by(gene) %>% summarise(nPeaks=n())
+
+TotalPeaksPerGene2=TotalPeakUS_filt_gene %>% group_by(nPeaks) %>% summarise(GenesWithNPeaks=n())
+ggplot(TotalPeaksPerGene2,aes(x=nPeaks,y=GenesWithNPeaks)) + geom_bar(stat="identity", fill="darkviolet") + labs(x="Number Peaks with >5% usage in 2/3 ind", y="Number of Genes", title="Genes with peaks covering > 5% in 2/3 Ind Total")
+
+```
+
+In this filter there are 13497 genes. 
+
+
+
+```{r}
+nuclearPeakUS_filt_gene=nuclearPeakUS_filt %>% group_by(gene) %>% summarise(nPeaks=n())
+
+nuclearPeaksPerGene2=nuclearPeakUS_filt_gene %>% group_by(nPeaks) %>% summarise(GenesWithNPeaks=n())
+ggplot(nuclearPeaksPerGene2,aes(x=nPeaks,y=GenesWithNPeaks)) + geom_bar(stat="identity", fill="deepskyblue3") + labs(x="Number Peaks with >5% usage in 2/3 ind", y="Number of Genes", title="Genes with peaks covering > 5% in 2/3 Ind Nuclear")
+```
+14690
+
+Melt these to put on one plot:  
+```{r}
+nPeaksBoth_filt2=TotalPeaksPerGene2 %>% full_join(nuclearPeaksPerGene2, by="nPeaks")
+colnames(nPeaksBoth_filt2)= c("Peaks", "Total", "Nuclear")
+nPeaksBoth_filt2$Total= nPeaksBoth_filt2$Total %>% replace_na(0)
+
+#melt nPeaksBoth
+nPeaksBoth_melt2=melt(nPeaksBoth_filt2, id.var="Peaks")
+colnames(nPeaksBoth_melt2)= c("Peaks", "Fraction", "Genes")
+```
+
+Plot:  
+
+```{r}
+peakUsage5perc2=ggplot(nPeaksBoth_melt2, aes(x=Peaks, y=Genes, fill=Fraction)) + geom_bar(stat="identity", position = "dodge") + labs(title="Number of Genes with >5% peak usage in 2/3 Ind") + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + facet_grid(~Fraction)
+
+peakUsage5perc2
+
+ggsave(peakUsage5perc2, file="../output/plots/QC_plots/peakUsage5perc2.3ind.png")
+```
+
+
+```{r}
+nPeaksBoth2_gene=TotalPeakUS_filt_gene %>% full_join(nuclearPeakUS_filt_gene, by="gene")
+
+
+colnames(nPeaksBoth2_gene)= c("Gene", "Total", "Nuclear")
+nPeaksBoth2_gene$Nuclear= nPeaksBoth2_gene$Nuclear %>% replace_na(0)
+nPeaksBoth2_gene$Total= nPeaksBoth2_gene$Total %>% replace_na(0)
+nPeaksBoth2_gene=nPeaksBoth2_gene %>% mutate(Difference=Nuclear-Total)
+
+PeakDiffPlot_5perc2.3ind=ggplot(nPeaksBoth2_gene, aes(x=Difference)) + geom_histogram() + labs(title="Distribution of difference in number of \n Peaks >5% Usage in 2/3 Individuals \n between Nuclear and Total", y="Genes", x="Nuclear - Total")
+summary(nPeaksBoth2_gene$Difference)
+
+ggsave(file="../output/plots/QC_plots/PeakDiffPlot_5perc2.3ind.png", PeakDiffPlot_5perc2.3ind)
+```
+
+The mean is this set is .9
