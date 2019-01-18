@@ -78,12 +78,165 @@ Total
 
 ```{r}
 total_PeakUsMean_internal=as.data.frame(rbind(total_PeakUsMean_pos_internal,total_PeakUsMean_neg_internal)) %>% arrange(chr, start, end)
+
+write.table(total_PeakUsMean_internal, file="../data/PeakUsage/InternalFilteredPeak.total.txt", row.names = F, col.names = F, quote = F)
 ```
 
 Nuclear:  
 ```{r}
 nuclear_PeakUsMean_internal=as.data.frame(rbind(nuclear_PeakUsMean_pos_internal,nuclear_PeakUsMean_neg_internal)) %>% arrange(chr, start, end)
+
+
+write.table(nuclear_PeakUsMean_internal, file="../data/PeakUsage/InternalFilteredPeak.nuclear.txt", row.names = F, col.names = F, quote = F)
 ```
 
 
 Use these peak numbers to filter the bed file that I use for deep tools. I can do this in python with a dictionary of the peaks to keep. 
+
+
+The file I want to subset is /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed  
+
+
+filterPeaksInner.py
+```{bash,eval=F}
+#python  
+
+peaksIn="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed"
+innerPeaksTotal="/project2/gilad/briana/threeprimeseq/data/PeakUsage/InternalFilteredPeak.total.txt"
+innerPeaksNuclear="/project2/gilad/briana/threeprimeseq/data/PeakUsage/InternalFilteredPeak.nuclear.txt"
+
+OkPeakTot={}
+for ln in open(innerPeaksTotal, "r"):
+    peaknum=ln.split()[5]
+    peaknumOnly=peaknum[4:]
+    OkPeakTot[peaknumOnly] = ""
+  
+OkPeakNuc={}
+for ln in open(innerPeaksNuclear, "r")
+   peaknum=ln.split()[5]
+   peaknumOnly=peaknum[4:]
+   OkPeakNuc[peaknumOnly]=""
+   
+TotOut=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed", "w")
+
+NucOut=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NuclearInternal.bed", "w")
+
+
+#read peaks and write out to each file 
+
+for ln in open(peaksIn,"r"):
+    peakName=ln.split()[3]
+    peakNameStr=str(peakName)
+    if peakName in OkPeakTot.keys():
+        TotOut.write(ln)
+    if peakName in OkPeakNuc.keys():
+        NucOut.write(ln)
+
+TotOut.close()
+NucOut.close()
+      
+```
+
+Now I can make the deep tools plots:  
+
+Three prime seq with inner total 
+
+TotalDTPlotmyPeaks_Internal.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=TotalDTPlotmyPeaks_Internal
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=TotalDTPlotmyPeaks_Internal.out
+#SBATCH --error=TotalDTPlotmyPeaks_Internal.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw  -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed -b 1000 -a 1000  --outFileName /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_myPeaks_Internal.gz  
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_myPeaks_Internal.gz --refPointLabel "Internal Peaks" --plotTitle "Total Combined Reads Internal Peaks" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_myPeaks_internal.png
+
+```
+
+
+NuclearDTPlotmyPeaks_Internal.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NuclearDTPlotmyPeaks_Internal
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NucelarDTPlotmyPeaks_Internal.out
+#SBATCH --error=NucelarDTPlotmyPeaks_Internal.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Nucelar_MergedBamCoverage.bw  -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NucelarInternal.bed -b 1000 -a 1000  --outFileName /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_myPeaks_Internal.gz  
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_myPeaks_Internal.gz --refPointLabel "Internal Peaks" --plotTitle "Nuclear Combined Reads Internal Peaks" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_myPeaks_internal.png
+
+```
+
+
+RNA seq plot with the total internal peaks  
+
+
+RNAseqDTPlotmyPeaks_Internal.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=RNAseqDTPlotmyPeaks_Internal
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNAseqDTPlotmyPeaks_Internal.out
+#SBATCH --error=RNAseqDTPlotmyPeaks_Internal.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_Internal.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_Internal.gz --refPointLabel "Total Internal Peaks" --plotTitle "Combined RNAseq Reads at Total Internal"  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_Internal.png
+```
+
+
+RNAseqDTPlotmyPeaks_NuclearInternal.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=RNAseqDTPlotmyPeaks_NuclearInternal
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNAseqDTPlotmyPeaks_NuclearInternal.out
+#SBATCH --error=RNAseqDTPlotmyPeaks_NuclearInternal.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NuclearInternal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_NuclearInternal.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_NuclearInternal.gz --refPointLabel "Nucelar Internal Peaks" --plotTitle "Combined RNAseq Reads at Nuclear Internal"  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_NuclearInternal.png
+```
