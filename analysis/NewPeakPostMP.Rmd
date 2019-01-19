@@ -1161,7 +1161,11 @@ colnames(nPeaksBoth_melt)= c("Peaks", "Fraction", "Genes")
 peakUsage5perc=ggplot(nPeaksBoth_melt, aes(x=Peaks, y=Genes, fill=Fraction)) + geom_bar(stat="identity", position = "dodge") + labs(title="Number of Genes with >5% Peak Usage \n cleaned for mispriming") + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + facet_grid(~Fraction)
 
 peakUsage5perc
+
+
+ggsave(peakUsage5perc, file="../output/plots/QC_plots/peakUsage5perc_noMP.png")
 ```
+
 
 
 Genes covered  
@@ -1198,6 +1202,14 @@ TotalPeakUSMean %>% filter(totalPeakUs_CountNum_mean>=.05) %>% nrow()
 
 ###Filter peaks  
 I need to filter these peaks in the phenotype files to call QTLs.  
+
+filter the phenotype files and make a filtered set of the named peaks (prequant)
+
+*  /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP/*  
+
+* /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed.bed    
+
+
 
 
 ##Extra not using  
