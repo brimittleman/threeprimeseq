@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d1546dd14f5a8f0137ae376f3bd0b6467340e1b5" target="_blank">d1546dd</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/762f5ae9d4537ca86730e03036b8d5a46a042c33" target="_blank">762f5ae</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -490,6 +490,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/762f5ae9d4537ca86730e03036b8d5a46a042c33/analysis/NewPeakPostMP.Rmd" target="_blank">762f5ae</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-18
+</td>
+<td style="text-align:left;">
+filter plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f7f514b11ce61783cbf5d75fd9e0e88f63d3b2b7/docs/NewPeakPostMP.html" target="_blank">f7f514b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-18
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1592,6 +1626,38 @@ colnames(nPeaksBoth_melt)= c(&quot;Peaks&quot;, &quot;Fraction&quot;, &quot;Gene
 
 peakUsage5perc</code></pre>
 <p><img src="figure/NewPeakPostMP.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-43-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f7f514b11ce61783cbf5d75fd9e0e88f63d3b2b7/docs/figure/NewPeakPostMP.Rmd/unnamed-chunk-43-1.png" target="_blank">f7f514b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-18
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<pre class="r"><code>ggsave(peakUsage5perc, file=&quot;../output/plots/QC_plots/peakUsage5perc_noMP.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <p>Genes covered</p>
 <pre class="r"><code>#nuclear
 nrow(NuclearPeakUSMean_filt)  </code></pre>
@@ -1609,6 +1675,36 @@ nPeaksBoth_gene=nPeaksBoth_gene %&gt;% mutate(Difference=Nuclear-Total)
 ggplot(nPeaksBoth_gene, aes(x=Difference)) + geom_histogram() + labs(title=&quot;Distribution of difference in number of \n Peaks &gt;5% between Nuclear and Total \n cleaned for mispriming&quot;, y=&quot;Genes&quot;, x=&quot;Nuclear - Total&quot;)</code></pre>
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="figure/NewPeakPostMP.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-45-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f7f514b11ce61783cbf5d75fd9e0e88f63d3b2b7/docs/figure/NewPeakPostMP.Rmd/unnamed-chunk-45-1.png" target="_blank">f7f514b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-18
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>summary(nPeaksBoth_gene$Difference)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 -6.0000  0.0000  0.0000  0.3421  1.0000  8.0000 </code></pre>
@@ -1623,6 +1719,11 @@ TotalPeakUSMean %&gt;% filter(totalPeakUs_CountNum_mean&gt;=.05) %&gt;% nrow()</
 <div id="filter-peaks-1" class="section level3">
 <h3>Filter peaks</h3>
 <p>I need to filter these peaks in the phenotype files to call QTLs.</p>
+<p>filter the phenotype files and make a filtered set of the named peaks (prequant)</p>
+<ul>
+<li><p>/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP/*</p></li>
+<li><p>/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed.bed</p></li>
+</ul>
 </div>
 </div>
 <div id="extra-not-using" class="section level2">
