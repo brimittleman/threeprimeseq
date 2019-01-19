@@ -1210,6 +1210,10 @@ filter the phenotype files and make a filtered set of the named peaks (prequant)
 * /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed.bed    
 
 
+####Make sure we are not over filtering  
+
+use a bed files with the peaks from the old list that are not in the new list. These have evidence for mispriming. we want to make sure RNAseq doesnt decrease sharply at these. Do this for not clean not filtered compared to the clean and filtered.  
+
 
 
 ##Extra not using  
