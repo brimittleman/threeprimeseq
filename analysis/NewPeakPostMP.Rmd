@@ -1384,17 +1384,43 @@ source activate three-prime-env
 bedtools intersect -s -v -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.bed  > /project2/gilad/briana/threeprimeseq/data/RemovedPeaks/PeaksFilteredour_misspriming_lowCov.bed
 ```
 
-I want to look at the enrichment at these peaks in the RNA seq.  
-RNAseqDTPlotBadPeaks.sh
+
+I also want the peaks called originally and not after i removed misprime reads.  
+
+get_badPeaks_noMPonly.sh
 
 ```{bash,eval=F}
 #!/bin/bash
 
-#SBATCH --job-name=RNAseqDTPlotBadPeaks
+#SBATCH --job-name=get_badPeaks_noMPonly
 #SBATCH --account=pi-yangili1
 #SBATCH --time=24:00:00
-#SBATCH --output=RNAseqDTPlotmyPeaks_Internal.out
-#SBATCH --error=RNAseqDTPlotmyPeaks_Internal.err
+#SBATCH --output=get_badPeaks_noMPonly.out
+#SBATCH --error=get_badPeaks_noMPonly.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools intersect -s -v -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed -b /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed.bed > /project2/gilad/briana/threeprimeseq/data/RemovedPeaks/PeaksFilteredour_misspriming.bed
+```
+
+
+I want to look at the enrichment at these peaks in the RNA seq.  
+
+
+RNAseqDTPlotMPFIltPeaks.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RNAseqDTPlotMPFIltPeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNAseqDTPlotMPFIltPeaks.out
+#SBATCH --error=RNAseqDTPlotMPFIltPeaks.err
 #SBATCH --partition=bigmem2
 #SBATCH --mem=100G
 #SBATCH --mail-type=END
@@ -1403,11 +1429,33 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/RemovedPeaks/PeaksFilteredour_misspriming_lowCov.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_badPeaks.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/RemovedPeaks/PeaksFilteredour_misspriming_lowCov.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_BadPeaks.gz
 
-plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_badPeaks.gz --refPointLabel "Bad Peaks" --plotTitle "Combined RNAseq Reads at Bad Peaks"  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_badPeaks.png
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_BadPeaks.gz --refPointLabel "Misprimed/Filtered Peaks" --plotTitle "Combined RNAseq Reads at Misprimed and Filtered Peaks"  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_badPeaks.png
 ```
 
+RNAseqDTPlotMPpeaks.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RNAseqDTPlotMPpeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNAseqDTPlotMPpeaks.out
+#SBATCH --error=RNAseqDTPlotMPpeaks.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/RemovedPeaks/PeaksFilteredour_misspriming.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_MPPeaks.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_MPPeaks.gz --refPointLabel "Misprimed Peaks" --plotTitle "Combined RNAseq Reads at Misprimed Peaks"  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_MPPeaks.png
+```
 
 ###Make Pheno with leafcutter:  
 
@@ -1573,7 +1621,169 @@ source activate three-prime-env
 Rscript APAqtlpermCorrectQQplot_trans_noMP_5perUs.R 
 ```
 
+Pull in results to count QTLs  
+
+```{r}
+totQTLs=read.table("../data/perm_QTL_trans_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.pheno_5perc_permResBH.txt", stringsAsFactors = F, header=T)
+
+Sig_TotQTLs= totQTLs %>% filter(-log10(bh)>=1)
+
+nucQTLs=read.table("../data/perm_QTL_trans_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Nuclear_fixed.pheno_5perc_permResBH.txt", stringsAsFactors = F, header=T)
+
+Sig_NucQTLs= nucQTLs %>% filter(-log10(bh)>=1)
+
+
+```
+
+##Overlap with eQTLs  
+
+
+sigTotAPAinMolPheno_noMP.R
+```{r,eval=F}
+#!/bin/rscripts
+
+#this script creates takes in the permuted APAQTL results for the total fraction and nominal pvalues from the molecular phenotpye  molecular phenotype 
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(optparse)
+
+geneNames=read.table("/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt", sep="\t", header=T, stringsAsFactors = F)
+
+tot_perm=read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.pheno_5perc_permResBH.txt", header = T,stringsAsFactors=F)
+
+sigSNPgene=tot_perm %>% filter(-log10(bh)>1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name, sid, bh) %>% group_by(Gene.name) %>% top_n(-1, bh) %>% ungroup() %>% dplyr::select(Gene.name, sid)
+
+option_list = list(
+    make_option(c("-M", "--molNom"), action="store", default=NA, type='character', help="molecular Nom results"),
+    make_option(c("-O", "--output"), action="store", default=NA, type='character', help="output file for total APA sig snps in mol qtl")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+if (opt$molNom == "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out") {
+  in_file=read.table(opt$molNom, col.names = c("Gene_stable_ID", "sid", "dist", "pval", "slope"),stringsAsFactors=F)
+  file_newNames=in_file %>%  inner_join(geneNames, by="Gene_stable_ID") %>% dplyr::select("Gene.name", "sid", "pval")
+} else {
+in_file=read.table(opt$molNom, col.names = c("pid", "sid", "dist", "pval", "slope"),stringsAsFactors=F)
+file_newNames=in_file %>% separate(pid, into=c("Gene.stable.ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene_stable_ID") %>% dplyr::select("Gene.name", "sid", "pval")
+}
+
+overlap= file_newNames %>% semi_join(sigSNPgene, by=c("Gene.name", "sid")) 
+
+write.table(overlap, file=opt$output, quote=F, col.names = T, row.names = F)
+```
+
+run_sigTotAPAinMolPhenoRNA_noMP.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigTotAPAinMolPhenoRNA_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigTotAPAinMolPhenoRNA_noMP.out
+#SBATCH --error=run_sigTotAPAinMolPhenoRNA_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=64G
+#SBATCH --mail-type=END
+
+module load R 
+
+Rscript sigTotAPAinMolPheno_noMP.R --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap_noMP/TotAPAqtlsPvalRNA_noMP.txt" 
+```
+For nuclear:  
+
+sigNucAPAinMolPheno_noMP.R
+
+```{r,eval=F}
+#!/bin/rscripts
+
+#this script creates takes in the permuted APAQTL results for the total fraction and nominal pvalues from the molecular phenotpye  molecular phenotype 
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(optparse)
+
+geneNames=read.table("/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt", sep="\t", header=T, stringsAsFactors = F)
+
+nuc_perm=read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Nuclear_fixed.pheno_5perc_permResBH.txt", header = T,stringsAsFactors=F)
+
+sigSNPgene=nuc_perm %>% filter(-log10(bh)>1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name, sid, bh) %>% group_by(Gene.name) %>% top_n(-1, bh) %>% ungroup() %>% dplyr::select(Gene.name, sid)
+
+option_list = list(
+    make_option(c("-M", "--molNom"), action="store", default=NA, type='character', help="molecular Nom results"),
+    make_option(c("-O", "--output"), action="store", default=NA, type='character', help="output file for total APA sig snps in mol qtl")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+if (opt$molNom == "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out") {
+  in_file=read.table(opt$molNom, col.names = c("Gene_stable_ID", "sid", "dist", "pval", "slope"),stringsAsFactors=F)
+  file_newNames=in_file %>%  inner_join(geneNames, by="Gene_stable_ID") %>% dplyr::select("Gene.name", "sid", "pval")
+} else {
+in_file=read.table(opt$molNom, col.names = c("pid", "sid", "dist", "pval", "slope"),stringsAsFactors=F)
+file_newNames=in_file %>% separate(pid, into=c("Gene_stable_ID", "ver"), sep ="[.]") %>% inner_join(geneNames, by="Gene_stable_ID") %>% dplyr::select("Gene.name", "sid", "pval")
+}
+
+overlap= file_newNames %>% semi_join(sigSNPgene, by=c("Gene.name", "sid")) 
+
+write.table(overlap, file=opt$output, quote=F, col.names = T, row.names = F)
+```
+
+run_sigNucAPAinMolPhenoRNA_noMP.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_sigNucAPAinMolPhenoRNA_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_sigNucAPAinMolPhenoRNA_noMP.out
+#SBATCH --error=run_sigNucAPAinMolPhenoRNA_noMP.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=32G
+#SBATCH --mail-type=END
+
+module load R 
+
+
+Rscript sigNucAPAinMolPheno_noMP.R  --molNom "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out" --output "/project2/gilad/briana/threeprimeseq/data/molecular_overlap_noMP/NucAPAqtlsPvalRNA_noMP.txt" 
+```
+
+
+
+Calculate pi1 and make histogram  
+
+
+```{r}
+library(qvalue)
+
+totInRna=read.table("../data/molPheno_noMP/TotAPAqtlsPvalRNA_noMP.txt", header = T,stringsAsFactors = F)
+qval_RNAT=pi0est(totInRna$pval, pi0.method = "bootstrap")
+
+```
+```{r}
+hist(totInRna$pval, xlab="eQTL Pvalue", main="Significant Total APA QTLs \n eQTL Pvalues")
+text(.6,15, paste("pi_1=", round((1-qval_RNAT$pi0), digit=3), sep=" "))
+```
+
+
+
+
+
 ##Extra not using  
+
+
 
 filterOnlyOKPrimeFromBam.sh  
 
