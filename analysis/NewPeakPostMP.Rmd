@@ -1055,6 +1055,7 @@ library(tidyverse)
 library(cowplot)
 library(data.table)
 library(reshape2)
+library(ggpubr)
 ```
 
 
@@ -1635,7 +1636,9 @@ Sig_NucQTLs= nucQTLs %>% filter(-log10(bh)>=1)
 
 ```
 
-##Overlap with eQTLs  
+##Overlap QTLS  
+
+###eQTLS
 
 
 sigTotAPAinMolPheno_noMP.R
@@ -1654,7 +1657,7 @@ geneNames=read.table("/project2/gilad/briana/genome_anotation_data/ensemble_to_g
 
 tot_perm=read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.pheno_5perc_permResBH.txt", header = T,stringsAsFactors=F)
 
-sigSNPgene=tot_perm %>% filter(-log10(bh)>1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name, sid, bh) %>% group_by(Gene.name) %>% top_n(-1, bh) %>% ungroup() %>% dplyr::select(Gene.name, sid)
+sigSNPgene=tot_perm %>% filter(-log10(bh)>1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name, sid, bh) %>% filter(-log10(bh)>1) %>%  group_by(Gene.name) %>% top_n(-1, bh) %>% ungroup() %>% dplyr::select(Gene.name, sid)
 
 option_list = list(
     make_option(c("-M", "--molNom"), action="store", default=NA, type='character', help="molecular Nom results"),
@@ -1715,7 +1718,7 @@ geneNames=read.table("/project2/gilad/briana/genome_anotation_data/ensemble_to_g
 
 nuc_perm=read.table("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_trans_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Nuclear_fixed.pheno_5perc_permResBH.txt", header = T,stringsAsFactors=F)
 
-sigSNPgene=nuc_perm %>% filter(-log10(bh)>1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name, sid, bh) %>% group_by(Gene.name) %>% top_n(-1, bh) %>% ungroup() %>% dplyr::select(Gene.name, sid)
+sigSNPgene=nuc_perm %>% filter(-log10(bh)>1) %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("Gene.name", "strand", "peaknum"), sep="_") %>% dplyr::select(Gene.name, sid, bh) %>% filter(-log10(bh)>1) %>%  group_by(Gene.name) %>% top_n(-1, bh) %>% ungroup() %>% dplyr::select(Gene.name, sid)
 
 option_list = list(
     make_option(c("-M", "--molNom"), action="store", default=NA, type='character', help="molecular Nom results"),
@@ -1772,10 +1775,431 @@ totInRna=read.table("../data/molPheno_noMP/TotAPAqtlsPvalRNA_noMP.txt", header =
 qval_RNAT=pi0est(totInRna$pval, pi0.method = "bootstrap")
 
 ```
+
+Nuclear  
+
 ```{r}
+NucInRna=read.table("../data/molPheno_noMP/NucAPAqtlsPvalRNA_noMP.txt", header = T,stringsAsFactors = F)
+qval_RNAN=pi0est(NucInRna$pval, pi0.method = "bootstrap")
+
+
+
+```
+
+Plot both togeher:  
+
+```{r}
+par(mfrow=c(1,2))
 hist(totInRna$pval, xlab="eQTL Pvalue", main="Significant Total APA QTLs \n eQTL Pvalues")
 text(.6,15, paste("pi_1=", round((1-qval_RNAT$pi0), digit=3), sep=" "))
+hist(NucInRna$pval, xlab="eQTL Pvalue", main="Significant Nuclear APA QTLs \n eQTL Pvalues")
+text(.6,25, paste("pi_1=", round((1-qval_RNAN$pi0), digit=3), sep=" "))
 ```
+
+
+###other fraction  
+
+I need to write code for this. Previous code used the permuted file but i need to pull the pvalues from the nominal file for all of the QTLs in each fraction. I can do this making dictionaries with the peak snp combination for the qtls. I need to output the list of nominal pvalues in the oppoisite fractions.  
+
+
+##Example QTLs  
+
+I can update code I have to take in the new phenotype files.  
+
+createQTLsnpAPAPhenTable_noMP.py
+
+
+```{bash,eval=F}
+def main(PhenFile, GenFile, outFile, snp, peak):
+    fout=open(outFile, "w")
+    #Phen=open(PhenFile, "r")
+    Gen=open(GenFile, "r")
+    #get ind and pheno info
+    def get_pheno():
+      Phen=open(PhenFile, "r")
+      for num, ln in enumerate(Phen):
+          if num == 0:
+              indiv= ln.split()[4:]
+          else:
+              id=ln.split()[3].split(":")[3]
+              peakID=id.split("_")[2]
+              if peakID == peak:
+                  pheno_list=ln.split()[4:]
+                  pheno_data=list(zip(indiv,pheno_list))
+                  #print(pheno_data)
+                  return(pheno_data)
+    def get_geno():
+      for num, lnG in enumerate(Gen):
+          if num == 13:
+              Ind_geno=lnG.split()[9:]
+          if num >= 14: 
+              sid= lnG.split()[2]
+              if sid == snp: 
+                  gen_list=lnG.split()[9:]
+                  allele1=[]
+                  allele2=[]
+                  for i in gen_list:
+                      genotype=i.split(":")[0]
+                      allele1.append(genotype.split("|")[0])
+                      allele2.append(genotype.split("|")[1])
+            #now i have my indiv., phen, allele 1, alle 2     
+                  geno_data=list(zip(Ind_geno, allele1, allele2))
+                  #print(geno_data)
+                  return(geno_data)
+
+    phenotype=get_pheno()
+    pheno_df=pd.DataFrame(data=phenotype,columns=["Ind", "Pheno"])
+    genotype=get_geno()
+    geno_df=pd.DataFrame(data=genotype, columns=["Ind", "Allele1", "Allele2"])
+    full_df=pd.merge(geno_df, pheno_df, how="inner", on="Ind")
+    full_df.to_csv(fout, sep="\t", encoding='utf-8', index=False)
+    fout.close()
+    
+
+if __name__ == "__main__":
+    import sys
+    import pandas as pd
+    chrom=sys.argv[1]
+    snp = sys.argv[2]
+    peak = sys.argv[3]
+    fraction=sys.argv[4]
+    
+    PhenFile = "/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.%s_fixed.pheno_5perc.fc.gz.phen_chr%s"%(fraction, chrom)
+    GenFile= "/project2/gilad/briana/YRI_geno_hg19/chr%s.dose.filt.vcf"%(chrom)
+    outFile = "/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/qtlSNP_PeakAPA%s.%s%s.txt"%(fraction, snp, peak)
+    main(PhenFile, GenFile, outFile, snp, peak)
+```
+
+run_createQTLsnpMolPhenTable_noMP.sh
+
+createQTLsnpMolPhenTable_noMP.py  
+
+
+Change the out directory to ApaQTL_examples_noMP
+
+```{r}
+plotQTL_func= function(SNP, peak, gene){
+  apaN_file=read.table(paste("../data/apaQTL_examp_noMP/qtlSNP_PeakAPANuclear.", SNP, peak, ".txt", sep = "" ), header=T)
+  apaT_file=read.table(paste("../data/apaQTL_examp_noMP/qtlSNP_PeakAPATotal.", SNP, peak, ".txt", sep = "" ), header=T)
+  su30_file=read.table(paste("../data/apaQTL_examp_noMP/qtlSNP_Peak_4su_30_", SNP, gene, ".txt", sep=""), header = T)
+  su60_file=read.table(paste("../data/apaQTL_examp_noMP/qtlSNP_Peak_4su_60_", SNP, gene, ".txt", sep=""), header=T)
+  RNA_file=read.table(paste("../data/apaQTL_examp_noMP/qtlSNP_Peak_RNAseq_", SNP, gene, ".txt", sep=""),header=T)
+  RNAg_file=read.table(paste("../data/apaQTL_examp_noMP/qtlSNP_Peak_RNAseqGeuvadis_", SNP, gene, ".txt", sep=""), header = T)
+  ribo_file=read.table(paste("../data/apaQTL_examp_noMP/qtlSNP_Peak_ribo_", SNP, gene, ".txt", sep=""),header=T)
+  prot_file=read.table(paste("../data/apaQTL_examp_noMP/qtlSNP_Peak_prot.", SNP, gene, ".txt", sep=""), header=T)
+
+  
+  ggplot_func= function(file, molPhen,GENE,allOverlap_T){
+    file = file %>% mutate(genotype=Allele1 + Allele2)
+    file$genotype= as.factor(as.character(file$genotype))
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y="Phenotype",title=paste(molPhen, GENE, sep=": ")) + scale_fill_brewer(palette="Paired") + stat_compare_means(method = "anova",  label.y.npc = "top")
+    return(plot)
+  }
+
+  
+  apaNplot=ggplot_func(apaN_file, "Apa Nuclear", gene)
+  apaTplot=ggplot_func(apaT_file, "Apa Total", gene)
+  su30plot=ggplot_func(su30_file, "4su30",gene)
+  su60plot=ggplot_func(su60_file, "4su60",gene)
+  RNAplot=ggplot_func(RNA_file, "RNA",gene)
+  RNAgPlot=ggplot_func(RNAg_file, "RNAg",gene)
+  riboPlot= ggplot_func(ribo_file, "Ribo",gene)
+  protplot=ggplot_func(prot_file, "Protein",gene)
+  
+  full_plot= plot_grid(apaNplot,apaTplot, RNAplot, protplot,nrow=2)
+  return (full_plot)
+}
+```
+
+
+OAS1 peak29125 12:113357193
+
+```{bash,eval=F}
+grep OAS1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000089127
+
+
+python createQTLsnpAPAPhenTable_noMP.py 12 12:113357193  peak29125 Total
+python createQTLsnpAPAPhenTable_noMP.py 12 12:113357193 peak29125 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "12" "12:113357193" "ENSG00000089127"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*12:113357193* .
+```
+
+
+```{r}
+plotQTL_func(SNP="12:113357193", peak="peak29125", gene="ENSG00000089127")
+```
+
+ANAPC16 peak14547 10:73993060
+
+```{bash,eval=F}
+grep ANAPC16 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000166295
+
+
+python createQTLsnpAPAPhenTable_noMP.py 10 10:73993060  peak14547 Total
+python createQTLsnpAPAPhenTable_noMP.py 10 10:73993060 peak14547 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "10" "10:73993060" "ENSG00000166295"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*10:73993060* .
+```
+
+
+```{r}
+plotQTL_func(SNP="10:73993060", peak="peak14547", gene="ENSG00000166295")
+```
+
+
+
+eif2a 3:150302010 peak83228
+```{bash,eval=F}
+grep EIF2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000144895
+
+
+python createQTLsnpAPAPhenTable_noMP.py 3 3:150302010  peak83228 Total
+python createQTLsnpAPAPhenTable_noMP.py 3 3:150302010 peak83228 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "3" "3:150302010" "ENSG00000144895"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*3:150302010* .
+```
+
+
+```{r}
+plotQTL_func(SNP="3:150302010", peak="peak83228", gene="ENSG00000144895")
+```
+Lets do the other peak peak83227
+
+```{bash,eval=F}
+grep EIF2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000144895
+
+
+python createQTLsnpAPAPhenTable_noMP.py 3 3:150302010  peak83227 Total
+python createQTLsnpAPAPhenTable_noMP.py 3 3:150302010 peak83227 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "3" "3:150302010" "ENSG00000144895"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*3:150302010* .
+```
+
+
+```{r}
+plotQTL_func(SNP="3:150302010", peak="peak83227", gene="ENSG00000144895")
+```
+
+STAT6  peak26601 12:57489648
+
+ENSG00000166888
+
+```{bash,eval=F}
+grep STAT6 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000166888
+
+
+python createQTLsnpAPAPhenTable_noMP.py 12 12:57489648  peak26601 Total
+python createQTLsnpAPAPhenTable_noMP.py 12 12:57489648 peak26601 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "12" "12:57489648" "ENSG00000166888"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*12:57489648* .
+```
+
+
+```{r}
+plotQTL_func(SNP="12:57489648", peak="peak26601", gene="ENSG00000166888")
+```
+
+CD80 peak81554 3:119213985
+
+
+```{bash,eval=F}
+grep CD80 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000121594
+
+
+python createQTLsnpAPAPhenTable_noMP.py 3 3:119213985 peak81554 Total
+python createQTLsnpAPAPhenTable_noMP.py 3 3:119213985 peak81554 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "3" "3:119213985" "ENSG00000121594"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*3:119213985* .
+```
+
+
+```{r}
+plotQTL_func(SNP="3:119213985", peak="peak81554", gene="ENSG00000121594")
+```
+BLOC1S2 peak16127 10:102011702
+
+```{bash,eval=F}
+grep BLOC1S2 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000196072
+
+
+python createQTLsnpAPAPhenTable_noMP.py 10 10:102011702 peak16127 Total
+python createQTLsnpAPAPhenTable_noMP.py 10 10:102011702 peak16127 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "10" "10:102011702" "ENSG00000196072"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*10:102011702* .
+```
+
+
+```{r}
+plotQTL_func(SNP="10:102011702", peak="peak16127", gene="ENSG00000196072")
+```
+KCTD7 7:65924097 peak108046
+
+```{bash,eval=F}
+grep KCTD7 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000243335
+
+
+python createQTLsnpAPAPhenTable_noMP.py 7 7:65924097 peak108046 Total
+python createQTLsnpAPAPhenTable_noMP.py 7 7:65924097 peak108046 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "7" "7:65924097" "ENSG00000243335"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*7:65924097* .
+```
+
+
+```{r}
+plotQTL_func(SNP="7:65924097", peak="peak108046", gene="ENSG00000243335")
+```
+TINAGL1 peak2104 1:31980674
+
+```{bash,eval=F}
+grep TINAGL1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000142910
+
+
+python createQTLsnpAPAPhenTable_noMP.py 1 1:31980674 peak2104 Total
+python createQTLsnpAPAPhenTable_noMP.py 1 1:31980674 peak2104 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "1" "1:31980674" "ENSG00000142910"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*1:31980674* .
+```
+
+
+```{r}
+plotQTL_func(SNP="1:31980674", peak="peak2104", gene="ENSG00000142910")
+```
+
+
+CHURC1_+_peak35574 14:65389250
+
+```{bash,eval=F}
+grep CHURC1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000258289
+
+
+python createQTLsnpAPAPhenTable_noMP.py 14 14:65389250 peak35574 Total
+python createQTLsnpAPAPhenTable_noMP.py 14 14:65389250 peak35574 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable_noMP.sh "14" "14:65389250" "ENSG00000258289"
+
+#into apaExamp
+scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/data/ApaQTL_examples_noMP/*14:65389250* .
+```
+
+
+```{r}
+plotQTL_func(SNP="14:65389250", peak="peak35574", gene="ENSG00000258289")
+```
+I want to make a locus zoom for this snp  
+
+rs10131002
+
+```{bash,eval=F}
+grep peak35574 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_nomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom_noMP/TotalAPA.peak35574.CHURC1.nomTotal.txt
+
+
+grep ENSG00000258289 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom_noMP/RNA.CHURC1.nomTotal.txt
+```
+
+
+Bring them in to make correct plot  
+
+```{r}
+APATotal_churc1_LZ=read.table("../data/apaQTL_examp_noMP/TotalAPA.peak35574.CHURC1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_churc1_LZ,"../data/apaQTL_examp_noMP/TotalAPA.peak35574.CHURC1.nomTotal_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+RNA_churc1_LZ=read.table("../data/apaQTL_examp_noMP/RNA.CHURC1.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_churc1_LZ,"../data/apaQTL_examp_noMP/RNA.CHURC1.nomTotal.LZ.txt", col.names = T, row.names = F, quote = F)
+```
+
+##Rerun Deeptools plot with new peaks  
+
+BothFracDTPlotmyPeaks_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPlotmyPeaks_noMPFilt.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracDTPlotmyPeaks_noMPFilt.out
+#SBATCH --error=BothFracDTPlotmyPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.bed  -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_myPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_myPeaksNompfilt.gz --refPointLabel "Called Peaks" --plotTitle "Combined Reads at All Called Peaks" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_myPeaksNompfilt.png
+
+```
+
+RNAseqDTPlotmyPeaks_noMP.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RNAseqDTPlotmyPeaks_noMP.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNAseqDTPlotmyPeaks_noMP.out
+#SBATCH --error=RNAseqDTPlotmyPeaks_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw//RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.bed  -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_noMP.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_noMP.gz --refPointLabel "Called Peaks" --plotTitle "Combined RNAseq Reads at All Called Peaks" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_noMP.png
+
+```
+
+
+###Internal peaks in RNA seq  
+
+I want to look at the most internal peaks and see what the RNA reads look like around these areas. This is to see if these peaks would not be discovered using RNA seq alone  
 
 
 
