@@ -13,7 +13,7 @@ I want to show RNA seq vs 3' seq in peaks that are internal.
 
 To do this I need to pull in the peaks (use the filtered ones from peakQCPlots) to get peaks that are used but are not the most distal for the gene. I need to split by strand when i do this becasue most distal is different in both cases. 
  
- 
+This analysis is updated post cleaning for mispriming  
  
 Load Libraries
 ```{r}
@@ -28,8 +28,10 @@ library(cowplot)
 Load peaks for total and nuclear post filter:  
 
 ```{r}
-total_PeakUsMean=read.table("../data/PeakUsage/PeakUsageMeanPost5percFilter.Total.txt", head = T)
-nuclear_PeakUsMean=read.table("../data/PeakUsage/PeakUsageMeanPost5percFilter.Nuclear.txt", head=T)
+
+name=c("chr","start","end", "gene", "strand", "peak", "meanUsage")
+total_PeakUsMean=read.table("../data/PeakUsage_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt", head = F,col.names = name)
+nuclear_PeakUsMean=read.table("../data/PeakUsage_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt", head=F,col.names = name)
 ```
 
 Seperate positive and negative:
@@ -79,7 +81,7 @@ Total
 ```{r}
 total_PeakUsMean_internal=as.data.frame(rbind(total_PeakUsMean_pos_internal,total_PeakUsMean_neg_internal)) %>% arrange(chr, start, end)
 
-write.table(total_PeakUsMean_internal, file="../data/PeakUsage/InternalFilteredPeak.total.txt", row.names = F, col.names = F, quote = F)
+write.table(total_PeakUsMean_internal, file="../data/PeakUsage_noMP/InternalFilteredPeak.total.txt", row.names = F, col.names = F, quote = F)
 ```
 
 Nuclear:  
@@ -87,7 +89,7 @@ Nuclear:
 nuclear_PeakUsMean_internal=as.data.frame(rbind(nuclear_PeakUsMean_pos_internal,nuclear_PeakUsMean_neg_internal)) %>% arrange(chr, start, end)
 
 
-write.table(nuclear_PeakUsMean_internal, file="../data/PeakUsage/InternalFilteredPeak.nuclear.txt", row.names = F, col.names = F, quote = F)
+write.table(nuclear_PeakUsMean_internal, file="../data/PeakUsage_noMP/InternalFilteredPeak.nuclear.txt", row.names = F, col.names = F, quote = F)
 ```
 
 
@@ -97,11 +99,11 @@ Use these peak numbers to filter the bed file that I use for deep tools. I can d
 The file I want to subset is /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed  
 
 
-filterPeaksInner.py
+filterPeaksInner_noMP.py
 ```{bash,eval=F}
 #python  
 
-peaksIn="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed.bed"
+peaksIn="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.bed"
 innerPeaksTotal="/project2/gilad/briana/threeprimeseq/data/PeakUsage/InternalFilteredPeak.total.txt"
 innerPeaksNuclear="/project2/gilad/briana/threeprimeseq/data/PeakUsage/InternalFilteredPeak.nuclear.txt"
 
@@ -112,14 +114,14 @@ for ln in open(innerPeaksTotal, "r"):
     OkPeakTot[peaknumOnly] = ""
   
 OkPeakNuc={}
-for ln in open(innerPeaksNuclear, "r")
+for ln in open(innerPeaksNuclear, "r"):
    peaknum=ln.split()[5]
    peaknumOnly=peaknum[4:]
    OkPeakNuc[peaknumOnly]=""
    
-TotOut=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed", "w")
+TotOut=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_noMP/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed", "w")
 
-NucOut=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NuclearInternal.bed", "w")
+NucOut=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_noMP/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NuclearInternal.bed", "w")
 
 
 #read peaks and write out to each file 
@@ -159,7 +161,7 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw  -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed -b 1000 -a 1000  --outFileName /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_myPeaks_Internal.gz  
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw  -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_noMP/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed -b 1000 -a 1000  --outFileName /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_myPeaks_Internal.gz  
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_myPeaks_Internal.gz --refPointLabel "Internal Peaks" --plotTitle "Total Combined Reads Internal Peaks" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Total_myPeaks_internal.png
 
@@ -184,7 +186,7 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Nucelar_MergedBamCoverage.bw  -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NucelarInternal.bed -b 1000 -a 1000  --outFileName /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_myPeaks_Internal.gz  
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Nucelar_MergedBamCoverage.bw  -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_noMP/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NuclearInternal.bed -b 1000 -a 1000  --outFileName /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_myPeaks_Internal.gz  
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_myPeaks_Internal.gz --refPointLabel "Internal Peaks" --plotTitle "Nuclear Combined Reads Internal Peaks" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Nuclear_myPeaks_internal.png
 
@@ -212,7 +214,7 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_Internal.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_noMP/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_TotalInternal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_Internal.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_Internal.gz --refPointLabel "Total Internal Peaks" --plotTitle "Combined RNAseq Reads at Total Internal"  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_Internal.png
 ```
@@ -236,7 +238,7 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NuclearInternal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_NuclearInternal.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw   -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_comb_noMP/filtered_APApeaks_merged_allchrom_refseqTrans.noties_sm.fixed_NuclearInternal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_NuclearInternal.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_NuclearInternal.gz --refPointLabel "Nucelar Internal Peaks" --plotTitle "Combined RNAseq Reads at Nuclear Internal"  --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/rnaseq_deeptools/RNAseq_myPeaks_NuclearInternal.png
 ```
