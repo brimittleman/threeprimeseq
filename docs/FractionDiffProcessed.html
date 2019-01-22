@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Briana Mittleman" />
+
+
+<title>Fraction Differences with Processed data</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Three Prime Sequencing in Human LCLs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brimittleman/threeprimeseq">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Fraction Differences with Processed data</h1>
+<h4 class="author"><em>Briana Mittleman</em></h4>
+<h4 class="date"><em>1/22/2019</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2019-01-22</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/fd184be6b12e4f11a774d09588aa5d3fdc5a26fd" target="_blank">fd184be</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
+    Ignored:    output/.DS_Store
+
+Untracked files:
+    Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/EvaleQTLs.Rmd
+    Untracked:  analysis/PreAshExplore.Rmd
+    Untracked:  analysis/YL_QTL_test.Rmd
+    Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
+    Untracked:  analysis/snake.config.notes.Rmd
+    Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
+    Untracked:  data/18486.genecov.txt
+    Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/GM12878.chromHMM.bed
+    Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LianoglouLCL/
+    Untracked:  data/LocusZoom/
+    Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
+    Untracked:  data/PeakUsage/
+    Untracked:  data/PeakUsage_noMP/
+    Untracked:  data/PeaksUsed/
+    Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/RNAkalisto/
+    Untracked:  data/TotalApaQTLs.txt
+    Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/YL-SP-18486-T-combined-genecov.txt
+    Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/YL_QTL_test/
+    Untracked:  data/apaExamp/
+    Untracked:  data/apaQTL_examp_noMP/
+    Untracked:  data/bedgraph_peaks/
+    Untracked:  data/bin200.5.T.nuccov.bed
+    Untracked:  data/bin200.Anuccov.bed
+    Untracked:  data/bin200.nuccov.bed
+    Untracked:  data/clean_peaks/
+    Untracked:  data/comb_map_stats.csv
+    Untracked:  data/comb_map_stats.xlsx
+    Untracked:  data/comb_map_stats_39ind.csv
+    Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_trans/
+    Untracked:  data/ensemble_to_genename.txt
+    Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
+    Untracked:  data/first50lines_closest.txt
+    Untracked:  data/gencov.test.csv
+    Untracked:  data/gencov.test.txt
+    Untracked:  data/gencov_zero.test.csv
+    Untracked:  data/gencov_zero.test.txt
+    Untracked:  data/gene_cov/
+    Untracked:  data/joined
+    Untracked:  data/leafcutter/
+    Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/molPheno_noMP/
+    Untracked:  data/mol_overlap/
+    Untracked:  data/mol_pheno/
+    Untracked:  data/nom_QTL/
+    Untracked:  data/nom_QTL_opp/
+    Untracked:  data/nom_QTL_trans/
+    Untracked:  data/nuc6up/
+    Untracked:  data/nuc_10up/
+    Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
+    Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_opp/
+    Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
+    Untracked:  data/perm_QTL_trans_noMP_5percov/
+    Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  data/smash.cov.results.bed
+    Untracked:  data/smash.cov.results.csv
+    Untracked:  data/smash.cov.results.txt
+    Untracked:  data/smash_testregion/
+    Untracked:  data/ssFC200.cov.bed
+    Untracked:  data/temp.file1
+    Untracked:  data/temp.file2
+    Untracked:  data/temp.gencov.test.txt
+    Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  output/picard/
+    Untracked:  output/plots/
+    Untracked:  output/qual.fig2.pdf
+
+Unstaged changes:
+    Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
+    Modified:   analysis/cleanupdtseq.internalpriming.Rmd
+    Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
+    Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
+    Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/mispriming_approach.Rmd
+    Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlapMolQTL.opposite.Rmd
+    Modified:   analysis/overlap_qtls.Rmd
+    Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/peakQCPPlots.Rmd
+    Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
+    Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/understandPeaks.Rmd
+    Modified:   code/Snakefile
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/fd184be6b12e4f11a774d09588aa5d3fdc5a26fd/analysis/FractionDiffProcessed.Rmd" target="_blank">fd184be</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-22
+</td>
+<td style="text-align:left;">
+add code for leafcutter on processed
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<p>In this analysis <a href="https://brimittleman.github.io/threeprimeseq/PeakToGeneAssignment.html" class="uri">https://brimittleman.github.io/threeprimeseq/PeakToGeneAssignment.html</a> I ran an initial run of the leafcutter tool for differences between fractions. I will use the same pipeline here for the processed data.</p>
+<p>This starts with running feature counts with all of the peaks. I will use peaks passing the filter in either the total or nucelar fraction. These peaks are in /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.bed and were created using the filternamePeaks5percCov.py script. I need to make this into an SAF file for FC.</p>
+<p>This file has chr, start, end, peakNu, cov, strand, transcript:gene, distance. For the SAF file I want GeneID, Chr, start, end, strand. The GeneID is peak#:chr:start:end:strand:gene</p>
+<p>bed2saf_bothFrac_Processed.py</p>
+<pre class="bash"><code>from misc_helper import *
+
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.SAF&quot;,&#39;w&#39;)
+fout.write(&quot;GeneID\tChr\tStart\tEnd\tStrand\n&quot;)
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.bed&quot;):
+    chrom, start, end, peakNum, cov, strand, trans, dist = ln.split()
+    gene=trans.split(&quot;:&quot;)[1]
+    ID = &quot;peak%s:%s:%s:%s:%s:%s&quot;%(peakNum,chrom,start, end,strand,gene)
+    fout.write(&quot;%s\t%s\t%s\t%s\t%s\n&quot;%(ID, chrom, start, end, strand))
+fout.close()
+</code></pre>
+<p>bothFrac_processed_FC.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=bothFrac_processed_FC
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=bothFrac_processed_FCc.out
+#SBATCH --error=bothFrac_processed_FC.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed.fc /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*sort.bam -s 2</code></pre>
+<p>Fix headers:</p>
+<p>fix_head_fc_procBothFrac.py</p>
+<pre class="bash"><code>
+#python 
+
+infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed_fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries = i_list[:6]
+        print(libraries)
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()</code></pre>
+<p>fc2leafphen_processed.py</p>
+<pre class="bash"><code>inFile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed_fixed.fc&quot;, &quot;r&quot;)
+outFile= open(&quot;/project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed_forLC.fc&quot;, &quot;w&quot;)
+
+for num, ln in enumerate(inFile):
+        if num == 1:
+            lines=ln.split()[6:]
+            outFile.write(&quot; &quot;.join(lines)+&#39;\n&#39;)
+        if num &gt; 1:
+            ID=ln.split()[0]
+            peak=ID.split(&quot;:&quot;)[0]
+            chrom=ID.split(&quot;:&quot;)[1]
+            start=ID.split(&quot;:&quot;)[2]
+            start=int(start)
+            end=ID.split(&quot;:&quot;)[3]
+            end=int(end)
+            strand=ID.split(&quot;:&quot;)[4]
+            gene=ID.split(&quot;:&quot;)[5]
+            new_ID=&quot;chr%s:%d:%d:%s&quot;%(chrom, start, end, gene)
+            pheno=ln.split()[6:]
+            pheno.insert(0, new_ID)
+            outFile.write(&quot; &quot;.join(pheno)+&#39;\n&#39;)
+            
+outFile.close()  </code></pre>
+<p>subset_diffisopheno_processed.py</p>
+<pre class="bash"><code>def main(inFile, outFile, target):
+    ifile=open(inFile, &quot;r&quot;)
+    ofile=open(outFile, &quot;w&quot;)
+    target=int(target)
+    for num, ln in enumerate(ifile):
+        if num == 0:
+            ofile.write(ln)
+        else:
+            ID=ln.split()[0]
+            chrom=ID.split(&quot;:&quot;)[0][3:]
+            print(chrom)
+            chrom=int(chrom)
+            if chrom == target:
+                ofile.write(ln)
+            
+if __name__ == &quot;__main__&quot;:
+    import sys
+
+    target = sys.argv[1]
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed_forLC.fc&quot;
+    outFile = &quot;/project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed_forLC_%s.txt&quot;%(target)
+    main(inFile, outFile, target)</code></pre>
+<p>Run this with: run_subset_diffisopheno_processed.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_subset_diffisopheno_processed
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_subset_diffisopheno_processed.out
+#SBATCH --error=run_subset_diffisopheno_processed.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+python subset_diffisopheno_processed.py $i 
+done</code></pre>
+<p>Make new sample list. I could use the old one but I want to have this pipeline work when I add individuals.</p>
+<p>makeLCSampleList_processed.py</p>
+<pre class="bash"><code>outfile=open(&quot;/project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed/sample_groups.txt&quot;, &quot;w&quot;)
+infile=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed.fc&quot;, &quot;r&quot;)
+
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=[]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        for l in libraries:
+            if l[-1] == &quot;T&quot;:
+                outfile.write(&quot;%s\tTotal\n&quot;%(l))
+            else:
+                outfile.write(&quot;%s\tNuclear\n&quot;%(l))
+    else:
+          next
+                
+outfile.close()</code></pre>
+<p>run_leafcutter_ds_bychrom_processed.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_leafcutter_ds_bychrom_processed
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_leafcutter_ds_bychrom_processed.out
+#SBATCH --error=run_leafcutter_ds_bychrom_processed.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load R
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+Rscript /project2/gilad/briana/davidaknowles-leafcutter-c3d9474/scripts/leafcutter_ds.R --num_threads 4  /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed_forLC_${i}.txt /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso_processed/TN_diff_isoform_chr${i}.txt 
+done</code></pre>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.14.1
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] workflowr_1.1.1
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.19      digest_0.6.17     rprojroot_1.3-2  
+ [4] R.methodsS3_1.7.1 backports_1.1.2   git2r_0.23.0     
+ [7] magrittr_1.5      evaluate_0.11     stringi_1.2.4    
+[10] whisker_0.3-2     R.oo_1.22.0       R.utils_2.7.0    
+[13] rmarkdown_1.10    tools_3.5.1       stringr_1.3.1    
+[16] yaml_2.2.0        compiler_3.5.1    htmltools_0.3.6  
+[19] knitr_1.20       </code></pre>
+</div>
+
+<hr>
+<p>
+    
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
