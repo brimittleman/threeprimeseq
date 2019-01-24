@@ -13,6 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(workflowr)
+library(tidyverse)
+library(reshape2)
+library(cowplot)
 ```
 
 In this analysis https://brimittleman.github.io/threeprimeseq/PeakToGeneAssignment.html I ran an initial run of the leafcutter tool for differences between fractions. I will use the same pipeline here for the processed data.  
@@ -217,3 +220,290 @@ Rscript /project2/gilad/briana/davidaknowles-leafcutter-c3d9474/scripts/leafcutt
 done
 ```
 
+Cat all of the signficance files and bring them to my computer to look at here.  
+
+```{r}
+diffIso=read.table("../data/diff_iso_proc/TN_diff_isoform_allChrom_clusterSig.txt", header = T,col.names = c("status",   "loglr",    "df",   "p",    "cluster",  "p.adjust"),stringsAsFactors = F,sep="\t") %>% filter(status == "Success")
+
+
+diffIso$p.adjust=as.numeric(as.character(diffIso$p.adjust))
+
+
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab="-log10 Total Adjusted Leafcutter pvalue", xlab="-log 10 Uniform expectation", main="Leafcutter differencial isoform analysis between fractions")
+abline(0,1)
+```
+This is based on successfull results for 9,532 genes with multiple PAS and enough coverage in enough individuals. 
+
+
+Next, I will look at the effect sizes.  
+
+
+```{bash,eval=F}
+awk '{if(NR>1)print}' /project2/gilad/briana/threeprimeseq/data/diff_iso_processed/TN_diff_isoform_chr*.txt_effect_sizes.txt > /project2/gilad/briana/threeprimeseq/data/diff_iso_processed/TN_diff_isoform_AllChrom.txt_effect_sizes.txt
+```
+
+```{r}
+effectsize=read.table("../data/diff_iso_proc/TN_diff_isoform_AllChrom.txt_effect_sizes.txt", stringsAsFactors = F, col.names=c('intron',  'logef' ,'Nuclear', 'Total','deltapsi'))
+```
+
+```{r}
+effectsize$logef=as.numeric(as.character(effectsize$logef))
+plot(sort(effectsize$logef),main="Leafcutter effect Sizes", ylab="Effect size", xlab="Peak Index")
+```
+
+```{r}
+effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))
+plot(sort(effectsize$deltapsi),main="Leafcutter delta PSI", ylab="Delta PSI", xlab="Peak Index")
+```
+
+I want to spot check some of these in IGV. First I will focus on the |PSI| >.4  
+
+```{r}
+filterHighPSI=effectsize %>% filter(abs(deltapsi)>.4) %>% arrange(deltapsi)
+head(filterHighPSI)
+```
+
+Too look at this most effectively I will merge the total and nuclear clean bam files: 
+
+
+mergeBamFiles_byfrac_noMP.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeBamFiles_byfrac_noMP.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=mergeBamFiles_byfrac_noMP.out
+#SBATCH --error=mergeBamFiles_byfrac_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+samtools merge  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.bam /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*T*.bam
+
+
+samtools merge  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.bam /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*N*.bam
+```
+
+SortIndex_mergeBamFiles_byfrac_noMP.sh  
+
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=SortIndex_mergeBamFiles_byfrac_noMP.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=SortIndex_mergeBamFiles_byfrac_noMP.out
+#SBATCH --error=SortIndex_mergeBamFiles_byfrac_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+samtools sort  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.bam > /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.sort.bam
+samtools index /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.sort.bam
+
+samtools sort  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.bam > /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.sort.bam
+
+samtools index /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.sort.bam
+```
+
+
+Take a look at some of the top hits in IGV:  
+
+
+```{r}
+slice(filterHighPSI,1:15)
+```
+
+
+It would be good to know the mean usage scores for these as well:  
+
+```{r}
+names=c("chr", "start","end","gene","strand", "peak", "meanUsage")
+tot_usage=read.table("../data/PeakUsage_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt", stringsAsFactors = F,col.names = names)
+nuc_usage=read.table("../data/PeakUsage_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt",stringsAsFactors = F,col.names = names)
+
+```
+
+* RGPD4:   
+
+Intronic Peak in the gene 64775- 
+
+Total mean usage:  0.1389744
+Nuclear mean Usage: 0.7933333
+
+The other peak in this gene is downstream of the annotated gene.  64776
+
+Total mean Usage: 0.8610256
+Nuclear mean Usage: 0.2066667  
+
+The nuclear has the truncated internal transcript.  
+
+
+* FAM86C1  
+
+The most used peak in this gene in the nuclear fraction is peak20610 it is chr11:71409928:71409980. This peak is upstream of the gene. This means the peak is probably not real. However this does not look like a misprimed read.  
+
+
+* SLC24A2  
+
+There are 2 peaks for this gene. They are downstream of the annoated in another gene but because they are on the opposite strand from the other gene, it makes sense for them to map to SLC24A2.
+
+This means that without a strand specific protocol it would be difficult to see this effect.  
+
+Peak 118136
+Total: 0.3012821
+Nucelar: 0.8553846
+
+Peak 118140
+Total: 0.6987179
+Nuclear: 0.1446154
+
+The extended transcript is used in the nuclear.  
+
+* GALNTL5  
+
+This gene is close to the GALNT11 gene. They are also going in the same direction. The peak here is in the first intron of the GALNT11 gene. The other peak is way upsteream and looks like it is near the end of the PRKAG2-ASI gene chr7:151,570,858-151,585,995.  
+
+* NME2 
+
+Peak 50663  
+
+Total: 0.1615385
+Nuclear:0.7335897 
+
+The other annotated peak is Peak 50662 
+Total:0.5564103
+Nuclear:0.2407692
+
+50663 is directly upstream of the UTR and 50662 is uspream in one of the introns.  
+
+
+* IFT22   
+
+This gene has 3 peaks in the filtered peaks however the one called here is upstream of the gene. The other two make a lot more sense:  
+
+109623: 
+Total:0.1310256
+Nuclear:0.63794872
+
+109622:  
+Total: 0.1866667
+Nuclear: 0.08897436
+
+109621: 
+Total:0.6371795
+Nuclear: 0.23717949
+
+From these results it looks like there is still differencial ussage in this gene. Peak 109621 is also significant with a delta PSI of 0.45275927. 
+
+
+* PCOLCE2 
+
+This peak is pretty far downstream of the gene but other genes in the region go the opposite way: 
+
+peak83037:
+Total:0.2151282
+Nuclear: 0.7323077
+
+peak83045: This peak is upstream of the UTR for the gene in one of the exons:  
+Total: 0.7848718
+Nuclear: 0.2676923
+
+These results look like the gene has significant run through in the nuclear fraciton. 
+
+* HNF1A  
+
+The 2 called peaks for this gene are upstream of the gene. Probably not actually correct.  It does not look like any peaks in the track would work for this gene.  
+
+* WISP1  
+
+The peak is very far downstream but not in the wrong direciton for other peaks in the region. All of the peaks for this gene are pretty far downstream. I am not sure how best to know if these are real or not.  
+
+* FBXO22  
+
+The peak here is downstream of the gene close to the UTR of the next gene but because it goes the other direction, I can be confident in the assignemnt.   
+
+
+peak41217: 
+Total: 0.16333333
+Nuclear: 0.4917949
+
+The other peaks in this gene are peak41206 in both fractions and low usage of peak41207 in total. 
+
+peak41206: 
+Total: 0.58538462
+Nuclear: 0.1776923
+
+Again this looks like a case of run on read in the nuclear  
+
+
+* PCDH9  
+
+The peak is downsteam of the gene but it is in a region with many LINCs. This peak is 32303. THe other peaks for the gene are 32304 and 32305. Oeak 32305 is upstream meanin it is probably not real. 
+
+peak32303: 
+Total:0.1761538
+Nuclear: 0.6843590
+
+Peak 32304:
+Total: 0.5946154
+Nuclear: 0.2479487
+
+This is another case of run on for the nuclear transcript.  
+
+* CCM2L  
+The peak is downstream in on if the first exons of the HCK gene. It is difficult to know which you should assign the peak to because they are in the same orientation. All three of the called peaks for this gene are downstream in the HCK gene.  
+
+
+* WINT3:
+
+The peak is downstream in the NSF gene but the NSF gene goes the other direction.  Both peaks for this gene are downstream in the NSF gene. 
+
+Peak 50131  
+Total:  0.1087179
+Nuclear: 0.5658974
+
+Peak 50134  
+Total:   0.8912821
+Nuclear: 0.4084615
+
+Again here we see more run on for the nuclear fraction transcript.   
+
+
+* TRPC3
+
+The peak here is in an intron of the downstreem gene BBS7. It is difficult to know which gene to assign the peak because they go the same direction.  
+
+peak89306 
+total: 0.1207692
+nuclear:0.6010256
+
+
+peak89307  
+total:0.8535897
+nuclear: 0.3989744
+
+
+Again here, if these peaks truly go with this gene, the nuclear transcript is the run on transcript.  
+
+* FHIT: 
+
+This peak is in an intron of the gene. This is also the only peak passing 5% in each fraction.
+
+
+peak 79975:  
+
+Total:0.2602564  
+Nucelar:0.05923077  
+
+It is hard to draw further conclusions here.  
