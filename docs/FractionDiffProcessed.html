@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-22</p>
+<p><strong>Last updated:</strong> 2019-01-24</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/fd184be6b12e4f11a774d09588aa5d3fdc5a26fd" target="_blank">fd184be</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/82c157109943211bf670770c2848e82f5eb8a03d" target="_blank">82c1571</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -376,6 +376,7 @@ Untracked files:
     Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
+    Untracked:  data/PeakCounts_noMP_5perc/
     Untracked:  data/PeakUsage/
     Untracked:  data/PeakUsage_noMP/
     Untracked:  data/PeaksUsed/
@@ -398,6 +399,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_proc/
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
@@ -499,6 +501,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/82c157109943211bf670770c2848e82f5eb8a03d/analysis/FractionDiffProcessed.Rmd" target="_blank">82c1571</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-24
+</td>
+<td style="text-align:left;">
+look at top 15 red
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/aefc33040326e05c44fd4305c5d26249f41ef089/docs/FractionDiffProcessed.html" target="_blank">aefc330</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-22
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/fd184be6b12e4f11a774d09588aa5d3fdc5a26fd/analysis/FractionDiffProcessed.Rmd" target="_blank">fd184be</a>
 </td>
 <td style="text-align:left;">
@@ -519,6 +555,27 @@ add code for leafcutter on processed
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
 <p>In this analysis <a href="https://brimittleman.github.io/threeprimeseq/PeakToGeneAssignment.html" class="uri">https://brimittleman.github.io/threeprimeseq/PeakToGeneAssignment.html</a> I ran an initial run of the leafcutter tool for differences between fractions. I will use the same pipeline here for the processed data.</p>
 <p>This starts with running feature counts with all of the peaks. I will use peaks passing the filter in either the total or nucelar fraction. These peaks are in /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.refseqTrans.closest2end.sm.fixed_5percCov.bed and were created using the filternamePeaks5percCov.py script. I need to make this into an SAF file for FC.</p>
 <p>This file has chr, start, end, peakNu, cov, strand, transcript:gene, distance. For the SAF file I want GeneID, Chr, start, end, strand. The GeneID is peak#:chr:start:end:strand:gene</p>
@@ -682,6 +739,223 @@ for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22
 do
 Rscript /project2/gilad/briana/davidaknowles-leafcutter-c3d9474/scripts/leafcutter_ds.R --num_threads 4  /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed/filtered_APApeaks_merged_allchrom_refseqGenes.Transcript_sm_quant_processed_forLC_${i}.txt /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso_processed/TN_diff_isoform_chr${i}.txt 
 done</code></pre>
+<p>Cat all of the signficance files and bring them to my computer to look at here.</p>
+<pre class="r"><code>diffIso=read.table(&quot;../data/diff_iso_proc/TN_diff_isoform_allChrom_clusterSig.txt&quot;, header = T,col.names = c(&quot;status&quot;,   &quot;loglr&quot;,    &quot;df&quot;,   &quot;p&quot;,    &quot;cluster&quot;,  &quot;p.adjust&quot;),stringsAsFactors = F,sep=&quot;\t&quot;) %&gt;% filter(status == &quot;Success&quot;)
+
+
+diffIso$p.adjust=as.numeric(as.character(diffIso$p.adjust))
+
+
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab=&quot;-log10 Total Adjusted Leafcutter pvalue&quot;, xlab=&quot;-log 10 Uniform expectation&quot;, main=&quot;Leafcutter differencial isoform analysis between fractions&quot;)
+abline(0,1)</code></pre>
+<p><img src="figure/FractionDiffProcessed.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /> This is based on successfull results for 9,532 genes with multiple PAS and enough coverage in enough individuals.</p>
+<p>Next, I will look at the effect sizes.</p>
+<pre class="bash"><code>awk &#39;{if(NR&gt;1)print}&#39; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed/TN_diff_isoform_chr*.txt_effect_sizes.txt &gt; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed/TN_diff_isoform_AllChrom.txt_effect_sizes.txt</code></pre>
+<pre class="r"><code>effectsize=read.table(&quot;../data/diff_iso_proc/TN_diff_isoform_AllChrom.txt_effect_sizes.txt&quot;, stringsAsFactors = F, col.names=c(&#39;intron&#39;,  &#39;logef&#39; ,&#39;Nuclear&#39;, &#39;Total&#39;,&#39;deltapsi&#39;))</code></pre>
+<pre class="r"><code>effectsize$logef=as.numeric(as.character(effectsize$logef))</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>plot(sort(effectsize$logef),main=&quot;Leafcutter effect Sizes&quot;, ylab=&quot;Effect size&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
+<p><img src="figure/FractionDiffProcessed.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>plot(sort(effectsize$deltapsi),main=&quot;Leafcutter delta PSI&quot;, ylab=&quot;Delta PSI&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
+<p><img src="figure/FractionDiffProcessed.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I want to spot check some of these in IGV. First I will focus on the |PSI| &gt;.4</p>
+<pre class="r"><code>filterHighPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.4) %&gt;% arrange(deltapsi)
+head(filterHighPSI)</code></pre>
+<pre><code>                            intron     logef           Nuclear
+1   chr2:108464199:108464261:RGPD4 -1.563069 0.786325014667375
+2  chr11:71409928:71409980:FAM86C1 -1.750522 0.736879355169336
+3   chr9:19443338:19443405:SLC24A2 -1.373452  0.87662816529528
+4 chr7:151725930:151726019:GALNTL5 -1.229096 0.766827065986407
+5     chr17:49248730:49248817:NME2 -1.185121 0.763505415306066
+6   chr7:100970341:100970385:IFT22 -1.588218 0.668693582230009
+              Total   deltapsi
+1 0.139047439399753 -0.6472776
+2 0.169115629694331 -0.5677637
+3 0.313023025601665 -0.5636051
+4 0.219649286101815 -0.5471778
+5 0.231787036297737 -0.5317184
+6 0.140656353549046 -0.5280372</code></pre>
+<p>Too look at this most effectively I will merge the total and nuclear clean bam files:</p>
+<p>mergeBamFiles_byfrac_noMP.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mergeBamFiles_byfrac_noMP.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=mergeBamFiles_byfrac_noMP.out
+#SBATCH --error=mergeBamFiles_byfrac_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+samtools merge  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.bam /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*T*.bam
+
+
+samtools merge  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.bam /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*N*.bam</code></pre>
+<p>SortIndex_mergeBamFiles_byfrac_noMP.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=SortIndex_mergeBamFiles_byfrac_noMP.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=SortIndex_mergeBamFiles_byfrac_noMP.out
+#SBATCH --error=SortIndex_mergeBamFiles_byfrac_noMP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+samtools sort  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.bam &gt; /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.sort.bam
+samtools index /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.sort.bam
+
+samtools sort  /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.bam &gt; /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.sort.bam
+
+samtools index /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.sort.bam</code></pre>
+<p>Take a look at some of the top hits in IGV:</p>
+<pre class="r"><code>slice(filterHighPSI,1:15)</code></pre>
+<pre><code>                             intron     logef           Nuclear
+1    chr2:108464199:108464261:RGPD4 -1.563069 0.786325014667375
+2   chr11:71409928:71409980:FAM86C1 -1.750522 0.736879355169336
+3    chr9:19443338:19443405:SLC24A2 -1.373452  0.87662816529528
+4  chr7:151725930:151726019:GALNTL5 -1.229096 0.766827065986407
+5      chr17:49248730:49248817:NME2 -1.185121 0.763505415306066
+6    chr7:100970341:100970385:IFT22 -1.588218 0.668693582230009
+7  chr3:142422173:142422217:PCOLCE2 -1.160742 0.747193256154251
+8   chr12:121337613:121337664:HNF1A -1.439657 0.922672953632586
+9    chr8:134586015:134586097:WISP1 -1.828958 0.861221198355898
+10   chr15:76234769:76234851:FBXO22 -1.494914 0.702484460762617
+11    chr13:65049589:65049665:PCDH9 -1.585817 0.677762517045467
+12    chr20:30651036:30651094:CCM2L -1.657778 0.668557867828921
+13     chr17:44777988:44778040:WNT3 -1.282798  0.61467112951709
+14   chr4:122775166:122775266:TRPC3 -1.269060  0.61759501169366
+15      chr3:60357325:60357413:FHIT -1.266671 0.610069267936541
+               Total   deltapsi
+1  0.139047439399753 -0.6472776
+2  0.169115629694331 -0.5677637
+3  0.313023025601665 -0.5636051
+4  0.219649286101815 -0.5471778
+5  0.231787036297737 -0.5317184
+6  0.140656353549046 -0.5280372
+7  0.224821665761922 -0.5223716
+8   0.40129250694973 -0.5213804
+9   0.34267701803463 -0.5185442
+10 0.192803741815497 -0.5096807
+11 0.171781437839461 -0.5059811
+12 0.162584556335585 -0.5059733
+13 0.109232403935245 -0.5054387
+14 0.113169455110416 -0.5044256
+15 0.110490691620035 -0.4995786</code></pre>
+<p>It would be good to know the mean usage scores for these as well:</p>
+<pre class="r"><code>names=c(&quot;chr&quot;, &quot;start&quot;,&quot;end&quot;,&quot;gene&quot;,&quot;strand&quot;, &quot;peak&quot;, &quot;meanUsage&quot;)
+tot_usage=read.table(&quot;../data/PeakUsage_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt&quot;, stringsAsFactors = F,col.names = names)
+nuc_usage=read.table(&quot;../data/PeakUsage_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt&quot;,stringsAsFactors = F,col.names = names)</code></pre>
+<ul>
+<li>RGPD4:</li>
+</ul>
+<p>Intronic Peak in the gene 64775-</p>
+<p>Total mean usage: 0.1389744 Nuclear mean Usage: 0.7933333</p>
+<p>The other peak in this gene is downstream of the annotated gene. 64776</p>
+<p>Total mean Usage: 0.8610256 Nuclear mean Usage: 0.2066667</p>
+<p>The nuclear has the truncated internal transcript.</p>
+<ul>
+<li>FAM86C1</li>
+</ul>
+<p>The most used peak in this gene in the nuclear fraction is peak20610 it is chr11:71409928:71409980. This peak is upstream of the gene. This means the peak is probably not real. However this does not look like a misprimed read.</p>
+<ul>
+<li>SLC24A2</li>
+</ul>
+<p>There are 2 peaks for this gene. They are downstream of the annoated in another gene but because they are on the opposite strand from the other gene, it makes sense for them to map to SLC24A2.</p>
+<p>This means that without a strand specific protocol it would be difficult to see this effect.</p>
+<p>Peak 118136 Total: 0.3012821 Nucelar: 0.8553846</p>
+<p>Peak 118140 Total: 0.6987179 Nuclear: 0.1446154</p>
+<p>The extended transcript is used in the nuclear.</p>
+<ul>
+<li>GALNTL5</li>
+</ul>
+<p>This gene is close to the GALNT11 gene. They are also going in the same direction. The peak here is in the first intron of the GALNT11 gene. The other peak is way upsteream and looks like it is near the end of the PRKAG2-ASI gene chr7:151,570,858-151,585,995.</p>
+<ul>
+<li>NME2</li>
+</ul>
+<p>Peak 50663</p>
+<p>Total: 0.1615385 Nuclear:0.7335897</p>
+<p>The other annotated peak is Peak 50662 Total:0.5564103 Nuclear:0.2407692</p>
+<p>50663 is directly upstream of the UTR and 50662 is uspream in one of the introns.</p>
+<ul>
+<li>IFT22</li>
+</ul>
+<p>This gene has 3 peaks in the filtered peaks however the one called here is upstream of the gene. The other two make a lot more sense:</p>
+<p>109623: Total:0.1310256 Nuclear:0.63794872</p>
+<p>109622:<br />
+Total: 0.1866667 Nuclear: 0.08897436</p>
+<p>109621: Total:0.6371795 Nuclear: 0.23717949</p>
+<p>From these results it looks like there is still differencial ussage in this gene. Peak 109621 is also significant with a delta PSI of 0.45275927.</p>
+<ul>
+<li>PCOLCE2</li>
+</ul>
+<p>This peak is pretty far downstream of the gene but other genes in the region go the opposite way:</p>
+<p>peak83037: Total:0.2151282 Nuclear: 0.7323077</p>
+<p>peak83045: This peak is upstream of the UTR for the gene in one of the exons:<br />
+Total: 0.7848718 Nuclear: 0.2676923</p>
+<p>These results look like the gene has significant run through in the nuclear fraciton.</p>
+<ul>
+<li>HNF1A</li>
+</ul>
+<p>The 2 called peaks for this gene are upstream of the gene. Probably not actually correct. It does not look like any peaks in the track would work for this gene.</p>
+<ul>
+<li>WISP1</li>
+</ul>
+<p>The peak is very far downstream but not in the wrong direciton for other peaks in the region. All of the peaks for this gene are pretty far downstream. I am not sure how best to know if these are real or not.</p>
+<ul>
+<li>FBXO22</li>
+</ul>
+<p>The peak here is downstream of the gene close to the UTR of the next gene but because it goes the other direction, I can be confident in the assignemnt.</p>
+<p>peak41217: Total: 0.16333333 Nuclear: 0.4917949</p>
+<p>The other peaks in this gene are peak41206 in both fractions and low usage of peak41207 in total.</p>
+<p>peak41206: Total: 0.58538462 Nuclear: 0.1776923</p>
+<p>Again this looks like a case of run on read in the nuclear</p>
+<ul>
+<li>PCDH9</li>
+</ul>
+<p>The peak is downsteam of the gene but it is in a region with many LINCs. This peak is 32303. THe other peaks for the gene are 32304 and 32305. Oeak 32305 is upstream meanin it is probably not real.</p>
+<p>peak32303: Total:0.1761538 Nuclear: 0.6843590</p>
+<p>Peak 32304: Total: 0.5946154 Nuclear: 0.2479487</p>
+<p>This is another case of run on for the nuclear transcript.</p>
+<ul>
+<li><p>CCM2L<br />
+The peak is downstream in on if the first exons of the HCK gene. It is difficult to know which you should assign the peak to because they are in the same orientation. All three of the called peaks for this gene are downstream in the HCK gene.</p></li>
+<li><p>WINT3:</p></li>
+</ul>
+<p>The peak is downstream in the NSF gene but the NSF gene goes the other direction. Both peaks for this gene are downstream in the NSF gene.</p>
+<p>Peak 50131<br />
+Total: 0.1087179 Nuclear: 0.5658974</p>
+<p>Peak 50134<br />
+Total: 0.8912821 Nuclear: 0.4084615</p>
+<p>Again here we see more run on for the nuclear fraction transcript.</p>
+<ul>
+<li>TRPC3</li>
+</ul>
+<p>The peak here is in an intron of the downstreem gene BBS7. It is difficult to know which gene to assign the peak because they go the same direction.</p>
+<p>peak89306 total: 0.1207692 nuclear:0.6010256</p>
+<p>peak89307<br />
+total:0.8535897 nuclear: 0.3989744</p>
+<p>Again here, if these peaks truly go with this gene, the nuclear transcript is the run on transcript.</p>
+<ul>
+<li>FHIT:</li>
+</ul>
+<p>This peak is in an intron of the gene. This is also the only peak passing 5% in each fraction.</p>
+<p>peak 79975:</p>
+<p>Total:0.2602564<br />
+Nucelar:0.05923077</p>
+<p>It is hard to draw further conclusions here.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -700,16 +974,29 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] workflowr_1.1.1
+ [1] bindrcpp_0.2.2  cowplot_0.9.3   reshape2_1.4.3  forcats_0.3.0  
+ [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
+ [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+[13] workflowr_1.1.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.19      digest_0.6.17     rprojroot_1.3-2  
- [4] R.methodsS3_1.7.1 backports_1.1.2   git2r_0.23.0     
- [7] magrittr_1.5      evaluate_0.11     stringi_1.2.4    
-[10] whisker_0.3-2     R.oo_1.22.0       R.utils_2.7.0    
-[13] rmarkdown_1.10    tools_3.5.1       stringr_1.3.1    
-[16] yaml_2.2.0        compiler_3.5.1    htmltools_0.3.6  
-[19] knitr_1.20       </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] evaluate_0.11     knitr_1.20        broom_0.5.0      
+[25] Rcpp_0.12.19      scales_1.0.0      backports_1.1.2  
+[28] jsonlite_1.5      hms_0.4.2         digest_0.6.17    
+[31] stringi_1.2.4     grid_3.5.1        rprojroot_1.3-2  
+[34] cli_1.0.1         tools_3.5.1       magrittr_1.5     
+[37] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
+[40] pkgconfig_2.0.2   xml2_1.2.0        lubridate_1.7.4  
+[43] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
+[46] rstudioapi_0.8    R6_2.3.0          nlme_3.1-137     
+[49] git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
