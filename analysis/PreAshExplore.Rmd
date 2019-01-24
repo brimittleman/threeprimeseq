@@ -1,0 +1,170 @@
+---
+title: "Exploritory analysis prior to running ash"
+author: "Briana Mittleman"
+date: "1/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+There are a few things about the data I need to understand before I can run ash. First I need to find the genes that overlap with protein and RNA. Then I need to pick those with 1 dominant peak. 
+
+```{r}
+set.seed(1)
+library(workflowr)
+library(tidyverse)
+library(reshape2)
+library(cowplot)
+```
+
+
+Upload data: 
+
+
+
+
+I want the filtered peak counts. I need to filter the counts file for the total fraction based on the filtered peaks. 
+
+Total counts:  /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.fc
+
+okPeaks: /project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt  
+
+
+filterTotalCounts_noMP_5percCov.py
+```{bash,eval=F}
+totalokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt"
+countFile=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.fc","r")
+
+outFile=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_5percCov_fixed.fc", "w")
+
+allPeakOk={}
+for ln in open(totalokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    peaknum=peakname[4:]
+    if peaknum not in allPeakOk.keys():
+        allPeakOk[peaknum]=""
+    
+for i,ln in enumerate(countFile):
+    if i==1:
+      outFile.write(ln)
+    if i>1:
+      ID=ln.split()[0]
+      peak=ID.split(":")[0]
+      peaknum=peak[4:]
+      if peaknum in allPeakOk.keys():
+          outFile.write(ln)
+outFile.close()
+```
+
+
+
+```{r}
+total_Cov=read.table("../data/PeakCounts_noMP_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_5percCov_fixed.fc", stringsAsFactors = F,header = T) %>%  separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "Name"), sep=":")
+total_genes=total_Cov %>% select(Name) %>% arrange(Name) %>% unique()
+```
+Gene names:  
+
+```{r}
+geneNames=read.table("../data/ensemble_to_genename.txt",sep="\t", header=T, stringsAsFactors = F, col.names=c("ID", "Name", "Source"))
+```
+
+```{r}
+prot=read.table("../data/mol_pheno/fastqtl_qqnorm_prot.fixed.noChr.txt",header=T,stringsAsFactors = F) %>% inner_join(geneNames, by="ID")
+```
+
+Keep the protein genes in APA:  
+
+```{r}
+prot_inAPA=prot %>% semi_join(total_genes, by="Name")
+```
+
+
+This shows we have 4209 genes with data for both. Now I can back filter the total peaks for the genes in prot_inAPA  
+
+```{r}
+total_Cov_wProt= total_Cov %>% semi_join(prot_inAPA,by="Name")
+```
+
+Need to give Stephens lab:  unadjusted R-squared, and n and p for each protein, where p is the number of apa s that you are using in the regression and n is the number of samples?
+
+To do this I need to get the overlapping individuals:  
+
+```{r}
+protInd=colnames(prot)[5:(dim(prot)[2]-2)]
+
+ApaInd=c()
+for (i in colnames(total_Cov)[12:ncol(total_Cov)]){
+  num=substr(i,2,6)
+  name=paste("NA", num, sep="")
+  ApaInd=c(ApaInd, name)
+}
+
+
+IndBoth=intersect(protInd,ApaInd)
+length(IndBoth)
+```
+
+I have 29 individuals in common for these. 
+
+
+I need to make a matrix for each gene. It will have a row for each commmon individual. A column for the protein, and a column for each assocaited peaks. After I have this I will be able to get the R2 value.  
+
+
+First create a function.
+
+```{r}
+get_R2=function(gene, Cov=total_Cov, prot=prot_inAPA, apaName=ApaInd){
+  gene_un= enexpr(gene)
+  #deal with APA
+  genePeaks=total_Cov %>% filter(Name==!!gene_un)
+  n=nrow(genePeaks)
+  drop_col=c('chr','Chr', 'start','end','strand','Name', 'Start','End','Strand','Length')
+  genePeaks_sm= genePeaks %>% select(-one_of(drop_col))
+  colnames(genePeaks_sm)=c("peak", ApaInd) 
+  genePeakM=genePeaks_sm %>% column_to_rownames(var="peak") %>% t()
+  genePeakDF=as.data.frame(genePeakM) %>% rownames_to_column(var="Ind")
+  #deal with prot
+  drop_col_prot= c("Chr", "start", "end", "ID", "Name", "Source")
+  geneProt=prot %>% filter(Name==!!gene_un) %>% select(-one_of(drop_col_prot)) %>% t()
+  colnames(geneProt)="prot"
+  #print(dim(geneProt))
+  geneProt_df=as.data.frame(geneProt) %>% rownames_to_column(var="Ind") %>% drop_na(prot)
+  #print(geneProt_df)
+  both=geneProt_df %>% inner_join(genePeakDF,by="Ind")
+  num=seq(1,n)
+  base="summary(lm(both$prot~"
+  for (i in 3:dim(both)[2]){
+    base=paste(base, "+both[,",i,"]",sep="")
+  }
+  code=paste(base, "))$r.squared", sep="")
+  r2=eval(parse(text=code))
+  final=c(gene, r2,nrow(both),n)
+  return(final)
+}
+
+```
+
+Run this on all genes:
+
+```{r}
+final_matrix=matrix(c("gene","r2","n","p"),1,4)
+for (i in prot_inAPA$Name){
+ final_matrix= rbind(final_matrix,get_R2(i))
+}
+
+
+```
+
+Make this a dataframe:  
+```{r}
+final_df=as.data.frame(final_matrix)
+
+colnames(final_df)=as.character(unlist(final_df[1,]))
+
+final_df <- final_df[-1 ,]
+
+save(final_df,file="../data/protAndAPAlmRes.Rda")
+```
+
