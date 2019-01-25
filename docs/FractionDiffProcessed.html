@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-24</p>
+<p><strong>Last updated:</strong> 2019-01-25</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/19ec0998d07c00c83e13905ac40b1ac6b804d267" target="_blank">19ec099</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/78f24b9acd89c71d45d23751a6edf1de44d2ecbf" target="_blank">78f24b9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -496,6 +496,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/78f24b9acd89c71d45d23751a6edf1de44d2ecbf/analysis/FractionDiffProcessed.Rmd" target="_blank">78f24b9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-25
+</td>
+<td style="text-align:left;">
+look at mid range, draw conclusion
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3698abac05d5b339cb916baf87f654080bc04091/docs/FractionDiffProcessed.html" target="_blank">3698aba</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1084,18 +1118,28 @@ Nucelar:0.05923077</p>
 <p>I now want to look at some intermediate examples that are less likely to be outliers:</p>
 <pre class="r"><code>filterMidPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.1,  abs(deltapsi)&lt;.2) %&gt;% arrange(deltapsi)
 
-slice(filterMidPSI, 1:10)</code></pre>
-<pre><code>                            intron      logef           Nuclear
-1       chr3:9824703:9824900:TADA3 -0.3663203 0.325432995242216
-2   chr5:59173621:59173722:DEPDC1B -1.1379521 0.270435823995102
-3     chr16:58746389:58746439:GOT2 -1.1858858 0.226137719840828
-4      chr2:19534331:19534419:OSR1 -0.7480049 0.583655239822405
-5   chr18:32824892:32825018:ZNF397 -0.8954891 0.332811386875754
-6      chr5:27491617:27491709:CDH6 -0.3475314 0.340152540947897
-7  chr12:26060628:26060675:BHLHE41 -1.1023581 0.284333101368843
-8  chr8:126089041:126089194:WASHC5 -0.4613435 0.308742523793907
-9  chr3:119762220:119762305:GPR156 -0.6754549 0.668378068472292
-10  chr19:34702824:34702894:LSM14A -1.2379175 0.262806679986851
+slice(filterMidPSI, 1:20)</code></pre>
+<pre><code>                             intron      logef           Nuclear
+1        chr3:9824703:9824900:TADA3 -0.3663203 0.325432995242216
+2    chr5:59173621:59173722:DEPDC1B -1.1379521 0.270435823995102
+3      chr16:58746389:58746439:GOT2 -1.1858858 0.226137719840828
+4       chr2:19534331:19534419:OSR1 -0.7480049 0.583655239822405
+5    chr18:32824892:32825018:ZNF397 -0.8954891 0.332811386875754
+6       chr5:27491617:27491709:CDH6 -0.3475314 0.340152540947897
+7   chr12:26060628:26060675:BHLHE41 -1.1023581 0.284333101368843
+8   chr8:126089041:126089194:WASHC5 -0.4613435 0.308742523793907
+9   chr3:119762220:119762305:GPR156 -0.6754549 0.668378068472292
+10   chr19:34702824:34702894:LSM14A -1.2379175 0.262806679986851
+11   chr5:43482525:43482619:C5orf34 -0.5841307 0.237305958687913
+12       chr7:17260895:17260936:AHR -1.0800012 0.257416122485577
+13    chr7:98993610:98993692:ARPC1B -0.2835942 0.308021209679854
+14   chr1:167612310:167612392:RCSD1 -0.4305542 0.291550619788812
+15         chr7:5820254:5820322:OCM -0.4952238 0.779630820591706
+16    chr16:3181668:3181753:ZSCAN10 -0.6372901 0.588452776814862
+17      chr7:94260631:94260713:SGCE -0.9599485 0.279108870841054
+18     chr19:47378498:47378583:FKRP -1.0682692 0.330580082811762
+19 chr3:122481138:122481277:HSPBAP1 -0.4802691 0.433000666440278
+20    chr3:12761795:12761880:TMEM40 -0.4885477 0.689878926943269
                 Total   deltapsi
 1   0.125571306501736 -0.1998617
 2  0.0707522472721187 -0.1996836
@@ -1106,7 +1150,17 @@ slice(filterMidPSI, 1:10)</code></pre>
 7  0.0850206759231001 -0.1993124
 8   0.109466992933229 -0.1992755
 9   0.469129223532137 -0.1992488
-10 0.0636106463287395 -0.1991960</code></pre>
+10 0.0636106463287395 -0.1991960
+11 0.0381194363145641 -0.1991865
+12 0.0583828866891181 -0.1990332
+13  0.108998470216784 -0.1990227
+14 0.0925532620325678 -0.1989974
+15  0.580643826090524 -0.1989870
+16  0.389493388354609 -0.1989594
+17 0.0802511202513235 -0.1988578
+18  0.131890177247821 -0.1986899
+19  0.234320158423806 -0.1986805
+20  0.491259391799099 -0.1986195</code></pre>
 <ul>
 <li>Tada3</li>
 </ul>
@@ -1160,6 +1214,65 @@ total:0.09589744 nuclear: 0.25256410</p>
 <li>GPR156</li>
 </ul>
 <p>The peaks are downstream in GSK3B.</p>
+<ul>
+<li>LSM14A</li>
+</ul>
+<p>chr19:34702824:34702894</p>
+<p>peak57649: This peak is in the intron of the gene.</p>
+<p>Total: &lt;5% Nuclear:0.16358974</p>
+<p>In the total there are three peaks for this gene at over 5%.</p>
+<p>peak57651 total:0.2943590 Nuclear:0.12179487</p>
+<p>peak57655 Total:0.1356410 nuclear: 0.05461538</p>
+<p>peak57656 total:0.2941026 nuclear: 0.10871795</p>
+<p>Peaks 57655 adn 57656 are in the UTR.</p>
+<p>This is a good example of internal PAS in the nuclear fraction.</p>
+<ul>
+<li><p>C5orf34 chr5:43482525:43482619: peak912217. This peak is in the next gene downstream in the same direction. It is hard to tell which gene this goes with.</p></li>
+<li><p>AHR: Peak 106198 This peak is upstream of the gene. Probably not ream chr7:17260895:17260936</p></li>
+</ul>
+<p>However 106205 is an interesting peak here. It is not used at 5% in total but it used at almost 17% in nuclear.</p>
+<ul>
+<li>ARPC1B chr7:98993610:98993692 This is peak 109344. It is downstream in PDAP1 but also looks like its still the annoataed UTR for the ARPC1B gene . But this gene is the other direction.</li>
+</ul>
+<p>peak 109344: total:0.1546154 nuclear: 0.27615385</p>
+<p>The nuclear has 6 peaks at &gt; 5% for this gene and total only has 2. The most used total is peak109343. But it does not look like that in IGV. It looks like it uses 109344.</p>
+<ul>
+<li>RCSD1</li>
+</ul>
+<p>peak 8281</p>
+<p>total: 0.08051282 nuclear: 0.21512821</p>
+<p>peak8293 is the other used peak in total. It is in the annoated 3’ UTR</p>
+<p>total:0.67102564 nuclear:0.33769231</p>
+<p>There are 2 more peaks also used at moderate levels here.</p>
+<ul>
+<li><p>OCM Peak is upstream. Not correct</p></li>
+<li><p>ZSCAN10 peak is upstream. not correct</p></li>
+<li><p>SGCE</p></li>
+</ul>
+<p>peak 190201 In an intron of the gene. total:0.10589744 nuclear: 0.2587179</p>
+<p>The utr peak is 109198<br />
+total:0.58205128 nuclear:0.3894872</p>
+<ul>
+<li>FKRB</li>
+</ul>
+<p>chr19:47378498:47378583</p>
+<p>Looks like there must be a transcribed element here but thereis not an annotated gene. FKRB is pretty far upstream.</p>
+<ul>
+<li>HSPBAP1</li>
+</ul>
+<p>peak81962 total:0.26000000 nuclear: 0.41871795</p>
+<p>the most used total peak is 81961 it is in the 3’ UTR</p>
+<p>total: 0.64743590 nuclear:0.49000000</p>
+<ul>
+<li>TMEM40</li>
+</ul>
+<p>peak77434. The peaks for this gene are all outside. It is a bit confusing. 77435 is upstream so this is probably not correct</p>
+<p>Conclusions:</p>
+<ul>
+<li><p>Gene to peak annotations are difficult, especially when the genes are in the same direction close to each other</p></li>
+<li><p>We need to make sure peaks cannot be upstream of the gene.</p></li>
+<li><p>We need to add LINC to the annotation</p></li>
+</ul>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
