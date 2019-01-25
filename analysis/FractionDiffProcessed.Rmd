@@ -507,3 +507,102 @@ Total:0.2602564
 Nucelar:0.05923077  
 
 It is hard to draw further conclusions here.  
+
+
+I now want to look at some intermediate examples that are less likely to be outliers:  
+
+
+```{r}
+filterMidPSI=effectsize %>% filter(abs(deltapsi)>.1,  abs(deltapsi)<.2) %>% arrange(deltapsi)
+
+slice(filterMidPSI, 1:10)
+```
+
+* Tada3  
+
+This gene has 2 annotated UTRs. This peak is in the upstream 3'UTR.  
+
+Peak 7742: 
+
+Total:0.1382051
+Nuclear: 0.29974359
+
+The total only has 1 more annoated here:  peak77240. This peak is in the downstream 3' UTR
+
+Total:0.7933333
+
+Nucelar:0.47923077
+ 
+ 
+The nuclear has 2 more upstream peaks here:
+
+Peak77243:0.08589744
+Peak77245:0.13461538 
+ 
+ 
+* DEPDC1B
+
+This gene is close to PDE4D. The sig peak is in this gene. The 1 peak in the 3' UTR of DEPDC1B is peak92690.  
+
+*GOT2  
+
+The internal peak for this gene is used less than 5% in the total and 22% in the nuclear. These are the only 2 peaks in our filtered set for the gene. 
+
+Peak45274:
+Total <5%
+Nuclear: 0.2202564
+ 
+ 
+Peak45272:
+Total:0.9438462
+Nuclear : 0.2202564
+
+
+* OSR1  
+
+The 3 peaks for this gene are downstream of the gene with no other peaks in the region. 
+
+Peak 60538: 
+Total:0.3035897
+Nucelar: 0.5566667
+
+The total fraction uses the one peak downstream at about the same rate.  
+
+* ZNF397  
+
+This gene also looks like it has multiple annotated UTRs.  
+Peak 53787   
+Total: 0.10461538  
+Nuclear:  0.22794872
+
+This gene has 5 peaks and they run into the next gene downstream. Peaks 53807 and 53808 should probaby be assigned to ZNF271P but it is hard to tell.  
+
+
+* CDH6  
+
+These peaks should probably go to the LNC RNA LINC01021. 
+
+* BHLHE41 
+
+This doesnt make sense  
+
+* WASHC5  
+
+This is a good example. peak116684 is in an intron of the gene and peak116678 is at the end in UTR. \
+
+peak116684:  
+total:0.09589744
+nuclear: 0.25256410
+
+peak116678:
+total: 0.72538462
+nuclear: 0.50384615
+
+The other used peak in nucelar is peak116687 with 0.06641026. 
+
+* GPR156  
+
+The peaks are downstream in GSK3B. 
+
+
+
