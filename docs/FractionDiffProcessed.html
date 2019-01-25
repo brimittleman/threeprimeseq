@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/82c157109943211bf670770c2848e82f5eb8a03d" target="_blank">82c1571</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/19ec0998d07c00c83e13905ac40b1ac6b804d267" target="_blank">19ec099</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -360,7 +360,6 @@ Untracked files:
     Untracked:  KalistoAbundance18486.txt
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
-    Untracked:  analysis/PreAshExplore.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -431,6 +430,7 @@ Untracked files:
     Untracked:  data/perm_QTL_trans/
     Untracked:  data/perm_QTL_trans_filt/
     Untracked:  data/perm_QTL_trans_noMP_5percov/
+    Untracked:  data/protAndAPAlmRes.Rda
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -496,6 +496,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/19ec0998d07c00c83e13905ac40b1ac6b804d267/analysis/FractionDiffProcessed.Rmd" target="_blank">19ec099</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-24
+</td>
+<td style="text-align:left;">
+look at mid range examples
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/d86a41cf331cd8cc3ee024fb72d216c00d176827/docs/FractionDiffProcessed.html" target="_blank">d86a41c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -748,7 +782,38 @@ diffIso$p.adjust=as.numeric(as.character(diffIso$p.adjust))
 
 qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab=&quot;-log10 Total Adjusted Leafcutter pvalue&quot;, xlab=&quot;-log 10 Uniform expectation&quot;, main=&quot;Leafcutter differencial isoform analysis between fractions&quot;)
 abline(0,1)</code></pre>
-<p><img src="figure/FractionDiffProcessed.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /> This is based on successfull results for 9,532 genes with multiple PAS and enough coverage in enough individuals.</p>
+<p><img src="figure/FractionDiffProcessed.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d86a41cf331cd8cc3ee024fb72d216c00d176827/docs/figure/FractionDiffProcessed.Rmd/unnamed-chunk-10-1.png" target="_blank">d86a41c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>This is based on successfull results for 9,532 genes with multiple PAS and enough coverage in enough individuals.</p>
 <p>Next, I will look at the effect sizes.</p>
 <pre class="bash"><code>awk &#39;{if(NR&gt;1)print}&#39; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed/TN_diff_isoform_chr*.txt_effect_sizes.txt &gt; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed/TN_diff_isoform_AllChrom.txt_effect_sizes.txt</code></pre>
 <pre class="r"><code>effectsize=read.table(&quot;../data/diff_iso_proc/TN_diff_isoform_AllChrom.txt_effect_sizes.txt&quot;, stringsAsFactors = F, col.names=c(&#39;intron&#39;,  &#39;logef&#39; ,&#39;Nuclear&#39;, &#39;Total&#39;,&#39;deltapsi&#39;))</code></pre>
@@ -756,10 +821,70 @@ abline(0,1)</code></pre>
 <pre><code>Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code>plot(sort(effectsize$logef),main=&quot;Leafcutter effect Sizes&quot;, ylab=&quot;Effect size&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
 <p><img src="figure/FractionDiffProcessed.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d86a41cf331cd8cc3ee024fb72d216c00d176827/docs/figure/FractionDiffProcessed.Rmd/unnamed-chunk-13-1.png" target="_blank">d86a41c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))</code></pre>
 <pre><code>Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code>plot(sort(effectsize$deltapsi),main=&quot;Leafcutter delta PSI&quot;, ylab=&quot;Delta PSI&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
 <p><img src="figure/FractionDiffProcessed.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d86a41cf331cd8cc3ee024fb72d216c00d176827/docs/figure/FractionDiffProcessed.Rmd/unnamed-chunk-14-1.png" target="_blank">d86a41c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I want to spot check some of these in IGV. First I will focus on the |PSI| &gt;.4</p>
 <pre class="r"><code>filterHighPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.4) %&gt;% arrange(deltapsi)
 head(filterHighPSI)</code></pre>
@@ -956,6 +1081,85 @@ total:0.8535897 nuclear: 0.3989744</p>
 <p>Total:0.2602564<br />
 Nucelar:0.05923077</p>
 <p>It is hard to draw further conclusions here.</p>
+<p>I now want to look at some intermediate examples that are less likely to be outliers:</p>
+<pre class="r"><code>filterMidPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.1,  abs(deltapsi)&lt;.2) %&gt;% arrange(deltapsi)
+
+slice(filterMidPSI, 1:10)</code></pre>
+<pre><code>                            intron      logef           Nuclear
+1       chr3:9824703:9824900:TADA3 -0.3663203 0.325432995242216
+2   chr5:59173621:59173722:DEPDC1B -1.1379521 0.270435823995102
+3     chr16:58746389:58746439:GOT2 -1.1858858 0.226137719840828
+4      chr2:19534331:19534419:OSR1 -0.7480049 0.583655239822405
+5   chr18:32824892:32825018:ZNF397 -0.8954891 0.332811386875754
+6      chr5:27491617:27491709:CDH6 -0.3475314 0.340152540947897
+7  chr12:26060628:26060675:BHLHE41 -1.1023581 0.284333101368843
+8  chr8:126089041:126089194:WASHC5 -0.4613435 0.308742523793907
+9  chr3:119762220:119762305:GPR156 -0.6754549 0.668378068472292
+10  chr19:34702824:34702894:LSM14A -1.2379175 0.262806679986851
+                Total   deltapsi
+1   0.125571306501736 -0.1998617
+2  0.0707522472721187 -0.1996836
+3  0.0265447102065377 -0.1995930
+4   0.384077797410421 -0.1995774
+5   0.133435407762397 -0.1993760
+6    0.14078100359469 -0.1993715
+7  0.0850206759231001 -0.1993124
+8   0.109466992933229 -0.1992755
+9   0.469129223532137 -0.1992488
+10 0.0636106463287395 -0.1991960</code></pre>
+<ul>
+<li>Tada3</li>
+</ul>
+<p>This gene has 2 annotated UTRs. This peak is in the upstream 3’UTR.</p>
+<p>Peak 7742:</p>
+<p>Total:0.1382051 Nuclear: 0.29974359</p>
+<p>The total only has 1 more annoated here: peak77240. This peak is in the downstream 3’ UTR</p>
+<p>Total:0.7933333</p>
+<p>Nucelar:0.47923077</p>
+<p>The nuclear has 2 more upstream peaks here:</p>
+<p>Peak77243:0.08589744 Peak77245:0.13461538</p>
+<ul>
+<li>DEPDC1B</li>
+</ul>
+<p>This gene is close to PDE4D. The sig peak is in this gene. The 1 peak in the 3’ UTR of DEPDC1B is peak92690.</p>
+<p>*GOT2</p>
+<p>The internal peak for this gene is used less than 5% in the total and 22% in the nuclear. These are the only 2 peaks in our filtered set for the gene.</p>
+<p>Peak45274: Total &lt;5% Nuclear: 0.2202564</p>
+<p>Peak45272: Total:0.9438462 Nuclear : 0.2202564</p>
+<ul>
+<li>OSR1</li>
+</ul>
+<p>The 3 peaks for this gene are downstream of the gene with no other peaks in the region.</p>
+<p>Peak 60538: Total:0.3035897 Nucelar: 0.5566667</p>
+<p>The total fraction uses the one peak downstream at about the same rate.</p>
+<ul>
+<li>ZNF397</li>
+</ul>
+<p>This gene also looks like it has multiple annotated UTRs.<br />
+Peak 53787<br />
+Total: 0.10461538<br />
+Nuclear: 0.22794872</p>
+<p>This gene has 5 peaks and they run into the next gene downstream. Peaks 53807 and 53808 should probaby be assigned to ZNF271P but it is hard to tell.</p>
+<ul>
+<li>CDH6</li>
+</ul>
+<p>These peaks should probably go to the LNC RNA LINC01021.</p>
+<ul>
+<li>BHLHE41</li>
+</ul>
+<p>This doesnt make sense</p>
+<ul>
+<li>WASHC5</li>
+</ul>
+<p>This is a good example. peak116684 is in an intron of the gene and peak116678 is at the end in UTR.<br />
+peak116684:<br />
+total:0.09589744 nuclear: 0.25256410</p>
+<p>peak116678: total: 0.72538462 nuclear: 0.50384615</p>
+<p>The other used peak in nucelar is peak116687 with 0.06641026.</p>
+<ul>
+<li>GPR156</li>
+</ul>
+<p>The peaks are downstream in GSK3B.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
