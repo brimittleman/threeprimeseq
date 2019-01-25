@@ -20,6 +20,8 @@ library(cowplot)
 ```
 
 
+
+##Apa and Protein  
 Upload data: 
 
 
@@ -166,5 +168,144 @@ colnames(final_df)=as.character(unlist(final_df[1,]))
 final_df <- final_df[-1 ,]
 
 save(final_df,file="../data/protAndAPAlmRes.Rda")
+```
+
+When the stephens lab ran ASH on this, all R2 shrunk to zero. 
+##Protein and expression  
+
+I want to look at the the protein ~ expression model. This is easier because there is always only 1 expression level per gene.  
+
+```{r}
+rna=read.table("../data/mol_pheno/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt",header=T,stringsAsFactors = F) %>%  separate(ID, into=c("ID", "ver"), sep ="[.]") %>%  inner_join(geneNames, by="ID")
+```
+
+I want to filter this by genes we have proteinn for. 
+
+
+```{r}
+rnaandProt= rna %>% semi_join(prot, by="Name")
+```
+
+These are the gene I want to run the analsis on. I will make a similar function to run the linear model.  
+
+
+```{r}
+get_R2_Protexp=function(gene, exp=rnaandProt, protein=prot){
+  #gene_un= enexpr(gene)
+  exp_gene=exp %>% filter(Name ==gene)
+  #print(exp_gene)
+  drop_col_exp= c("Chr", "start", "end", "ID", "ver", "Name", "Source")
+  exp_gene_sm= exp_gene %>% select(-one_of(drop_col_exp)) %>% t()
+  colnames(exp_gene_sm)="Expression"
+  exp_gene_df=as.data.frame(exp_gene_sm) %>% rownames_to_column(var="Ind")
+  #print(exp_gene_df)
+  drop_col_p= c("Chr", "start", "end", "ID", "Name", "Source")
+  prot_gene= protein %>% filter(Name ==gene)%>% select(-one_of(drop_col_p)) %>% t()
+  colnames(prot_gene)= "Protein"
+  prot_gene_df= as.data.frame(prot_gene) %>% rownames_to_column(var="Ind") %>% drop_na(Protein)
+  #print(prot_gene_df)
+  both=prot_gene_df %>% inner_join(exp_gene_df, by="Ind")
+  #print(both)
+  r2=summary(lm(both$Protein ~both$Expression))$r.squared
+  #print(r2)
+  final=c(gene, r2, nrow(both))
+}
+
+test=get_R2_Protexp(gene="ISG15")
+```
+
+
+Run on all genes in rnaandProt
+```{r}
+final_matrix_protExp=matrix(c("gene","r2","n"),1,3)
+for (i in rnaandProt$Name){
+ final_matrix_protExp= rbind(final_matrix_protExp,get_R2_Protexp(i))
+}
+```
+
+Fix as df and save  
+
+```{r}
+final_df_protExp=as.data.frame(final_matrix_protExp)
+
+colnames(final_df_protExp)=as.character(unlist(final_df_protExp[1,]))
+
+final_df_protExp <- final_df_protExp[-1 ,]
+
+save(final_df_protExp,file="../data/protAndExpressionlmRes.Rda")
+```
+
+##Protein, APA, Exp  
+
+I need to subset the protein for genes in apa and expr.
+
+
+```{r}
+prot_inAPAandExp=prot %>% semi_join(total_genes, by="Name") %>% semi_join(rna,by="Name")
+```
+
+```{r}
+get_R2_full=function(gene, Cov=total_Cov, prot=prot_inAPAandExp, apaName=ApaInd,exp=rna){
+  gene_un= enexpr(gene)
+  #deal with APA
+  genePeaks=total_Cov %>% filter(Name==!!gene_un)
+  n=nrow(genePeaks)
+  drop_col=c('chr','Chr', 'start','end','strand','Name', 'Start','End','Strand','Length')
+  genePeaks_sm= genePeaks %>% select(-one_of(drop_col))
+  colnames(genePeaks_sm)=c("peak", ApaInd) 
+  genePeakM=genePeaks_sm %>% column_to_rownames(var="peak") %>% t()
+  genePeakDF=as.data.frame(genePeakM) %>% rownames_to_column(var="Ind")
+  #deal with prot
+  drop_col_prot= c("Chr", "start", "end", "ID", "Name", "Source")
+  geneProt=prot %>% filter(Name==!!gene_un) %>% select(-one_of(drop_col_prot)) %>% t()
+  colnames(geneProt)="prot"
+  #print(dim(geneProt))
+  geneProt_df=as.data.frame(geneProt) %>% rownames_to_column(var="Ind") %>% drop_na(prot)
+  #print(geneProt_df)
+  #deal with expr
+  exp_gene=exp %>% filter(Name ==gene)
+  drop_col_exp= c("Chr", "start", "end", "ID", "ver", "Name", "Source")
+  exp_gene_sm= exp_gene %>% select(-one_of(drop_col_exp)) %>% t()
+  colnames(exp_gene_sm)="Expression"
+  exp_gene_df=as.data.frame(exp_gene_sm) %>% rownames_to_column(var="Ind")
+  #make full model  
+  both=geneProt_df %>% inner_join(exp_gene_df, by="Ind") %>% inner_join(genePeakDF,by="Ind")
+  num=seq(1,n)
+  base="summary(lm(both$prot~ both$Expression"
+  for (i in 4:dim(both)[2]){
+    base=paste(base, "+both[,",i,"]",sep="")
+  }
+  code=paste(base, "))$r.squared", sep="")
+  #print(code)
+  r2=eval(parse(text=code))
+  final=c(gene, r2,nrow(both),n)
+  return(final)
+}
+
+test_full=get_R2_full("ISG15")
+
+
+```
+
+Run this on all genes:
+
+```{r}
+final_matrix_full=matrix(c("gene","r2","n","p"),1,4)
+for (i in prot_inAPAandExp$Name){
+ final_matrix_full= rbind(final_matrix_full,get_R2_full(i))
+}
+
+
+```
+
+Make this a dataframe:  
+```{r}
+final_df_full=as.data.frame(final_matrix_full)
+
+colnames(final_df_full)=as.character(unlist(final_df_full[1,]))
+
+final_df_full <- final_df_full[-1 ,]
+
+save(final_df_full,file="../data/protAndAPAAndExplmRes.Rda")
 ```
 
