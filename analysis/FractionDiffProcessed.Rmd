@@ -515,7 +515,7 @@ I now want to look at some intermediate examples that are less likely to be outl
 ```{r}
 filterMidPSI=effectsize %>% filter(abs(deltapsi)>.1,  abs(deltapsi)<.2) %>% arrange(deltapsi)
 
-slice(filterMidPSI, 1:10)
+slice(filterMidPSI, 1:20)
 ```
 
 * Tada3  
@@ -603,6 +603,120 @@ The other used peak in nucelar is peak116687 with 0.06641026.
 * GPR156  
 
 The peaks are downstream in GSK3B. 
+
+* LSM14A  
+
+chr19:34702824:34702894
+
+peak57649: This peak is in the intron of the gene.
+
+Total: <5% 
+Nuclear:0.16358974
+
+In the total there are three peaks for this gene at over 5%.  
+
+peak57651
+total:0.2943590
+Nuclear:0.12179487
+
+peak57655
+Total:0.1356410
+nuclear:  0.05461538
+
+peak57656
+total:0.2941026
+nuclear: 0.10871795
+
+Peaks 57655 adn 57656 are in the UTR.
+
+This is a good example of internal PAS in the nuclear fraction.  
+
+
+* C5orf34
+chr5:43482525:43482619: peak912217. This peak is in the next gene downstream in the same direction. It is hard to tell which gene this goes with. 
+
+
+* AHR: 
+Peak 106198  This peak is upstream of the gene. Probably not ream
+chr7:17260895:17260936
+
+However 106205 is an interesting peak here. It is not used at 5% in total but it used at almost 17% in nuclear.  
+
+
+* ARPC1B
+chr7:98993610:98993692 
+This is peak 109344. It is downstream in PDAP1 but also looks like its still the annoataed UTR for the ARPC1B gene . But this gene is the other direction. 
+
+peak 109344: 
+total:0.1546154
+nuclear: 0.27615385
+
+The nuclear has 6 peaks at > 5% for this gene and total only has 2. The most used total is peak109343. But it does not look like that in IGV. It looks like it uses 109344.  
+
+* RCSD1
+
+peak 8281
+
+total: 0.08051282
+nuclear: 0.21512821
+
+peak8293 is the other used peak in total. It is in the annoated 3' UTR
+
+total:0.67102564
+nuclear:0.33769231  
+
+There are 2 more peaks also used at moderate levels here.  
+
+
+* OCM  Peak is upstream. Not correct  
+
+* ZSCAN10 peak is upstream. not correct  
+
+
+* SGCE   
+
+peak 190201 In an intron of the gene.
+total:0.10589744
+nuclear: 0.2587179
+
+
+
+The utr peak is 109198  
+total:0.58205128
+nuclear:0.3894872  
+
+
+* FKRB  
+
+chr19:47378498:47378583
+
+Looks like there must be a transcribed element here but thereis not an annotated gene. FKRB is pretty far upstream.  
+
+* HSPBAP1
+
+peak81962
+total:0.26000000
+nuclear: 0.41871795
+
+the most used total peak is 81961 it is in the 3' UTR  
+
+total: 0.64743590
+nuclear:0.49000000
+
+
+* TMEM40  
+
+peak77434. The peaks for this gene are all outside. It is a bit confusing. 77435 is upstream so this is probably not correct  
+
+
+Conclusions: 
+
+* Gene to peak annotations are difficult, especially when the genes are in the same direction close to each other 
+
+* We need to make sure peaks cannot be upstream of the gene. 
+
+* We need to add LINC to the annotation  
+
 
 
 
