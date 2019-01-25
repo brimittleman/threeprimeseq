@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-24</p>
+<p><strong>Last updated:</strong> 2019-01-25</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9df8d7e46f7a0c276cc794dd1e69de0b64be90f1" target="_blank">9df8d7e</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/3789767bd443659e122e2be8de248b228bd0b62f" target="_blank">3789767</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -430,7 +430,9 @@ Untracked files:
     Untracked:  data/perm_QTL_trans/
     Untracked:  data/perm_QTL_trans_filt/
     Untracked:  data/perm_QTL_trans_noMP_5percov/
+    Untracked:  data/protAndAPAAndExplmRes.Rda
     Untracked:  data/protAndAPAlmRes.Rda
+    Untracked:  data/protAndExpressionlmRes.Rda
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -501,6 +503,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3789767bd443659e122e2be8de248b228bd0b62f/analysis/PreAshExplore.Rmd" target="_blank">3789767</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-25
+</td>
+<td style="text-align:left;">
+add Exp model and full model
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/712016289cf8bcd1ed567697099d7eaccc430e52/docs/PreAshExplore.html" target="_blank">7120162</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/9df8d7e46f7a0c276cc794dd1e69de0b64be90f1/analysis/PreAshExplore.Rmd" target="_blank">9df8d7e</a>
 </td>
 <td style="text-align:left;">
@@ -544,6 +580,8 @@ Attaching package: &#39;cowplot&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:ggplot2&#39;:
 
     ggsave</code></pre>
+<div id="apa-and-protein" class="section level2">
+<h2>Apa and Protein</h2>
 <p>Upload data:</p>
 <p>I want the filtered peak counts. I need to filter the counts file for the total fraction based on the filtered peaks.</p>
 <p>Total counts: /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP/filtered_APApeaks_merged_allchrom_refseqGenes.TranscriptNoMP_sm_quant.Total_fixed.fc</p>
@@ -639,6 +677,104 @@ colnames(final_df)=as.character(unlist(final_df[1,]))
 final_df &lt;- final_df[-1 ,]
 
 save(final_df,file=&quot;../data/protAndAPAlmRes.Rda&quot;)</code></pre>
+<p>When the stephens lab ran ASH on this, all R2 shrunk to zero. ##Protein and expression</p>
+<p>I want to look at the the protein ~ expression model. This is easier because there is always only 1 expression level per gene.</p>
+<pre class="r"><code>rna=read.table(&quot;../data/mol_pheno/fastqtl_qqnorm_RNAseq_phase2.fixed.noChr.txt&quot;,header=T,stringsAsFactors = F) %&gt;%  separate(ID, into=c(&quot;ID&quot;, &quot;ver&quot;), sep =&quot;[.]&quot;) %&gt;%  inner_join(geneNames, by=&quot;ID&quot;)</code></pre>
+<p>I want to filter this by genes we have proteinn for.</p>
+<pre class="r"><code>rnaandProt= rna %&gt;% semi_join(prot, by=&quot;Name&quot;)</code></pre>
+<p>These are the gene I want to run the analsis on. I will make a similar function to run the linear model.</p>
+<pre class="r"><code>get_R2_Protexp=function(gene, exp=rnaandProt, protein=prot){
+  #gene_un= enexpr(gene)
+  exp_gene=exp %&gt;% filter(Name ==gene)
+  #print(exp_gene)
+  drop_col_exp= c(&quot;Chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;ID&quot;, &quot;ver&quot;, &quot;Name&quot;, &quot;Source&quot;)
+  exp_gene_sm= exp_gene %&gt;% select(-one_of(drop_col_exp)) %&gt;% t()
+  colnames(exp_gene_sm)=&quot;Expression&quot;
+  exp_gene_df=as.data.frame(exp_gene_sm) %&gt;% rownames_to_column(var=&quot;Ind&quot;)
+  #print(exp_gene_df)
+  drop_col_p= c(&quot;Chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;ID&quot;, &quot;Name&quot;, &quot;Source&quot;)
+  prot_gene= protein %&gt;% filter(Name ==gene)%&gt;% select(-one_of(drop_col_p)) %&gt;% t()
+  colnames(prot_gene)= &quot;Protein&quot;
+  prot_gene_df= as.data.frame(prot_gene) %&gt;% rownames_to_column(var=&quot;Ind&quot;) %&gt;% drop_na(Protein)
+  #print(prot_gene_df)
+  both=prot_gene_df %&gt;% inner_join(exp_gene_df, by=&quot;Ind&quot;)
+  #print(both)
+  r2=summary(lm(both$Protein ~both$Expression))$r.squared
+  #print(r2)
+  final=c(gene, r2, nrow(both))
+}
+
+test=get_R2_Protexp(gene=&quot;ISG15&quot;)</code></pre>
+<p>Run on all genes in rnaandProt</p>
+<pre class="r"><code>final_matrix_protExp=matrix(c(&quot;gene&quot;,&quot;r2&quot;,&quot;n&quot;),1,3)
+for (i in rnaandProt$Name){
+ final_matrix_protExp= rbind(final_matrix_protExp,get_R2_Protexp(i))
+}</code></pre>
+<p>Fix as df and save</p>
+<pre class="r"><code>final_df_protExp=as.data.frame(final_matrix_protExp)
+
+colnames(final_df_protExp)=as.character(unlist(final_df_protExp[1,]))
+
+final_df_protExp &lt;- final_df_protExp[-1 ,]
+
+save(final_df_protExp,file=&quot;../data/protAndExpressionlmRes.Rda&quot;)</code></pre>
+</div>
+<div id="protein-apa-exp" class="section level2">
+<h2>Protein, APA, Exp</h2>
+<p>I need to subset the protein for genes in apa and expr.</p>
+<pre class="r"><code>prot_inAPAandExp=prot %&gt;% semi_join(total_genes, by=&quot;Name&quot;) %&gt;% semi_join(rna,by=&quot;Name&quot;)</code></pre>
+<pre class="r"><code>get_R2_full=function(gene, Cov=total_Cov, prot=prot_inAPAandExp, apaName=ApaInd,exp=rna){
+  gene_un= enexpr(gene)
+  #deal with APA
+  genePeaks=total_Cov %&gt;% filter(Name==!!gene_un)
+  n=nrow(genePeaks)
+  drop_col=c(&#39;chr&#39;,&#39;Chr&#39;, &#39;start&#39;,&#39;end&#39;,&#39;strand&#39;,&#39;Name&#39;, &#39;Start&#39;,&#39;End&#39;,&#39;Strand&#39;,&#39;Length&#39;)
+  genePeaks_sm= genePeaks %&gt;% select(-one_of(drop_col))
+  colnames(genePeaks_sm)=c(&quot;peak&quot;, ApaInd) 
+  genePeakM=genePeaks_sm %&gt;% column_to_rownames(var=&quot;peak&quot;) %&gt;% t()
+  genePeakDF=as.data.frame(genePeakM) %&gt;% rownames_to_column(var=&quot;Ind&quot;)
+  #deal with prot
+  drop_col_prot= c(&quot;Chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;ID&quot;, &quot;Name&quot;, &quot;Source&quot;)
+  geneProt=prot %&gt;% filter(Name==!!gene_un) %&gt;% select(-one_of(drop_col_prot)) %&gt;% t()
+  colnames(geneProt)=&quot;prot&quot;
+  #print(dim(geneProt))
+  geneProt_df=as.data.frame(geneProt) %&gt;% rownames_to_column(var=&quot;Ind&quot;) %&gt;% drop_na(prot)
+  #print(geneProt_df)
+  #deal with expr
+  exp_gene=exp %&gt;% filter(Name ==gene)
+  drop_col_exp= c(&quot;Chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;ID&quot;, &quot;ver&quot;, &quot;Name&quot;, &quot;Source&quot;)
+  exp_gene_sm= exp_gene %&gt;% select(-one_of(drop_col_exp)) %&gt;% t()
+  colnames(exp_gene_sm)=&quot;Expression&quot;
+  exp_gene_df=as.data.frame(exp_gene_sm) %&gt;% rownames_to_column(var=&quot;Ind&quot;)
+  #make full model  
+  both=geneProt_df %&gt;% inner_join(exp_gene_df, by=&quot;Ind&quot;) %&gt;% inner_join(genePeakDF,by=&quot;Ind&quot;)
+  num=seq(1,n)
+  base=&quot;summary(lm(both$prot~ both$Expression&quot;
+  for (i in 4:dim(both)[2]){
+    base=paste(base, &quot;+both[,&quot;,i,&quot;]&quot;,sep=&quot;&quot;)
+  }
+  code=paste(base, &quot;))$r.squared&quot;, sep=&quot;&quot;)
+  #print(code)
+  r2=eval(parse(text=code))
+  final=c(gene, r2,nrow(both),n)
+  return(final)
+}
+
+test_full=get_R2_full(&quot;ISG15&quot;)</code></pre>
+<p>Run this on all genes:</p>
+<pre class="r"><code>final_matrix_full=matrix(c(&quot;gene&quot;,&quot;r2&quot;,&quot;n&quot;,&quot;p&quot;),1,4)
+for (i in prot_inAPAandExp$Name){
+ final_matrix_full= rbind(final_matrix_full,get_R2_full(i))
+}</code></pre>
+<p>Make this a dataframe:</p>
+<pre class="r"><code>final_df_full=as.data.frame(final_matrix_full)
+
+colnames(final_df_full)=as.character(unlist(final_df_full[1,]))
+
+final_df_full &lt;- final_df_full[-1 ,]
+
+save(final_df_full,file=&quot;../data/protAndAPAAndExplmRes.Rda&quot;)</code></pre>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
