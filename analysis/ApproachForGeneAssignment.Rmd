@@ -1,0 +1,107 @@
+---
+title: "Approach to better assign genes to peaks"
+author: "Briana Mittleman"
+date: "1/28/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Lin et al: An in-depth map of polyadenylation sites in cancer 2012:
+-Mapped locations to annotated locations in UCUS browser: "The mapped locations were annotated using the UCSC genome browser tables ( 26 ). When a locus could be attributed to multiple possible annotations, the locus was assigned with a single annotation in the following priority order: 3′ UTRs (sense), coding sequences (CDS, sense), 5′ UTRs (sense), intron (sense), non-coding RNAs (ncRNAs, sense), 5′ UTR antisense, CDS antisense, 3′ UTR antisense, intron antisense, promoter antisense, ncRNA antisense and intergenic"  
+
+
+I want to download this annotation and try this.  I am using the ncbi_refseq annotations. I will download regions of the genome seperatly and then merge the files. 
+
+* 5' UTR   
+
+* Coding Exon  
+
+* Intron  
+
+* 3' UTR  
+
+* (downstream 5000)-downstream proximal region  
+
+I also want a dictionary with the transcripts and the gene names for the annotation. This information will come from the Transcript2GeneName file.  In this file the transcript ID is in column1 and the gene name column 13.  
+
+I have downloaded all of the these to data/RefSeq_annotations. I will concatinate all of these for a full annotation dataset, I will then sort this file.  The file is ncbiRefSeq_allAnnotation.sort.bed
+
+Using this I can create an annotation in a bed file I can use for the overlap with my peaks. This will include getting the transcript to gene annotations. I will transfer the files to midway in my genome annotation directory and work with them there.  
+
+Format full refseq annotation: 
+```{bash,eval=F}
+TXN2Gene_file="/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms"
+
+gene_dic={}
+
+for ln in open(TXN2Gene_file,"r"):
+   txn=ln.split()[1]
+   gene=ln.split()[12]
+   gene_dic[txn]=gene
+
+outF=open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed","w")
+
+inFile="/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_allAnnotation.sort.bed"  
+
+
+for ln in open(inFile, "r"):
+   chrom, start, end, name, score, strand = ln.split()
+   chrom_fix=chrom[3:]
+   txn=name.split("_")[:2]
+   txnF="_".join(txn)
+   gene=gene_dic[txnF]
+   type=name.split("_")[2]
+   id=type + ":" + gene
+   outF.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom_fix, start, end, id, score, strand))
+
+outF.close()
+```
+
+
+I want to create a file with my peaks mapped to these regions. I will include a structure for when there is a tie and put intergenic if it is not found. I need to do an intersect that gives me all of the IDs. After this I can use python to parse the hiarchy.  
+
+I can use bedtools map for this. I want all of the data to come back. 
+
+-c 4
+-o distinct  
+-S opposite strand
+
+I will do this on the peaks before I looked at usage.  
+
+mapnoMPPeaks2GenomeLoc.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mapnoMPPeaks2GenomeLoc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapnoMPPeaks2GenomeLoc.out
+#SBATCH --error=mapnoMPPeaks2GenomeLoc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#annotation: /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed
+
+#peaks:  /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.bed
+
+
+bedtools map -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.bed -b /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed -c 4 -S -o distinct > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed
+
+
+#get the ones that have no overlap
+
+bedtools intersect -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.bed -b /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed -v -S > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_noOverlap.bed
+```
+
+
+
+
+
+

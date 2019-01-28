@@ -135,3 +135,5 @@ In the previous sections (specifically [here](NewPeakPostMP.html)) I reran some 
 
 * [Pre ash processing for Stephens lab](PreAshExplore.html)  
 
+* [New approach for assisgning peaks to a gene](ApproachForGeneAssignment.html)
+
