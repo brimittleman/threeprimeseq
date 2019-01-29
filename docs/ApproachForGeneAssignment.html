@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-28</p>
+<p><strong>Last updated:</strong> 2019-01-29</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e7ed8fc62089d72607a313cc641cd01976e857ce" target="_blank">e7ed8fc</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/956f4a823c0e00684406e31873a02e4ada0beaf1" target="_blank">956f4a8</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -364,6 +364,7 @@ Untracked files:
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  analysis/verifybam_dubs.Rmd
     Untracked:  code/PeaksToCoverPerReads.py
     Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
@@ -378,6 +379,7 @@ Untracked files:
     Untracked:  data/PeakCounts_noMP_5perc/
     Untracked:  data/PeakUsage/
     Untracked:  data/PeakUsage_noMP/
+    Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
     Untracked:  data/RNAkalisto/
@@ -504,6 +506,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/956f4a823c0e00684406e31873a02e4ada0beaf1/analysis/ApproachForGeneAssignment.Rmd" target="_blank">956f4a8</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-29
+</td>
+<td style="text-align:left;">
+peak usage 5%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4e74f810baeb55ba265be42de715ff7b8650b13d/docs/ApproachForGeneAssignment.html" target="_blank">4e74f81</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-28
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/e7ed8fc62089d72607a313cc641cd01976e857ce/analysis/ApproachForGeneAssignment.Rmd" target="_blank">e7ed8fc</a>
 </td>
 <td style="text-align:left;">
@@ -555,6 +591,8 @@ start analysis for new gene peak assignemnt
 </ul>
 <p></details></p>
 <hr />
+<div id="new-approach-idea" class="section level2">
+<h2>New Approach Idea</h2>
 <p>Lin et al: An in-depth map of polyadenylation sites in cancer 2012: -Mapped locations to annotated locations in UCUS browser: “The mapped locations were annotated using the UCSC genome browser tables ( 26 ). When a locus could be attributed to multiple possible annotations, the locus was assigned with a single annotation in the following priority order: 3′ UTRs (sense), coding sequences (CDS, sense), 5′ UTRs (sense), intron (sense), non-coding RNAs (ncRNAs, sense), 5′ UTR antisense, CDS antisense, 3′ UTR antisense, intron antisense, promoter antisense, ncRNA antisense and intergenic”</p>
 <p>I want to download this annotation and try this. I am using the ncbi_refseq annotations. I will download regions of the genome seperatly and then merge the files.</p>
 <ul>
@@ -593,6 +631,9 @@ for ln in open(inFile, &quot;r&quot;):
    outF.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chrom_fix, start, end, id, score, strand))
 
 outF.close()</code></pre>
+</div>
+<div id="map-peaks-with-new-annotation" class="section level2">
+<h2>Map peaks with new annotation</h2>
 <p>I want to create a file with my peaks mapped to these regions. I will include a structure for when there is a tie and put intergenic if it is not found. I need to do an intersect that gives me all of the IDs. After this I can use python to parse the hiarchy.</p>
 <p>I can use bedtools map for this. I want all of the data to come back.</p>
 <p>-c 4 -o distinct<br />
@@ -620,6 +661,588 @@ source activate three-prime-env
 
 bedtools map -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.bed -b /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed -c 4 -S -o distinct &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed
 </code></pre>
+<p>Look at how many get no annotation. I can do this interactively in python.</p>
+<pre class="bash"><code>num=0
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed&quot;, &quot;r&quot;):
+    location=ln.split()[7]
+    if location==&quot;.&quot;:
+        num +=1
+
+print(num)</code></pre>
+<p>This shows me that 85% of the peaks fall into one of these annotations.</p>
+<p>Now I need to sort out the peaks with multiple annotations.</p>
+<ol start="4" style="list-style-type: decimal">
+<li><p>5’ UTR</p></li>
+<li><p>Coding Exon</p></li>
+<li><p>Intron</p></li>
+<li><p>3’ UTR</p></li>
+<li><p>(downstream 5000)-downstream proximal region</p></li>
+</ol>
+<p>I can write this out as the SAF I need. GeneID (peak1:1:14404:14484:-:OR4F16) Chr Start End Strand. For this I cannot include the peaks with no gene association. I can go back to this if i need to in the future.</p>
+<p>processGenLocPeakAnno2SAF.py</p>
+<pre class="bash"><code>inFile=&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed&quot;
+outFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.SAF&quot; , &quot;w&quot;)
+
+outFile.write(&quot;GeneID\tChr\tStart\tEnd\tStrand\n&quot;)
+for ln in open(inFile, &quot;r&quot;):
+    chrom, start, end, peak, cov, strand, score, anno = ln.split()
+    if anno==&quot;.&quot;: 
+        continue  
+    anno_lst=anno.split(&quot;,&quot;)
+    if len(anno_lst)==1:
+        gene=anno_lst[0].split(&quot;:&quot;)[1]
+        print(&quot;1 gene&quot;)
+        peak_i=int(peak)
+        start_i=int(start)
+        end_i=int(end)
+        ID=&quot;peak%d:%s:%d:%d:%s:%s&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+        outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+    else:
+        type_dic={}
+        for each in anno_lst:
+            type_dic[each.split(&quot;:&quot;)[0]]=each.split(&quot;:&quot;)[1]
+        if &quot;utr3&quot; in type_dic.keys():
+            gene=type_dic[&quot;utr3&quot;]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+        elif &quot;end&quot; in type_dic.keys():
+            gene=type_dic[&quot;end&quot;]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+        elif &quot;cds&quot; in type_dic.keys():
+            gene=type_dic[&quot;cds&quot;] 
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+        elif &quot;utr5&quot; in type_dic.keys():
+            gene=type_dic[&quot;utr5&quot;]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+        elif &quot;intron&quot; in type_dic.keys():
+            gene=type_dic[&quot;intron&quot;]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+
+outFile.close()</code></pre>
+</div>
+<div id="map-reads-to-new-annotated-peaks" class="section level2">
+<h2>Map reads to new annotated peaks</h2>
+<p>This has all of the peaks with at least one gene annotation. (104555) I can run feature counts on this to start getting the usage.</p>
+<p>GeneLocAnno_fc_TN_noMP.sh</p>
+<p>Because I mapped the genes opposite. The reads are now on in the same direction as the peaks</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=GeneLocAnno_fc_TN_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=GeneLocAnno_fc_TN_noMP.out
+#SBATCH --error=GeneLocAnno_fc_TN_noMP.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fc /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*T-combined-sort.noMP.sort.bam -s 1
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*N-combined-sort.noMP.sort.bam -s 1</code></pre>
+<p>Around 4 mill mapping in nuclear and 7 mill in total.</p>
+<p>fix_head_fc_geneLoc_tot_noMP.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()</code></pre>
+<p>fix_head_fc_geneLoc_nuc_noMP.py</p>
+<pre class="bash"><code>infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()
+</code></pre>
+<p>I can use the fileIDs</p>
+<p>/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP/file_id_mapping_nuclear_Transcript.txt and /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP/file_id_mapping_total_Transcript.txt</p>
+</div>
+<div id="make-phenotypes" class="section level2">
+<h2>Make phenotypes</h2>
+<p>I need to make a file with the gene start and ends because I use these in the phenotypes for QTL mapping. I can do this with the project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms file. I want the file to look like chr,start,end,txn:gene,.,strand I will sue the start and end of the coding seq</p>
+<p>getGeneEnds.py</p>
+<pre class="bash"><code>TXN2Gene_file=open(&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms&quot;,&quot;r&quot;)
+
+outFile=open(&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_endAllGenes.bed&quot;, &quot;w&quot;)
+
+for i, ln in enumerate(TXN2Gene_file):
+    if i &gt;0 :
+        chrom=ln.split()[2]
+        chromf=chrom[3:]
+        start=int(ln.split()[6])
+        end=int(ln.split()[7])
+        txn=ln.split()[1]
+        genename=ln.split()[12]
+        id=txn + &quot;:&quot; + genename
+        strand=ln.split()[3]
+        score=&quot;.&quot;
+        outFile.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chromf, start, end, id, score, strand))
+
+outFile.close()</code></pre>
+<p>Sort the bed file:</p>
+<pre class="bash"><code>sort -k1,1 -k2,2n /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_endAllGenes.bed &gt; /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_endAllGenes.sort.bed</code></pre>
+<p>makePhenoRefSeqPeaks_GeneLoc_Total_noMP.py</p>
+<pre class="bash"><code>#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP/file_id_mapping_total_Transcript.txt&quot;):
+    bam, IND = ln.split(&quot;\t&quot;)
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#gene start and end dictionaries: 
+dic_geneS = {}
+dic_geneE = {}
+for ln in open(&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_endAllGenes.sort.bed&quot;):
+    chrom, start, end, geneID, score, strand = ln.split(&#39;\t&#39;)
+    gene= geneID.split(&quot;:&quot;)[1]
+#    if &quot;-&quot; in gene:
+ #       gene=gene.split(&quot;-&quot;)[0]
+    if gene not in dic_geneS:
+        dic_geneS[gene]=int(start)
+        dic_geneE[gene]=int(end)
+        
+
+
+#list of genes   
+
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc&quot;, &quot;r&quot;)
+genes=[]
+for line , i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc&quot;, &quot;r&quot;)
+for line, i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc&quot;,&quot;w&quot;)
+peak=[&quot;chrom&quot;]
+inds_noL=[]
+for each in inds:
+    indsNA= &quot;NA&quot; + each[:-2]
+    inds_noL.append(indsNA) 
+fout.write(&quot; &quot;.join(peak + inds_noL) + &#39;\n&#39; )
+
+
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc&quot;, &quot;r&quot;)
+for line , i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        gene=id_list[5]
+        start=dic_geneS[id_list[5]]
+        end=dic_geneE[id_list[5]]
+        buff=[]
+        buff.append(&quot;chr%s:%d:%d:%s_%s_%s&quot;%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append(&quot;%d/%d&quot;%(t,b))
+        fout.write(&quot; &quot;.join(buff)+ &#39;\n&#39;)
+        
+fout.close()</code></pre>
+<p>makePhenoRefSeqPeaks_GeneLoc_Nuclear_noMP.py</p>
+<pre class="bash"><code>#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP/file_id_mapping_nuclear_Transcript.txt&quot;):
+    bam, IND = ln.split(&quot;\t&quot;)
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#gene start and end dictionaries: 
+dic_geneS = {}
+dic_geneE = {}
+for ln in open(&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_endAllGenes.sort.bed&quot;):
+    chrom, start, end, geneID, score, strand = ln.split(&#39;\t&#39;)
+    gene= geneID.split(&quot;:&quot;)[1]
+    #if &quot;-&quot; in gene:
+     #   gene=gene.split(&quot;-&quot;)[0]
+    if gene not in dic_geneS:
+        dic_geneS[gene]=int(start)
+        dic_geneE[gene]=int(end)
+        
+
+
+#list of genes   
+
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc&quot;, &quot;r&quot;)
+genes=[]
+for line , i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc&quot;, &quot;r&quot;)
+for line, i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc&quot;,&quot;w&quot;)
+peak=[&quot;chrom&quot;]
+inds_noL=[]
+for each in inds:
+    indsNA= &quot;NA&quot; + each[:-2]
+    inds_noL.append(indsNA) 
+fout.write(&quot; &quot;.join(peak + inds_noL) + &#39;\n&#39; )
+
+
+count_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc&quot;, &quot;r&quot;)
+for line , i in enumerate(count_file):
+    if line &gt; 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(&quot;:&quot;)
+        gene=id_list[5]
+        start=dic_geneS[id_list[5]]
+        end=dic_geneE[id_list[5]]
+        buff=[]
+        buff.append(&quot;chr%s:%d:%d:%s_%s_%s&quot;%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append(&quot;%d/%d&quot;%(t,b))
+        fout.write(&quot; &quot;.join(buff)+ &#39;\n&#39;)
+        
+fout.close()</code></pre>
+<p>Run make pheno files:</p>
+<p>run_makePhen_sep_GeneLocAnno_noMP.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_makePhen_sep_GeneLocAnno_noMP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_makePhen_sep_GeneLocAnno_noMP.out
+#SBATCH --error=run_makePhen_sep_GeneLocAnno_noMP.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python makePhenoRefSeqPeaks_GeneLoc_Total_noMP.py  
+
+python makePhenoRefSeqPeaks_GeneLoc_Nuclear_noMP.py  
+</code></pre>
+</div>
+<div id="convert-to-usage" class="section level2">
+<h2>Convert to Usage</h2>
+<p>pheno2CountOnly_genelocAnno.R</p>
+<pre class="r"><code>library(reshape2)
+library(tidyverse)
+
+
+totalPeakUs=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc&quot;, header = T, stringsAsFactors = F) %&gt;% separate(chrom, sep = &quot;:&quot;, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;))
+nuclearPeakUs=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc&quot;, header = T, stringsAsFactors = F) %&gt;% separate(chrom, sep = &quot;:&quot;, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;))
+
+
+
+write.table(totalPeakUs[,7:dim(totalPeakUs)[2]], file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnly&quot;,quote=FALSE, col.names = F, row.names = F)
+
+write.table(nuclearPeakUs[,7:dim(nuclearPeakUs)[2]], file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.CountsOnly&quot;,quote=FALSE, col.names = F, row.names = F)</code></pre>
+<p>convertCount2Numeric_noMP_GeneLocAnno.py</p>
+<pre class="bash"><code>def convert(infile, outfile):
+  final=open(outfile, &quot;w&quot;)
+  for ln in open(infile, &quot;r&quot;):
+    line_list=ln.split()
+    new_list=[]
+    for i in line_list:
+      num, dem = i.split(&quot;/&quot;)
+      if dem == &quot;0&quot;:
+        perc = &quot;0.00&quot;
+      else:
+        perc = int(num)/int(dem)
+        perc=round(perc,2)
+        perc= str(perc)
+      new_list.append(perc)
+    final.write(&quot;\t&quot;.join(new_list)+ &#39;\n&#39;)
+  final.close()
+  
+convert(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnly&quot;,&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt&quot;)
+
+
+convert(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.CountsOnly&quot;,&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.CountsOnlyNumeric.txt&quot;)
+</code></pre>
+<p>Pull these into R here so I can filter peaks with 5% and understand how many per gene.</p>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.1.1
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>library(ggpubr)</code></pre>
+<pre><code>Loading required package: magrittr</code></pre>
+<pre><code>
+Attaching package: &#39;magrittr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    set_names</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    extract</code></pre>
+<pre><code>
+Attaching package: &#39;ggpubr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:cowplot&#39;:
+
+    get_legend</code></pre>
+<pre class="r"><code>totalPeakUs=read.table(&quot;../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc&quot;, header = T, stringsAsFactors = F) %&gt;% separate(chrom, sep = &quot;:&quot;, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;))</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 4 rows [13402,
+13403, 13404, 101569].</code></pre>
+<pre class="r"><code>nuclearPeakUs=read.table(&quot;../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc&quot;, header = T, stringsAsFactors = F) %&gt;% separate(chrom, sep = &quot;:&quot;, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;))</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 4 rows [13402,
+13403, 13404, 101569].</code></pre>
+<pre class="r"><code>ind=colnames(totalPeakUs)[7:dim(totalPeakUs)[2]]
+totalPeakUs_CountNum=read.table(&quot;../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt&quot;, col.names = ind)
+
+nuclearPeakUs_CountNum=read.table(&quot;../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.CountsOnlyNumeric.txt&quot;, col.names = ind)</code></pre>
+<pre class="r"><code>#numeric with anno
+totalPeak=as.data.frame(cbind(totalPeakUs[,1:6], totalPeakUs_CountNum))
+nuclearPeak=as.data.frame(cbind(nuclearPeakUs[,1:6], nuclearPeakUs_CountNum))
+
+#mean
+totalPeakUs_CountNum_mean=rowMeans(totalPeakUs_CountNum)
+nuclearPeakUs_CountNum_mean=rowMeans(nuclearPeakUs_CountNum)
+
+
+#append mean to anno
+TotalPeakUSMean=as.data.frame(cbind(totalPeakUs[,1:6],totalPeakUs_CountNum_mean))
+NuclearPeakUSMean=as.data.frame(cbind(nuclearPeakUs[,1:6],nuclearPeakUs_CountNum_mean))</code></pre>
+<p>Filter on the mean</p>
+<pre class="r"><code>TotalPeakUSMean_filt=TotalPeakUSMean %&gt;% filter(totalPeakUs_CountNum_mean&gt;=.05) %&gt;% group_by(gene) %&gt;% summarise(Npeaks=n())
+totalPeaksPerGene=TotalPeakUSMean_filt %&gt;% group_by(Npeaks) %&gt;% summarise(GenesWithNPeaks=n())
+
+
+NuclearPeakUSMean_filt=NuclearPeakUSMean %&gt;% filter(nuclearPeakUs_CountNum_mean&gt;=.05) %&gt;% group_by(gene) %&gt;% summarise(Npeaks=n())
+nuclearPeaksPerGene=NuclearPeakUSMean_filt %&gt;% group_by(Npeaks) %&gt;% summarise(GenesWithNPeaks=n())
+nuclearPeaksPerGene$GenesWithNPeaks=as.integer(nuclearPeaksPerGene$GenesWithNPeaks)</code></pre>
+<p>Peak num level</p>
+<pre class="r"><code>nPeaksBoth=totalPeaksPerGene %&gt;% full_join(nuclearPeaksPerGene, by=&quot;Npeaks&quot;)
+colnames(nPeaksBoth)= c(&quot;Peaks&quot;, &quot;Total&quot;, &quot;Nuclear&quot;)
+nPeaksBoth$Total= nPeaksBoth$Total %&gt;% replace_na(0)
+
+#melt nPeaksBoth
+nPeaksBoth_melt=melt(nPeaksBoth, id.var=&quot;Peaks&quot;)
+colnames(nPeaksBoth_melt)= c(&quot;Peaks&quot;, &quot;Fraction&quot;, &quot;Genes&quot;)
+
+#plot
+peakUsage5perc=ggplot(nPeaksBoth_melt, aes(x=Peaks, y=Genes, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + labs(title=&quot;Number of Genes with &gt;5% Peak Usage \n cleaned for mispriming&quot;) + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + facet_grid(~Fraction)
+
+peakUsage5perc</code></pre>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This is a similar distribution to the other annotations.</p>
+<p>Save this plot:</p>
+<pre class="r"><code>ggsave(peakUsage5perc, file=&quot;../output/plots/QC_plots/peakUsage5perc_noMP_geneLocAnno.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<p>Genes covered with these annoations.</p>
+<pre class="r"><code>#nuclear
+nrow(NuclearPeakUSMean_filt) </code></pre>
+<pre><code>[1] 14851</code></pre>
+<pre class="r"><code>#total
+nrow(TotalPeakUSMean_filt) </code></pre>
+<pre><code>[1] 14852</code></pre>
+<p>There are more genes in this. We expect this because i have included LINCs.</p>
+<p>Look at number of peaks in each set.</p>
+<pre class="r"><code>#nuclear  
+NuclearPeakUSMean %&gt;% filter(nuclearPeakUs_CountNum_mean&gt;=.05) %&gt;% nrow()</code></pre>
+<pre><code>[1] 37370</code></pre>
+<pre class="r"><code>#total
+TotalPeakUSMean %&gt;% filter(totalPeakUs_CountNum_mean&gt;=.05) %&gt;% nrow()</code></pre>
+<pre><code>[1] 33002</code></pre>
+<p>There are a few less peaks. This is expected give we cut 15% of the peaks because they are not within 5kb of an annotated gene.</p>
+<p>Write out these peaks</p>
+<pre class="r"><code>NuclearPeakUSMean_5perc=NuclearPeakUSMean %&gt;% filter(nuclearPeakUs_CountNum_mean&gt;=.05)
+write.table(NuclearPeakUSMean_5perc,file=&quot;../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt&quot;, row.names=F, col.names=F, quote = F)
+
+
+TotalPeakUSMean_5per= TotalPeakUSMean %&gt;% filter(totalPeakUs_CountNum_mean&gt;=.05) 
+write.table(TotalPeakUSMean_5per,file=&quot;../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt&quot;, row.names=F, col.names=F, quote = F)</code></pre>
+<p>I want to filter these peaks so I can rerun the leafcutter analysis and look at some of the results. I transfered these to /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/.</p>
+<p>filterPheno_bothFraction_GeneLocAnno_5perc.py</p>
+<pre class="bash"><code>#python  
+
+totalokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt&quot;
+
+totalokPeaks5perc={}
+for ln in open(totalokPeaks5perc_file,&quot;r&quot;):
+    peakname=ln.split()[5]
+    totalokPeaks5perc[peakname]=&quot;&quot;
+
+
+nuclearokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt&quot;
+nuclearokPeaks5perc={}
+for ln in open(nuclearokPeaks5perc_file,&quot;r&quot;):
+    peakname=ln.split()[5]
+    nuclearokPeaks5perc[peakname]=&quot;&quot;
+    
+    
+totalPhenoBefore=open(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc&quot;,&quot;r&quot;)
+totalPhenoAfter=open(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc&quot;, &quot;w&quot;)
+for num, ln in enumerate(totalPhenoBefore):
+    if num ==0:
+        totalPhenoAfter.write(ln)
+    else:  
+        id=ln.split()[0].split(&quot;:&quot;)[3].split(&quot;_&quot;)[2]
+        if id in totalokPeaks5perc.keys():
+            totalPhenoAfter.write(ln)
+totalPhenoAfter.close()  
+
+nuclearPhenoBefore=open(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc&quot;,&quot;r&quot;)
+nuclearPhenoAfter=open(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc&quot;, &quot;w&quot;)
+for num, ln in enumerate(nuclearPhenoBefore):
+    if num ==0:
+        nuclearPhenoAfter.write(ln)
+    else:  
+        id=ln.split()[0].split(&quot;:&quot;)[3].split(&quot;_&quot;)[2]
+        if id in nuclearokPeaks5perc.keys():
+            nuclearPhenoAfter.write(ln)
+nuclearPhenoAfter.close() </code></pre>
+</div>
+<div id="diff-iso-in-leafcutter" class="section level2">
+<h2>Diff Iso in leafcutter</h2>
+<p>Now I can use these peaks to get counts for leafcutter.</p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -637,14 +1260,30 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] bindrcpp_0.2.2  ggpubr_0.1.8    magrittr_1.5    cowplot_0.9.3  
+ [5] reshape2_1.4.3  forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
+ [9] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
+[13] ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.1.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.1.1   Rcpp_0.12.19      digest_0.6.17    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.23.0      magrittr_1.5      evaluate_0.11    
-[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.7.0     rmarkdown_1.10    tools_3.5.1      
-[16] stringr_1.3.1     yaml_2.2.0        compiler_3.5.1   
-[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] evaluate_0.11     labeling_0.3      knitr_1.20       
+[25] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
+[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[31] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
+[34] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
+[37] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
+[40] pkgconfig_2.0.2   xml2_1.2.0        lubridate_1.7.4  
+[43] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
+[46] rstudioapi_0.8    R6_2.3.0          nlme_3.1-137     
+[49] git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
