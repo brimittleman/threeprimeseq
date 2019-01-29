@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/956f4a823c0e00684406e31873a02e4ada0beaf1" target="_blank">956f4a8</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d194ec23d501c5bed0510512de0ea4de58ea2a81" target="_blank">d194ec2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -401,6 +401,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_GeneLocAnno/
     Untracked:  data/diff_iso_proc/
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
@@ -501,6 +502,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d194ec23d501c5bed0510512de0ea4de58ea2a81/analysis/ApproachForGeneAssignment.Rmd" target="_blank">d194ec2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-29
+</td>
+<td style="text-align:left;">
+lc results
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2701515bea9e53173dbdb1b6cd036cb4965b76c8/docs/ApproachForGeneAssignment.html" target="_blank">2701515</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1171,6 +1206,36 @@ peakUsage5perc=ggplot(nPeaksBoth_melt, aes(x=Peaks, y=Genes, fill=Fraction)) + g
 
 peakUsage5perc</code></pre>
 <p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2701515bea9e53173dbdb1b6cd036cb4965b76c8/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-20-1.png" target="_blank">2701515</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-29
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This is a similar distribution to the other annotations.</p>
 <p>Save this plot:</p>
 <pre class="r"><code>ggsave(peakUsage5perc, file=&quot;../output/plots/QC_plots/peakUsage5perc_noMP_geneLocAnno.png&quot;)</code></pre>
@@ -1242,6 +1307,230 @@ nuclearPhenoAfter.close() </code></pre>
 <div id="diff-iso-in-leafcutter" class="section level2">
 <h2>Diff Iso in leafcutter</h2>
 <p>Now I can use these peaks to get counts for leafcutter.</p>
+<p>I want a file that will have the peaks from total or nuclear.</p>
+<p>I am starting here with the SAF file</p>
+<p>filternamePeaks5percCov_GeneLocAnno.py</p>
+<pre class="bash"><code>assignedPeaks=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.SAF&quot;,&quot;r&quot;)
+outFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF&quot;, &quot;w&quot;)
+
+totalokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt&quot;
+nuclearokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt&quot;
+
+allPeakOk={}
+for ln in open(nuclearokPeaks5perc_file,&quot;r&quot;):
+    peakname=ln.split()[5]
+    peaknum=peakname[4:]
+    allPeakOk[peaknum]=&quot;&quot;
+for ln in open(totalokPeaks5perc_file,&quot;r&quot;):
+    peakname=ln.split()[5]
+    peaknum=peakname[4:]
+    if peaknum not in allPeakOk.keys():
+        allPeakOk[peaknum]=&quot;&quot;
+        
+for i, ln in enumerate(assignedPeaks): 
+    if i == 0:
+        outFile.write(ln)
+    else:
+        ID=ln.split()[0]
+        peak=ID.split(&quot;:&quot;)[0]
+        peak_num=peak[4:]
+        if peak_num in allPeakOk.keys():
+             outFile.write(ln)
+outFile.close()
+    </code></pre>
+<p>Now I will run feature counts, remembering that i want to look at the same strand as the peaks.</p>
+<p>bothFrac_processed_GeneLocAnno_FC.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=bothFrac_processed_GeneLocAnno_FC
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=bothFrac_processed_GeneLocAnno_FC.out
+#SBATCH --error=bothFrac_processed_GeneLocAnno_FC.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed.fc /project2/gilad/briana/threeprimeseq/data/bam_NoMP_sort/*sort.bam -s 1</code></pre>
+<p>Fix header for this:</p>
+<p>fix_head_fc_procBothFrac_GeneLocAnno.py</p>
+<pre class="bash"><code>#python 
+
+infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed.fc&quot;, &quot;r&quot;)
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc&quot;,&#39;w&#39;)
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries = i_list[:6]
+        print(libraries)
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= &quot;\t&quot;.join(libraries)
+        fout.write(first_line + &#39;\n&#39;)
+    else :
+        fout.write(i)
+fout.close()</code></pre>
+<p>fc2leafphen_processed_GeneLocAnno.py</p>
+<pre class="bash"><code>inFile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc&quot;, &quot;r&quot;)
+outFile= open(&quot;/project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_forLC.fc&quot;, &quot;w&quot;)
+
+for num, ln in enumerate(inFile):
+        if num == 1:
+            lines=ln.split()[6:]
+            outFile.write(&quot; &quot;.join(lines)+&#39;\n&#39;)
+        if num &gt; 1:
+            ID=ln.split()[0]
+            peak=ID.split(&quot;:&quot;)[0]
+            chrom=ID.split(&quot;:&quot;)[1]
+            start=ID.split(&quot;:&quot;)[2]
+            start=int(start)
+            end=ID.split(&quot;:&quot;)[3]
+            end=int(end)
+            strand=ID.split(&quot;:&quot;)[4]
+            gene=ID.split(&quot;:&quot;)[5]
+            new_ID=&quot;chr%s:%d:%d:%s&quot;%(chrom, start, end, gene)
+            pheno=ln.split()[6:]
+            pheno.insert(0, new_ID)
+            outFile.write(&quot; &quot;.join(pheno)+&#39;\n&#39;)
+            
+outFile.close()</code></pre>
+<p>subset_diffisopheno_processed_GeneLocAnno.py</p>
+<pre class="bash"><code>def main(inFile, outFile, target):
+    ifile=open(inFile, &quot;r&quot;)
+    ofile=open(outFile, &quot;w&quot;)
+    target=int(target)
+    for num, ln in enumerate(ifile):
+        if num == 0:
+            ofile.write(ln)
+        else:
+            ID=ln.split()[0]
+            chrom=ID.split(&quot;:&quot;)[0][3:]
+            print(chrom)
+            chrom=int(chrom)
+            if chrom == target:
+                ofile.write(ln)
+            
+if __name__ == &quot;__main__&quot;:
+    import sys
+
+    target = sys.argv[1]
+    inFile = &quot;/project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_forLC.fc&quot;
+    outFile = &quot;/project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_forLC_%s.txt&quot;%(target)
+    main(inFile, outFile, target)</code></pre>
+<p>run_subset_diffisopheno_processed_GeneLocAnno.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_subset_diffisopheno_processed_GeneLocAnno
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_subset_diffisopheno_processed_GeneLocAnno.out
+#SBATCH --error=run_subset_diffisopheno_processed_GeneLocAnno.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+python subset_diffisopheno_processed_GeneLocAnno.py  $i 
+done</code></pre>
+<p>makeLCSampleList_processed_GeneLocAnno.py</p>
+<pre class="bash"><code>outfile=open(&quot;/project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed_GeneLocAnno/sample_groups.txt&quot;, &quot;w&quot;)
+infile=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed.fc&quot;, &quot;r&quot;)
+
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=[]
+        for sample in i_list[6:]:
+            full = sample.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        for l in libraries:
+            if l[-1] == &quot;T&quot;:
+                outfile.write(&quot;%s\tTotal\n&quot;%(l))
+            else:
+                outfile.write(&quot;%s\tNuclear\n&quot;%(l))
+    else:
+          next
+                
+outfile.close()</code></pre>
+<p>run_leafcutter_ds_bychrom_processed_GeneLocAnno.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_leafcutter_ds_bychrom_processed_GeneLocAnno
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_leafcutter_ds_bychrom_processed_GeneLocAnno.out
+#SBATCH --error=run_leafcutter_ds_bychrom_processed_GeneLocAnno.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load R
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+Rscript /project2/gilad/briana/davidaknowles-leafcutter-c3d9474/scripts/leafcutter_ds.R --num_threads 4  /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_forLC_${i}.txt /project2/gilad/briana/threeprimeseq/data/pheno_DiffIso_processed_GeneLocAnno/sample_groups.txt -o /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr${i}.txt 
+done</code></pre>
+<pre class="bash"><code>awk &#39;{if(NR&gt;1)print}&#39; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*.txt_effect_sizes.txt &gt; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt
+
+awk &#39;{if(NR&gt;1)print}&#39; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*cluster_significance.txt &gt; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt</code></pre>
+<p>Look at the significant peaks</p>
+<pre class="r"><code>diffIso=read.table(&quot;../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt&quot;, header = F,col.names = c(&quot;status&quot;,   &quot;loglr&quot;,    &quot;df&quot;,   &quot;p&quot;,    &quot;cluster&quot;,  &quot;p.adjust&quot;),stringsAsFactors = F,sep=&quot;\t&quot;) %&gt;% filter(status == &quot;Success&quot;)
+
+
+diffIso$p.adjust=as.numeric(as.character(diffIso$p.adjust))
+
+
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab=&quot;-log10 Total Adjusted Leafcutter pvalue&quot;, xlab=&quot;-log 10 Uniform expectation&quot;, main=&quot;Leafcutter differencial isoform analysis between fractions&quot;)
+abline(0,1)</code></pre>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Look at the effect sizes and delta PSI values</p>
+<pre class="r"><code>effectsize=read.table(&quot;../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt&quot;, stringsAsFactors = F, col.names=c(&#39;intron&#39;,  &#39;logef&#39; ,&#39;Nuclear&#39;, &#39;Total&#39;,&#39;deltapsi&#39;))
+
+effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>plot(sort(effectsize$deltapsi),main=&quot;Leafcutter delta PSI&quot;, ylab=&quot;Delta PSI&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I will look at the top PSI values to check these assignments:</p>
+<pre class="r"><code>filterHighPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.4) %&gt;% arrange(deltapsi)
+slice(filterHighPSI, 1:10)</code></pre>
+<pre><code>                              intron              logef           Nuclear
+1  chr20:58647920:58648008:C20orf197  -1.30029968847689  0.75961199274038
+2       chr16:81123538:81123627:GCSH  -1.74065267433486 0.670469380269928
+3         chr6:84007319:84007404:ME1  -1.78018772633575 0.606503443795698
+4        chr3:60357325:60357413:FHIT  -1.26667104228337 0.610069267936541
+5  chr19:36806427:36806515:LINC00665  -1.07992220081782 0.777431269442217
+6      chr5:158459560:158459648:EBF1  -1.42831987542981 0.748019907501062
+7      chr14:51976014:51976057:FRMD6  -1.78704520971336 0.547050860607198
+8   chr7:147596894:147596932:CNTNAP2 -0.774209465545986 0.705908150746242
+9      chr9:86581185:86581267:MIR7-1  -1.06118532400755   0.8197624679828
+10  chr9:131123419:131123501:SLC27A4 -0.785767406518831  0.78532017459677
+                Total   deltapsi
+1   0.189994498257158 -0.5696175
+2   0.137387545557619 -0.5330818
+3   0.094302459218906 -0.5122010
+4   0.110490691620035 -0.4995786
+5   0.287187087245474 -0.4902442
+6   0.266472225627269 -0.4815477
+7  0.0746333216691989 -0.4724175
+8   0.238177555374367 -0.4677306
+9   0.352599645113899 -0.4671628
+10  0.327502618698554 -0.4578176</code></pre>
+<p>Files to make: -bed file with all 5% peaks - bed file with refseq anno</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
