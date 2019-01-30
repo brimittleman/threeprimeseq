@@ -326,7 +326,8 @@ div.section {
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
-<p><details> <summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </details>
 </li>
 <li>
@@ -345,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1def3fb49474592a08e1bf59b50960a3ba595a1c" target="_blank">1def3fb</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a7f02950e5518547f051485ec325b61c729d2d87" target="_blank">a7f0295</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -453,7 +454,6 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
-    Modified:   analysis/ApproachForGeneAssignment.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
@@ -502,6 +502,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a7f02950e5518547f051485ec325b61c729d2d87/analysis/ApproachForGeneAssignment.Rmd" target="_blank">a7f0295</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-29
+</td>
+<td style="text-align:left;">
+evaluate top delta PSI
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/26951df7ecf6cc14d32737f5bb1cac7718295849/docs/ApproachForGeneAssignment.html" target="_blank">26951df</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -980,7 +1014,8 @@ for line , i in enumerate(count_file):
         
 fout.close()</code></pre>
 <p>makePhenoRefSeqPeaks_GeneLoc_Nuclear_noMP.py</p>
-<pre class="bash"><code>#PYTHON 3
+<pre class="bash"><code>
+#PYTHON 3
 
 dic_IND = {}
 dic_BAM = {}
@@ -1607,7 +1642,98 @@ slice(filterHighPSI, 1:10)</code></pre>
 8   0.238177555374367 -0.4677306
 9   0.352599645113899 -0.4671628
 10  0.327502618698554 -0.4578176</code></pre>
-<p>Files to make: -bed file with all 5% peaks (named with gene) - bed file with refseq anno</p>
+<p>Files to make: -bed file with all 5% peaks (named with gene)</p>
+<p>Convert Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF to a bed file</p>
+<p>Chrom, start, end, name, score, strand</p>
+<p>peaksGeneLocAnno_5percSAF2Bed.py</p>
+<pre class="bash"><code>inFile=&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF&quot;
+outFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed&quot;, &quot;w&quot;)
+
+for i, ln in enumerate(inFile):
+  if i &gt;0:
+     ID, chrom, start, end, strand = ln.split()
+     gene=ID.split(&quot;:&quot;)[5]
+     peaknum=ID.split(:)[0]
+     newID=gene + &quot;:&quot;+ peaknum
+     start_i=int(start)
+     end_i=int(end)
+     score=&quot;.&quot;
+     outFile.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start_i, end_i, newID, score, strand))
+outFile.close()     </code></pre>
+<div id="evaluate-top-differences" class="section level3">
+<h3>Evaluate top differences</h3>
+<ul>
+<li>C20orf197</li>
+</ul>
+<p>peak72985 - in the three prime UTR<br />
+total:0.08948718 nuclear: 0.3607692</p>
+<p>the other peak is peak72984 - first exon of the gene<br />
+total: 0.39769231 nuclear: 0.1264103</p>
+<ul>
+<li>GCSH:</li>
+</ul>
+<p>Total has 3 peaks and nuclear has 2 used at 5%.<br />
+peak46139- internal intron peak<br />
+Total:0.15743590 Nuclear: 0.6787179</p>
+<p>The other common peak is peak46138 and is in the 3’ UTR Total: 0.73333333 Nuclear: 0.2943590</p>
+<ul>
+<li>ME1<br />
+chr6:84007319:84007404-peak 102432 - intronic peak<br />
+Total:0.09307692<br />
+Nuclear: 0.54974359</li>
+</ul>
+<p>There are 2 more peaks for this gene. They are in the 3’ UTR</p>
+<p>peak 102430- distal<br />
+Total:0.31794872 Nuclear:0.17230769</p>
+<p>peak 102431 - proximal<br />
+Total: 0.43512821<br />
+Nuclear: 0.20179487</p>
+<ul>
+<li>FHIT<br />
+Total and nuclear use different peaks and only have 1 with over 5%.</li>
+</ul>
+<p>Total: peak79937 (0.2492308) - in the 3’ UTR<br />
+Nucelar: peak79975- (0.0574359) intronic</p>
+<p>There is a lot of coverage in this gene. Many low used peaks that are mostly noise.</p>
+<ul>
+<li>LINC00665</li>
+</ul>
+<p>peak57872 -last Intron Total: 0.2538462<br />
+Nuclear: 0.7361538</p>
+<p>peak57873 upstream intron<br />
+total: 0.5923077 Nuclear: 0.2382051</p>
+<p>This means the nuclear is the longer version.</p>
+<ul>
+<li>EBF1</li>
+</ul>
+<p>peak97306 - intronic<br />
+Total: 0.07538462<br />
+Nuclear: 0.1443590</p>
+<p>This is the only peak used at 5% in nuclear. The total also has usage for 2 3’UTR peaks. peak97237-distal- 0.08512821 peak97240- prox- 0.13358974</p>
+<p>this shows there is a lot of noise peaks in this gene</p>
+<ul>
+<li><p>FRMD6 This is confusing because the genes FRMD6 and FRMD6-AS1 and FRMD6-AS2 overlap.</p></li>
+<li><p>CNTNAP2<br />
+peak111687- Intronic Total: 0.2510256 Nuclear: 0.72102564</p></li>
+</ul>
+<p>Most used total peak is peak111684. This peak is upstream in another intron<br />
+Total: 0.7371795<br />
+Nuclear: 0.22769231</p>
+<p>Looks like nuclear uses the longer version here</p>
+<ul>
+<li><p>MIR7-1 Not that much coverage in this location for the RNA, not sure I trust this</p></li>
+<li><p>SLC27A4</p></li>
+</ul>
+<p>peak121617 3’ UTR of gene<br />
+Total: 0.3171795 Nuclear: 0.72923077</p>
+<p>Most used total peak is peak121616 total: 0.6269231<br />
+nuclear: 0.14461538</p>
+<p>This is in the first intron</p>
+<p>Looks like the longer version is the nuclear again.</p>
+</div>
+<div id="evaluate-mid-level-differences" class="section level3">
+<h3>Evaluate mid level differences</h3>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
