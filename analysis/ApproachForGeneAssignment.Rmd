@@ -1148,3 +1148,159 @@ Looks like the longer version is the nuclear again.
 
 ###Evaluate mid level differences  
 
+
+```{r}
+filtermidPSI=effectsize %>% filter(abs(deltapsi)>.1,  abs(deltapsi)<.2 ) %>% arrange(desc(deltapsi))
+slice(filtermidPSI, 1:15)
+
+```
+* LOC101927905- not a great example because this is not a protein coding gene.  
+
+peak23703  
+Total: 0.2471795
+Nuclear: 0.1784615 
+
+* LYPLAL1  
+
+Peak 10544- Proximal 3' UTR peak  
+Total:0.60000000
+Nuclear:  0.38487179
+
+Peak 10545 - distal 3' UTR  
+Total:0.21615385
+Nuclear: 0.21564103  
+
+Nuclear uses 2 peaks in the second to last intron of the gene.  
+
+* NRIP1  
+
+peak77305  3' UTR  
+total:0.57333333
+nuclear:0.32076923  
+
+
+Nuclear fraction has an internal peak used at 0.2800000 that is not used in total   
+
+
+* C15orf41- looked at this gene prior  
+
+* DENND6A  
+Peak79852 - 3' UTR of the gene (most distal)
+Total:0.80897436
+Nuclear:0.60512821
+
+Other 3' UTR peak is 79853  
+Total:0.07769231
+Nucelar 0.06512821
+
+Nuclear has 3 extra internal peaks used at at least 5%  
+
+* TPTE2P5 
+peak31262 one of the first introns of a long gene. This part of the gene overlaps with SUGT1P3  
+total:0.27897436
+nuclear: 0.10025641  
+
+* COG4 
+peak45747- 3; UTR peak  
+total:0.9135897
+nuclear: 0.71179487
+
+Total has one more peak in an intron- 45748  
+total:0.0700000
+nuclear:0.22974359
+
+Other nucelar peak is peak45749 at 0.05897436  
+
+Example of internal peak usage in nuclear 
+
+* GOT2 
+Peak 45272  3' UTR  
+Total:0.9528205
+Nuclear: 0.7635897
+
+Other peak used in nuclear is in second to last intron  
+
+Peak 45274- nuclear 0.2307692
+
+internal peak usage in nuclear  
+
+* TMEM14B  
+Peak 98769 first 3' UTR of the gene (this gene has 2 transcripts with 2 different 3' UTRs. looks like this is the only one we get usage for)
+Total:0.6343590
+Nuclear: 0.49512821
+
+Peal98768 is only used in the nuclear at 5% or above- it is used at 0.22743590 
+
+This means we get internal 3' in this for the nuclear.  
+
+
+* MRE11  
+
+peak 21611  3' UTR peak  
+Total: 0.47102564
+nuclear: 0.27512821 
+
+There is a run on peak in both as well (beyond annotated UTR)  
+
+peak 21608 
+Total: 0.35230769
+nucelar: 0.52256410
+
+The other used peak for both fractions is 21616 and is <10% in both  
+
+
+* IFT52  
+
+peak 72169- 3' UTR (only total peak)
+total:0.9548718
+nucelar: 0.7610256
+
+Other nuclear peak:  
+peak 72168 in an intron  
+nuclear: 0.2133333  
+
+Example of internal stopage in nuclear  
+
+* HIP1 
+
+peak 108486  3' UTR
+total: 0.83794872
+nuclear 0.6253846
+
+More internal peak usage in nuclear  
+
+
+* DZANK1  
+Peak 71173  - 3' UTR  
+total:0.66358974 
+nuclear: 0.52717949  
+
+5 other peaks in nuclear, 3 other in total.  
+
+
+* IRF2  
+peak 90870   
+total: 0.39051282
+nuclear: 0.18538462  
+
+the nuclear fraction uses peak90889 at 0.29025641. this is in the first intron on the gene  
+
+* KIF14  
+peak9668  3' UTR  
+total:0.65743590
+nuclear:0.5341026
+
+Total actually has one extra peak used here. This is only about 5%. 
+
+Other peaks:  
+peak9674- second intron 
+total: 0.07692308
+nuclear: 0.1538462
+
+
+peak9671-intronic  
+total:0.11615385
+nuclear: 0.1779487
+
+Here is looks like more internal peaks in nuclear.  
+
