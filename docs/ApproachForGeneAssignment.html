@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-29</p>
+<p><strong>Last updated:</strong> 2019-01-30</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a7f02950e5518547f051485ec325b61c729d2d87" target="_blank">a7f0295</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a8a9acb19700d3ea88446e267d432f7b71127151" target="_blank">a8a9acb</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -502,6 +502,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a8a9acb19700d3ea88446e267d432f7b71127151/analysis/ApproachForGeneAssignment.Rmd" target="_blank">a8a9acb</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-30
+</td>
+<td style="text-align:left;">
+add explanation for midlevel
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/736a503136062df42145237599d44efe94f16f01/docs/ApproachForGeneAssignment.html" target="_blank">736a503</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-29
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1179,12 +1213,12 @@ convert(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTrans
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
@@ -1733,6 +1767,134 @@ nuclear: 0.14461538</p>
 </div>
 <div id="evaluate-mid-level-differences" class="section level3">
 <h3>Evaluate mid level differences</h3>
+<pre class="r"><code>filtermidPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.1,  abs(deltapsi)&lt;.2 ) %&gt;% arrange(desc(deltapsi))
+slice(filtermidPSI, 1:15)</code></pre>
+<pre><code>                               intron             logef            Nuclear
+1  chr12:8397823:8397909:LOC101927905 0.448461429949208  0.250725451684143
+2    chr1:219385083:219385168:LYPLAL1 0.954954667285417   0.47522506522198
+3       chr21:16333556:16333644:NRIP1 0.836443235134216  0.351219846182051
+4    chr15:37102357:37102448:C15orf41  1.47799526856201 0.0446234385277765
+5      chr3:57611182:57611269:DENND6A  1.06294476937985  0.647880789005199
+6     chr13:41493162:41493319:TPTE2P5  1.02758163936723  0.120932187018109
+7        chr16:70514471:70514557:COG4 0.966111688983429   0.71445630320153
+8        chr16:58741035:58741118:GOT2  1.18588583796077  0.773862280159172
+9      chr6:10756725:10757026:TMEM14B 0.602233504297137  0.500765966416333
+10      chr11:94153032:94153131:MRE11 0.459564470994093  0.329029417246997
+11      chr20:42275772:42275861:IFT52  1.06151089956002  0.765140743199829
+12        chr7:75162621:75162703:HIP1 0.740637787039692  0.659230309804744
+13     chr20:18364013:18364097:DZANK1 0.821963077144347  0.502350766672134
+14      chr4:185308878:185308968:IRF2 0.618692449311092  0.244938382583888
+15     chr1:200520630:200520714:KIF14 0.679726537109473  0.559096573104719
+               Total  deltapsi
+1   0.45070463537782 0.1999792
+2  0.675186030796747 0.1999610
+3  0.551128323720684 0.1999085
+4  0.244503990743873 0.1998806
+5  0.847659137175468 0.1997783
+6  0.320706102127373 0.1997739
+7  0.914220776425143 0.1997645
+8  0.973455289793462 0.1995930
+9  0.700276572781718 0.1995106
+10 0.528529300729028 0.1994999
+11 0.964569032134389 0.1994283
+12 0.858643155030094 0.1994128
+13 0.701691505947061 0.1993407
+14 0.444264508262277 0.1993261
+15 0.758376508386949 0.1992799</code></pre>
+<ul>
+<li>LOC101927905- not a great example because this is not a protein coding gene.</li>
+</ul>
+<p>peak23703<br />
+Total: 0.2471795 Nuclear: 0.1784615</p>
+<ul>
+<li>LYPLAL1</li>
+</ul>
+<p>Peak 10544- Proximal 3’ UTR peak<br />
+Total:0.60000000 Nuclear: 0.38487179</p>
+<p>Peak 10545 - distal 3’ UTR<br />
+Total:0.21615385 Nuclear: 0.21564103</p>
+<p>Nuclear uses 2 peaks in the second to last intron of the gene.</p>
+<ul>
+<li>NRIP1</li>
+</ul>
+<p>peak77305 3’ UTR<br />
+total:0.57333333 nuclear:0.32076923</p>
+<p>Nuclear fraction has an internal peak used at 0.2800000 that is not used in total</p>
+<ul>
+<li><p>C15orf41- looked at this gene prior</p></li>
+<li><p>DENND6A<br />
+Peak79852 - 3’ UTR of the gene (most distal) Total:0.80897436 Nuclear:0.60512821</p></li>
+</ul>
+<p>Other 3’ UTR peak is 79853<br />
+Total:0.07769231 Nucelar 0.06512821</p>
+<p>Nuclear has 3 extra internal peaks used at at least 5%</p>
+<ul>
+<li><p>TPTE2P5 peak31262 one of the first introns of a long gene. This part of the gene overlaps with SUGT1P3<br />
+total:0.27897436 nuclear: 0.10025641</p></li>
+<li><p>COG4 peak45747- 3; UTR peak<br />
+total:0.9135897 nuclear: 0.71179487</p></li>
+</ul>
+<p>Total has one more peak in an intron- 45748<br />
+total:0.0700000 nuclear:0.22974359</p>
+<p>Other nucelar peak is peak45749 at 0.05897436</p>
+<p>Example of internal peak usage in nuclear</p>
+<ul>
+<li>GOT2 Peak 45272 3’ UTR<br />
+Total:0.9528205 Nuclear: 0.7635897</li>
+</ul>
+<p>Other peak used in nuclear is in second to last intron</p>
+<p>Peak 45274- nuclear 0.2307692</p>
+<p>internal peak usage in nuclear</p>
+<ul>
+<li>TMEM14B<br />
+Peak 98769 first 3’ UTR of the gene (this gene has 2 transcripts with 2 different 3’ UTRs. looks like this is the only one we get usage for) Total:0.6343590 Nuclear: 0.49512821</li>
+</ul>
+<p>Peal98768 is only used in the nuclear at 5% or above- it is used at 0.22743590</p>
+<p>This means we get internal 3’ in this for the nuclear.</p>
+<ul>
+<li>MRE11</li>
+</ul>
+<p>peak 21611 3’ UTR peak<br />
+Total: 0.47102564 nuclear: 0.27512821</p>
+<p>There is a run on peak in both as well (beyond annotated UTR)</p>
+<p>peak 21608 Total: 0.35230769 nucelar: 0.52256410</p>
+<p>The other used peak for both fractions is 21616 and is &lt;10% in both</p>
+<ul>
+<li>IFT52</li>
+</ul>
+<p>peak 72169- 3’ UTR (only total peak) total:0.9548718 nucelar: 0.7610256</p>
+<p>Other nuclear peak:<br />
+peak 72168 in an intron<br />
+nuclear: 0.2133333</p>
+<p>Example of internal stopage in nuclear</p>
+<ul>
+<li>HIP1</li>
+</ul>
+<p>peak 108486 3’ UTR total: 0.83794872 nuclear 0.6253846</p>
+<p>More internal peak usage in nuclear</p>
+<ul>
+<li>DZANK1<br />
+Peak 71173 - 3’ UTR<br />
+total:0.66358974 nuclear: 0.52717949</li>
+</ul>
+<p>5 other peaks in nuclear, 3 other in total.</p>
+<ul>
+<li>IRF2<br />
+peak 90870<br />
+total: 0.39051282 nuclear: 0.18538462</li>
+</ul>
+<p>the nuclear fraction uses peak90889 at 0.29025641. this is in the first intron on the gene</p>
+<ul>
+<li>KIF14<br />
+peak9668 3’ UTR<br />
+total:0.65743590 nuclear:0.5341026</li>
+</ul>
+<p>Total actually has one extra peak used here. This is only about 5%.</p>
+<p>Other peaks:<br />
+peak9674- second intron total: 0.07692308 nuclear: 0.1538462</p>
+<p>peak9671-intronic<br />
+total:0.11615385 nuclear: 0.1779487</p>
+<p>Here is looks like more internal peaks in nuclear.</p>
 </div>
 </div>
 <div id="session-information" class="section level2">
