@@ -423,6 +423,7 @@ fout.close()
 
 makePhenoRefSeqPeaks_GeneLoc_Nuclear_noMP.py
 ```{bash,eval=F}
+
 #PYTHON 3
 
 dic_IND = {}
@@ -1013,5 +1014,137 @@ slice(filterHighPSI, 1:10)
 ```
 
 Files to make: 
--bed file with all 5% peaks
-- bed file with refseq anno  
+-bed file with all 5% peaks (named with gene)
+
+Convert Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF to a bed file
+
+Chrom, start, end, name, score, strand  
+
+
+peaksGeneLocAnno_5percSAF2Bed.py
+```{bash,eval=F}
+inFile="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF"
+outFile=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", "w")
+
+for i, ln in enumerate(inFile):
+  if i >0:
+     ID, chrom, start, end, strand = ln.split()
+     gene=ID.split(":")[5]
+     peaknum=ID.split(:)[0]
+     newID=gene + ":"+ peaknum
+     start_i=int(start)
+     end_i=int(end)
+     score="."
+     outFile.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_i, end_i, newID, score, strand))
+outFile.close()     
+```
+
+
+
+###Evaluate top differences  
+
+* C20orf197  
+
+peak72985 - in the three prime UTR  
+total:0.08948718
+nuclear: 0.3607692
+
+the other peak is 
+peak72984  - first exon of the gene  
+total: 0.39769231
+nuclear: 0.1264103
+
+
+* GCSH: 
+
+Total has 3 peaks and nuclear has 2 used at 5%.  
+peak46139- internal intron peak  
+Total:0.15743590
+Nuclear: 0.6787179
+
+The other common peak is peak46138 and is in the 3' UTR 
+Total: 0.73333333
+Nuclear: 0.2943590
+
+
+* ME1  
+chr6:84007319:84007404-peak 102432 - intronic peak  
+Total:0.09307692  
+Nuclear: 0.54974359  
+
+There are 2 more peaks for this gene. They are in the 3' UTR  
+
+peak 102430- distal  
+Total:0.31794872
+Nuclear:0.17230769
+
+peak 102431 - proximal  
+Total:  0.43512821  
+Nuclear:  0.20179487
+
+
+* FHIT  
+Total and nuclear use different peaks and only have 1 with over 5%.  
+
+Total: peak79937 (0.2492308) - in the 3' UTR  
+Nucelar: peak79975- (0.0574359) intronic
+
+There is a lot of coverage in this gene. Many low used peaks that are mostly noise.  
+
+* LINC00665  
+
+peak57872  -last Intron
+Total: 0.2538462  
+Nuclear: 0.7361538  
+
+peak57873 upstream intron  
+total: 0.5923077
+Nuclear: 0.2382051  
+
+This means the nuclear is the longer version.  
+
+* EBF1 
+
+peak97306 - intronic  
+Total: 0.07538462  
+Nuclear: 0.1443590  
+
+This is the only peak used at 5% in nuclear. The total also has usage for 2 3'UTR peaks. 
+peak97237-distal- 0.08512821
+peak97240- prox- 0.13358974 
+
+this shows there is a lot of noise peaks in this gene  
+
+
+* FRMD6  This is confusing because the genes FRMD6 and FRMD6-AS1 and FRMD6-AS2 overlap.   
+
+* CNTNAP2  
+peak111687- Intronic 
+Total: 0.2510256
+Nuclear: 0.72102564
+
+Most used total peak is peak111684. This peak is upstream in another intron  
+Total: 0.7371795  
+Nuclear: 0.22769231
+
+Looks like nuclear uses the longer version here  
+
+* MIR7-1 Not that much coverage in this location for the RNA, not sure I trust this  
+
+
+* SLC27A4  
+
+peak121617 3' UTR of gene  
+Total: 0.3171795
+Nuclear: 0.72923077  
+
+Most used total peak is peak121616
+total: 0.6269231  
+nuclear: 0.14461538  
+
+This is in the first intron  
+
+Looks like the longer version is the nuclear again. 
+
+###Evaluate mid level differences  
+
