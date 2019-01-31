@@ -1470,3 +1470,203 @@ Sig_NucQTLs= nucQTLs %>% filter(-log10(bh)>=1)
 nrow(Sig_NucQTLs)
 ```
 
+##Validatation for these assignments  
+
+I want to compute some QC metrics for these peaks. First, I will compute the distance from the center of each peak to the end of TXN for the gene. I can get this from the /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms file. With this file I can make a dictionary with the gene and end of txn. I will use the longest version by updating the dictionary if a key comes up again. For + strand its the furthest end, for the - strand its the first start.
+
+GeneTXNEnd.py
+```{bash,eval=F}
+TXN2Gene_file="/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms"
+fout=open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/GeneTXNEnd.txt", "w")
+
+        
+
+for ln in open(TXN2Gene_file,"r"):
+   gene=ln.split()[12]
+   strand=ln.split()[3]
+   txStart=ln.split()[4]
+   txEnd=ln.split()[5]
+   if strand == "+":
+      val=txEnd
+   else:
+      val=txStart
+   fout.write("%s\t%s\t%s\n"%(gene,strand, val))
+fout.close()
+```
+
+ Run uniq on this file because many genes had multiple transcripts with the same ends.  
+ 
+```{bash,eval=F}
+uniq GeneTXNEnd.txt > GeneTXNEndUniq.txt
+```
+ 
+Now I can get just the longest trx with a dictionary and connect them to my peaks. I want the final file to have the dist to the end. First I need to get the average of peak/center of the peak. I will always do End - Peakcenter. I will put the strand of the gene, this is opposite of the peak. 
+
+
+GetDistTXNend2Peak.py
+```{bash,eval=F}
+endF=open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/GeneTXNEndUniq.txt","r")
+
+endDic={}
+
+for i,ln in enumerate(endF):
+    if i > 0:
+        gene, strand, end = ln.split()
+        if gene not in endDic.keys():
+            endDic[gene]=int(end)
+        else:
+            if strand == "+":
+                if endDic[gene] > int(end):
+                    endDic[gene]=int(end)
+                else:
+                    continue
+            else: 
+                if endDic[gene]< int(end):
+                    endDic[gene]=int(end)
+                else:
+                    continue
+
+peakFile="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed"
+
+distPeak2EndTXN=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/distPeak2EndTXN.txt","w")
+
+n=0
+for ln in open(peakFile, "r"):
+    peakS=ln.split()[5]
+    if peakS == "+":
+        strand = "-"
+    else:
+        strand = "+"
+    start=ln.split()[1]
+    start=int(start)
+    end=ln.split()[2]
+    end=int(end)
+    mid=(start+end)/2
+    gene=ln.split()[3].split(":")[0]
+    peak=ln.split()[3].split(":")[1]
+    if gene in endDic.keys():
+        txnEnd=endDic[gene]
+        distance=txnEnd-mid
+        distPeak2EndTXN.write("%s\t%s\t%d\t%s\n"%(peak, gene, distance, strand))
+    else:
+        print("not in file")
+        n+=1
+print(n)
+distPeak2EndTXN.close()
+        
+
+
+```
+
+bring to my computer:  
+
+```{r}
+distTXN2Peak=read.table("../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN.txt", col.names = c("Peak", "name2", "Distance", "Gene_Strand"),stringsAsFactors = F)
+```
+
+Plot the ditribution of the ditances.  
+
+```{r}
+summary(distTXN2Peak$Distance)
+
+ggplot(distTXN2Peak, aes(x=Distance)) + geom_density()
+```
+
+Look at furthest ones in igv.  
+
+```{r}
+distTXN2Peak %>% arrange(Distance) %>% slice(1:15)
+```
+
+
+KANSL1
+
+Gene comes us more than once.  
+KANSL1	-	44107281
+KANSL1	+	760700
+
+NSF  
+
+Gene comes up more than once 
+NSF	+	44834830  
+NSF	+	1577443
+
+HLA-DPB2- Many transcripts around 4383650 but one around 33096890
+HLA-DPB2	+	33096890  
+HLA-DPB2	+	4383650  
+HLA-DPB2	+	4540678  
+HLA-DPB2	+	4378196  
+HLA-DPB2	+	4421814  
+HLA-DPB2	+	4329060  
+HLA-DPB2	+	4554153  
+HLA-DPB2	+	4577055    
+
+MIR219A1: Many transcripts at one location and 1 at other  
+MIR219A1	+	33175721
+MIR219A1	+	4619551
+MIR219A1	+	4457028
+MIR219A1	+	4649482
+MIR219A1	+	4407948
+MIR219A1	+	4633041
+
+
+HLA-DQA2:  Many transcripts at one location and 1 at other  
+HLA-DQA2	+	32714664
+HLA-DQA2	+	4002942
+HLA-DQA2	+	4160566
+HLA-DQA2	+	3997229
+HLA-DQA2	+	4051847
+HLA-DQA2	+	3946758
+HLA-DQA2	+	4171833
+HLA-DQA2	+	4146332
+
+
+Look at the other end of the Dist.  
+
+```{r}
+distTXN2Peak %>% arrange(desc(Distance)) %>% slice(1:15)
+```
+
+MACROD2	+	16033842  
+
+
+
+EYS	-	64429875
+EYS	-	66039168
+EYS	-	66044805
+
+
+
+Look at distribution of the absolute value:
+
+```{r}
+distTXN2Peak =distTXN2Peak %>% mutate(AbsDist=abs(Distance))
+
+summary(distTXN2Peak$AbsDist)
+
+distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x="Absolute Distance between end of Transcription and center of Peak", title="Distribution of transcription to peak absolute distance") 
+distTXN2PeakPlot
+
+```
+
+Make sure this is not different by strand  
+```{r}
+ggplot(distTXN2Peak, aes(x=AbsDist, by=Gene_Strand, fill=Gene_Strand)) + geom_density(alpha=.5) + scale_x_log10()
+```
+
+I want to add to this the average gene length. I can get this from the txn start to txn end. Start is column 5 and end is column 6. I will filter for genes in the peaks.  
+
+```{r}
+txnanno=read.table("../data/RefSeq_annotations/Transcript2GeneName.dms", header=T,stringsAsFactors = F) %>% mutate(length=abs(txEnd-txStart)) %>% semi_join(distTXN2Peak, by="name2")
+
+mean(txnanno$length)
+
+```
+
+Now I want to add this value as a verticle line  
+
+```{r}
+distTXN2PeakPlot=distTXN2PeakPlot+  geom_vline(xintercept=mean(txnanno$length), col="red") + annotate("text", x=1000000, y=.4, label="Average transcript length \n for genes in peaks", col='red')
+distTXN2PeakPlot
+```
+
