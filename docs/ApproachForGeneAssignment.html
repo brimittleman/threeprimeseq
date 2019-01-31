@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a8a9acb19700d3ea88446e267d432f7b71127151" target="_blank">a8a9acb</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c6310a2cdca263082892a5a750cbf7bff06a4730" target="_blank">c6310a2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -430,6 +430,7 @@ Untracked files:
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
     Untracked:  data/perm_QTL_trans_filt/
@@ -502,6 +503,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c6310a2cdca263082892a5a750cbf7bff06a4730/analysis/ApproachForGeneAssignment.Rmd" target="_blank">c6310a2</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-30
+</td>
+<td style="text-align:left;">
+QTL res
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/35c4e885a682c3e5eddc721f5ba22e145a16ca6d/docs/ApproachForGeneAssignment.html" target="_blank">35c4e88</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-30
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1895,6 +1930,152 @@ peak9674- second intron total: 0.07692308 nuclear: 0.1538462</p>
 <p>peak9671-intronic<br />
 total:0.11615385 nuclear: 0.1779487</p>
 <p>Here is looks like more internal peaks in nuclear.</p>
+</div>
+</div>
+<div id="run-qtls-with-these-annotations" class="section level2">
+<h2>Run QTLs with these annotations</h2>
+<p>/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs</p>
+<pre class="bash"><code>#zip file 
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc
+
+
+module load python
+#leafcutter script
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz
+
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz
+
+
+
+
+#source activate three-prime-env
+ sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz_prepare.sh
+sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz_prepare.sh
+
+
+#keep only 2 PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.PCs &gt; filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.2PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.PCs &gt; filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.2PCs</code></pre>
+<p>Use same sample list:</p>
+<p>“/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt”</p>
+<div id="nominal" class="section level3">
+<h3>Nominal</h3>
+<p>APAqtl_nominal_GeneLocAnno_noMP_5percUsage.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_nominal_GeneLocAnno_noMP_5percUsage
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_nominal_GeneLocAnno_noMP_5percUsage.out
+#SBATCH --error=APAqtl_nominal_GeneLocAnno_noMP_5percUsage.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_chr$i.nominal.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+</code></pre>
+</div>
+<div id="permuted" class="section level3">
+<h3>Permuted</h3>
+<p>APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=APAqtl_perm_GeneLocAnno_noMP_5percUsage
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=APAqtl_perm_GeneLocAnno_noMP_5percUsage.out
+#SBATCH --error=APAqtl_perm_GeneLocAnno_noMP_5percUsage.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static  --permute 1000 --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear_fixed.pheno_5perc.fc.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static   --permute 1000 --vcf /project2/gilad/briana/YRI_geno_hg19/chr$i.dose.filt.vcf.gz --cov /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.2PCs --bed /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_chr$i.gz --out /project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_chr$i.perm.out --chunk 1 1  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript/SAMPLE.txt
+done
+</code></pre>
+<p>APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.R</p>
+<pre class="r"><code>library(dplyr)
+
+
+##total results
+tot.perm= read.table(&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permRes.txt&quot;,head=F, stringsAsFactors=F, col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
+
+#BH correction
+tot.perm$bh=p.adjust(tot.perm$bpval, method=&quot;fdr&quot;)
+
+#plot qqplot
+png(&quot;/project2/gilad/briana/threeprimeseq/output/plots/qqplot_total_APAperm_GeneLocAnno_noMP_5percCov.png&quot;) 
+qqplot_total= qqplot(-log10(runif(nrow(tot.perm))), -log10(tot.perm$bpval),ylab=&quot;-log10 Total permuted pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Total permuted pvalues for all snps\n Gene Loc Anno&quot;)
+abline(0,1)
+dev.off()
+
+#write df with BH  
+
+write.table(tot.perm, file = &quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt&quot;, col.names = T, row.names = F, quote = F)
+
+##nuclear results  
+
+
+nuc.perm= read.table(&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permRes.txt&quot;,head=F, stringsAsFactors=F, col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;))
+nuc.perm$bh=p.adjust(nuc.perm$bpval, method=&quot;fdr&quot;)
+
+
+#plot qqplot
+png(&quot;/project2/gilad/briana/threeprimeseq/output/plots/qqplot_nuclear_APAperm_GeneLocAnno_noMP_5percCov.png&quot;) 
+qqplot(-log10(runif(nrow(nuc.perm))), -log10(nuc.perm$bpval),ylab=&quot;-log10 Nuclear permuted pvalue&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear permuted pvalues for all snps \n Gene Loc Anno&quot;)
+abline(0,1)
+dev.off()
+
+# write df with BH
+write.table(nuc.perm, file = &quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt&quot;, col.names = T, row.names = F, quote = F)</code></pre>
+<p>run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.out
+#SBATCH --error=run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.R </code></pre>
+<p>Pull these in:</p>
+<pre class="r"><code>totQTLs=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)
+
+Sig_TotQTLs= totQTLs %&gt;% filter(-log10(bh)&gt;=1)
+nrow(Sig_TotQTLs)</code></pre>
+<pre><code>[1] 97</code></pre>
+<pre class="r"><code>nucQTLs=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)
+
+Sig_NucQTLs= nucQTLs %&gt;% filter(-log10(bh)&gt;=1)
+nrow(Sig_NucQTLs)</code></pre>
+<pre><code>[1] 196</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
