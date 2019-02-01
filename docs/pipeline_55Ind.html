@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/957a0ee240598e92f053139047f94037724100ee" target="_blank">957a0ee</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6ae3bba3281fba0e745355e6970e3733f07a731d" target="_blank">6ae3bba</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -511,6 +511,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6ae3bba3281fba0e745355e6970e3733f07a731d/analysis/pipeline_55Ind.Rmd" target="_blank">6ae3bba</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-01
+</td>
+<td style="text-align:left;">
+add scripts for pipeline
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3445a3b2e1afc8fcbb21ef640a92b116324ab272/docs/pipeline_55Ind.html" target="_blank">3445a3b</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-01
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/957a0ee240598e92f053139047f94037724100ee/analysis/pipeline_55Ind.Rmd" target="_blank">957a0ee</a>
 </td>
 <td style="text-align:left;">
@@ -528,24 +562,61 @@ initiate 55 ind pipeline
 </ul>
 <p></details></p>
 <hr />
-<p>First I need to move the duplicate files to a different dir. data/Replicates</p>
-<p>YL-SP-18499-N-batch4.combined-sort.bed YL-SP-18499-T-batch4.combined-sort.bed</p>
-<p>YL-SP-18912-N-batch4.combined-sort.bed YL-SP-18912-T-batch4.combined-sort.bed</p>
-<p>YL-SP-19093-N-batch4.combined-sort.bed YL-SP-19093-T-batch4.combined-sort.bed</p>
-<p>YL-SP-19140-N-batch4.combined-sort.bed YL-SP-19140-T-batch4.combined-sort.bed</p>
-<p>-Bedsort<br />
--sort</p>
-<p>Remove 18497-N (18499) 18497-T (18499) 18500-N (18501) 18500-T (18501)</p>
-<p>Mispriming<br />
-- Get 10 basepairs upstream: wrap_Upstream10Bases.sh<br />
-- Find sequence for these regions: Nuc10BasesUp.sh<br />
-- find which are bad run_filterMissprimingInNuc10.sh - filter bed file run_filterSortBedbyCleanedBed.sh - sort clean bed file sort_filterSortBedbyCleanedBed.sh - filter bam files wrap_filterBamforMP.pysam2.sh<br />
-- sort and index clean bam SortIndexBam_noMP.sh - merge clean bam files mergeBamFiles_noMP.sh<br />
-- sort and index merged SortIndexMergedBam_noMP.sh<br />
-- create BW mergedBam2Bedgraph.sh<br />
-- make it a coverage file run_bgtocov_noMP.sh - call peaks run_callPeaksYL_noMP.sh<br />
-- filter peaks - <code>cat /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/*.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/APApeaks_merged_allchrom_noMP.bed</code> - make SAF file bed2saf_noMP.py - run feature counts peak_fc_noMP.sh - filter peaks run_filter_peaks_noMP.sh<br />
-- name peaks</p>
+<p>First I need to move the duplicate files from bed_sort and bam (sort) to a different dir. data/Replicates</p>
+<p>YL-SP-18499-N-batch4<br />
+YL-SP-18499-T-batch4</p>
+<p>YL-SP-18912-N-batch4<br />
+YL-SP-18912-T-batch4</p>
+<p>YL-SP-19093-N-batch4<br />
+YL-SP-19093-T-batch4</p>
+<p>YL-SP-19140-N-batch4<br />
+YL-SP-19140-T-batch4</p>
+<p>Fix these</p>
+<ul>
+<li>18497-N (18499-N)<br />
+</li>
+<li>18497-T (18499-T)<br />
+</li>
+<li>18500-N (18501-N)<br />
+</li>
+<li>18500-T (18501-N)</li>
+</ul>
+<div id="mispriming" class="section level3">
+<h3>Mispriming</h3>
+<ul>
+<li>Get 10 basepairs upstream: wrap_Upstream10Bases.sh<br />
+</li>
+<li>Find sequence for these regions: Nuc10BasesUp.sh<br />
+</li>
+<li>find which are bad run_filterMissprimingInNuc10.sh</li>
+<li>filter bed file run_filterSortBedbyCleanedBed.sh</li>
+<li>sort clean bed file sort_filterSortBedbyCleanedBed.sh</li>
+<li>filter bam files wrap_filterBamforMP.pysam2.sh<br />
+</li>
+<li>sort and index clean bam SortIndexBam_noMP.sh</li>
+<li>merge clean bam files mergeBamFiles_noMP.sh<br />
+</li>
+<li>sort and index merged SortIndexMergedBam_noMP.sh</li>
+</ul>
+</div>
+<div id="make-peaks" class="section level3">
+<h3>Make Peaks</h3>
+<ul>
+<li>create BW mergedBam2Bedgraph.sh<br />
+</li>
+<li>make it a coverage file run_bgtocov_noMP.sh</li>
+<li>call peaks run_callPeaksYL_noMP.sh<br />
+</li>
+<li>filter peaks
+<ul>
+<li><code>cat /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/*.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/APApeaks_merged_allchrom_noMP.bed</code></li>
+<li>make SAF file bed2saf_noMP.py</li>
+<li>run feature counts peak_fc_noMP.sh</li>
+<li>filter peaks run_filter_peaks_noMP.sh<br />
+</li>
+</ul></li>
+<li>name peaks</li>
+</ul>
 <pre class="bash"><code>x = wc -l /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.bed
 
 seq 1 x &gt; peak.num.txt
@@ -559,22 +630,162 @@ awk &#39;{print $1 &quot;\t&quot; $2 &quot;\t&quot; $3 &quot;\t&quot; $7  &quot;
 
 sed &#39;s/^chr//&#39; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.bed
 </code></pre>
+</div>
+<div id="assign-gene-to-peak" class="section level3">
+<h3>Assign Gene to peak</h3>
 <ul>
-<li>Gene assignments mapnoMPPeaks2GenomeLoc.sh<br />
-</li>
+<li>Gene assignments mapnoMPPeaks2GenomeLoc.sh</li>
+</ul>
+</div>
+<div id="get-peak-counts-and-usage" class="section level3">
+<h3>Get Peak Counts and Usage</h3>
+<ul>
 <li>make SAF processGenLocPeakAnno2SAF.py<br />
 </li>
-<li>feature counts GeneLocAnno_fc_TN_noMP.sh<br />
-</li>
+<li>feature counts GeneLocAnno_fc_TN_noMP.sh
+<ul>
 <li>fix header fix_head_fc_geneLoc_tot_noMP.py</li>
 <li>fix header fix_head_fc_geneLoc_nuc_noMP.py</li>
+<li>create_fileid_geneLocAnno_total.py</li>
+</ul></li>
+</ul>
+<pre class="bash"><code>fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/file_id_mapping_total_Transcript_head.txt&quot;,&#39;w&#39;)
+infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc&quot;, &quot;r&quot;)
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + &quot;\t&quot; + samp_st
+            fout.write(outLine + &quot;\n&quot;)
+fout.close()</code></pre>
+<pre><code>- create_fileid_geneLocAnno_nuclear.py  </code></pre>
+<pre class="bash"><code>fout = file(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/file_id_mapping_nuclear_Transcript_head.txt&quot;,&#39;w&#39;)
+infile= open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc&quot;, &quot;r&quot;)
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split(&quot;/&quot;)[7]
+            samp= full.split(&quot;-&quot;)[2:4]
+            lim=&quot;_&quot;
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + &quot;\t&quot; + samp_st
+            fout.write(outLine + &quot;\n&quot;)
+fout.close()</code></pre>
+<ul>
 <li>make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh<br />
 </li>
-<li>convert to usage pheno2CountOnly_genelocAnno.R<br />
-</li>
+<li>convert to usage pheno2CountOnly_genelocAnno.R
+<ul>
 <li>counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py</li>
+</ul></li>
 </ul>
 <p>Make script to filter 5%</p>
+<ul>
+<li>filter_5percUsagePeaks.R</li>
+</ul>
+<pre class="r"><code>library(tidyverse)
+
+totalPeakUs=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc&quot;, header = T, stringsAsFactors = F) %&gt;% separate(chrom, sep = &quot;:&quot;, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;))
+
+nuclearPeakUs=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc&quot;, header = T, stringsAsFactors = F) %&gt;% separate(chrom, sep = &quot;:&quot;, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;)) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;))
+
+ind=colnames(totalPeakUs)[7:dim(totalPeakUs)[2]]
+totalPeakUs_CountNum=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt&quot;, col.names = ind)
+
+nuclearPeakUs_CountNum=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.CountsOnlyNumeric.txt&quot;, col.names = ind)
+
+
+#numeric with anno
+totalPeak=as.data.frame(cbind(totalPeakUs[,1:6], totalPeakUs_CountNum))
+nuclearPeak=as.data.frame(cbind(nuclearPeakUs[,1:6], nuclearPeakUs_CountNum))
+
+#mean
+totalPeakUs_CountNum_mean=rowMeans(totalPeakUs_CountNum)
+nuclearPeakUs_CountNum_mean=rowMeans(nuclearPeakUs_CountNum)
+
+
+#append mean to anno
+TotalPeakUSMean=as.data.frame(cbind(totalPeakUs[,1:6],totalPeakUs_CountNum_mean))
+NuclearPeakUSMean=as.data.frame(cbind(nuclearPeakUs[,1:6],nuclearPeakUs_CountNum_mean))
+
+NuclearPeakUSMean_5perc=NuclearPeakUSMean %&gt;% filter(nuclearPeakUs_CountNum_mean&gt;=.05)
+write.table(NuclearPeakUSMean_5perc,file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt&quot;, row.names=F, col.names=F, quote = F)
+
+
+TotalPeakUSMean_5per= TotalPeakUSMean %&gt;% filter(totalPeakUs_CountNum_mean&gt;=.05) 
+write.table(TotalPeakUSMean_5per,file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt&quot;, row.names=F, col.names=F, quote = F)</code></pre>
+<ul>
+<li>run_filter_5percUsagePeaks.sh</li>
+</ul>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_filter_5percUsagePeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_filter_5percUsagePeaks.out
+#SBATCH --error=run_filter_5percUsagePeaks.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript filter_5percUsagePeaks.R</code></pre>
+<ul>
+<li>filterPheno_bothFraction_GeneLocAnno_5perc.py</li>
+</ul>
+</div>
+<div id="qtl-analysis" class="section level3">
+<h3>QTL analysis</h3>
+<p>In /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/</p>
+<pre class="bash"><code>#zip file 
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc
+
+
+module load python
+#leafcutter script
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz
+
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz
+
+
+
+
+#source activate three-prime-env
+ sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz_prepare.sh
+sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz_prepare.sh
+
+
+#keep only 2 PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.PCs &gt; filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.2PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.PCs &gt; filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.2PCs</code></pre>
+<ul>
+<li>Make sample list makeSampleList_newGeneAnno.py</li>
+</ul>
+<pre class="bash"><code>#make a sample list  
+
+fout = open(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/SAMPLE.txt&quot;,&#39;w&#39;)
+
+for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/file_id_mapping_total_Transcript_head.txt&quot;, &quot;r&quot;):
+    bam, sample = ln.split()
+    line=sample[:-2]
+    fout.write(&quot;NA&quot;+line + &quot;\n&quot;)
+fout.close()</code></pre>
+<p>(current - need to remove 19092 and 19193)<br />
+- APAqtl_nominal_GeneLocAnno_noMP_5percUsage.sh<br />
+- APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh<br />
+- run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh</p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
