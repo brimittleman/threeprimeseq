@@ -1,0 +1,87 @@
+---
+title: "Pipeline for 55 Ind"
+author: "Briana Mittleman"
+date: "2/1/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+First I need to move the duplicate files to a different dir.  data/Replicates
+
+YL-SP-18499-N-batch4.combined-sort.bed
+YL-SP-18499-T-batch4.combined-sort.bed
+
+YL-SP-18912-N-batch4.combined-sort.bed
+YL-SP-18912-T-batch4.combined-sort.bed
+
+YL-SP-19093-N-batch4.combined-sort.bed
+YL-SP-19093-T-batch4.combined-sort.bed
+
+YL-SP-19140-N-batch4.combined-sort.bed
+YL-SP-19140-T-batch4.combined-sort.bed
+
+
+-Bedsort  
+-sort
+
+
+Remove 
+18497-N (18499)
+18497-T (18499)
+18500-N (18501)
+18500-T (18501)
+
+Mispriming  
+- Get 10 basepairs upstream: wrap_Upstream10Bases.sh  
+- Find sequence for these regions: Nuc10BasesUp.sh  
+- find which are bad run_filterMissprimingInNuc10.sh 
+- filter  bed file run_filterSortBedbyCleanedBed.sh
+- sort clean bed file sort_filterSortBedbyCleanedBed.sh
+- filter bam files wrap_filterBamforMP.pysam2.sh  
+- sort and index clean bam SortIndexBam_noMP.sh
+- merge clean bam files  mergeBamFiles_noMP.sh  
+- sort and index merged SortIndexMergedBam_noMP.sh  
+- create BW mergedBam2Bedgraph.sh  
+- make it a coverage file run_bgtocov_noMP.sh
+- call peaks run_callPeaksYL_noMP.sh  
+- filter peaks 
+    - ``` cat /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/*.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/APApeaks_merged_allchrom_noMP.bed``` 
+    - make SAF file bed2saf_noMP.py
+    - run feature counts peak_fc_noMP.sh
+    - filter peaks run_filter_peaks_noMP.sh  
+- name peaks 
+
+```{bash,eval=F}
+x = wc -l /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.bed
+
+seq 1 x > peak.num.txt
+
+sort -k1,1 -k2,2n Filtered_APApeaks_merged_allchrom_noMP.bed > Filtered_APApeaks_merged_allchrom_noMP.sort.bed
+
+paste /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.bed peak.num.txt | column -s $'\t' -t > temp
+awk '{print $1 "\t" $2 "\t" $3 "\t" $7  "\t"  $4 "\t"  $5 "\t" $6}' temp >   /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.bed
+
+#cut the chr  
+
+sed 's/^chr//' /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.bed
+
+```
+
+- Gene assignments mapnoMPPeaks2GenomeLoc.sh  
+- make SAF processGenLocPeakAnno2SAF.py  
+- feature counts GeneLocAnno_fc_TN_noMP.sh  
+- fix header fix_head_fc_geneLoc_tot_noMP.py
+- fix header fix_head_fc_geneLoc_nuc_noMP.py 
+- make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh  
+- convert to usage pheno2CountOnly_genelocAnno.R  
+- counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py   
+
+Make script to filter 5%  
+
+
+
+
+

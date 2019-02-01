@@ -135,5 +135,13 @@ In the previous sections (specifically [here](NewPeakPostMP.html)) I reran some 
 
 * [Pre ash processing for Stephens lab](PreAshExplore.html)  
 
-* [New approach for assisgning peaks to a gene](ApproachForGeneAssignment.html)
+* [New approach for assisgning peaks to a gene](ApproachForGeneAssignment.html)  
+
+##55 Individuals  
+
+I now have 55 individuals. I am going to call peaks and QTLs in this data.  
+
+* [Full QTL pipeline in 55 ind (cleaning, peaks, assign genes, filter usage, QTL)](pipeline_55Ind.html)  
+
+
 
