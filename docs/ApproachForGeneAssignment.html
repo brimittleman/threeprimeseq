@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f846c50e6ceb4dcc00a323b6e854c01b9aa040df" target="_blank">f846c50</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4541f4c4a7026705ec8c0d7a6905b3175659dfc4" target="_blank">4541f4c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -378,6 +378,7 @@ Untracked files:
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
     Untracked:  data/PeakCounts_noMP_5perc/
+    Untracked:  data/PeakCounts_noMP_genelocanno/
     Untracked:  data/PeakUsage/
     Untracked:  data/PeakUsage_noMP/
     Untracked:  data/PeakUsage_noMP_GeneLocAnno/
@@ -504,6 +505,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4541f4c4a7026705ec8c0d7a6905b3175659dfc4/analysis/ApproachForGeneAssignment.Rmd" target="_blank">4541f4c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-31
+</td>
+<td style="text-align:left;">
+add correlation plot
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a70015c1d8d14b738c8c8ac74fe9efe5495f5eb4/docs/ApproachForGeneAssignment.html" target="_blank">a70015c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-31
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -2115,6 +2150,8 @@ nrow(Sig_NucQTLs)</code></pre>
 </div>
 <div id="validatation-for-these-assignments" class="section level2">
 <h2>Validatation for these assignments</h2>
+<div id="distance-to-end-of-transcription" class="section level3">
+<h3>Distance to end of transcription</h3>
 <p>I want to compute some QC metrics for these peaks. First, I will compute the distance from the center of each peak to the end of TXN for the gene. I can get this from the /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms file. With this file I can make a dictionary with the gene and end of txn. I will use the longest version by updating the dictionary if a key comes up again. For + strand its the furthest end, for the - strand its the first start.</p>
 <p>GeneTXNEnd.py</p>
 <pre class="bash"><code>TXN2Gene_file=&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms&quot;
@@ -2195,6 +2232,36 @@ distPeak2EndTXN.close()
 -43480518     -2617        22   -107542      2638   2049472 </code></pre>
 <pre class="r"><code>ggplot(distTXN2Peak, aes(x=Distance)) + geom_density()</code></pre>
 <p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-50-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a70015c1d8d14b738c8c8ac74fe9efe5495f5eb4/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-50-1.png" target="_blank">a70015c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Look at furthest ones in igv.</p>
 <pre class="r"><code>distTXN2Peak %&gt;% arrange(Distance) %&gt;% slice(1:15)</code></pre>
 <pre><code>         Peak    name2  Distance Gene_Strand
@@ -2260,11 +2327,71 @@ summary(distTXN2Peak$AbsDist)</code></pre>
 <pre class="r"><code>distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x=&quot;Absolute Distance between end of Transcription and center of Peak&quot;, title=&quot;Distribution of transcription to peak absolute distance&quot;) 
 distTXN2PeakPlot</code></pre>
 <p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-53-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-53-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a70015c1d8d14b738c8c8ac74fe9efe5495f5eb4/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-53-1.png" target="_blank">a70015c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Make sure this is not different by strand</p>
 <pre class="r"><code>ggplot(distTXN2Peak, aes(x=AbsDist, by=Gene_Strand, fill=Gene_Strand)) + geom_density(alpha=.5) + scale_x_log10()</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
 <pre><code>Warning: Removed 4 rows containing non-finite values (stat_density).</code></pre>
 <p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-54-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a70015c1d8d14b738c8c8ac74fe9efe5495f5eb4/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-54-1.png" target="_blank">a70015c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>I want to add to this the average gene length. I can get this from the txn start to txn end. Start is column 5 and end is column 6. I will filter for genes in the peaks.</p>
 <pre class="r"><code>txnanno=read.table(&quot;../data/RefSeq_annotations/Transcript2GeneName.dms&quot;, header=T,stringsAsFactors = F) %&gt;% mutate(length=abs(txEnd-txStart)) %&gt;% semi_join(distTXN2Peak, by=&quot;name2&quot;)
 
@@ -2274,6 +2401,89 @@ mean(txnanno$length)</code></pre>
 <pre class="r"><code>distTXN2PeakPlot=distTXN2PeakPlot+  geom_vline(xintercept=mean(txnanno$length), col=&quot;red&quot;) + annotate(&quot;text&quot;, x=1000000, y=.4, label=&quot;Average transcript length \n for genes in peaks&quot;, col=&#39;red&#39;)
 distTXN2PeakPlot</code></pre>
 <p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-56-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a70015c1d8d14b738c8c8ac74fe9efe5495f5eb4/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-56-1.png" target="_blank">a70015c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="correlation-with-rna-seq" class="section level3">
+<h3>Correlation with RNA seq</h3>
+<p>For this I need the counts table and the kalisto data</p>
+<pre class="r"><code>library(tximport)
+
+tx2gene=read.table(&quot;../data/RNAkalisto/ncbiRefSeq.txn2gene.txt&quot; ,header= F, sep=&quot;\t&quot;, stringsAsFactors = F)
+
+txi.kallisto.tsv &lt;- tximport(&quot;../data/RNAkalisto/abundance.tsv&quot;, type = &quot;kallisto&quot;, tx2gene = tx2gene,countsFromAbundance=&quot;lengthScaledTPM&quot; )</code></pre>
+<pre><code>Note: importing `abundance.h5` is typically faster than `abundance.tsv`</code></pre>
+<pre><code>reading in files with read_tsv</code></pre>
+<pre><code>1 
+removing duplicated transcript rows from tx2gene
+transcripts missing from tx2gene: 99
+summarizing abundance
+summarizing counts
+summarizing length</code></pre>
+<p>Count file: /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed.fc (this has total and nuclear ) I can pull this in a filter on rows with T.</p>
+<pre class="r"><code>peakCounts=read.table(&quot;../data/PeakCounts_noMP_genelocanno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed.fc&quot;, header=T, stringsAsFactors = F)[,1:8] %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% select(gene, X.project2.gilad.briana.threeprimeseq.data.bam_NoMP_sort.YL.SP.18486.T.combined.sort.noMP.sort.bam) %&gt;% filter(X.project2.gilad.briana.threeprimeseq.data.bam_NoMP_sort.YL.SP.18486.T.combined.sort.noMP.sort.bam&gt;10) %&gt;%  group_by(gene) %&gt;% summarize(GeneSum=sum(X.project2.gilad.briana.threeprimeseq.data.bam_NoMP_sort.YL.SP.18486.T.combined.sort.noMP.sort.bam)) %&gt;% mutate(GeneSumNorm=GeneSum/10.8) </code></pre>
+<pre class="r"><code>TXN_abund=as.data.frame(txi.kallisto.tsv$abundance) %&gt;% rownames_to_column(var=&quot;gene&quot;)
+colnames(TXN_abund)=c(&quot;gene&quot;, &quot;TPM&quot;)
+
+TXN_Gene=TXN_abund %&gt;% inner_join(peakCounts,by=&quot;gene&quot;)</code></pre>
+<pre class="r"><code>TXN_Gene=TXN_Gene %&gt;% filter(TPM&gt;0) %&gt;% filter(GeneSumNorm&gt;0)
+
+
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_Gene))</code></pre>
+<pre><code>
+Call:
+lm(formula = log10(TPM) ~ log10(GeneSumNorm), data = TXN_Gene)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.4932 -0.2517  0.0270  0.2906  3.6180 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        0.342913   0.010367   33.08   &lt;2e-16 ***
+log10(GeneSumNorm) 0.768062   0.007915   97.04   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.503 on 10596 degrees of freedom
+Multiple R-squared:  0.4705,    Adjusted R-squared:  0.4705 
+F-statistic:  9416 on 1 and 10596 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>corr_18486Tot=ggplot(TXN_Gene, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title=&quot;Total&quot;, x=&quot;log10 RNA seq TPM&quot;, y=&quot;log10 Peak count sum per gene&quot;)+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = &quot;lm&quot;) + annotate(&quot;text&quot;,x=0, y=5,label=&quot;R2=.47&quot;) +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot </code></pre>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This is in line with the estimates from when I filtered out close genes and all of that. (<a href="https://brimittleman.github.io/threeprimeseq/InvestigatePeak2GeneAssignment.html" class="uri">https://brimittleman.github.io/threeprimeseq/InvestigatePeak2GeneAssignment.html</a>)</p>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -2293,10 +2503,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  ggpubr_0.1.8    magrittr_1.5    cowplot_0.9.3  
- [5] reshape2_1.4.3  forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
- [9] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
-[13] ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.1.1
+ [1] tximport_1.8.0  bindrcpp_0.2.2  ggpubr_0.1.8    magrittr_1.5   
+ [5] cowplot_0.9.3   reshape2_1.4.3  forcats_0.3.0   stringr_1.3.1  
+ [9] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
+[13] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.1.1
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
@@ -2312,10 +2522,10 @@ loaded via a namespace (and not attached):
 [31] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
 [34] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
 [37] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
-[40] pkgconfig_2.0.2   xml2_1.2.0        lubridate_1.7.4  
-[43] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
-[46] rstudioapi_0.8    R6_2.3.0          nlme_3.1-137     
-[49] git2r_0.23.0      compiler_3.5.1   </code></pre>
+[40] pkgconfig_2.0.2   MASS_7.3-50       xml2_1.2.0       
+[43] lubridate_1.7.4   assertthat_0.2.0  rmarkdown_1.10   
+[46] httr_1.3.1        rstudioapi_0.8    R6_2.3.0         
+[49] nlme_3.1-137      git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
