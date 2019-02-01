@@ -9,41 +9,40 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-First I need to move the duplicate files to a different dir.  data/Replicates
+First I need to move the duplicate files from bed_sort and bam (sort) to a different dir.  data/Replicates
 
-YL-SP-18499-N-batch4.combined-sort.bed
-YL-SP-18499-T-batch4.combined-sort.bed
+YL-SP-18499-N-batch4  
+YL-SP-18499-T-batch4  
 
-YL-SP-18912-N-batch4.combined-sort.bed
-YL-SP-18912-T-batch4.combined-sort.bed
+YL-SP-18912-N-batch4  
+YL-SP-18912-T-batch4  
 
-YL-SP-19093-N-batch4.combined-sort.bed
-YL-SP-19093-T-batch4.combined-sort.bed
+YL-SP-19093-N-batch4  
+YL-SP-19093-T-batch4  
 
-YL-SP-19140-N-batch4.combined-sort.bed
-YL-SP-19140-T-batch4.combined-sort.bed
+YL-SP-19140-N-batch4  
+YL-SP-19140-T-batch4  
 
+Fix these  
 
--Bedsort  
--sort
+* 18497-N (18499-N)  
+* 18497-T (18499-T)  
+* 18500-N (18501-N)  
+* 18500-T (18501-N)  
 
+### Mispriming  
 
-Remove 
-18497-N (18499)
-18497-T (18499)
-18500-N (18501)
-18500-T (18501)
-
-Mispriming  
-- Get 10 basepairs upstream: wrap_Upstream10Bases.sh  
-- Find sequence for these regions: Nuc10BasesUp.sh  
-- find which are bad run_filterMissprimingInNuc10.sh 
-- filter  bed file run_filterSortBedbyCleanedBed.sh
+* Get 10 basepairs upstream: wrap_Upstream10Bases.sh  
+* Find sequence for these regions: Nuc10BasesUp.sh  
+* find which are bad run_filterMissprimingInNuc10.sh 
+* filter  bed file run_filterSortBedbyCleanedBed.sh
 - sort clean bed file sort_filterSortBedbyCleanedBed.sh
 - filter bam files wrap_filterBamforMP.pysam2.sh  
 - sort and index clean bam SortIndexBam_noMP.sh
 - merge clean bam files  mergeBamFiles_noMP.sh  
-- sort and index merged SortIndexMergedBam_noMP.sh  
+- sort and index merged SortIndexMergedBam_noMP.sh   
+
+### Make Peaks 
 - create BW mergedBam2Bedgraph.sh  
 - make it a coverage file run_bgtocov_noMP.sh
 - call peaks run_callPeaksYL_noMP.sh  
@@ -70,18 +69,165 @@ sed 's/^chr//' /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filter
 
 ```
 
-- Gene assignments mapnoMPPeaks2GenomeLoc.sh  
+### Assign Gene to peak  
+- Gene assignments mapnoMPPeaks2GenomeLoc.sh 
+
+### Get Peak Counts and Usage  
 - make SAF processGenLocPeakAnno2SAF.py  
 - feature counts GeneLocAnno_fc_TN_noMP.sh  
-- fix header fix_head_fc_geneLoc_tot_noMP.py
-- fix header fix_head_fc_geneLoc_nuc_noMP.py 
+    - fix header fix_head_fc_geneLoc_tot_noMP.py
+    - fix header fix_head_fc_geneLoc_nuc_noMP.py 
+    - create_fileid_geneLocAnno_total.py  
+    
+```{bash,eval=F}
+fout = file("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/file_id_mapping_total_Transcript_head.txt",'w')
+infile= open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc", "r")
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + "\t" + samp_st
+            fout.write(outLine + "\n")
+fout.close()
+```
+    
+    - create_fileid_geneLocAnno_nuclear.py  
+    
+```{bash,eval=F}
+fout = file("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/file_id_mapping_nuclear_Transcript_head.txt",'w')
+infile= open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc", "r")
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + "\t" + samp_st
+            fout.write(outLine + "\n")
+fout.close()
+```
+
 - make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh  
 - convert to usage pheno2CountOnly_genelocAnno.R  
-- counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py   
+    - counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py   
 
 Make script to filter 5%  
 
 
+- filter_5percUsagePeaks.R  
+```{r,eval=F}
+
+library(tidyverse)
+
+totalPeakUs=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc", header = T, stringsAsFactors = F) %>% separate(chrom, sep = ":", into = c("chr", "start", "end", "id")) %>% separate(id, sep="_", into=c("gene", "strand", "peak"))
+
+nuclearPeakUs=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc", header = T, stringsAsFactors = F) %>% separate(chrom, sep = ":", into = c("chr", "start", "end", "id")) %>% separate(id, sep="_", into=c("gene", "strand", "peak"))
+
+ind=colnames(totalPeakUs)[7:dim(totalPeakUs)[2]]
+totalPeakUs_CountNum=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt", col.names = ind)
+
+nuclearPeakUs_CountNum=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.CountsOnlyNumeric.txt", col.names = ind)
+
+
+#numeric with anno
+totalPeak=as.data.frame(cbind(totalPeakUs[,1:6], totalPeakUs_CountNum))
+nuclearPeak=as.data.frame(cbind(nuclearPeakUs[,1:6], nuclearPeakUs_CountNum))
+
+#mean
+totalPeakUs_CountNum_mean=rowMeans(totalPeakUs_CountNum)
+nuclearPeakUs_CountNum_mean=rowMeans(nuclearPeakUs_CountNum)
+
+
+#append mean to anno
+TotalPeakUSMean=as.data.frame(cbind(totalPeakUs[,1:6],totalPeakUs_CountNum_mean))
+NuclearPeakUSMean=as.data.frame(cbind(nuclearPeakUs[,1:6],nuclearPeakUs_CountNum_mean))
+
+NuclearPeakUSMean_5perc=NuclearPeakUSMean %>% filter(nuclearPeakUs_CountNum_mean>=.05)
+write.table(NuclearPeakUSMean_5perc,file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt", row.names=F, col.names=F, quote = F)
+
+
+TotalPeakUSMean_5per= TotalPeakUSMean %>% filter(totalPeakUs_CountNum_mean>=.05) 
+write.table(TotalPeakUSMean_5per,file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt", row.names=F, col.names=F, quote = F)
 
 
 
+```
+- run_filter_5percUsagePeaks.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_filter_5percUsagePeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_filter_5percUsagePeaks.out
+#SBATCH --error=run_filter_5percUsagePeaks.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+Rscript filter_5percUsagePeaks.R
+```
+
+
+- filterPheno_bothFraction_GeneLocAnno_5perc.py  
+
+
+### QTL analysis  
+
+In /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/  
+
+```{bash,eval=F}
+#zip file 
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc
+
+
+module load python
+#leafcutter script
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz
+
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz
+
+
+
+
+#source activate three-prime-env
+ sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz_prepare.sh
+sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz_prepare.sh
+
+
+#keep only 2 PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.PCs > filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.2PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.PCs > filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.2PCs
+```
+
+- Make sample list makeSampleList_newGeneAnno.py  
+```{bash,eval=F}
+#make a sample list  
+
+fout = open("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/SAMPLE.txt",'w')
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/file_id_mapping_total_Transcript_head.txt", "r"):
+    bam, sample = ln.split()
+    line=sample[:-2]
+    fout.write("NA"+line + "\n")
+fout.close()
+```
+
+(current - need to remove 19092 and 19193)  
+- APAqtl_nominal_GeneLocAnno_noMP_5percUsage.sh  
+- APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh  
+- run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh  
