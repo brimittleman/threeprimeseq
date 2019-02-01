@@ -221,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-28</p>
+<p><strong>Last updated:</strong> 2019-02-01</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -230,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a2911ff6b8b52d9320e90518db9ee0dc6433ff75" target="_blank">a2911ff</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/957a0ee240598e92f053139047f94037724100ee" target="_blank">957a0ee</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -242,17 +242,20 @@ Ignored files:
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/4suDataIGV.Rmd
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  analysis/verifybam_dubs.Rmd
     Untracked:  code/PeaksToCoverPerReads.py
     Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
     Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
@@ -260,8 +263,10 @@ Untracked files:
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
     Untracked:  data/PeakCounts_noMP_5perc/
+    Untracked:  data/PeakCounts_noMP_genelocanno/
     Untracked:  data/PeakUsage/
     Untracked:  data/PeakUsage_noMP/
+    Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
     Untracked:  data/RNAkalisto/
@@ -283,6 +288,7 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_GeneLocAnno/
     Untracked:  data/diff_iso_proc/
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
@@ -311,6 +317,7 @@ Untracked files:
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
     Untracked:  data/perm_QTL_trans_filt/
@@ -383,6 +390,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/957a0ee240598e92f053139047f94037724100ee/analysis/index.Rmd" target="_blank">957a0ee</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-01
+</td>
+<td style="text-align:left;">
+initiate 55 ind pipeline
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a97adbc8c88ed1a800aabcfa7cc7fad5ab2df63e/docs/index.html" target="_blank">a97adbc</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-28
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -2536,6 +2577,13 @@ Start workflowr project.
 <li><p><a href="FractionDiffProcessed.html">Processed data - Different between fractions</a></p></li>
 <li><p><a href="PreAshExplore.html">Pre ash processing for Stephens lab</a></p></li>
 <li><p><a href="ApproachForGeneAssignment.html">New approach for assisgning peaks to a gene</a></p></li>
+</ul>
+</div>
+<div id="individuals" class="section level2">
+<h2>55 Individuals</h2>
+<p>I now have 55 individuals. I am going to call peaks and QTLs in this data.</p>
+<ul>
+<li><a href="pipeline_55Ind.html">Full QTL pipeline in 55 ind (cleaning, peaks, assign genes, filter usage, QTL)</a></li>
 </ul>
 </div>
 
