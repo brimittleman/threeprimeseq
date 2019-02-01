@@ -1472,6 +1472,8 @@ nrow(Sig_NucQTLs)
 
 ##Validatation for these assignments  
 
+
+###Distance to end of transcription  
 I want to compute some QC metrics for these peaks. First, I will compute the distance from the center of each peak to the end of TXN for the gene. I can get this from the /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms file. With this file I can make a dictionary with the gene and end of txn. I will use the longest version by updating the dictionary if a key comes up again. For + strand its the furthest end, for the - strand its the first start.
 
 GeneTXNEnd.py
@@ -1669,4 +1671,49 @@ Now I want to add this value as a verticle line
 distTXN2PeakPlot=distTXN2PeakPlot+  geom_vline(xintercept=mean(txnanno$length), col="red") + annotate("text", x=1000000, y=.4, label="Average transcript length \n for genes in peaks", col='red')
 distTXN2PeakPlot
 ```
+
+###Correlation with RNA seq  
+
+
+For this I need the counts table and the kalisto data  
+
+```{r}
+library(tximport)
+
+tx2gene=read.table("../data/RNAkalisto/ncbiRefSeq.txn2gene.txt" ,header= F, sep="\t", stringsAsFactors = F)
+
+txi.kallisto.tsv <- tximport("../data/RNAkalisto/abundance.tsv", type = "kallisto", tx2gene = tx2gene,countsFromAbundance="lengthScaledTPM" )
+```
+
+Count file: /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed.fc (this has total and nuclear ) I can pull this in a filter on rows with T. 
+
+```{r}
+peakCounts=read.table("../data/PeakCounts_noMP_genelocanno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed.fc", header=T, stringsAsFactors = F)[,1:8] %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene, X.project2.gilad.briana.threeprimeseq.data.bam_NoMP_sort.YL.SP.18486.T.combined.sort.noMP.sort.bam) %>% filter(X.project2.gilad.briana.threeprimeseq.data.bam_NoMP_sort.YL.SP.18486.T.combined.sort.noMP.sort.bam>10) %>%  group_by(gene) %>% summarize(GeneSum=sum(X.project2.gilad.briana.threeprimeseq.data.bam_NoMP_sort.YL.SP.18486.T.combined.sort.noMP.sort.bam)) %>% mutate(GeneSumNorm=GeneSum/10.8) 
+```
+
+
+```{r}
+TXN_abund=as.data.frame(txi.kallisto.tsv$abundance) %>% rownames_to_column(var="gene")
+colnames(TXN_abund)=c("gene", "TPM")
+
+TXN_Gene=TXN_abund %>% inner_join(peakCounts,by="gene")
+```
+
+
+```{r}
+
+TXN_Gene=TXN_Gene %>% filter(TPM>0) %>% filter(GeneSumNorm>0)
+
+
+summary(lm(log10(TPM)~log10(GeneSumNorm),TXN_Gene))
+
+
+corr_18486Tot=ggplot(TXN_Gene, aes(x=log10(TPM), y= log10(GeneSumNorm))) + geom_point() + labs(title="Total", x="log10 RNA seq TPM", y="log10 Peak count sum per gene")+ geom_smooth(aes(x=log10(TPM),y=log10(GeneSumNorm)),method = "lm") + annotate("text",x=0, y=5,label="R2=.47") +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+#+ geom_text(aes(label=gene),hjust=0, vjust=0)
+       
+corr_18486Tot 
+```
+
+This is in line with the estimates from when I filtered out close genes and all of that. (https://brimittleman.github.io/threeprimeseq/InvestigatePeak2GeneAssignment.html)  
 
