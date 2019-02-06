@@ -36,6 +36,8 @@ Fix these
 * 18500-N (18501-N)  
 * 18500-T (18501-N)  
 
+## QTL analysis pipeline  
+
 ### Mispriming  
 
 * Get 10 basepairs upstream: wrap_Upstream10Bases.sh  
@@ -125,7 +127,11 @@ for line, i in enumerate(infile):
 fout.close()
 ```
 
-* make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh  
+* make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh
+
+ Change these so that peak IDs are start and end of peak.  (code same as in the UTR analysis below)
+ 
+
 - convert to usage pheno2CountOnly_genelocAnno.R  
     - counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py   
 
@@ -239,7 +245,7 @@ fout.close()
 
 (current - need to remove 19092 and 19193)  
 * APAqtl_nominal_GeneLocAnno_noMP_5percUsage.sh  
-* APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh  
+* APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh   (change to 25kb on each side- --window 2.5e4 )
 * run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh  
 
 
@@ -913,3 +919,41 @@ How many genes:
 ```{r}
 nucQTLs_UTR %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% select(gene) %>% tally() %>% nrow()
 ```
+
+
+##Diff Isoform Pipeline:  
+Pipeline comes from [New gene Annodation Dif Iso](ApproachForGeneAssignment.Rmd)  
+* filternamePeaks5percCov_GeneLocAnno.py
+* bothFrac_processed_GeneLocAnno_FC.sh 
+* fix_head_fc_procBothFrac_GeneLocAnno.py 
+* fc2leafphen_processed_GeneLocAnno.py  
+* subset_diffisopheno_processed_GeneLocAnno.py/ run_subset_diffisopheno_processed_GeneLocAnno.sh 
+* makeLCSampleList_processed_GeneLocAnno.py  
+* run_leafcutter_ds_bychrom_processed_GeneLocAnno.sh
+```{bash,eval=F}
+awk '{if(NR>1)print}' /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*.txt_effect_sizes.txt > /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt
+
+awk '{if(NR>1)print}' /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*cluster_significance.txt > /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt
+```
+
+
+```{r}
+diffIso=read.table("../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt", header = F,col.names = c("status",   "loglr",    "df",   "p",    "cluster",  "p.adjust"),stringsAsFactors = F,sep="\t") %>% filter(status == "Success")
+
+
+diffIso$p.adjust=as.numeric(as.character(diffIso$p.adjust))
+
+
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab="-log10 Total Adjusted Leafcutter pvalue", xlab="-log 10 Uniform expectation", main="Leafcutter differencial isoform analysis between fractions")
+abline(0,1)
+```
+
+```{r}
+effectsize=read.table("../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt", stringsAsFactors = F, col.names=c('intron',  'logef' ,'Nuclear', 'Total','deltapsi'))
+
+effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))
+
+filterHighPSI=effectsize %>% filter(abs(deltapsi)>.4) %>% arrange(deltapsi)
+slice(filterHighPSI, 1:10)
+```
+
