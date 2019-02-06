@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a2cd28356767edcd1d3c730088c4b6d6b6328fbd" target="_blank">a2cd283</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/7805afd2bccfec830392093dca4d0a8a7c6e8ce7" target="_blank">7805afd</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -362,6 +362,7 @@ Untracked files:
     Untracked:  analysis/4suDataIGV.Rmd
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
+    Untracked:  analysis/IndPeakUsageDiff.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -453,6 +454,8 @@ Untracked files:
     Untracked:  data/temp.gencov.test.txt
     Untracked:  data/temp.gencov_zero.test.txt
     Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  data/threePrimeSeqMetaData55Ind.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -507,6 +510,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7805afd2bccfec830392093dca4d0a8a7c6e8ce7/analysis/pipeline_55Ind.Rmd" target="_blank">7805afd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-05
+</td>
+<td style="text-align:left;">
+new QTL snps
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e869ea5d28273d71b2ef4fcc18071986f785ca0a/docs/pipeline_55Ind.html" target="_blank">e869ea5</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -598,12 +635,12 @@ initiate 55 ind pipeline
 <p></details></p>
 <hr />
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -628,6 +665,8 @@ YL-SP-19140-T-batch4</p>
 </li>
 <li>18500-T (18501-N)</li>
 </ul>
+<div id="qtl-analysis-pipeline" class="section level2">
+<h2>QTL analysis pipeline</h2>
 <div id="mispriming" class="section level3">
 <h3>Mispriming</h3>
 <ul>
@@ -729,8 +768,10 @@ for line, i in enumerate(infile):
             fout.write(outLine + &quot;\n&quot;)
 fout.close()</code></pre>
 <ul>
-<li>make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh<br />
-</li>
+<li>make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh</li>
+</ul>
+<p>Change these so that peak IDs are start and end of peak. (code same as in the UTR analysis below)</p>
+<ul>
 <li>convert to usage pheno2CountOnly_genelocAnno.R
 <ul>
 <li>counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py</li>
@@ -833,28 +874,28 @@ for ln in open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand
 fout.close()</code></pre>
 <p>(current - need to remove 19092 and 19193)<br />
 * APAqtl_nominal_GeneLocAnno_noMP_5percUsage.sh<br />
-* APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh<br />
-* run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh</p>
+* APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh (change to 25kb on each side- –window 2.5e4 ) * run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh</p>
 <pre class="r"><code>totQTLs=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)
 
 Sig_TotQTLs= totQTLs %&gt;% filter(-log10(bh)&gt;=1)
 nrow(Sig_TotQTLs)</code></pre>
-<pre><code>[1] 149</code></pre>
+<pre><code>[1] 363</code></pre>
 <p>How many genes are tested:</p>
 <pre class="r"><code>totQTLs %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% select(gene) %&gt;% tally() %&gt;% nrow()</code></pre>
 <pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 3 rows [815,
 816, 817].</code></pre>
-<pre><code>[1] 10618</code></pre>
+<pre><code>[1] 10633</code></pre>
 <pre class="r"><code>nucQTLs=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)
 
 Sig_NucQTLs= nucQTLs %&gt;% filter(-log10(bh)&gt;=1)
 nrow(Sig_NucQTLs)</code></pre>
-<pre><code>[1] 308</code></pre>
+<pre><code>[1] 623</code></pre>
 <p>How many genes:</p>
 <pre class="r"><code>nucQTLs %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% select(gene) %&gt;% tally() %&gt;% nrow()</code></pre>
 <pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 3 rows [990,
 991, 992].</code></pre>
-<pre><code>[1] 10837</code></pre>
+<pre><code>[1] 10852</code></pre>
+</div>
 </div>
 <div id="qtls-only-peaks-in-the-3-utr" class="section level2">
 <h2>QTLs only peaks in the 3’ UTR</h2>
@@ -1415,6 +1456,53 @@ nrow(Sig_NucQTLs_UTR)</code></pre>
 <p>How many genes:</p>
 <pre class="r"><code>nucQTLs_UTR %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% select(gene) %&gt;% tally() %&gt;% nrow()</code></pre>
 <pre><code>[1] 6349</code></pre>
+</div>
+<div id="diff-isoform-pipeline" class="section level2">
+<h2>Diff Isoform Pipeline:</h2>
+<p>Pipeline comes from <a href="ApproachForGeneAssignment.Rmd">New gene Annodation Dif Iso</a><br />
+* filternamePeaks5percCov_GeneLocAnno.py * bothFrac_processed_GeneLocAnno_FC.sh * fix_head_fc_procBothFrac_GeneLocAnno.py * fc2leafphen_processed_GeneLocAnno.py<br />
+* subset_diffisopheno_processed_GeneLocAnno.py/ run_subset_diffisopheno_processed_GeneLocAnno.sh * makeLCSampleList_processed_GeneLocAnno.py<br />
+* run_leafcutter_ds_bychrom_processed_GeneLocAnno.sh</p>
+<pre class="bash"><code>awk &#39;{if(NR&gt;1)print}&#39; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*.txt_effect_sizes.txt &gt; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt
+
+awk &#39;{if(NR&gt;1)print}&#39; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*cluster_significance.txt &gt; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt</code></pre>
+<pre class="r"><code>diffIso=read.table(&quot;../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt&quot;, header = F,col.names = c(&quot;status&quot;,   &quot;loglr&quot;,    &quot;df&quot;,   &quot;p&quot;,    &quot;cluster&quot;,  &quot;p.adjust&quot;),stringsAsFactors = F,sep=&quot;\t&quot;) %&gt;% filter(status == &quot;Success&quot;)
+
+
+diffIso$p.adjust=as.numeric(as.character(diffIso$p.adjust))
+
+
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab=&quot;-log10 Total Adjusted Leafcutter pvalue&quot;, xlab=&quot;-log 10 Uniform expectation&quot;, main=&quot;Leafcutter differencial isoform analysis between fractions&quot;)
+abline(0,1)</code></pre>
+<p><img src="figure/pipeline_55Ind.Rmd/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>effectsize=read.table(&quot;../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt&quot;, stringsAsFactors = F, col.names=c(&#39;intron&#39;,  &#39;logef&#39; ,&#39;Nuclear&#39;, &#39;Total&#39;,&#39;deltapsi&#39;))
+
+effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>filterHighPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.4) %&gt;% arrange(deltapsi)
+slice(filterHighPSI, 1:10)</code></pre>
+<pre><code>                              intron              logef           Nuclear
+1       chr16:81123538:81123627:GCSH  -1.79087571426241 0.724883044705174
+2     chr3:25705115:25705187:MIR4442  -1.32432047353345 0.660590394608791
+3         chr6:84007319:84007404:ME1  -1.68685519425574 0.671530253986571
+4  chr19:36806427:36806515:LINC00665  -1.17617088053315 0.809837765186814
+5      chr14:47718556:47718593:MDGA2   -1.1825787812967 0.659822642518761
+6      chr14:51976014:51976057:FRMD6  -1.56759469994778 0.636611882071359
+7  chr20:58647920:58648008:C20orf197  -1.09984402063945 0.691727788494324
+8      chr6:37812035:37812094:ZFAND3  -1.61085385492872 0.617570611488878
+9     chr8:104953022:104953097:RIMS2  -1.39009184488063 0.611545558430189
+10  chr7:147596894:147596932:CNTNAP2 -0.827276301229926  0.72731101101958
+               Total   deltapsi
+1  0.151199900846243 -0.5736831
+2  0.121029754316441 -0.5395606
+3  0.134625920458626 -0.5369043
+4   0.28835529406143 -0.5214825
+5  0.154119006269487 -0.5057036
+6  0.139375449680577 -0.4972364
+7  0.199171791192942 -0.4925560
+8  0.127058493301525 -0.4905121
+9   0.13467815341195 -0.4768674
+10 0.259840841892183 -0.4674702</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
