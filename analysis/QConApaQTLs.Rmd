@@ -1,0 +1,138 @@
+---
+title: "QC on apaQTLs"
+author: "Briana Mittleman"
+date: "2/6/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this to look at some metrics around the the QTLs from [the pipeline for all 55 individuals](pipeline_55Ind.Rmd). In this analysis I found 363 qtls in the total fraction and 623 in the nuclear.   
+
+```{r}
+library(workflowr)
+library(tidyverse)
+```
+
+
+```{r}
+totQTLs=read.table("../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt", stringsAsFactors = F, header=T)%>% filter(-log10(bh)>=1)
+
+write.table(totQTLs,"../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", row.names = F, col.names = F, quote = F)
+
+nucQTLs=read.table("../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt", stringsAsFactors = F, header=T)%>% filter(-log10(bh)>=1)
+
+write.table(nucQTLs,"../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", row.names = F, col.names = F, quote = F)
+```
+
+
+##Distance to end of PAS  
+
+I want to look at the distance between the QTL snp and the end of a peak. For a positive strand gene this is the end of the peak, for a - strand gene this is the start position of the peak. The peak strand here is opposite of the strand the gene is on.  
+
+I will make a python script that will take make the distance file for both the total and nucelar.
+
+I copied these files to /project2/gilad/briana/threeprimeseq/data/ApaQTLs. I will put the QC files here as well. 
+
+
+getDistPeakEnd2QTL.py 
+```{bash,eval=F}
+#usage getDistPeakEnd2QTL.py "Total" or getDistPeakEnd2QTL.py "Nuclear"
+
+
+def main(inFile, outFile):
+   iFile=open(inFile, "r")
+   oFile=open(outFile, "w")  
+   oFile.write("PeakID\tPeakEnd\tGene\tGeneStrand\tSNP_chr\tSNP_loc\tEffectSize\tBH\tDistance\n")
+   for ln in iFile:
+      pid= ln.split()[0]
+      peakStrand=pid.split(":")[3].split("_")[1]
+      if peakStrand=="+":
+          strand = "-"
+          end = int(pid.split(":")[1])
+      else: 
+          strand = "+"
+          end = int(pid.split(":")[2])
+      gene=pid.split(":")[3].split("_")[0]
+      peak=pid.split(":")[3].split("_")[2]
+      SNP_Chr=ln.split()[5].split(":")[0]
+      SNP_loc=int(ln.split()[5].split(":")[1])
+      effectSize=ln.split()[8]
+      BH=ln.split()[11]
+      Dist= end - SNP_loc
+      oFile.write("%s\t%d\t%s\t%s\t%s\t%d\t%s\t%s\t%d\n"%(peak, end, gene, strand, SNP_Chr, SNP_loc, effectSize, BH, Dist))
+   oFile.close()  
+   
+   
+if __name__ == "__main__":
+    import sys
+    fraction = sys.argv[1]
+    inFile = "/project2/gilad/briana/threeprimeseq/data/ApaQTLs/%sapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt"%(fraction)
+    outFile = "/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Distance2EndPeak.%s.apaQTLs.txt"%(fraction)
+    main(inFile, outFile)
+```
+
+Plot for total:  
+
+```{r}
+TotDist=read.table("../data/ApaQTLs/Distance2EndPeak.Total.apaQTLs.txt", header=T) %>% mutate(Fraction="Total") %>% select(Fraction, Distance)
+NucDist=read.table("../data/ApaQTLs/Distance2EndPeak.Nuclear.apaQTLs.txt", header=T)%>% mutate(Fraction="Nuclear") %>% select(Fraction, Distance)
+
+BothDist=data.frame(rbind(TotDist, NucDist))
+
+
+```
+
+```{r}
+ggplot(BothDist, aes(x=Distance, by=Fraction, fill=Fraction))+geom_histogram(bins=70, alpha=.5) + scale_fill_manual(values=c("deepskyblue3","darkviolet")) + labs(title="Distance From apaQTL to End of Peak" )
+
+```
+
+
+##Where are the SNP  
+
+I want to take all of the SNP locations see what region of the genome they are in. I can use the annotation in /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed. I can do this with bedtools intersect if I make a bedfile for the QTLs.  
+
+Goal file: chr, loc -1, loc, peak:QTLgene, BH,  geneStrand  
+
+I can get all of this information most easily from the distance file I made. 
+
+
+QTLfile2Bed.py
+```{bash,eval=F}
+#usage QTLfile2Bed.py "Total" or QTLfile2Bed.py "Nuclear"
+
+
+def main(inFile, outFile):
+   iFile=open(inFile, "r")
+   oFile=open(outFile, "w")  
+   for num, ln in enumerate(iFile):
+       if num > 0:
+           peakID, peakend, gene, strand, chr, loc, effect, bh, dist = ln.split()
+           start=int(loc) -1
+           end= int(loc) 
+           name= peakID + ":" + gene
+           oFile.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chr, start, end, name, bh, strand))
+   oFile.close()
+
+
+
+if __name__ == "__main__":
+    import sys
+    fraction = sys.argv[1]
+    inFile = "/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Distance2EndPeak.%s.apaQTLs.txt"%(fraction)
+    outFile = "/project2/gilad/briana/threeprimeseq/data/ApaQTLs/%s.apaQTLs.bed"%(fraction)
+    main(inFile, outFile)
+```
+
+
+I will need to sort the output
+
+```{bash,eval=F}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.bed > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.bed > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed
+```
+

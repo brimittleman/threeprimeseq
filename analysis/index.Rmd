@@ -145,4 +145,4 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Individual differences in peak usage](IndPeakUsageDiff.html)  
 
-
+* [QC plots for understanding apaQTLs](QConApaQTLs.html)
