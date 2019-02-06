@@ -141,7 +141,8 @@ In the previous sections (specifically [here](NewPeakPostMP.html)) I reran some 
 
 I now have 55 individuals. I am going to call peaks and QTLs in this data.  
 
-* [Full QTL pipeline in 55 ind (cleaning, peaks, assign genes, filter usage, QTL)](pipeline_55Ind.html)  
+* [Full QTL pipeline in 55 ind (cleaning, peaks, assign genes, filter usage, QTL, differential isoform analysis)](pipeline_55Ind.html)  
 
+* [Individual differences in peak usage](IndPeakUsageDiff.html)  
 
 

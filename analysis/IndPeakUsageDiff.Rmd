@@ -1,0 +1,86 @@
+---
+title: "Individaul differences in PAS Usage"
+author: "Briana Mittleman"
+date: "2/5/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(workflowr)
+library(tidyverse)
+```
+
+So far i have been looking at mean peak usage for my filters. As a QC metric, I want to look at the variance in this measurement. I want to understand the reproducibility of the data at a usage percent level. I also want to see if this value is dependent on coverage. I will look at the peaks used in the [QTL analysis with 55 individuals](pipeline_55Ind.html) and comopute an RNSD value for each gene. This value is computed as $\sqrt{\sum_{n=1}^N (X-Y)^2}$. Here n is the number of peaks in the gene up to N. X and Y are different individuals. I will plot this value for each gene. I can do this for 2 individuals with low depth and 2 with high depth.   
+
+I can start with just the total individuals.  
+
+First step is to convert /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.3UTR.fixed.pheno_5perc.fc.gz to numeric.  
+
+First I will cut the first column to just get the counts:
+
+```{bash,eval=F}
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz | cut -f1 -d" " --complement | sed '1d' > /project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc_counts 
+```
+
+
+5percCovUsageToNumeric.py
+```{bash,eval=F}
+def convert(infile, outfile):
+  final=open(outfile, "w")
+  for ln in open(infile, "r"):
+    line_list=ln.split()
+    new_list=[]
+    for i in line_list:
+      num, dem = i.split("/")
+      if dem == "0":
+        perc = "0.00"
+      else:
+        perc = int(num)/int(dem)
+        perc=round(perc,2)
+        perc= str(perc)
+      new_list.append(perc)
+    final.write("\t".join(new_list)+ '\n')
+  final.close()
+  
+convert("/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc_counts","/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.txt")
+
+```
+
+Get the gene names from the first file: 
+
+```{bash ,eval=F}
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz | cut -f1 -d" " | sed '1d' > PeakIDs.txt
+```
+
+
+Merge the files: PeakIDs.txt and the numeric version 
+
+```{bash,eval=F}
+paste PeakIDs.txt filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.txt > filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt
+```
+
+```{r}
+names=read.table("../data/PeakUsage_noMP_GeneLocAnno/PeakUsageHeader.txt",stringsAsFactors = F) %>% t %>% as_data_frame()
+usageTot=read.table("../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt", header=F, stringsAsFactors = F)
+colnames(usageTot)= names$V1
+```
+
+I want to use ind based on coverage 
+
+```{r}
+metadataTotal=read.table("../data/threePrimeSeqMetaData55Ind.txt", header=T) %>% filter(fraction=="total")
+
+#top
+metadataTotal %>% arrange(desc(reads)) %>% slice(1:2)
+
+#bottom
+metadataTotal %>% arrange(reads) %>% slice(1:2)
+```
+
+2 Top read ind: NA18504, NA18855  
+2 bottom read ind: NA19160, NA19101  
