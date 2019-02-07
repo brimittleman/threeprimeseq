@@ -84,3 +84,172 @@ metadataTotal %>% arrange(reads) %>% slice(1:2)
 
 2 Top read ind: NA18504, NA18855  
 2 bottom read ind: NA19160, NA19101  
+
+
+```{r}
+topInd=usageTot %>% select(chrom, NA18504, NA18855) %>% separate(chrom, into=c("chr", "start", "end", "geneInf"), sep =":") %>% separate(geneInf, into=c("gene", "strand", "peak"), sep="_") %>% mutate(val=(NA18504-NA18855)^2) %>% group_by(gene) %>% summarise(sumPeaks=sum(val)) %>% mutate(RNSD=sqrt(sumPeaks)) %>% mutate(Sample="Top") %>% select(Sample, RNSD)
+bottomInd=usageTot %>% select(chrom, NA19160, NA19101) %>% separate(chrom, into=c("chr", "start", "end", "geneInf"), sep =":") %>% separate(geneInf, into=c("gene", "strand", "peak"), sep="_") %>% mutate(val=(NA19160-NA19101)^2) %>% group_by(gene) %>% summarise(sumPeaks=sum(val)) %>% mutate(RNSD=sqrt(sumPeaks)) %>% mutate(Sample="Bottom") %>% select(Sample, RNSD)
+
+bothInd= data.frame(rbind(topInd, bottomInd))
+
+```
+
+```{r}
+ggplot(bothInd, aes(x=RNSD, by=Sample, fill=Sample))+geom_density(alpha=.4) +labs(title="RNSD for peak usage in top 2 and bottom 2 individuals by reads")
+```
+
+```{r}
+ggplot(bothInd, aes(y=RNSD, x=Sample, fill=Sample))+geom_violin() + labs(title="RNSD for peak usage in top 2 and bottom 2 individuals by reads")
+```
+
+Change the statistic to increase the interpretability. 
+
+I can look at just genes with 2 peaks. I can then sum the absolute value of the individual differences.  
+
+```{r}
+TwoPeakGenes_top= usageTot %>% select(chrom, NA18504, NA18855) %>% separate(chrom, into=c("chr", "start", "end", "geneInf"), sep =":") %>% separate(geneInf, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% mutate(nPeak=n()) %>% filter(nPeak==2)
+n2Peak=unique(TwoPeakGenes_top$gene) %>% length() 
+```
+This gives us 3448 genes.  
+
+```{r}
+TwoPeakGenes_top_stat= TwoPeakGenes_top %>% mutate(absDiff=abs(NA18504-NA18855)) %>% group_by(gene) %>% select(gene, absDiff) %>% distinct(gene, .keep_all=T) 
+Avg2PeakGeneTop=sum(TwoPeakGenes_top_stat$absDiff)/n2Peak
+Avg2PeakGeneTop
+```
+
+Now do this for the bottom 2 ind:  
+
+```{r}
+TwoPeakGenes_bottom= usageTot %>% select(chrom, NA19160, NA19101) %>% separate(chrom, into=c("chr", "start", "end", "geneInf"), sep =":") %>% separate(geneInf, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% mutate(nPeak=n()) %>% filter(nPeak==2)
+
+TwoPeakGenes_bottom_stat= TwoPeakGenes_bottom %>% mutate(absDiff=abs(NA19101-NA19160)) %>% group_by(gene) %>% select(gene, absDiff) %>% distinct(gene, .keep_all=T) 
+Avg2PeakGeneBottom=sum(TwoPeakGenes_bottom_stat$absDiff)/n2Peak
+Avg2PeakGeneBottom
+```
+
+This demonstrates we may have some noise in the data and have not reached sequencing saturation. However, this could be driven by lowly expressed genes. I will fraction this analysis by the top expressed and bottom expressed genes. To do this I will pull in the count data (before we had usage parameters) and add to this table the mean counts. 
+
+
+Count files:
+
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc  
+* /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc  
+
+I need to filter these for the peaks I kept after the 5% usage filter.  
+
+
+filterCounts_5percCovPeaks.py
+```{bash,eval=F}
+#python  
+
+totalokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.3UTR_fixed.pheno.5percPeaks.txt"
+
+totalokPeaks5perc={}
+for ln in open(totalokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    totalokPeaks5perc[peakname]=""
+
+
+nuclearokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.3UTR_fixed.pheno.5percPeaks.txt"
+nuclearokPeaks5perc={}
+for ln in open(nuclearokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    nuclearokPeaks5perc[peakname]=""
+    
+    
+totalPhenoBefore=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc","r")
+totalPhenoAfter=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", "w")
+for num, ln in enumerate(totalPhenoBefore):
+    if num == 1:
+        totalPhenoAfter.write(ln)
+    if num >1:  
+        id=ln.split()[0].split(":")[0]
+        if id in totalokPeaks5perc.keys():
+            totalPhenoAfter.write(ln)
+totalPhenoAfter.close()  
+
+nuclearPhenoBefore=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc","r")
+nuclearPhenoAfter=open("/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.5perc.fc", "w")
+for num, ln in enumerate(nuclearPhenoBefore):
+    if num ==1:
+        nuclearPhenoAfter.write(ln)
+    if num > 1:  
+        id=ln.split()[0].split(":")[0]
+        if id in nuclearokPeaks5perc.keys():
+            nuclearPhenoAfter.write(ln)
+nuclearPhenoAfter.close() 
+```
+
+Pull the filtered counts for the total here and get the genes in TwoPeakGenes_top_stat$gene. For simplicity I will just look at the ind. with the top coverage.  
+
+
+```{r}
+TotalCounts=read.table("../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into =c('peak', 'chr', 'start', 'end', 'strand', 'gene'), sep = ":") %>% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %>% group_by(gene) %>% mutate(PeakCount=n()) %>% filter(PeakCount==2) %>% select(gene, X18504_T) %>% group_by(gene) %>% summarise(Exp=sum(X18504_T)) 
+```
+
+Top 1000 genes  
+
+```{r}
+TotalCounts_top1000= TotalCounts %>% arrange(desc(Exp)) %>% top_n(1000)
+```
+
+Join this with top ind:  
+
+
+```{r}
+TwoPeakGenes_top_stat_top100 = TwoPeakGenes_top_stat %>% inner_join(TotalCounts_top1000, by="gene")
+
+Avg2PeakGeneTopExpHigh=sum(TwoPeakGenes_top_stat_top100$absDiff)/nrow(TwoPeakGenes_top_stat_top100)
+Avg2PeakGeneTopExpHigh
+```
+
+
+
+Do the same for low expressed genes (not 0)  
+
+```{r}
+TotalCounts_bottom1000= TotalCounts %>% filter(Exp > 0) %>% top_n(-1000)
+TwoPeakGenes_top_stat_bottom100 = TwoPeakGenes_top_stat %>% inner_join(TotalCounts_bottom1000, by="gene")
+
+Avg2PeakGeneTopExpLow=sum(TwoPeakGenes_top_stat_bottom100$absDiff)/nrow(TwoPeakGenes_top_stat_bottom100)
+
+Avg2PeakGeneTopExpLow
+
+```
+
+
+
+Do this for the other individuals as wel..  
+
+```{r}
+TwoPeakGenes_bottom_stat_top100 = TwoPeakGenes_bottom_stat %>% inner_join(TotalCounts_top1000, by="gene")
+
+Avg2PeakGeneBottomExpHigh=sum(TwoPeakGenes_bottom_stat_top100$absDiff)/nrow(TwoPeakGenes_bottom_stat_top100)
+Avg2PeakGeneBottomExpHigh
+
+
+```
+```{r}
+TwoPeakGenes_bottom_stat_bottom100 = TwoPeakGenes_bottom_stat %>% inner_join(TotalCounts_bottom1000, by="gene")
+
+Avg2PeakGeneBottomExpLow=sum(TwoPeakGenes_bottom_stat_bottom100$absDiff)/nrow(TwoPeakGenes_bottom_stat_bottom100)
+
+Avg2PeakGeneBottomExpLow
+```
+
+
+
+Make a plot with these values:  
+
+
+
+```{r}
+avgPeakUsageTable=data.frame(rbind(c("Top", "High", .09), c("Top", "Low", .26), c("Bottom", "High", .17), c("Bottom", "Low", .37)))
+colnames(avgPeakUsageTable)= c("Coverage", "Expression", "AverageUsageDiff")
+```
+
+```{r}
+ggplot(avgPeakUsageTable,aes(y=AverageUsageDiff, x=Coverage, by=Expression, fill=Expression)) + geom_bar(stat="identity",position="dodge") + labs(title="Difference between individual usage \ndepends on expression and coverage")
+```
+
