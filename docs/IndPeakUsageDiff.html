@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e41afd90eba90ebab54b4b83756496bae2e9b599" target="_blank">e41afd9</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/74276bdc73a68a791d9c39532867ae3c53b624a5" target="_blank">74276bd</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -363,7 +363,6 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/accountMapBias.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -465,6 +464,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/accountMapBias.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -513,6 +513,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/74276bdc73a68a791d9c39532867ae3c53b624a5/analysis/IndPeakUsageDiff.Rmd" target="_blank">74276bd</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+<td style="text-align:left;">
+add plot by percentile
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/83ebe138001ae9be4a0b058f6dc149b9e0866625/docs/IndPeakUsageDiff.html" target="_blank">83ebe13</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -572,13 +606,14 @@ initiate ind peak usage diff analysis
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre class="r"><code>library(reshape2)
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ───────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <p>So far i have been looking at mean peak usage for my filters. As a QC metric, I want to look at the variance in this measurement. I want to understand the reproducibility of the data at a usage percent level. I also want to see if this value is dependent on coverage. I will look at the peaks used in the <a href="pipeline_55Ind.html">QTL analysis with 55 individuals</a> and comopute an RNSD value for each gene. This value is computed as <span class="math inline">\(\sqrt{\sum_{n=1}^N (X-Y)^2}\)</span>. Here n is the number of peaks in the gene up to N. X and Y are different individuals. I will plot this value for each gene. I can do this for 2 individuals with low depth and 2 with high depth.</p>
@@ -655,8 +690,68 @@ metadataTotal %&gt;% arrange(reads) %&gt;% slice(1:2)</code></pre>
 <pre class="r"><code>bothInd= data.frame(rbind(topInd, bottomInd))</code></pre>
 <pre class="r"><code>ggplot(bothInd, aes(x=RNSD, by=Sample, fill=Sample))+geom_density(alpha=.4) +labs(title=&quot;RNSD for peak usage in top 2 and bottom 2 individuals by reads&quot;)</code></pre>
 <p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/83ebe138001ae9be4a0b058f6dc149b9e0866625/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-9-1.png" target="_blank">83ebe13</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>ggplot(bothInd, aes(y=RNSD, x=Sample, fill=Sample))+geom_violin() + labs(title=&quot;RNSD for peak usage in top 2 and bottom 2 individuals by reads&quot;)</code></pre>
 <p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/83ebe138001ae9be4a0b058f6dc149b9e0866625/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-10-1.png" target="_blank">83ebe13</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Change the statistic to increase the interpretability.</p>
 <p>I can look at just genes with 2 peaks. I can then sum the absolute value of the individual differences.</p>
 <pre class="r"><code>TwoPeakGenes_top= usageTot %&gt;% select(chrom, NA18504, NA18855) %&gt;% separate(chrom, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneInf&quot;), sep =&quot;:&quot;) %&gt;% separate(geneInf, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% mutate(nPeak=n()) %&gt;% filter(nPeak==2)</code></pre>
@@ -687,7 +782,7 @@ Avg2PeakGeneBottom</code></pre>
 <p>filterCounts_5percCovPeaks.py</p>
 <pre class="bash"><code>#python  
 
-totalokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.3UTR_fixed.pheno.5percPeaks.txt&quot;
+totalokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt&quot;
 
 totalokPeaks5perc={}
 for ln in open(totalokPeaks5perc_file,&quot;r&quot;):
@@ -695,7 +790,7 @@ for ln in open(totalokPeaks5perc_file,&quot;r&quot;):
     totalokPeaks5perc[peakname]=&quot;&quot;
 
 
-nuclearokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.3UTR_fixed.pheno.5percPeaks.txt&quot;
+nuclearokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt&quot;
 nuclearokPeaks5perc={}
 for ln in open(nuclearokPeaks5perc_file,&quot;r&quot;):
     peakname=ln.split()[5]
@@ -733,7 +828,7 @@ nuclearPhenoAfter.close() </code></pre>
 
 Avg2PeakGeneTopExpHigh=sum(TwoPeakGenes_top_stat_top100$absDiff)/nrow(TwoPeakGenes_top_stat_top100)
 Avg2PeakGeneTopExpHigh</code></pre>
-<pre><code>[1] 0.08976974</code></pre>
+<pre><code>[1] 0.09936</code></pre>
 <p>Do the same for low expressed genes (not 0)</p>
 <pre class="r"><code>TotalCounts_bottom1000= TotalCounts %&gt;% filter(Exp &gt; 0) %&gt;% top_n(-1000)</code></pre>
 <pre><code>Selecting by Exp</code></pre>
@@ -742,24 +837,121 @@ Avg2PeakGeneTopExpHigh</code></pre>
 Avg2PeakGeneTopExpLow=sum(TwoPeakGenes_top_stat_bottom100$absDiff)/nrow(TwoPeakGenes_top_stat_bottom100)
 
 Avg2PeakGeneTopExpLow</code></pre>
-<pre><code>[1] 0.2595732</code></pre>
+<pre><code>[1] 0.3172211</code></pre>
 <p>Do this for the other individuals as wel..</p>
 <pre class="r"><code>TwoPeakGenes_bottom_stat_top100 = TwoPeakGenes_bottom_stat %&gt;% inner_join(TotalCounts_top1000, by=&quot;gene&quot;)
 
 Avg2PeakGeneBottomExpHigh=sum(TwoPeakGenes_bottom_stat_top100$absDiff)/nrow(TwoPeakGenes_bottom_stat_top100)
 Avg2PeakGeneBottomExpHigh</code></pre>
-<pre><code>[1] 0.1729441</code></pre>
+<pre><code>[1] 0.18876</code></pre>
 <pre class="r"><code>TwoPeakGenes_bottom_stat_bottom100 = TwoPeakGenes_bottom_stat %&gt;% inner_join(TotalCounts_bottom1000, by=&quot;gene&quot;)
 
 Avg2PeakGeneBottomExpLow=sum(TwoPeakGenes_bottom_stat_bottom100$absDiff)/nrow(TwoPeakGenes_bottom_stat_bottom100)
 
 Avg2PeakGeneBottomExpLow</code></pre>
-<pre><code>[1] 0.3695122</code></pre>
+<pre><code>[1] 0.354243</code></pre>
 <p>Make a plot with these values:</p>
-<pre class="r"><code>avgPeakUsageTable=data.frame(rbind(c(&quot;Top&quot;, &quot;High&quot;, .09), c(&quot;Top&quot;, &quot;Low&quot;, .26), c(&quot;Bottom&quot;, &quot;High&quot;, .17), c(&quot;Bottom&quot;, &quot;Low&quot;, .37)))
+<pre class="r"><code>avgPeakUsageTable=data.frame(rbind(c(&quot;Top&quot;, &quot;High&quot;, .1), c(&quot;Top&quot;, &quot;Low&quot;, .32), c(&quot;Bottom&quot;, &quot;High&quot;, .19), c(&quot;Bottom&quot;, &quot;Low&quot;, .35)))
 colnames(avgPeakUsageTable)= c(&quot;Coverage&quot;, &quot;Expression&quot;, &quot;AverageUsageDiff&quot;)</code></pre>
 <pre class="r"><code>ggplot(avgPeakUsageTable,aes(y=AverageUsageDiff, x=Coverage, by=Expression, fill=Expression)) + geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs(title=&quot;Difference between individual usage \ndepends on expression and coverage&quot;)</code></pre>
 <p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/83ebe138001ae9be4a0b058f6dc149b9e0866625/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-22-1.png" target="_blank">83ebe13</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>I want to look at this based on every 10% of gene expression. First I will remove genes with 0 coverage in this ind.</p>
+<pre class="r"><code>TotalCounts_no0=TotalCounts %&gt;% filter(Exp&gt;0) 
+nrow(TotalCounts_no0)</code></pre>
+<pre><code>[1] 3143</code></pre>
+<p>I can add a column that is the rank over the sum (or the percentile)</p>
+<pre class="r"><code>TotalCounts_no0_perc= TotalCounts_no0 %&gt;% mutate(Percentile = percent_rank(Exp)) </code></pre>
+<pre class="r"><code>TotalCounts_no0_perc10= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.1)
+
+TotalCounts_no0_perc20= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.2, Percentile&gt;.1)
+
+TotalCounts_no0_perc30= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.3, Percentile&gt;.2)
+
+
+TotalCounts_no0_perc40= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.4, Percentile&gt;.3)
+
+TotalCounts_no0_perc50= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.5, Percentile&gt;.4)
+
+TotalCounts_no0_perc60= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.6, Percentile&gt;.5)
+
+TotalCounts_no0_perc70= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.7, Percentile&gt;.6)
+
+TotalCounts_no0_perc80= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;8, Percentile&gt;.7)
+TotalCounts_no0_perc90= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.9, Percentile&gt;.8)
+
+TotalCounts_no0_perc100= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;1, Percentile&gt;.9)</code></pre>
+<p>Now I can make a function that takes one of these files, and computes the relevant stat. This takes the usage file and the expression file</p>
+<pre class="r"><code>getAvgDiffUsage=function(Usage, exp){
+  df = Usage %&gt;% inner_join(exp, by=&quot;gene&quot;)
+  value=df=sum(df$absDiff)/nrow(df)
+  return(value)
+}</code></pre>
+<p>Run this for the top coverage at each exp:</p>
+<pre class="r"><code>AvgUsageDiff_top10=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc10)
+AvgUsageDiff_top20=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc20)
+AvgUsageDiff_top30=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc30)
+AvgUsageDiff_top40=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc40)
+AvgUsageDiff_top50=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc50)
+AvgUsageDiff_top60=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc60)
+AvgUsageDiff_top70=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc70)
+AvgUsageDiff_top80=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc80)
+AvgUsageDiff_top90=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc90)
+AvgUsageDiff_top100=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc100)
+
+AvgUsageTop=c(AvgUsageDiff_top10,AvgUsageDiff_top20,AvgUsageDiff_top30,AvgUsageDiff_top40,AvgUsageDiff_top50,AvgUsageDiff_top60,AvgUsageDiff_top70,AvgUsageDiff_top80,AvgUsageDiff_top90,AvgUsageDiff_top100)</code></pre>
+<p>Do this for Bottom coverage:</p>
+<pre class="r"><code>AvgUsageDiff_bottom10=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc10)
+AvgUsageDiff_bottom20=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc20)
+AvgUsageDiff_bottom30=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc30)
+AvgUsageDiff_bottom40=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc40)
+AvgUsageDiff_bottom50=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc50)
+AvgUsageDiff_bottom60=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc60)
+AvgUsageDiff_bottom70=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc70)
+AvgUsageDiff_bottom80=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc80)
+AvgUsageDiff_bottom90=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc90)
+AvgUsageDiff_bottom100=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc100)
+
+AvgUsagebottom=c(AvgUsageDiff_bottom10,AvgUsageDiff_bottom20,AvgUsageDiff_bottom30,AvgUsageDiff_bottom40,AvgUsageDiff_bottom50,AvgUsageDiff_bottom60,AvgUsageDiff_bottom70,AvgUsageDiff_bottom80,AvgUsageDiff_bottom90,AvgUsageDiff_bottom100)</code></pre>
+<p>All together:</p>
+<pre class="r"><code>Percentile=c(10,20,30,40,50,60,70,80,90,100)
+allAvgUsage=data.frame(cbind(Percentile,AvgUsageTop,AvgUsagebottom))
+colnames(allAvgUsage)=c(&quot;Percentile&quot;,&quot;Top&quot;, &quot;Bottom&quot;)
+allAvgUsage$Top= as.numeric(as.character(allAvgUsage$Top))
+allAvgUsage$Bottom= as.numeric(as.character(allAvgUsage$Bottom))
+allAvgUsage_melt= melt(allAvgUsage, id.vars = c(&quot;Percentile&quot;))
+colnames(allAvgUsage_melt)=c(&quot;Percentile&quot;,&quot;Coverage&quot;, &quot;AvgDifference&quot;)</code></pre>
+<pre class="r"><code>ggplot(allAvgUsage_melt, aes(x=Percentile, y=AvgDifference,by=Coverage, fill=Coverage)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + labs(title=&quot;Average Usage Difference between 2 individauls by 3&#39; Seq \nCount percentile and coverage&quot;) + scale_x_discrete(limits = c(10,20,30,40,50,60,70,80,90,100))</code></pre>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -780,7 +972,7 @@ attached base packages:
 other attached packages:
  [1] bindrcpp_0.2.2  forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
  [5] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
- [9] ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.1.1
+ [9] ggplot2_3.0.0   tidyverse_1.2.1 reshape2_1.4.3  workflowr_1.1.1
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
@@ -791,8 +983,8 @@ loaded via a namespace (and not attached):
 [16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
 [19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
 [22] evaluate_0.11     labeling_0.3      knitr_1.20       
-[25] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
-[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[25] broom_0.5.0       Rcpp_0.12.19      backports_1.1.2  
+[28] scales_1.0.0      jsonlite_1.5      hms_0.4.2        
 [31] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
 [34] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
 [37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
