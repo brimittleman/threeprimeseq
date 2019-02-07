@@ -1,0 +1,189 @@
+---
+title: "Account for mapping bias by genotype"
+author: "Briana Mittleman"
+date: "2/6/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We are worried there amy be false positives in the QTL analysis if the QTL is in the read and the snp leads to a mapping bias for the data. I can account for this using WASP. 
+
+
+I have an example script from Yang:
+
+/project2/yangili1/yangili/TCGA_pipe/script_process.sh
+
+```{bash,eval=F}
+STAR2.6  --genomeDir /project2/yangili1/RNAseq_pipeline/index/GRCh37/STAR_hg19 --readFilesIn $inFile\_1.fastq $inFile\_2.fastq --outSAMstrandField intronMotif --outFileNamePrefix $outFile. --outSAMtype BAM Unsorted --varVCFfile $vcfFile --waspOutputMode SAMtag --outSAMattributes vA vG
+```
+
+First I need to find my star indexed genome:  
+
+*/project2/gilad/briana/genome_anotation_data/star_genome
+
+Next I need my VCF file:   
+
+* /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  
+
+runStarwWASP.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=runStarwWASP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=runStarwWASP.out
+#SBATCH --error=runStarwWASP.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+in=$1 
+out=$2
+STAR --runThreadN 4 --genomeDir /project2/gilad/briana/genome_anotation_data/star_genome --readFilesIn $1  --outSAMstrandField intronMotif --outFileNamePrefix /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP/$2.combined.STARwWASP.bam --outSAMtype BAM Unsorted --varVCFfile /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf   --waspOutputMode SAMtag --outSAMattributes vA vG
+```
+
+
+test_runStartwWASP.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=test_runStarwWASP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=test_runStarwWASP.out
+#SBATCH --error=test_runStarwWASP.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+i=/project2/gilad/briana/threeprimeseq/data/fastq/YL-SP-19239-T-combined.fastq  
+describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/combined.fastq//")
+sbatch runStarwWASP.sh $i $describer
+
+
+
+```
+
+
+
+Wraper:  
+wrap_runStarwWASP.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=wrap_runStarwWASP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=wrap_runStarwWASP.out
+#SBATCH --error=wrap_runStarwWASP.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/fastq/*);do
+describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/combined.fastq//")
+sbatch runStarwWASP.sh $i $describer
+done
+
+
+```
+
+
+Quota reached at 19193N for jobs- create a wrap2  
+wrap_runStarwWASP2.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=wrap_runStarwWASP2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=wrap_runStarwWASP2.out
+#SBATCH --error=wrap_runStarwWASP2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/fastq/YL-SP-192*); do
+describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/combined.fastq//")
+sbatch runStarwWASP.sh $i $describer
+done
+```
+
+
+
+Sort and index these files. 
+
+SortIndexStarwWASP.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=SortIndexStarwWASP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=SortIndexStarwWASP.out
+#SBATCH --error=SortIndexStarwWASP.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+describer=$1
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP/${describer}combined.STARwWASP.bamAligned.out.bam > /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/${describer}combined.STARwWASP.bamAligned.sort.bam
+samtools index /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/${describer}combined.STARwWASP.bamAligned.sort.bam
+
+```
+
+wrap_SortIndexStarwWASP.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=wrap_SortIndexStarwWASP
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=wrap_SortIndexStarwWASP.out
+#SBATCH --error=wrap_SortIndexStarwWASP.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP/*STARwWASP.bamAligned.out.bam)
+describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/combined.STARwWASP.bamAligned.out.bam//")
+sbatch SortIndexStarwWASP.sh $describer
+done
+```
+
+
