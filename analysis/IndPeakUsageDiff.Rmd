@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(workflowr)
+library(reshape2)
 library(tidyverse)
 ```
 
@@ -143,7 +144,7 @@ filterCounts_5percCovPeaks.py
 ```{bash,eval=F}
 #python  
 
-totalokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.3UTR_fixed.pheno.5percPeaks.txt"
+totalokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt"
 
 totalokPeaks5perc={}
 for ln in open(totalokPeaks5perc_file,"r"):
@@ -151,7 +152,7 @@ for ln in open(totalokPeaks5perc_file,"r"):
     totalokPeaks5perc[peakname]=""
 
 
-nuclearokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.3UTR_fixed.pheno.5percPeaks.txt"
+nuclearokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt"
 nuclearokPeaks5perc={}
 for ln in open(nuclearokPeaks5perc_file,"r"):
     peakname=ln.split()[5]
@@ -245,11 +246,115 @@ Make a plot with these values:
 
 
 ```{r}
-avgPeakUsageTable=data.frame(rbind(c("Top", "High", .09), c("Top", "Low", .26), c("Bottom", "High", .17), c("Bottom", "Low", .37)))
+avgPeakUsageTable=data.frame(rbind(c("Top", "High", .1), c("Top", "Low", .32), c("Bottom", "High", .19), c("Bottom", "Low", .35)))
 colnames(avgPeakUsageTable)= c("Coverage", "Expression", "AverageUsageDiff")
 ```
 
 ```{r}
 ggplot(avgPeakUsageTable,aes(y=AverageUsageDiff, x=Coverage, by=Expression, fill=Expression)) + geom_bar(stat="identity",position="dodge") + labs(title="Difference between individual usage \ndepends on expression and coverage")
+```
+
+I want to look at this based on every 10% of gene expression. First I will remove genes with 0 coverage in this ind.  
+```{r}
+TotalCounts_no0=TotalCounts %>% filter(Exp>0) 
+nrow(TotalCounts_no0)
+```
+
+I can add a column that is the rank over the sum (or the percentile)  
+```{r}
+TotalCounts_no0_perc= TotalCounts_no0 %>% mutate(Percentile = percent_rank(Exp)) 
+```
+
+
+```{r}
+TotalCounts_no0_perc10= TotalCounts_no0_perc %>% filter(Percentile<.1)
+
+TotalCounts_no0_perc20= TotalCounts_no0_perc %>% filter(Percentile<.2, Percentile>.1)
+
+TotalCounts_no0_perc30= TotalCounts_no0_perc %>% filter(Percentile<.3, Percentile>.2)
+
+
+TotalCounts_no0_perc40= TotalCounts_no0_perc %>% filter(Percentile<.4, Percentile>.3)
+
+TotalCounts_no0_perc50= TotalCounts_no0_perc %>% filter(Percentile<.5, Percentile>.4)
+
+TotalCounts_no0_perc60= TotalCounts_no0_perc %>% filter(Percentile<.6, Percentile>.5)
+
+TotalCounts_no0_perc70= TotalCounts_no0_perc %>% filter(Percentile<.7, Percentile>.6)
+
+TotalCounts_no0_perc80= TotalCounts_no0_perc %>% filter(Percentile<8, Percentile>.7)
+TotalCounts_no0_perc90= TotalCounts_no0_perc %>% filter(Percentile<.9, Percentile>.8)
+
+TotalCounts_no0_perc100= TotalCounts_no0_perc %>% filter(Percentile<1, Percentile>.9)
+
+```
+
+Now I can make a function that takes one of these files, and computes the relevant stat. This takes the usage file and the expression file  
+
+
+```{r}
+getAvgDiffUsage=function(Usage, exp){
+  df = Usage %>% inner_join(exp, by="gene")
+  value=df=sum(df$absDiff)/nrow(df)
+  return(value)
+}
+```
+
+
+Run this for the top coverage at each exp:
+
+```{r}
+ 
+AvgUsageDiff_top10=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc10)
+AvgUsageDiff_top20=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc20)
+AvgUsageDiff_top30=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc30)
+AvgUsageDiff_top40=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc40)
+AvgUsageDiff_top50=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc50)
+AvgUsageDiff_top60=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc60)
+AvgUsageDiff_top70=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc70)
+AvgUsageDiff_top80=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc80)
+AvgUsageDiff_top90=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc90)
+AvgUsageDiff_top100=getAvgDiffUsage(TwoPeakGenes_top_stat, exp=TotalCounts_no0_perc100)
+
+AvgUsageTop=c(AvgUsageDiff_top10,AvgUsageDiff_top20,AvgUsageDiff_top30,AvgUsageDiff_top40,AvgUsageDiff_top50,AvgUsageDiff_top60,AvgUsageDiff_top70,AvgUsageDiff_top80,AvgUsageDiff_top90,AvgUsageDiff_top100)
+```
+
+Do this for Bottom coverage:  
+
+
+
+
+```{r}
+ 
+AvgUsageDiff_bottom10=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc10)
+AvgUsageDiff_bottom20=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc20)
+AvgUsageDiff_bottom30=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc30)
+AvgUsageDiff_bottom40=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc40)
+AvgUsageDiff_bottom50=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc50)
+AvgUsageDiff_bottom60=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc60)
+AvgUsageDiff_bottom70=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc70)
+AvgUsageDiff_bottom80=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc80)
+AvgUsageDiff_bottom90=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc90)
+AvgUsageDiff_bottom100=getAvgDiffUsage(TwoPeakGenes_bottom_stat, exp=TotalCounts_no0_perc100)
+
+AvgUsagebottom=c(AvgUsageDiff_bottom10,AvgUsageDiff_bottom20,AvgUsageDiff_bottom30,AvgUsageDiff_bottom40,AvgUsageDiff_bottom50,AvgUsageDiff_bottom60,AvgUsageDiff_bottom70,AvgUsageDiff_bottom80,AvgUsageDiff_bottom90,AvgUsageDiff_bottom100)
+```
+
+
+All together:  
+
+```{r}
+Percentile=c(10,20,30,40,50,60,70,80,90,100)
+allAvgUsage=data.frame(cbind(Percentile,AvgUsageTop,AvgUsagebottom))
+colnames(allAvgUsage)=c("Percentile","Top", "Bottom")
+allAvgUsage$Top= as.numeric(as.character(allAvgUsage$Top))
+allAvgUsage$Bottom= as.numeric(as.character(allAvgUsage$Bottom))
+allAvgUsage_melt= melt(allAvgUsage, id.vars = c("Percentile"))
+colnames(allAvgUsage_melt)=c("Percentile","Coverage", "AvgDifference")
+```
+
+
+```{r}
+ggplot(allAvgUsage_melt, aes(x=Percentile, y=AvgDifference,by=Coverage, fill=Coverage)) + geom_bar(stat="identity", position = "dodge") + labs(title="Average Usage Difference between 2 individauls by 3' Seq \nCount percentile and coverage") + scale_x_discrete(limits = c(10,20,30,40,50,60,70,80,90,100))
 ```
 
