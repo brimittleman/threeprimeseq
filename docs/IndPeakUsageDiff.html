@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-02-05</p>
+<p><strong>Last updated:</strong> 2019-02-07</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/06912e92657916f583cded9d5743d4ebd73e94d2" target="_blank">06912e9</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e41afd90eba90ebab54b4b83756496bae2e9b599" target="_blank">e41afd9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -363,6 +363,7 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
+    Untracked:  analysis/accountMapBias.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -371,6 +372,7 @@ Untracked files:
     Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ApaQTLs/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
@@ -411,6 +413,7 @@ Untracked files:
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
     Untracked:  data/explainProtVar/
+    Untracked:  data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -477,6 +480,7 @@ Unstaged changes:
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/peakQCPPlots.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
     Modified:   analysis/understandPeaks.Rmd
@@ -509,6 +513,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e41afd90eba90ebab54b4b83756496bae2e9b599/analysis/IndPeakUsageDiff.Rmd" target="_blank">e41afd9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+<td style="text-align:left;">
+average peak diff by exp and cov
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/cc6b1ee6f99f9021ccbee65119f77db8d2590725/docs/IndPeakUsageDiff.html" target="_blank">cc6b1ee</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -608,6 +646,120 @@ metadataTotal %&gt;% arrange(reads) %&gt;% slice(1:2)</code></pre>
 2         2.07   0.41 9.59         12.17.18 23.14     24        0.097</code></pre>
 <p>2 Top read ind: NA18504, NA18855<br />
 2 bottom read ind: NA19160, NA19101</p>
+<pre class="r"><code>topInd=usageTot %&gt;% select(chrom, NA18504, NA18855) %&gt;% separate(chrom, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneInf&quot;), sep =&quot;:&quot;) %&gt;% separate(geneInf, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% mutate(val=(NA18504-NA18855)^2) %&gt;% group_by(gene) %&gt;% summarise(sumPeaks=sum(val)) %&gt;% mutate(RNSD=sqrt(sumPeaks)) %&gt;% mutate(Sample=&quot;Top&quot;) %&gt;% select(Sample, RNSD)</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 4 rows [4757,
+4758, 4759, 35047].</code></pre>
+<pre class="r"><code>bottomInd=usageTot %&gt;% select(chrom, NA19160, NA19101) %&gt;% separate(chrom, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneInf&quot;), sep =&quot;:&quot;) %&gt;% separate(geneInf, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% mutate(val=(NA19160-NA19101)^2) %&gt;% group_by(gene) %&gt;% summarise(sumPeaks=sum(val)) %&gt;% mutate(RNSD=sqrt(sumPeaks)) %&gt;% mutate(Sample=&quot;Bottom&quot;) %&gt;% select(Sample, RNSD)</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 4 rows [4757,
+4758, 4759, 35047].</code></pre>
+<pre class="r"><code>bothInd= data.frame(rbind(topInd, bottomInd))</code></pre>
+<pre class="r"><code>ggplot(bothInd, aes(x=RNSD, by=Sample, fill=Sample))+geom_density(alpha=.4) +labs(title=&quot;RNSD for peak usage in top 2 and bottom 2 individuals by reads&quot;)</code></pre>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(bothInd, aes(y=RNSD, x=Sample, fill=Sample))+geom_violin() + labs(title=&quot;RNSD for peak usage in top 2 and bottom 2 individuals by reads&quot;)</code></pre>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Change the statistic to increase the interpretability.</p>
+<p>I can look at just genes with 2 peaks. I can then sum the absolute value of the individual differences.</p>
+<pre class="r"><code>TwoPeakGenes_top= usageTot %&gt;% select(chrom, NA18504, NA18855) %&gt;% separate(chrom, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneInf&quot;), sep =&quot;:&quot;) %&gt;% separate(geneInf, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% mutate(nPeak=n()) %&gt;% filter(nPeak==2)</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 4 rows [4757,
+4758, 4759, 35047].</code></pre>
+<pre class="r"><code>n2Peak=unique(TwoPeakGenes_top$gene) %&gt;% length() </code></pre>
+<p>This gives us 3448 genes.</p>
+<pre class="r"><code>TwoPeakGenes_top_stat= TwoPeakGenes_top %&gt;% mutate(absDiff=abs(NA18504-NA18855)) %&gt;% group_by(gene) %&gt;% select(gene, absDiff) %&gt;% distinct(gene, .keep_all=T) 
+Avg2PeakGeneTop=sum(TwoPeakGenes_top_stat$absDiff)/n2Peak
+Avg2PeakGeneTop</code></pre>
+<pre><code>[1] 0.1925493</code></pre>
+<p>Now do this for the bottom 2 ind:</p>
+<pre class="r"><code>TwoPeakGenes_bottom= usageTot %&gt;% select(chrom, NA19160, NA19101) %&gt;% separate(chrom, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneInf&quot;), sep =&quot;:&quot;) %&gt;% separate(geneInf, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% mutate(nPeak=n()) %&gt;% filter(nPeak==2)</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 4 rows [4757,
+4758, 4759, 35047].</code></pre>
+<pre class="r"><code>TwoPeakGenes_bottom_stat= TwoPeakGenes_bottom %&gt;% mutate(absDiff=abs(NA19101-NA19160)) %&gt;% group_by(gene) %&gt;% select(gene, absDiff) %&gt;% distinct(gene, .keep_all=T) 
+Avg2PeakGeneBottom=sum(TwoPeakGenes_bottom_stat$absDiff)/n2Peak
+Avg2PeakGeneBottom</code></pre>
+<pre><code>[1] 0.2727929</code></pre>
+<p>This demonstrates we may have some noise in the data and have not reached sequencing saturation. However, this could be driven by lowly expressed genes. I will fraction this analysis by the top expressed and bottom expressed genes. To do this I will pull in the count data (before we had usage parameters) and add to this table the mean counts.</p>
+<p>Count files:</p>
+<ul>
+<li>/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc<br />
+</li>
+<li>/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc</li>
+</ul>
+<p>I need to filter these for the peaks I kept after the 5% usage filter.</p>
+<p>filterCounts_5percCovPeaks.py</p>
+<pre class="bash"><code>#python  
+
+totalokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.3UTR_fixed.pheno.5percPeaks.txt&quot;
+
+totalokPeaks5perc={}
+for ln in open(totalokPeaks5perc_file,&quot;r&quot;):
+    peakname=ln.split()[5]
+    totalokPeaks5perc[peakname]=&quot;&quot;
+
+
+nuclearokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_3UTR/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.3UTR_fixed.pheno.5percPeaks.txt&quot;
+nuclearokPeaks5perc={}
+for ln in open(nuclearokPeaks5perc_file,&quot;r&quot;):
+    peakname=ln.split()[5]
+    nuclearokPeaks5perc[peakname]=&quot;&quot;
+    
+    
+totalPhenoBefore=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc&quot;,&quot;r&quot;)
+totalPhenoAfter=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, &quot;w&quot;)
+for num, ln in enumerate(totalPhenoBefore):
+    if num == 1:
+        totalPhenoAfter.write(ln)
+    if num &gt;1:  
+        id=ln.split()[0].split(&quot;:&quot;)[0]
+        if id in totalokPeaks5perc.keys():
+            totalPhenoAfter.write(ln)
+totalPhenoAfter.close()  
+
+nuclearPhenoBefore=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc&quot;,&quot;r&quot;)
+nuclearPhenoAfter=open(&quot;/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.5perc.fc&quot;, &quot;w&quot;)
+for num, ln in enumerate(nuclearPhenoBefore):
+    if num ==1:
+        nuclearPhenoAfter.write(ln)
+    if num &gt; 1:  
+        id=ln.split()[0].split(&quot;:&quot;)[0]
+        if id in nuclearokPeaks5perc.keys():
+            nuclearPhenoAfter.write(ln)
+nuclearPhenoAfter.close() </code></pre>
+<p>Pull the filtered counts for the total here and get the genes in TwoPeakGenes_top_stat$gene. For simplicity I will just look at the ind. with the top coverage.</p>
+<pre class="r"><code>TotalCounts=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, header=T, stringsAsFactors = F) %&gt;% separate(Geneid, into =c(&#39;peak&#39;, &#39;chr&#39;, &#39;start&#39;, &#39;end&#39;, &#39;strand&#39;, &#39;gene&#39;), sep = &quot;:&quot;) %&gt;% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %&gt;% group_by(gene) %&gt;% mutate(PeakCount=n()) %&gt;% filter(PeakCount==2) %&gt;% select(gene, X18504_T) %&gt;% group_by(gene) %&gt;% summarise(Exp=sum(X18504_T)) </code></pre>
+<p>Top 1000 genes</p>
+<pre class="r"><code>TotalCounts_top1000= TotalCounts %&gt;% arrange(desc(Exp)) %&gt;% top_n(1000)</code></pre>
+<pre><code>Selecting by Exp</code></pre>
+<p>Join this with top ind:</p>
+<pre class="r"><code>TwoPeakGenes_top_stat_top100 = TwoPeakGenes_top_stat %&gt;% inner_join(TotalCounts_top1000, by=&quot;gene&quot;)
+
+Avg2PeakGeneTopExpHigh=sum(TwoPeakGenes_top_stat_top100$absDiff)/nrow(TwoPeakGenes_top_stat_top100)
+Avg2PeakGeneTopExpHigh</code></pre>
+<pre><code>[1] 0.08976974</code></pre>
+<p>Do the same for low expressed genes (not 0)</p>
+<pre class="r"><code>TotalCounts_bottom1000= TotalCounts %&gt;% filter(Exp &gt; 0) %&gt;% top_n(-1000)</code></pre>
+<pre><code>Selecting by Exp</code></pre>
+<pre class="r"><code>TwoPeakGenes_top_stat_bottom100 = TwoPeakGenes_top_stat %&gt;% inner_join(TotalCounts_bottom1000, by=&quot;gene&quot;)
+
+Avg2PeakGeneTopExpLow=sum(TwoPeakGenes_top_stat_bottom100$absDiff)/nrow(TwoPeakGenes_top_stat_bottom100)
+
+Avg2PeakGeneTopExpLow</code></pre>
+<pre><code>[1] 0.2595732</code></pre>
+<p>Do this for the other individuals as wel..</p>
+<pre class="r"><code>TwoPeakGenes_bottom_stat_top100 = TwoPeakGenes_bottom_stat %&gt;% inner_join(TotalCounts_top1000, by=&quot;gene&quot;)
+
+Avg2PeakGeneBottomExpHigh=sum(TwoPeakGenes_bottom_stat_top100$absDiff)/nrow(TwoPeakGenes_bottom_stat_top100)
+Avg2PeakGeneBottomExpHigh</code></pre>
+<pre><code>[1] 0.1729441</code></pre>
+<pre class="r"><code>TwoPeakGenes_bottom_stat_bottom100 = TwoPeakGenes_bottom_stat %&gt;% inner_join(TotalCounts_bottom1000, by=&quot;gene&quot;)
+
+Avg2PeakGeneBottomExpLow=sum(TwoPeakGenes_bottom_stat_bottom100$absDiff)/nrow(TwoPeakGenes_bottom_stat_bottom100)
+
+Avg2PeakGeneBottomExpLow</code></pre>
+<pre><code>[1] 0.3695122</code></pre>
+<p>Make a plot with these values:</p>
+<pre class="r"><code>avgPeakUsageTable=data.frame(rbind(c(&quot;Top&quot;, &quot;High&quot;, .09), c(&quot;Top&quot;, &quot;Low&quot;, .26), c(&quot;Bottom&quot;, &quot;High&quot;, .17), c(&quot;Bottom&quot;, &quot;Low&quot;, .37)))
+colnames(avgPeakUsageTable)= c(&quot;Coverage&quot;, &quot;Expression&quot;, &quot;AverageUsageDiff&quot;)</code></pre>
+<pre class="r"><code>ggplot(avgPeakUsageTable,aes(y=AverageUsageDiff, x=Coverage, by=Expression, fill=Expression)) + geom_bar(stat=&quot;identity&quot;,position=&quot;dodge&quot;) + labs(title=&quot;Difference between individual usage \ndepends on expression and coverage&quot;)</code></pre>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -631,23 +783,23 @@ other attached packages:
  [9] ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.1.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.19      cellranger_1.1.0  plyr_1.8.4       
- [4] compiler_3.5.1    pillar_1.3.0      git2r_0.23.0     
- [7] bindr_0.1.1       R.methodsS3_1.7.1 R.utils_2.7.0    
-[10] tools_3.5.1       digest_0.6.17     lubridate_1.7.4  
-[13] jsonlite_1.5      evaluate_0.11     nlme_3.1-137     
-[16] gtable_0.2.0      lattice_0.20-35   pkgconfig_2.0.2  
-[19] rlang_0.2.2       cli_1.0.1         rstudioapi_0.8   
-[22] yaml_2.2.0        haven_1.1.2       withr_2.1.2      
-[25] xml2_1.2.0        httr_1.3.1        knitr_1.20       
-[28] hms_0.4.2         rprojroot_1.3-2   grid_3.5.1       
-[31] tidyselect_0.2.4  glue_1.3.0        R6_2.3.0         
-[34] readxl_1.1.0      rmarkdown_1.10    modelr_0.1.2     
-[37] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
-[40] scales_1.0.0      htmltools_0.3.6   rvest_0.3.2      
-[43] assertthat_0.2.0  colorspace_1.3-2  stringi_1.2.4    
-[46] lazyeval_0.2.1    munsell_0.5.0     broom_0.5.0      
-[49] crayon_1.3.4      R.oo_1.22.0      </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[22] evaluate_0.11     labeling_0.3      knitr_1.20       
+[25] broom_0.5.0       Rcpp_0.12.19      scales_1.0.0     
+[28] backports_1.1.2   jsonlite_1.5      hms_0.4.2        
+[31] digest_0.6.17     stringi_1.2.4     grid_3.5.1       
+[34] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
+[37] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[40] whisker_0.3-2     pkgconfig_2.0.2   xml2_1.2.0       
+[43] lubridate_1.7.4   assertthat_0.2.0  rmarkdown_1.10   
+[46] httr_1.3.1        rstudioapi_0.8    R6_2.3.0         
+[49] nlme_3.1-137      git2r_0.23.0      compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
