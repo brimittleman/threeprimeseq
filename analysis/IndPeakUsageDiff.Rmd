@@ -74,7 +74,7 @@ colnames(usageTot)= names$V1
 I want to use ind based on coverage 
 
 ```{r}
-metadataTotal=read.table("../data/threePrimeSeqMetaData55Ind.txt", header=T) %>% filter(fraction=="total")
+metadataTotal=read.table("../data/threePrimeSeqMetaData55Ind_noDup.txt", header=T) %>% filter(fraction=="total")
 
 #top
 metadataTotal %>% arrange(desc(reads)) %>% slice(1:2)
@@ -358,3 +358,126 @@ colnames(allAvgUsage_melt)=c("Percentile","Coverage", "AvgDifference")
 ggplot(allAvgUsage_melt, aes(x=Percentile, y=AvgDifference,by=Coverage, fill=Coverage)) + geom_bar(stat="identity", position = "dodge") + labs(title="Average Usage Difference between 2 individauls by 3' Seq \nCount percentile and coverage") + scale_x_discrete(limits = c(10,20,30,40,50,60,70,80,90,100))
 ```
 
+Total counts for a low coverage individual:  
+
+```{r}
+TotalCounts_low=read.table("../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into =c('peak', 'chr', 'start', 'end', 'strand', 'gene'), sep = ":") %>% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %>% group_by(gene) %>% mutate(PeakCount=n()) %>% filter(PeakCount==2) %>% select(gene, X19101_T) %>% group_by(gene) %>% summarise(Exp=sum(X19101_T))
+TotalCounts_no0_low=TotalCounts_low %>% filter(Exp>0) 
+TotalCounts_no0_perc_low= TotalCounts_no0_low %>% mutate(Percentile = percent_rank(Exp)) 
+```
+
+
+
+This will be more informative if we do 1 vs all. Now instead of Y being 1 individual it is the average of all other individuals at that peak. I will make a heatmap with y as the individual and x as the percentile. 
+
+I need to create a function that can take in an individual, removes it from the matrix. computes the mean for the other individuals then merges the numbers back together, it will then compute the values for each percentile as I did before and returns a list of the averageUsageDifferences. I need to compute the percentile for the individual 
+
+Input dataframe with usage values for genes with only 2 peaks.
+
+```{r}
+usageTot_2peak= usageTot  %>% separate(chrom, into=c("chr", "start", "end", "geneInf"), sep =":") %>% separate(geneInf, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% mutate(nPeak=n()) %>% filter(nPeak==2) %>% select(-chr, -start, -end, -strand, -peak, -nPeak) %>% ungroup()
+```
+```{r}
+TotalCounts_AllInd=read.table("../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into =c('peak', 'chr', 'start', 'end', 'strand', 'gene'), sep = ":") %>% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %>% group_by(gene) %>% mutate(PeakCount=n()) %>% filter(PeakCount==2) %>% select(-PeakCount) %>% ungroup()
+
+colnames(TotalCounts_AllInd)=colnames(usageTot_2peak)
+```
+
+
+This will take tidy eval because my
+
+
+```{r}
+
+perIndDiffUsage=function(ind, counts=TotalCounts_AllInd, usage=usageTot_2peak){
+  ind=enquo(ind)
+  #compute usage stats
+  #seperate usage
+  usage_ind=usage %>% select(gene, !!ind) 
+  usage_other = usage %>% select(-gene,-!!ind) %>% rowMeans()
+  usage_indVal=as.data.frame(cbind(usage_ind,usage_other))
+  usage_indVal$val=abs(usage_indVal[,2] - usage_indVal[,3])
+  usage_indVal2= usage_indVal%>% group_by(gene) %>% select(gene, val) %>% distinct(gene, .keep_all=T) 
+  #seperate genes by percentile for this ind
+  count_ind= counts %>% select(gene, !!ind)
+  colnames(count_ind)=c("gene", "count")
+  count_ind = count_ind %>%  group_by(gene) %>% summarize(Exp=sum(count)) %>% filter(Exp >0)  %>% mutate(Percentile = percent_rank(Exp)) 
+  count_ind_perc10= count_ind %>% filter(Percentile<.1)
+  count_ind_perc20= count_ind %>% filter(Percentile<.2, Percentile>.1)
+  count_ind_perc30= count_ind %>% filter(Percentile<.3, Percentile>.2)
+  count_ind_perc40= count_ind %>% filter(Percentile<.4, Percentile>.3)
+  count_ind_perc50= count_ind %>% filter(Percentile<.5, Percentile>.4)
+  count_ind_perc60= count_ind %>% filter(Percentile<.6, Percentile>.5)
+  count_ind_perc70= count_ind %>% filter(Percentile<.7, Percentile>.6)
+  count_ind_perc80= count_ind %>% filter(Percentile<8, Percentile>.7)
+  count_ind_perc90= count_ind %>% filter(Percentile<.9, Percentile>.8)
+  count_ind_perc100= count_ind %>% filter(Percentile<1, Percentile>.9)
+  #subset and sum usage 
+  out10_df= usage_indVal2 %>% inner_join(count_ind_perc10, by="gene")
+  out20_df= usage_indVal2 %>% inner_join(count_ind_perc20, by="gene")
+  out30_df= usage_indVal2 %>% inner_join(count_ind_perc30, by="gene")
+  out40_df= usage_indVal2 %>% inner_join(count_ind_perc40, by="gene")
+  out50_df= usage_indVal2 %>% inner_join(count_ind_perc50, by="gene")
+  out60_df= usage_indVal2 %>% inner_join(count_ind_perc60, by="gene")
+  out70_df= usage_indVal2 %>% inner_join(count_ind_perc70, by="gene")
+  out80_df= usage_indVal2 %>% inner_join(count_ind_perc80, by="gene")
+  out90_df= usage_indVal2 %>% inner_join(count_ind_perc90, by="gene")
+  out100_df= usage_indVal2 %>% inner_join(count_ind_perc100, by="gene")
+  #output list of 10 values
+  out= c((sum(out10_df$val)/nrow(out10_df)), (sum(out20_df$val)/nrow(out20_df)), (sum(out30_df$val)/nrow(out30_df)), (sum(out40_df$val)/nrow(out40_df)), (sum(out50_df$val)/nrow(out50_df)), (sum(out60_df$val)/nrow(out60_df)), (sum(out70_df$val)/nrow(out70_df)), (sum(out80_df$val)/nrow(out80_df)), (sum(out90_df$val)/nrow(out90_df)), (sum(out100_df$val)/nrow(out100_df)))
+  return(out)
+}
+
+
+```
+
+Run this function for each individual and append the result to a df:  
+
+
+```{r}
+Inds=colnames(TotalCounts_AllInd)[2:ncol(TotalCounts_AllInd)]
+Percentile=c(10,20,30,40,50,60,70,80,90,100)
+for (i in Inds){
+  x= perIndDiffUsage(i)
+  Percentile=cbind(Percentile, x)
+}
+colnames(Percentile)=c("Percentile", Inds)
+```
+
+
+```{r}
+
+
+Lineorder=metadataTotal %>% arrange(desc(reads))  %>% select(line) %>% mutate(sample=paste("NA" , line, sep=""))
+Lineorder=Lineorder$sample
+
+Percentile_df=as.data.frame(Percentile) %>%   select(Percentile, Lineorder)
+
+#order the 
+
+Percentile_melt=melt(Percentile_df, id.vars=c("Percentile"))
+colnames(Percentile_melt)=c("Percentile", "Individual", "AvgUsageDiff")
+```
+
+
+Plot this:  
+
+```{r}
+ggplot(Percentile_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Average peak usage difference for individaul vs. others \n by percentile of gene counts arranged by reads counts") + scale_fill_gradientn(colours = c("white", "red", "black"))
+```
+
+```{r}
+
+
+Lineorder_map=metadataTotal %>% arrange(desc(Mapped_noMP))  %>% select(line) %>% mutate(sample=paste("NA" , line, sep=""))
+Lineorder_map=Lineorder_map$sample
+
+Percentile_df2=as.data.frame(Percentile) %>%   select(Percentile, Lineorder_map)
+
+#order the 
+
+Percentile_melt2=melt(Percentile_df2, id.vars=c("Percentile"))
+colnames(Percentile_melt2)=c("Percentile", "Individual", "AvgUsageDiff")
+
+ggplot(Percentile_melt2, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Average peak usage difference for individaul vs. others \n by percentile of gene counts arranged by mapped reads counts") + scale_fill_gradientn(colours = c("white", "red", "black"))
+```
