@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/74276bdc73a68a791d9c39532867ae3c53b624a5" target="_blank">74276bd</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/8a106d5b303baaaf3e16b8820e5352819b294207" target="_blank">8a106d5</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -457,6 +457,8 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData.csv
     Untracked:  data/threePrimeSeqMetaData55Ind.txt
     Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -513,6 +515,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8a106d5b303baaaf3e16b8820e5352819b294207/analysis/IndPeakUsageDiff.Rmd" target="_blank">8a106d5</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+<td style="text-align:left;">
+add all ind heatmap
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/657fb9ab6ce2285872d1bf83855878e66337d410/docs/IndPeakUsageDiff.html" target="_blank">657fb9a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -649,16 +685,16 @@ convert(&quot;/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAn
 usageTot=read.table(&quot;../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt&quot;, header=F, stringsAsFactors = F)
 colnames(usageTot)= names$V1</code></pre>
 <p>I want to use ind based on coverage</p>
-<pre class="r"><code>metadataTotal=read.table(&quot;../data/threePrimeSeqMetaData55Ind.txt&quot;, header=T) %&gt;% filter(fraction==&quot;total&quot;)
+<pre class="r"><code>metadataTotal=read.table(&quot;../data/threePrimeSeqMetaData55Ind_noDup.txt&quot;, header=T) %&gt;% filter(fraction==&quot;total&quot;)
 
 #top
 metadataTotal %&gt;% arrange(desc(reads)) %&gt;% slice(1:2)</code></pre>
 <pre><code>  Sample_ID  line fraction batch   fqlines    reads   mapped prop_mapped
-1   18504_T 18504    total     4 139198896 34799724 25970922 0.746296781
-2   18855_T 18855    total     4 139040660 34760165 24532100 0.705753267
+1   18504_T 18504    total     4 139198896 34799724 25970922   0.7462968
+2   18855_T 18855    total     4 139040660 34760165 24532100   0.7057533
   Mapped_noMP prop_MappedwithoutMP Sex  Wake_Up Collection count1 count2
-1    14703998          0.422532029   M 10/31/18   11/19/18    1.9   1.44
-2    12999618          0.373980331   F 10/31/18   11/19/18    1.6   1.40
+1    14703998            0.4225320   M 10/31/18   11/19/18    1.9   1.44
+2    12999618            0.3739803   F 10/31/18   11/19/18    1.6   1.40
   alive1 alive2 alive_avg undiluted_avg Extraction Conentration
 1     83     81      82.0          1.67   12.12.18       1984.6
 2     71     80      75.5          1.50   12.12.18       2442.9
@@ -669,10 +705,10 @@ metadataTotal %&gt;% arrange(desc(reads)) %&gt;% slice(1:2)</code></pre>
 metadataTotal %&gt;% arrange(reads) %&gt;% slice(1:2)</code></pre>
 <pre><code>  Sample_ID  line fraction batch  fqlines   reads  mapped prop_mapped
 1   19160_T 19160    total     2 30319920 7579980 5473593   0.7221118
-2   19101_T 19101    total     4 33766300 8441575 6741550 0.798612818
+2   19101_T 19101    total     4 33766300 8441575 6741550   0.7986128
   Mapped_noMP prop_MappedwithoutMP Sex  Wake_Up Collection count1 count2
-1     4009189           0.52891815   M  6/19/18    7/10/18     NA     NA
-2     3630954          0.430127553   M 11/26/18   12/14/18  0.976   1.05
+1     4009189            0.5289181   M  6/19/18    7/10/18     NA     NA
+2     3630954            0.4301276   M 11/26/18   12/14/18  0.976   1.05
   alive1 alive2 alive_avg undiluted_avg Extraction Conentration
 1     NA     NA        90         1.100    7.12.18       1287.1
 2     76     86        81         1.013   12.16.18       2453.6
@@ -873,6 +909,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/657fb9ab6ce2285872d1bf83855878e66337d410/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-22-1.png" target="_blank">657fb9a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83ebe138001ae9be4a0b058f6dc149b9e0866625/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-22-1.png" target="_blank">83ebe13</a>
 </td>
 <td style="text-align:left;">
@@ -952,6 +999,120 @@ allAvgUsage_melt= melt(allAvgUsage, id.vars = c(&quot;Percentile&quot;))
 colnames(allAvgUsage_melt)=c(&quot;Percentile&quot;,&quot;Coverage&quot;, &quot;AvgDifference&quot;)</code></pre>
 <pre class="r"><code>ggplot(allAvgUsage_melt, aes(x=Percentile, y=AvgDifference,by=Coverage, fill=Coverage)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + labs(title=&quot;Average Usage Difference between 2 individauls by 3&#39; Seq \nCount percentile and coverage&quot;) + scale_x_discrete(limits = c(10,20,30,40,50,60,70,80,90,100))</code></pre>
 <p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-30-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/657fb9ab6ce2285872d1bf83855878e66337d410/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-30-1.png" target="_blank">657fb9a</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Total counts for a low coverage individual:</p>
+<pre class="r"><code>TotalCounts_low=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, header=T, stringsAsFactors = F) %&gt;% separate(Geneid, into =c(&#39;peak&#39;, &#39;chr&#39;, &#39;start&#39;, &#39;end&#39;, &#39;strand&#39;, &#39;gene&#39;), sep = &quot;:&quot;) %&gt;% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %&gt;% group_by(gene) %&gt;% mutate(PeakCount=n()) %&gt;% filter(PeakCount==2) %&gt;% select(gene, X19101_T) %&gt;% group_by(gene) %&gt;% summarise(Exp=sum(X19101_T))
+TotalCounts_no0_low=TotalCounts_low %&gt;% filter(Exp&gt;0) 
+TotalCounts_no0_perc_low= TotalCounts_no0_low %&gt;% mutate(Percentile = percent_rank(Exp)) </code></pre>
+<p>This will be more informative if we do 1 vs all. Now instead of Y being 1 individual it is the average of all other individuals at that peak. I will make a heatmap with y as the individual and x as the percentile.</p>
+<p>I need to create a function that can take in an individual, removes it from the matrix. computes the mean for the other individuals then merges the numbers back together, it will then compute the values for each percentile as I did before and returns a list of the averageUsageDifferences. I need to compute the percentile for the individual</p>
+<p>Input dataframe with usage values for genes with only 2 peaks.</p>
+<pre class="r"><code>usageTot_2peak= usageTot  %&gt;% separate(chrom, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneInf&quot;), sep =&quot;:&quot;) %&gt;% separate(geneInf, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% mutate(nPeak=n()) %&gt;% filter(nPeak==2) %&gt;% select(-chr, -start, -end, -strand, -peak, -nPeak) %&gt;% ungroup()</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 4 rows [4757,
+4758, 4759, 35047].</code></pre>
+<pre class="r"><code>TotalCounts_AllInd=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, header=T, stringsAsFactors = F) %&gt;% separate(Geneid, into =c(&#39;peak&#39;, &#39;chr&#39;, &#39;start&#39;, &#39;end&#39;, &#39;strand&#39;, &#39;gene&#39;), sep = &quot;:&quot;) %&gt;% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %&gt;% group_by(gene) %&gt;% mutate(PeakCount=n()) %&gt;% filter(PeakCount==2) %&gt;% select(-PeakCount) %&gt;% ungroup()
+
+colnames(TotalCounts_AllInd)=colnames(usageTot_2peak)</code></pre>
+<p>This will take tidy eval because my</p>
+<pre class="r"><code>perIndDiffUsage=function(ind, counts=TotalCounts_AllInd, usage=usageTot_2peak){
+  ind=enquo(ind)
+  #compute usage stats
+  #seperate usage
+  usage_ind=usage %&gt;% select(gene, !!ind) 
+  usage_other = usage %&gt;% select(-gene,-!!ind) %&gt;% rowMeans()
+  usage_indVal=as.data.frame(cbind(usage_ind,usage_other))
+  usage_indVal$val=abs(usage_indVal[,2] - usage_indVal[,3])
+  usage_indVal2= usage_indVal%&gt;% group_by(gene) %&gt;% select(gene, val) %&gt;% distinct(gene, .keep_all=T) 
+  #seperate genes by percentile for this ind
+  count_ind= counts %&gt;% select(gene, !!ind)
+  colnames(count_ind)=c(&quot;gene&quot;, &quot;count&quot;)
+  count_ind = count_ind %&gt;%  group_by(gene) %&gt;% summarize(Exp=sum(count)) %&gt;% filter(Exp &gt;0)  %&gt;% mutate(Percentile = percent_rank(Exp)) 
+  count_ind_perc10= count_ind %&gt;% filter(Percentile&lt;.1)
+  count_ind_perc20= count_ind %&gt;% filter(Percentile&lt;.2, Percentile&gt;.1)
+  count_ind_perc30= count_ind %&gt;% filter(Percentile&lt;.3, Percentile&gt;.2)
+  count_ind_perc40= count_ind %&gt;% filter(Percentile&lt;.4, Percentile&gt;.3)
+  count_ind_perc50= count_ind %&gt;% filter(Percentile&lt;.5, Percentile&gt;.4)
+  count_ind_perc60= count_ind %&gt;% filter(Percentile&lt;.6, Percentile&gt;.5)
+  count_ind_perc70= count_ind %&gt;% filter(Percentile&lt;.7, Percentile&gt;.6)
+  count_ind_perc80= count_ind %&gt;% filter(Percentile&lt;8, Percentile&gt;.7)
+  count_ind_perc90= count_ind %&gt;% filter(Percentile&lt;.9, Percentile&gt;.8)
+  count_ind_perc100= count_ind %&gt;% filter(Percentile&lt;1, Percentile&gt;.9)
+  #subset and sum usage 
+  out10_df= usage_indVal2 %&gt;% inner_join(count_ind_perc10, by=&quot;gene&quot;)
+  out20_df= usage_indVal2 %&gt;% inner_join(count_ind_perc20, by=&quot;gene&quot;)
+  out30_df= usage_indVal2 %&gt;% inner_join(count_ind_perc30, by=&quot;gene&quot;)
+  out40_df= usage_indVal2 %&gt;% inner_join(count_ind_perc40, by=&quot;gene&quot;)
+  out50_df= usage_indVal2 %&gt;% inner_join(count_ind_perc50, by=&quot;gene&quot;)
+  out60_df= usage_indVal2 %&gt;% inner_join(count_ind_perc60, by=&quot;gene&quot;)
+  out70_df= usage_indVal2 %&gt;% inner_join(count_ind_perc70, by=&quot;gene&quot;)
+  out80_df= usage_indVal2 %&gt;% inner_join(count_ind_perc80, by=&quot;gene&quot;)
+  out90_df= usage_indVal2 %&gt;% inner_join(count_ind_perc90, by=&quot;gene&quot;)
+  out100_df= usage_indVal2 %&gt;% inner_join(count_ind_perc100, by=&quot;gene&quot;)
+  #output list of 10 values
+  out= c((sum(out10_df$val)/nrow(out10_df)), (sum(out20_df$val)/nrow(out20_df)), (sum(out30_df$val)/nrow(out30_df)), (sum(out40_df$val)/nrow(out40_df)), (sum(out50_df$val)/nrow(out50_df)), (sum(out60_df$val)/nrow(out60_df)), (sum(out70_df$val)/nrow(out70_df)), (sum(out80_df$val)/nrow(out80_df)), (sum(out90_df$val)/nrow(out90_df)), (sum(out100_df$val)/nrow(out100_df)))
+  return(out)
+}</code></pre>
+<p>Run this function for each individual and append the result to a df:</p>
+<pre class="r"><code>Inds=colnames(TotalCounts_AllInd)[2:ncol(TotalCounts_AllInd)]
+Percentile=c(10,20,30,40,50,60,70,80,90,100)
+for (i in Inds){
+  x= perIndDiffUsage(i)
+  Percentile=cbind(Percentile, x)
+}
+colnames(Percentile)=c(&quot;Percentile&quot;, Inds)</code></pre>
+<pre class="r"><code>Lineorder=metadataTotal %&gt;% arrange(desc(reads))  %&gt;% select(line) %&gt;% mutate(sample=paste(&quot;NA&quot; , line, sep=&quot;&quot;))
+Lineorder=Lineorder$sample
+
+Percentile_df=as.data.frame(Percentile) %&gt;%   select(Percentile, Lineorder)
+
+#order the 
+
+Percentile_melt=melt(Percentile_df, id.vars=c(&quot;Percentile&quot;))
+colnames(Percentile_melt)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &quot;AvgUsageDiff&quot;)</code></pre>
+<p>Plot this:</p>
+<pre class="r"><code>ggplot(Percentile_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Average peak usage difference for individaul vs. others \n by percentile of gene counts arranged by reads counts&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Lineorder_map=metadataTotal %&gt;% arrange(desc(Mapped_noMP))  %&gt;% select(line) %&gt;% mutate(sample=paste(&quot;NA&quot; , line, sep=&quot;&quot;))
+Lineorder_map=Lineorder_map$sample
+
+Percentile_df2=as.data.frame(Percentile) %&gt;%   select(Percentile, Lineorder_map)
+
+#order the 
+
+Percentile_melt2=melt(Percentile_df2, id.vars=c(&quot;Percentile&quot;))
+colnames(Percentile_melt2)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &quot;AvgUsageDiff&quot;)
+
+ggplot(Percentile_melt2, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Average peak usage difference for individaul vs. others \n by percentile of gene counts arranged by mapped reads counts&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
