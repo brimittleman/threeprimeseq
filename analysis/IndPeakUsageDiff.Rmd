@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(workflowr)
 library(reshape2)
+library(matrixStats)
 library(tidyverse)
 ```
 
@@ -481,3 +482,86 @@ colnames(Percentile_melt2)=c("Percentile", "Individual", "AvgUsageDiff")
 
 ggplot(Percentile_melt2, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Average peak usage difference for individaul vs. others \n by percentile of gene counts arranged by mapped reads counts") + scale_fill_gradientn(colours = c("white", "red", "black"))
 ```
+
+
+Try this again but with Z scores. I will get the mean and SD for each peak and compute the |x-mean|/sd  
+
+
+```{r}
+perIndDiffUsage_Z=function(ind, counts=TotalCounts_AllInd, usage=usageTot_2peak){
+  ind=enquo(ind)
+  #compute usage stats
+  #seperate usage
+  usage_ind=usage %>% select(gene, !!ind) 
+  usage_mean = usage %>% select(-gene) %>% rowMeans()
+  usage_df=usage %>% select(-gene) 
+  usage_sd= as.matrix(usage_df)%>% rowSds()
+  usage_indVal=as.data.frame(cbind(usage_ind,usage_mean, usage_sd))
+  usage_indVal$val=abs(usage_indVal[,2] - usage_indVal[,3])/usage_indVal[,4]
+  usage_indVal2= usage_indVal%>% group_by(gene) %>% select(gene, val) %>% distinct(gene, .keep_all=T) 
+  #seperate genes by percentile for this ind
+  count_ind= counts %>% select(gene, !!ind)
+  colnames(count_ind)=c("gene", "count")
+  count_ind = count_ind %>%  group_by(gene) %>% summarize(Exp=sum(count)) %>% filter(Exp >0)  %>% mutate(Percentile = percent_rank(Exp)) 
+  count_ind_perc10= count_ind %>% filter(Percentile<.1)
+  count_ind_perc20= count_ind %>% filter(Percentile<.2, Percentile>.1)
+  count_ind_perc30= count_ind %>% filter(Percentile<.3, Percentile>.2)
+  count_ind_perc40= count_ind %>% filter(Percentile<.4, Percentile>.3)
+  count_ind_perc50= count_ind %>% filter(Percentile<.5, Percentile>.4)
+  count_ind_perc60= count_ind %>% filter(Percentile<.6, Percentile>.5)
+  count_ind_perc70= count_ind %>% filter(Percentile<.7, Percentile>.6)
+  count_ind_perc80= count_ind %>% filter(Percentile<8, Percentile>.7)
+  count_ind_perc90= count_ind %>% filter(Percentile<.9, Percentile>.8)
+  count_ind_perc100= count_ind %>% filter(Percentile<1, Percentile>.9)
+  #subset and sum usage 
+  out10_df= usage_indVal2 %>% inner_join(count_ind_perc10, by="gene")
+  out20_df= usage_indVal2 %>% inner_join(count_ind_perc20, by="gene")
+  out30_df= usage_indVal2 %>% inner_join(count_ind_perc30, by="gene")
+  out40_df= usage_indVal2 %>% inner_join(count_ind_perc40, by="gene")
+  out50_df= usage_indVal2 %>% inner_join(count_ind_perc50, by="gene")
+  out60_df= usage_indVal2 %>% inner_join(count_ind_perc60, by="gene")
+  out70_df= usage_indVal2 %>% inner_join(count_ind_perc70, by="gene")
+  out80_df= usage_indVal2 %>% inner_join(count_ind_perc80, by="gene")
+  out90_df= usage_indVal2 %>% inner_join(count_ind_perc90, by="gene")
+  out100_df= usage_indVal2 %>% inner_join(count_ind_perc100, by="gene")
+  #output list of 10 values
+  out= c((sum(out10_df$val)/nrow(out10_df)), (sum(out20_df$val)/nrow(out20_df)), (sum(out30_df$val)/nrow(out30_df)), (sum(out40_df$val)/nrow(out40_df)), (sum(out50_df$val)/nrow(out50_df)), (sum(out60_df$val)/nrow(out60_df)), (sum(out70_df$val)/nrow(out70_df)), (sum(out80_df$val)/nrow(out80_df)), (sum(out90_df$val)/nrow(out90_df)), (sum(out100_df$val)/nrow(out100_df)))
+  return(out)
+}
+```
+
+```{r}
+Inds=colnames(TotalCounts_AllInd)[2:ncol(TotalCounts_AllInd)]
+Percentile_z=c(10,20,30,40,50,60,70,80,90,100)
+for (i in Inds){
+  x= perIndDiffUsage_Z(i)
+  Percentile_z=cbind(Percentile_z, x)
+}
+colnames(Percentile_z)=c("Percentile", Inds)
+```
+
+
+```{r}
+Percentile_z_df=as.data.frame(Percentile_z) %>%   select(Percentile, Lineorder)
+
+#order the 
+
+Percentile_z_melt=melt(Percentile_z_df, id.vars=c("Percentile"))
+colnames(Percentile_z_melt)=c("Percentile", "Individual", "AvgUsageDiff")
+
+
+ggplot(Percentile_z_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Peak usage difference Z score for individaul vs. others \n by percentile of gene counts arranged by reads counts") + scale_fill_gradientn(colours = c("white", "red", "black"))
+```
+Do this by the mapped reads: 
+
+```{r}
+Percentile_z_df2=as.data.frame(Percentile_z) %>%   select(Percentile, Lineorder_map)
+
+#order the 
+
+Percentile_z_melt2=melt(Percentile_z_df2, id.vars=c("Percentile"))
+colnames(Percentile_z_melt2)=c("Percentile", "Individual", "AvgUsageDiff")
+
+ggplot(Percentile_z_melt2, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Peak usage difference Z score for individaul vs. others \n by percentile of gene counts arranged by mapped reads counts") + scale_fill_gradientn(colours = c("white", "red", "black"))
+```
+
