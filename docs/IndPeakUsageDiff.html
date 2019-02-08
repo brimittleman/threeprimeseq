@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-02-07</p>
+<p><strong>Last updated:</strong> 2019-02-08</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/8a106d5b303baaaf3e16b8820e5352819b294207" target="_blank">8a106d5</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4118f08d4e8d307d04fd4b1080e2346f4b31e827" target="_blank">4118f08</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -520,6 +520,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4118f08d4e8d307d04fd4b1080e2346f4b31e827/analysis/IndPeakUsageDiff.Rmd" target="_blank">4118f08</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-08
+</td>
+<td style="text-align:left;">
+add z score
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/39a94532136104ed281bef8b310a1ebec234e7ee/docs/IndPeakUsageDiff.html" target="_blank">39a9453</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/8a106d5b303baaaf3e16b8820e5352819b294207/analysis/IndPeakUsageDiff.Rmd" target="_blank">8a106d5</a>
 </td>
 <td style="text-align:left;">
@@ -643,13 +677,15 @@ initiate ind peak usage diff analysis
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
+library(matrixStats)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::count()  masks matrixStats::count()
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <p>So far i have been looking at mean peak usage for my filters. As a QC metric, I want to look at the variance in this measurement. I want to understand the reproducibility of the data at a usage percent level. I also want to see if this value is dependent on coverage. I will look at the peaks used in the <a href="pipeline_55Ind.html">QTL analysis with 55 individuals</a> and comopute an RNSD value for each gene. This value is computed as <span class="math inline">\(\sqrt{\sum_{n=1}^N (X-Y)^2}\)</span>. Here n is the number of peaks in the gene up to N. X and Y are different individuals. I will plot this value for each gene. I can do this for 2 individuals with low depth and 2 with high depth.</p>
@@ -1101,6 +1137,36 @@ colnames(Percentile_melt)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &quo
 <p>Plot this:</p>
 <pre class="r"><code>ggplot(Percentile_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Average peak usage difference for individaul vs. others \n by percentile of gene counts arranged by reads counts&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
 <p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-37-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/39a94532136104ed281bef8b310a1ebec234e7ee/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-37-1.png" target="_blank">39a9453</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>Lineorder_map=metadataTotal %&gt;% arrange(desc(Mapped_noMP))  %&gt;% select(line) %&gt;% mutate(sample=paste(&quot;NA&quot; , line, sep=&quot;&quot;))
 Lineorder_map=Lineorder_map$sample
 
@@ -1113,6 +1179,103 @@ colnames(Percentile_melt2)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &qu
 
 ggplot(Percentile_melt2, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Average peak usage difference for individaul vs. others \n by percentile of gene counts arranged by mapped reads counts&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
 <p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-38-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/39a94532136104ed281bef8b310a1ebec234e7ee/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-38-1.png" target="_blank">39a9453</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Try this again but with Z scores. I will get the mean and SD for each peak and compute the |x-mean|/sd</p>
+<pre class="r"><code>perIndDiffUsage_Z=function(ind, counts=TotalCounts_AllInd, usage=usageTot_2peak){
+  ind=enquo(ind)
+  #compute usage stats
+  #seperate usage
+  usage_ind=usage %&gt;% select(gene, !!ind) 
+  usage_mean = usage %&gt;% select(-gene) %&gt;% rowMeans()
+  usage_df=usage %&gt;% select(-gene) 
+  usage_sd= as.matrix(usage_df)%&gt;% rowSds()
+  usage_indVal=as.data.frame(cbind(usage_ind,usage_mean, usage_sd))
+  usage_indVal$val=abs(usage_indVal[,2] - usage_indVal[,3])/usage_indVal[,4]
+  usage_indVal2= usage_indVal%&gt;% group_by(gene) %&gt;% select(gene, val) %&gt;% distinct(gene, .keep_all=T) 
+  #seperate genes by percentile for this ind
+  count_ind= counts %&gt;% select(gene, !!ind)
+  colnames(count_ind)=c(&quot;gene&quot;, &quot;count&quot;)
+  count_ind = count_ind %&gt;%  group_by(gene) %&gt;% summarize(Exp=sum(count)) %&gt;% filter(Exp &gt;0)  %&gt;% mutate(Percentile = percent_rank(Exp)) 
+  count_ind_perc10= count_ind %&gt;% filter(Percentile&lt;.1)
+  count_ind_perc20= count_ind %&gt;% filter(Percentile&lt;.2, Percentile&gt;.1)
+  count_ind_perc30= count_ind %&gt;% filter(Percentile&lt;.3, Percentile&gt;.2)
+  count_ind_perc40= count_ind %&gt;% filter(Percentile&lt;.4, Percentile&gt;.3)
+  count_ind_perc50= count_ind %&gt;% filter(Percentile&lt;.5, Percentile&gt;.4)
+  count_ind_perc60= count_ind %&gt;% filter(Percentile&lt;.6, Percentile&gt;.5)
+  count_ind_perc70= count_ind %&gt;% filter(Percentile&lt;.7, Percentile&gt;.6)
+  count_ind_perc80= count_ind %&gt;% filter(Percentile&lt;8, Percentile&gt;.7)
+  count_ind_perc90= count_ind %&gt;% filter(Percentile&lt;.9, Percentile&gt;.8)
+  count_ind_perc100= count_ind %&gt;% filter(Percentile&lt;1, Percentile&gt;.9)
+  #subset and sum usage 
+  out10_df= usage_indVal2 %&gt;% inner_join(count_ind_perc10, by=&quot;gene&quot;)
+  out20_df= usage_indVal2 %&gt;% inner_join(count_ind_perc20, by=&quot;gene&quot;)
+  out30_df= usage_indVal2 %&gt;% inner_join(count_ind_perc30, by=&quot;gene&quot;)
+  out40_df= usage_indVal2 %&gt;% inner_join(count_ind_perc40, by=&quot;gene&quot;)
+  out50_df= usage_indVal2 %&gt;% inner_join(count_ind_perc50, by=&quot;gene&quot;)
+  out60_df= usage_indVal2 %&gt;% inner_join(count_ind_perc60, by=&quot;gene&quot;)
+  out70_df= usage_indVal2 %&gt;% inner_join(count_ind_perc70, by=&quot;gene&quot;)
+  out80_df= usage_indVal2 %&gt;% inner_join(count_ind_perc80, by=&quot;gene&quot;)
+  out90_df= usage_indVal2 %&gt;% inner_join(count_ind_perc90, by=&quot;gene&quot;)
+  out100_df= usage_indVal2 %&gt;% inner_join(count_ind_perc100, by=&quot;gene&quot;)
+  #output list of 10 values
+  out= c((sum(out10_df$val)/nrow(out10_df)), (sum(out20_df$val)/nrow(out20_df)), (sum(out30_df$val)/nrow(out30_df)), (sum(out40_df$val)/nrow(out40_df)), (sum(out50_df$val)/nrow(out50_df)), (sum(out60_df$val)/nrow(out60_df)), (sum(out70_df$val)/nrow(out70_df)), (sum(out80_df$val)/nrow(out80_df)), (sum(out90_df$val)/nrow(out90_df)), (sum(out100_df$val)/nrow(out100_df)))
+  return(out)
+}</code></pre>
+<pre class="r"><code>Inds=colnames(TotalCounts_AllInd)[2:ncol(TotalCounts_AllInd)]
+Percentile_z=c(10,20,30,40,50,60,70,80,90,100)
+for (i in Inds){
+  x= perIndDiffUsage_Z(i)
+  Percentile_z=cbind(Percentile_z, x)
+}
+colnames(Percentile_z)=c(&quot;Percentile&quot;, Inds)</code></pre>
+<pre class="r"><code>Percentile_z_df=as.data.frame(Percentile_z) %&gt;%   select(Percentile, Lineorder)
+
+#order the 
+
+Percentile_z_melt=melt(Percentile_z_df, id.vars=c(&quot;Percentile&quot;))
+colnames(Percentile_z_melt)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &quot;AvgUsageDiff&quot;)
+
+
+ggplot(Percentile_z_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Peak usage difference Z score for individaul vs. others \n by percentile of gene counts arranged by reads counts&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /> Do this by the mapped reads:</p>
+<pre class="r"><code>Percentile_z_df2=as.data.frame(Percentile_z) %&gt;%   select(Percentile, Lineorder_map)
+
+#order the 
+
+Percentile_z_melt2=melt(Percentile_z_df2, id.vars=c(&quot;Percentile&quot;))
+colnames(Percentile_z_melt2)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &quot;AvgUsageDiff&quot;)
+
+ggplot(Percentile_z_melt2, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Peak usage difference Z score for individaul vs. others \n by percentile of gene counts arranged by mapped reads counts&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -1131,15 +1294,17 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
- [5] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
- [9] ggplot2_3.0.0   tidyverse_1.2.1 reshape2_1.4.3  workflowr_1.1.1
+ [1] bindrcpp_0.2.2     forcats_0.3.0      stringr_1.3.1     
+ [4] dplyr_0.7.6        purrr_0.2.5        readr_1.1.1       
+ [7] tidyr_0.8.1        tibble_1.4.2       ggplot2_3.0.0     
+[10] tidyverse_1.2.1    matrixStats_0.54.0 reshape2_1.4.3    
+[13] workflowr_1.1.1   
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
  [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
  [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[10] withr_2.1.2       glue_1.3.0        R.utils_2.7.0    
 [13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
 [16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
 [19] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
