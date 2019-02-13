@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-31</p>
+<p><strong>Last updated:</strong> 2019-02-13</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4541f4c4a7026705ec8c0d7a6905b3175659dfc4" target="_blank">4541f4c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4e0fbe4afbe04daade70f5f33e849acb0b254b0d" target="_blank">4e0fbe4</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -354,10 +354,12 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
+    Ignored:    data/perm_QTL_trans_noMP_5percov/
     Ignored:    output/.DS_Store
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/4suDataIGV.Rmd
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
@@ -369,6 +371,7 @@ Untracked files:
     Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ApaQTLs/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
@@ -409,6 +412,7 @@ Untracked files:
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
     Untracked:  data/explainProtVar/
+    Untracked:  data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -433,10 +437,10 @@ Untracked files:
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
     Untracked:  data/perm_QTL_trans_filt/
-    Untracked:  data/perm_QTL_trans_noMP_5percov/
     Untracked:  data/protAndAPAAndExplmRes.Rda
     Untracked:  data/protAndAPAlmRes.Rda
     Untracked:  data/protAndExpressionlmRes.Rda
@@ -451,6 +455,10 @@ Untracked files:
     Untracked:  data/temp.gencov.test.txt
     Untracked:  data/temp.gencov_zero.test.txt
     Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  data/threePrimeSeqMetaData55Ind.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -458,6 +466,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/accountMapBias.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -473,6 +482,7 @@ Unstaged changes:
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/peakQCPPlots.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
     Modified:   analysis/understandPeaks.Rmd
@@ -505,6 +515,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4e0fbe4afbe04daade70f5f33e849acb0b254b0d/analysis/ApproachForGeneAssignment.Rmd" target="_blank">4e0fbe4</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-13
+</td>
+<td style="text-align:left;">
+add gene location plot
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f91ab35a90c5485f29aebe06f7f51ff8ed3c4863/docs/ApproachForGeneAssignment.html" target="_blank">f91ab35</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-31
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1318,12 +1362,12 @@ convert(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTrans
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
@@ -1760,27 +1804,27 @@ Briana Mittleman
 <pre class="r"><code>filterHighPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.4) %&gt;% arrange(deltapsi)
 slice(filterHighPSI, 1:10)</code></pre>
 <pre><code>                              intron              logef           Nuclear
-1  chr20:58647920:58648008:C20orf197  -1.30029968847689  0.75961199274038
-2       chr16:81123538:81123627:GCSH  -1.74065267433486 0.670469380269928
-3         chr6:84007319:84007404:ME1  -1.78018772633575 0.606503443795698
-4        chr3:60357325:60357413:FHIT  -1.26667104228337 0.610069267936541
-5  chr19:36806427:36806515:LINC00665  -1.07992220081782 0.777431269442217
-6      chr5:158459560:158459648:EBF1  -1.42831987542981 0.748019907501062
-7      chr14:51976014:51976057:FRMD6  -1.78704520971336 0.547050860607198
-8   chr7:147596894:147596932:CNTNAP2 -0.774209465545986 0.705908150746242
-9      chr9:86581185:86581267:MIR7-1  -1.06118532400755   0.8197624679828
-10  chr9:131123419:131123501:SLC27A4 -0.785767406518831  0.78532017459677
-                Total   deltapsi
-1   0.189994498257158 -0.5696175
-2   0.137387545557619 -0.5330818
-3   0.094302459218906 -0.5122010
-4   0.110490691620035 -0.4995786
-5   0.287187087245474 -0.4902442
-6   0.266472225627269 -0.4815477
-7  0.0746333216691989 -0.4724175
-8   0.238177555374367 -0.4677306
-9   0.352599645113899 -0.4671628
-10  0.327502618698554 -0.4578176</code></pre>
+1       chr16:81123538:81123627:GCSH  -1.79087571426241 0.724883044705174
+2     chr3:25705115:25705187:MIR4442  -1.32432047353345 0.660590394608791
+3         chr6:84007319:84007404:ME1  -1.68685519425574 0.671530253986571
+4  chr19:36806427:36806515:LINC00665  -1.17617088053315 0.809837765186814
+5      chr14:47718556:47718593:MDGA2   -1.1825787812967 0.659822642518761
+6      chr14:51976014:51976057:FRMD6  -1.56759469994778 0.636611882071359
+7  chr20:58647920:58648008:C20orf197  -1.09984402063945 0.691727788494324
+8      chr6:37812035:37812094:ZFAND3  -1.61085385492872 0.617570611488878
+9     chr8:104953022:104953097:RIMS2  -1.39009184488063 0.611545558430189
+10  chr7:147596894:147596932:CNTNAP2 -0.827276301229926  0.72731101101958
+               Total   deltapsi
+1  0.151199900846243 -0.5736831
+2  0.121029754316441 -0.5395606
+3  0.134625920458626 -0.5369043
+4   0.28835529406143 -0.5214825
+5  0.154119006269487 -0.5057036
+6  0.139375449680577 -0.4972364
+7  0.199171791192942 -0.4925560
+8  0.127058493301525 -0.4905121
+9   0.13467815341195 -0.4768674
+10 0.259840841892183 -0.4674702</code></pre>
 <p>Files to make: -bed file with all 5% peaks (named with gene)</p>
 <p>Convert Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF to a bed file</p>
 <p>Chrom, start, end, name, score, strand</p>
@@ -1874,38 +1918,38 @@ nuclear: 0.14461538</p>
 <h3>Evaluate mid level differences</h3>
 <pre class="r"><code>filtermidPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.1,  abs(deltapsi)&lt;.2 ) %&gt;% arrange(desc(deltapsi))
 slice(filtermidPSI, 1:15)</code></pre>
-<pre><code>                               intron             logef            Nuclear
-1  chr12:8397823:8397909:LOC101927905 0.448461429949208  0.250725451684143
-2    chr1:219385083:219385168:LYPLAL1 0.954954667285417   0.47522506522198
-3       chr21:16333556:16333644:NRIP1 0.836443235134216  0.351219846182051
-4    chr15:37102357:37102448:C15orf41  1.47799526856201 0.0446234385277765
-5      chr3:57611182:57611269:DENND6A  1.06294476937985  0.647880789005199
-6     chr13:41493162:41493319:TPTE2P5  1.02758163936723  0.120932187018109
-7        chr16:70514471:70514557:COG4 0.966111688983429   0.71445630320153
-8        chr16:58741035:58741118:GOT2  1.18588583796077  0.773862280159172
-9      chr6:10756725:10757026:TMEM14B 0.602233504297137  0.500765966416333
-10      chr11:94153032:94153131:MRE11 0.459564470994093  0.329029417246997
-11      chr20:42275772:42275861:IFT52  1.06151089956002  0.765140743199829
-12        chr7:75162621:75162703:HIP1 0.740637787039692  0.659230309804744
-13     chr20:18364013:18364097:DZANK1 0.821963077144347  0.502350766672134
-14      chr4:185308878:185308968:IRF2 0.618692449311092  0.244938382583888
-15     chr1:200520630:200520714:KIF14 0.679726537109473  0.559096573104719
+<pre><code>                             intron             logef            Nuclear
+1   chr7:116558622:116558788:CAPZA2  1.28459436326155  0.166180284419304
+2    chr5:115167277:115167361:ATG12 0.909881927754279  0.259166063283374
+3   chr2:136102694:136102780:ZRANB3  1.24760550899784 0.0955688783220675
+4  chr19:19223611:19223703:SLC25A42  1.37244962915517  0.743116509482767
+5      chr6:35541367:35541452:FKBP5 0.863187232428243  0.231509000435571
+6       chr11:8413414:8413511:STK33  1.25057093458231   0.19314125556685
+7   chr8:145747318:145747406:LRRC14  0.57866486133952  0.138310661259947
+8    chr14:93306089:93306171:GOLGA5 0.927253025303143  0.255386508299208
+9        chr6:49398073:49398145:MUT 0.514507311266853  0.293792753148935
+10  chr14:74181826:74181916:ELMSAN1 0.717385819075523  0.327901407093237
+11     chr7:72039499:72039585:TYW1B  1.16310751313402  0.203541290866254
+12    chr6:83878048:83878191:DOPEY1 0.860563963938396  0.183715086476799
+13  chr11:19197879:19197962:ZDHHC13 0.732473498709712  0.263254598861606
+14    chr18:23971562:23971647:TAF4B  1.23543317865466 0.0851874732097812
+15  chr13:43681462:43681563:DNAJC15 0.897804629299911  0.584785689718398
                Total  deltapsi
-1   0.45070463537782 0.1999792
-2  0.675186030796747 0.1999610
-3  0.551128323720684 0.1999085
-4  0.244503990743873 0.1998806
-5  0.847659137175468 0.1997783
-6  0.320706102127373 0.1997739
-7  0.914220776425143 0.1997645
-8  0.973455289793462 0.1995930
-9  0.700276572781718 0.1995106
-10 0.528529300729028 0.1994999
-11 0.964569032134389 0.1994283
-12 0.858643155030094 0.1994128
-13 0.701691505947061 0.1993407
-14 0.444264508262277 0.1993261
-15 0.758376508386949 0.1992799</code></pre>
+1  0.366129635692815 0.1999494
+2  0.459039198885798 0.1998731
+3  0.295437340049888 0.1998685
+4  0.942932116943742 0.1998156
+5  0.431306079077603 0.1997971
+6  0.392894273645649 0.1997530
+7  0.338035107525039 0.1997244
+8  0.455093847920976 0.1997073
+9  0.493491781248813 0.1996990
+10 0.527419993916497 0.1995186
+11 0.402974660777138 0.1994334
+12 0.383135912460267 0.1994208
+13  0.46253392311505 0.1992793
+14 0.284422574325073 0.1992351
+15 0.783952368302737 0.1991667</code></pre>
 <ul>
 <li>LOC101927905- not a great example because this is not a protein coding gene.</li>
 </ul>
@@ -2140,12 +2184,12 @@ Rscript APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.R </code></pre>
 
 Sig_TotQTLs= totQTLs %&gt;% filter(-log10(bh)&gt;=1)
 nrow(Sig_TotQTLs)</code></pre>
-<pre><code>[1] 97</code></pre>
+<pre><code>[1] 363</code></pre>
 <pre class="r"><code>nucQTLs=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)
 
 Sig_NucQTLs= nucQTLs %&gt;% filter(-log10(bh)&gt;=1)
 nrow(Sig_NucQTLs)</code></pre>
-<pre><code>[1] 196</code></pre>
+<pre><code>[1] 623</code></pre>
 </div>
 </div>
 <div id="validatation-for-these-assignments" class="section level2">
@@ -2482,7 +2526,141 @@ F-statistic:  9416 on 1 and 10596 DF,  p-value: &lt; 2.2e-16</code></pre>
        
 corr_18486Tot </code></pre>
 <p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-60-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f91ab35a90c5485f29aebe06f7f51ff8ed3c4863/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-60-1.png" target="_blank">f91ab35</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-01-31
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>This is in line with the estimates from when I filtered out close genes and all of that. (<a href="https://brimittleman.github.io/threeprimeseq/InvestigatePeak2GeneAssignment.html" class="uri">https://brimittleman.github.io/threeprimeseq/InvestigatePeak2GeneAssignment.html</a>)</p>
+</div>
+<div id="where-are-the-peaks" class="section level3">
+<h3>Where are the peaks</h3>
+<p>I want to look at how many peaks fall into each of the gene assignment conditions. 5’ UTR<br />
+Coding Exon<br />
+Intron<br />
+3’ UTR<br />
+(downstream 5000)-downstream proximal region</p>
+<p>processGenLocPeakAnno2SAF_withAnno.py</p>
+<pre class="bash"><code>inFile=&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed&quot;
+outFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_withAnno.SAF&quot; , &quot;w&quot;)
+
+outFile.write(&quot;GeneID\tChr\tStart\tEnd\tStrand\n&quot;)
+for ln in open(inFile, &quot;r&quot;):
+    chrom, start, end, peak, cov, strand, score, anno = ln.split()
+    if anno==&quot;.&quot;: 
+        continue  
+    anno_lst=anno.split(&quot;,&quot;)
+    if len(anno_lst)==1:
+        gene=anno_lst[0].split(&quot;:&quot;)[1]
+        print(&quot;1 gene&quot;)
+        anno=anno_lst[0].split(&quot;:&quot;)[0]
+        peak_i=int(peak)
+        start_i=int(start)
+        end_i=int(end)
+        ID=&quot;peak%d:%s:%d:%d:%s:%s:%s&quot;%(peak_i, chrom, start_i, end_i, strand, gene,anno)
+        outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+    else:
+        type_dic={}
+        for each in anno_lst:
+            type_dic[each.split(&quot;:&quot;)[0]]=each.split(&quot;:&quot;)[1]
+        if &quot;utr3&quot; in type_dic.keys():
+            gene=type_dic[&quot;utr3&quot;]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s:utr3&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+        elif &quot;end&quot; in type_dic.keys():
+            gene=type_dic[&quot;end&quot;]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s:end&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+        elif &quot;cds&quot; in type_dic.keys():
+            gene=type_dic[&quot;cds&quot;] 
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s:cds&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+        elif &quot;utr5&quot; in type_dic.keys():
+            gene=type_dic[&quot;utr5&quot;]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s:utr5&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+        elif &quot;intron&quot; in type_dic.keys():
+            gene=type_dic[&quot;intron&quot;]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID=&quot;peak%d:%s:%d:%d:%s:%s:intron&quot;%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write(&quot;%s\t%s\t%d\t%d\t%s\n&quot;%(ID, chrom, start_i, end_i, strand))
+
+outFile.close()</code></pre>
+<p>I now need to filter to 5%</p>
+<p>filternamePeaks5percCov_GeneLocAnno_withAnno.py</p>
+<pre class="bash"><code>assignedPeaks=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_withAnno.SAF&quot;,&quot;r&quot;)
+outFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF&quot;, &quot;w&quot;)
+
+totalokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt&quot;
+nuclearokPeaks5perc_file=&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt&quot;
+
+allPeakOk={}
+for ln in open(nuclearokPeaks5perc_file,&quot;r&quot;):
+    peakname=ln.split()[5]
+    peaknum=peakname[4:]
+    allPeakOk[peaknum]=&quot;&quot;
+for ln in open(totalokPeaks5perc_file,&quot;r&quot;):
+    peakname=ln.split()[5]
+    peaknum=peakname[4:]
+    if peaknum not in allPeakOk.keys():
+        allPeakOk[peaknum]=&quot;&quot;
+        
+for i, ln in enumerate(assignedPeaks): 
+    if i == 0:
+        outFile.write(ln)
+    else:
+        ID=ln.split()[0]
+        peak=ID.split(&quot;:&quot;)[0]
+        peak_num=peak[4:]
+        if peak_num in allPeakOk.keys():
+             outFile.write(ln)
+outFile.close()
+    </code></pre>
+<pre class="r"><code>peakswAnno=read.table(&quot;../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF&quot;, header=T) %&gt;% separate(GeneID, into=c(&quot;Peak&quot;, &quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;loc&quot;),sep=&quot;:&quot;) %&gt;% select(Peak, loc) %&gt;% group_by(loc) %&gt;% summarise(Num=n())</code></pre>
+<pre class="r"><code>locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;blue&quot;) + labs(x=&quot;Gene Location&quot;, y=&quot;Number of Peaks&quot;, title=&quot;Location distribution for all PAS with 5% Usage&quot;)
+locationOfPeaks</code></pre>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-64-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(locationOfPeaks, file=&quot;../output/plots/PeakLocationByAnnotation.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
