@@ -1717,3 +1717,126 @@ corr_18486Tot
 
 This is in line with the estimates from when I filtered out close genes and all of that. (https://brimittleman.github.io/threeprimeseq/InvestigatePeak2GeneAssignment.html)  
 
+
+###Where are the peaks
+
+I want to look at how many peaks fall into each of the gene assignment conditions. 
+5’ UTR  
+Coding Exon  
+Intron  
+3’ UTR  
+(downstream 5000)-downstream proximal region  
+
+
+
+processGenLocPeakAnno2SAF_withAnno.py
+```{bash,eval=F}
+inFile="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed"
+outFile=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_withAnno.SAF" , "w")
+
+outFile.write("GeneID\tChr\tStart\tEnd\tStrand\n")
+for ln in open(inFile, "r"):
+    chrom, start, end, peak, cov, strand, score, anno = ln.split()
+    if anno==".": 
+        continue  
+    anno_lst=anno.split(",")
+    if len(anno_lst)==1:
+        gene=anno_lst[0].split(":")[1]
+        print("1 gene")
+        anno=anno_lst[0].split(":")[0]
+        peak_i=int(peak)
+        start_i=int(start)
+        end_i=int(end)
+        ID="peak%d:%s:%d:%d:%s:%s:%s"%(peak_i, chrom, start_i, end_i, strand, gene,anno)
+        outFile.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+    else:
+        type_dic={}
+        for each in anno_lst:
+            type_dic[each.split(":")[0]]=each.split(":")[1]
+        if "utr3" in type_dic.keys():
+            gene=type_dic["utr3"]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID="peak%d:%s:%d:%d:%s:%s:utr3"%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+        elif "end" in type_dic.keys():
+            gene=type_dic["end"]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID="peak%d:%s:%d:%d:%s:%s:end"%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+        elif "cds" in type_dic.keys():
+            gene=type_dic["cds"] 
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID="peak%d:%s:%d:%d:%s:%s:cds"%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+        elif "utr5" in type_dic.keys():
+            gene=type_dic["utr5"]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID="peak%d:%s:%d:%d:%s:%s:utr5"%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+        elif "intron" in type_dic.keys():
+            gene=type_dic["intron"]
+            peak_i=int(peak)
+            start_i=int(start)
+            end_i=int(end)
+            ID="peak%d:%s:%d:%d:%s:%s:intron"%(peak_i, chrom, start_i, end_i, strand, gene)
+            outFile.write("%s\t%s\t%d\t%d\t%s\n"%(ID, chrom, start_i, end_i, strand))
+
+outFile.close()
+```
+
+I now need to filter to 5%  
+
+filternamePeaks5percCov_GeneLocAnno_withAnno.py
+```{bash,eval=F}
+assignedPeaks=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_withAnno.SAF","r")
+outFile=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF", "w")
+
+totalokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt"
+nuclearokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt"
+
+allPeakOk={}
+for ln in open(nuclearokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    peaknum=peakname[4:]
+    allPeakOk[peaknum]=""
+for ln in open(totalokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    peaknum=peakname[4:]
+    if peaknum not in allPeakOk.keys():
+        allPeakOk[peaknum]=""
+        
+for i, ln in enumerate(assignedPeaks): 
+    if i == 0:
+        outFile.write(ln)
+    else:
+        ID=ln.split()[0]
+        peak=ID.split(":")[0]
+        peak_num=peak[4:]
+        if peak_num in allPeakOk.keys():
+             outFile.write(ln)
+outFile.close()
+    
+```
+
+
+```{r}
+peakswAnno=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF", header=T) %>% separate(GeneID, into=c("Peak", "chrom", "start", "end", "strand", "gene", "loc"),sep=":") %>% select(Peak, loc) %>% group_by(loc) %>% summarise(Num=n())
+
+```
+
+
+
+```{r}
+locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat="identity", fill="blue") + labs(x="Gene Location", y="Number of Peaks", title="Location distribution for all PAS with 5% Usage")
+locationOfPeaks
+ggsave(locationOfPeaks, file="../output/plots/PeakLocationByAnnotation.png")
+```
+
