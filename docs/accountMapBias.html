@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-02-07</p>
+<p><strong>Last updated:</strong> 2019-02-14</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/3fea6443e9bd446a5da083b8b9ef810c249dca1a" target="_blank">3fea644</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/41a2537cd16478fc7ab8fe54e03bcd4c364010c7" target="_blank">41a2537</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -392,6 +392,7 @@ Untracked files:
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/YL_QTL_test/
@@ -457,13 +458,20 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData.csv
     Untracked:  data/threePrimeSeqMetaData55Ind.txt
     Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/ApproachForGeneAssignment.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/IndPeakUsageDiff.Rmd
+    Modified:   analysis/QConApaQTLs.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -517,6 +525,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/41a2537cd16478fc7ab8fe54e03bcd4c364010c7/analysis/accountMapBias.Rmd" target="_blank">41a2537</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-14
+</td>
+<td style="text-align:left;">
+add map stat plots
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b8cfd6ffc84bc9e2752e94ce76a747fe266bcc10/docs/accountMapBias.html" target="_blank">b8cfd6f</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-07
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/3fea6443e9bd446a5da083b8b9ef810c249dca1a/analysis/accountMapBias.Rmd" target="_blank">3fea644</a>
 </td>
 <td style="text-align:left;">
@@ -534,6 +576,21 @@ add accountmapbias
 </ul>
 <p></details></p>
 <hr />
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
 <p>We are worried there amy be false positives in the QTL analysis if the QTL is in the read and the snp leads to a mapping bias for the data. I can account for this using WASP.</p>
 <p>I have an example script from Yang:</p>
 <p>/project2/yangili1/yangili/TCGA_pipe/script_process.sh</p>
@@ -670,9 +727,398 @@ source activate three-prime-env
 
 
 for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP/*STARwWASP.bamAligned.out.bam)
-describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/combined.STARwWASP.bamAligned.out.bam//&quot;)
+do
+describer=$(echo ${i} | sed -e &#39;s/.*STAR_bam_WASP\///&#39; | sed -e &quot;s/combined.STARwWASP.bamAligned.out.bam//&quot;)
 sbatch SortIndexStarwWASP.sh $describer
 done</code></pre>
+<p>Now I want to filter out reads with mapping problems at place we see a variant. I want to keep reads with the vW:i:1 tag. ( I will resort and index these files after this step)</p>
+<p>I can use pysam to do this. Then I can move the final sorted duplicate files.</p>
+<p>filterBamBasedonWasp.py</p>
+<pre class="bash"><code>def main(Bamin, out):
+    okRead={}
+    #pysam to read in bam allignments
+    bamfile = pysam.AlignmentFile(Bamin, &quot;rb&quot;)
+    finalBam =  pysam.AlignmentFile(out, &quot;wb&quot;, template=bamfile)
+    n=0
+    k=0
+    #read name is the first col in each bam file
+    for read in bamfile.fetch():
+        #last piece is always the right piece  
+        #vw=read.split(\t)[-1]
+        if read.has_tag(&#39;vW&#39;):
+            x= read.get_tag(&#39;vW&#39;)
+            print(x)
+            if x == 1:
+                k+=1
+                finalBam.write(read)
+            else:
+                n+=1
+                continue
+        else:
+          finalBam.write(read)
+  
+    print(&quot;with wv&quot; + n)
+    print(&quot;pass filter&quot; + k)
+    bamfile.close()
+    finalBam.close()
+    
+    
+    
+if __name__ == &quot;__main__&quot;:
+    import sys, pysam
+    describer = sys.argv[1]
+    inBam=&quot;/project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/&quot; + describer + &quot;combined.STARwWASP.bamAligned.sort.bam&quot;
+    outBam=&quot;/project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered/&quot; + describer + &quot;combined.STARwWASP.bamAligned.filtered.out.bam&quot;
+    main(inBam, outBam)
+    
+    </code></pre>
+<p>Run this on all individuals:</p>
+<p>run_filterBamBasedonWasp.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=run_filterBamBasedonWasp
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_filterBamBasedonWasp.out
+#SBATCH --error=run_filterBamBasedonWasp.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/*.bam)
+do
+describer=$(echo ${i} | sed -e &#39;s/.*STAR_bam_WASP_sort\///&#39; | sed -e &quot;s/combined.STARwWASP.bamAligned.sort.bam//&quot;)
+python filterBamBasedonWasp.py $describer
+done </code></pre>
+<p>Sort and index these:</p>
+<p>SortIndexStarwWASP_filtered.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=SortIndexStarwWASP_filtered
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=SortIndexStarwWASP_filtered.out
+#SBATCH --error=SortIndexStarwWASP_filtered.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+describer=$1
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered/${describer}combined.STARwWASP.bamAligned.filtered.out.bam &gt; /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/${describer}combined.STARwWASP.bamAligned.filtered.sort.bam
+samtools index /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/${describer}combined.STARwWASP.bamAligned.filtered.sort.bam
+</code></pre>
+<p>wrap_SortIndexStarwWASP_filtered.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=wrap_SortIndexStarwWASP_filtered
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=wrap_SortIndexStarwWASP_filtered.out
+#SBATCH --error=wrap_SortIndexStarwWASP_filtered.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered/*STARwWASP.bamAligned.filtered.out.bam)
+do
+describer=$(echo ${i} | sed -e &#39;s/.*STAR_bam_WASP_filtered\///&#39; | sed -e &quot;s/combined.STARwWASP.bamAligned.filtered.out.bam//&quot;)
+sbatch SortIndexStarwWASP_filtered.sh $describer
+done</code></pre>
+<p>Now I need to make these into a bed format. I also will move the old files and but these in the sort/ bed/ dirs. This way I can use the same pipeline from the <a href="pipeline_55Ind.Rmd">Pipeline for 55 indivduals analysis</a>.</p>
+<p>At this point I will move the old bam and bed files to different directories</p>
+<ul>
+<li><p>/project2/gilad/briana/threeprimeseq/data/sort_oldmapp/</p></li>
+<li><p>/project2/gilad/briana/threeprimeseq/data/bed_sort_oldMap</p></li>
+<li><p>/project2/gilad/briana/threeprimeseq/data/bed_oldMap</p></li>
+</ul>
+<p>Run bam to bed:</p>
+<p>bam2BedandSort.waspmap.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=bam2BedandSort.waspmap
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=bam2BedandSort.waspmap.out
+#SBATCH --error=bam2BedandSort.waspmap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/*.bam)
+do
+describer=$(echo ${i} | sed -e &#39;s/.*STAR_bam_WASP_filtered_sort\///&#39; | sed -e &quot;s/.STARwWASP.bamAligned.filtered.sort.bam//&quot;)
+bedtools bamtobed -i $i &gt; /project2/gilad/briana/threeprimeseq/data/bed/YL-SP-$describer.combined.bed
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/bed/YL-SP-$describer.combined.bed &gt; /project2/gilad/briana/threeprimeseq/data/bed_sort/YL-SP-$describer.combined.sort.bed
+done  
+</code></pre>
+<p>Move duplicate files and rename:</p>
+<p>problem: these are called combined.combined (fix this)</p>
+<pre class="bash"><code>
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_10up)
+do
+describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/.combined.sort10up.bed//&quot;)
+mv $i /project2/gilad/briana/threeprimeseq/data/bed_10up/YL-SP-$describer-sort10up.bed
+done</code></pre>
+<p>Also move the bam files to the sort dir from /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/</p>
+<pre class="bash"><code>for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/*.bam)
+do 
+describer=$(echo ${i} | sed -e &#39;s/.*STAR_bam_WASP_filtered_sort\///&#39; | sed -e &quot;s/.STARwWASP.bamAligned.filtered.sort.bam//&quot;)
+mv $i /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-$describer-sort.bam
+done</code></pre>
+<p>Index all of these files:</p>
+<p>reIndex.sh</p>
+<pre class="bash"><code>#!/bin/bash
+#SBATCH --job-name=reIndex
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=reIndex.out
+#SBATCH --error=reIndex.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/sort/)
+samtools index /project2/gilad/briana/threeprimeseq/data/sort/$i 
+done</code></pre>
+<ul>
+<li><p>Get 10 basepairs upstream: wrap_Upstream10Bases.sh</p></li>
+<li><p>Find sequence for these regions: Nuc10BasesUp.sh</p></li>
+</ul>
+<p>Fixed names (ok now)</p>
+<pre class="bash"><code>for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/)
+do
+describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/.combined.sort.bed//&quot;)  
+cp $i  /project2/gilad/briana/threeprimeseq/data/bed_sort/YL-SP-$describer-sort.bed
+done</code></pre>
+<ul>
+<li>find which are bad run_filterMissprimingInNuc10.sh<br />
+</li>
+<li>filter bed file run_filterSortBedbyCleanedBed.sh<br />
+</li>
+<li>sort clean bed file sort_filterSortBedbyCleanedBed.sh<br />
+</li>
+<li><p>filter bam files wrap_filterBamforMP.pysam2.sh</p></li>
+<li>sort and index clean bam SortIndexBam_noMP.sh<br />
+</li>
+<li>merge clean bam files mergeBamFiles_noMP.sh and mergeBamFiles_byfrac_noMP.sh</li>
+<li><p>sort and index merged SortIndexMergedBam_noMP.sh and SortIndex_mergeBamFiles_byfrac_noMP.sh</p></li>
+<li>create BW mergedBam2Bedgraph.sh</li>
+<li>make it a coverage file run_bgtocov_noMP.sh</li>
+<li>call peaks run_callPeaksYL_noMP.sh</li>
+<li>filter peaks
+<ul>
+<li>cat /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/*.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/APApeaks_merged_allchrom_noMP.bed</li>
+<li>make SAF file bed2saf_noMP.py</li>
+<li>run feature counts peak_fc_noMP.sh</li>
+<li>filter peaks run_filter_peaks_noMP.sh</li>
+</ul></li>
+<li><p>name peaks</p></li>
+</ul>
+<pre class="bash"><code>170480 = wc -l /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.bed
+
+
+
+seq 1 170480 &gt; peak.num.txt
+
+sort -k1,1 -k2,2n Filtered_APApeaks_merged_allchrom_noMP.bed &gt; Filtered_APApeaks_merged_allchrom_noMP.sort.bed
+
+paste /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.bed peak.num.txt | column -s $&#39;\t&#39; -t &gt; temp
+awk &#39;{print $1 &quot;\t&quot; $2 &quot;\t&quot; $3 &quot;\t&quot; $7  &quot;\t&quot;  $4 &quot;\t&quot;  $5 &quot;\t&quot; $6}&#39; temp &gt;   /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.bed
+
+#cut the chr  
+
+sed &#39;s/^chr//&#39; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.bed &gt; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.bed
+</code></pre>
+<ul>
+<li><p>Gene assignments mapnoMPPeaks2GenomeLoc.sh</p></li>
+<li>make SAF processGenLocPeakAnno2SAF.py</li>
+<li>feature counts GeneLocAnno_fc_TN_noMP.sh</li>
+<li>fix header fix_head_fc_geneLoc_tot_noMP.py</li>
+<li>fix header fix_head_fc_geneLoc_nuc_noMP.py</li>
+<li>create_fileid_geneLocAnno_total.py (remove top line)</li>
+<li>create_fileid_geneLocAnno_nuclear.py (remove top line)</li>
+<li>make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh<br />
+</li>
+<li>counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py<br />
+</li>
+<li>run_filter_5percUsagePeaks.sh<br />
+</li>
+<li><p>filterPheno_bothFraction_GeneLocAnno_5perc.py</p></li>
+</ul>
+<p>In /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/</p>
+<pre class="bash"><code>#zip file 
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc
+
+
+module load python
+#leafcutter script
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz
+
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz
+
+
+
+
+#source activate three-prime-env
+ sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz_prepare.sh
+sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz_prepare.sh
+
+
+#keep only 2 PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.PCs &gt; filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.2PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.PCs &gt; filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.2PCs </code></pre>
+<ul>
+<li><p>makeSampleList_newGeneAnno.py</p></li>
+<li><p>APAqtl_nominal_GeneLocAnno_noMP_5percUsage.sh</p></li>
+<li><p>APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh</p></li>
+<li><p>run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh</p></li>
+</ul>
+<p>REDO!!! QC reruns: * filternamePeaks5percCov_GeneLocAnno_withAnno.py</p>
+<pre class="r"><code>peakswAnno=read.table(&quot;../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF&quot;, header=T) %&gt;% separate(GeneID, into=c(&quot;Peak&quot;, &quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;loc&quot;),sep=&quot;:&quot;) %&gt;% select(Peak, loc) %&gt;% group_by(loc) %&gt;% summarise(Num=n())</code></pre>
+<pre class="r"><code>locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;blue&quot;) + labs(x=&quot;Gene Location&quot;, y=&quot;Number of Peaks&quot;, title=&quot;Location distribution for all PAS with 5% Usage&quot;)
+locationOfPeaks</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(locationOfPeaks, file=&quot;../output/plots/PeakLocationByAnnotation.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<ul>
+<li>GetDistTXNend2Peak.py</li>
+</ul>
+<pre class="r"><code>distTXN2Peak=read.table(&quot;../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN_newMAp.txt&quot;, col.names = c(&quot;Peak&quot;, &quot;name2&quot;, &quot;Distance&quot;, &quot;Gene_Strand&quot;),stringsAsFactors = F)
+txnanno=read.table(&quot;../data/RefSeq_annotations/Transcript2GeneName.dms&quot;, header=T,stringsAsFactors = F) %&gt;% mutate(length=abs(txEnd-txStart)) %&gt;% semi_join(distTXN2Peak, by=&quot;name2&quot;)
+distTXN2Peak =distTXN2Peak %&gt;% mutate(AbsDist=abs(Distance))
+mean(txnanno$length)</code></pre>
+<pre><code>[1] 60808.79</code></pre>
+<pre class="r"><code>distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x=&quot;Absolute Distance between end of Transcription and center of Peak&quot;, title=&quot;Distribution of transcription to peak absolute distance&quot;) +  geom_vline(xintercept=mean(txnanno$length), col=&quot;red&quot;) + annotate(&quot;text&quot;, x=1000000, y=.4, label=&quot;Average transcript length \n for genes in peaks&quot;, col=&#39;red&#39;)
+
+distTXN2PeakPlot</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Look at number of reads lost due to WASP filter</p>
+<p>getWASPfiltStats.py</p>
+<pre class="bash"><code>def main(Bamin,out,desc):
+    okRead={}
+    #pysam to read in bam allignments
+    outF=open(out, &quot;w&quot;)
+    bamfile = pysam.AlignmentFile(Bamin, &quot;rb&quot;)
+    n=0
+    k=0
+    #read name is the first col in each bam file
+    for read in bamfile.fetch():
+        #last piece is always the right piece  
+        #vw=read.split(\t)[-1]
+        if read.has_tag(&#39;vW&#39;):
+            x= read.get_tag(&#39;vW&#39;)
+            #print(x)
+            if x == 1:
+                k+=1
+                #finalBam.write(read)
+            else:
+                n+=1
+                continue
+        else:
+          continue
+          #finalBam.write(read)
+    outF.write(&quot;%s\t%d\n&quot;%(desc, n))
+    bamfile.close()
+    outF.clos()
+    
+    
+if __name__ == &quot;__main__&quot;:
+    import sys, pysam
+    describer = sys.argv[1]
+    describer2=describer[:-1]
+    inBam=&quot;/project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/&quot; + describer + &quot;combined.STARwWASP.bamAligned.sort.bam&quot;
+    outFile=&quot;/project2/gilad/briana/threeprimeseq/data/WASP_filt_stat/WASPFilt&quot; + describer2 + &quot;.txt&quot;
+    main(inBam,outFile, describer2)
+</code></pre>
+<p>run_getWASPfiltStats.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_getWASPfiltStats
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_getWASPfiltStats.out
+#SBATCH --error=run_getWASPfiltStats.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/*.bam)
+do
+describer=$(echo ${i} | sed -e &#39;s/.*STAR_bam_WASP_sort\///&#39; | sed -e &quot;s/combined.STARwWASP.bamAligned.sort.bam//&quot;)
+python getWASPfiltStats.py $describer
+done </code></pre>
+<p>Cat all of the files together and move the duplicates to replicate folder</p>
+<pre class="r"><code>waspStat=read.table(&quot;../data/WASP_STAT/WASP_Filt_AllLineStats.txt&quot;,stringsAsFactors = F, col.names = c(&quot;Sample&quot;, &quot;FilteredReads&quot;)) %&gt;% separate(Sample, into=c(&quot;Line&quot;, &quot;Fraction&quot;), sep=&quot;-&quot;)</code></pre>
+<p>Plot</p>
+<pre class="r"><code>ggplot(waspStat, aes(x=Line, fill=Fraction, y=FilteredReads, by=Fraction)) + geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;)</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>make boxplot</p>
+<pre class="r"><code>ggplot(waspStat, aes(x=Fraction, y=log10(FilteredReads), fill=Fraction)) + geom_boxplot()</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Plto barplots by fractions with error bar</p>
+<pre class="r"><code>waspStat_sem= waspStat %&gt;% group_by(Fraction) %&gt;% summarise(mean=mean(FilteredReads), sd=sd(FilteredReads))
+
+ggplot(waspStat_sem, aes(x=Fraction, y=mean, fill=Fraction)) + geom_bar(stat=&#39;identity&#39;)  + geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,) + labs(title=&quot;Reads filtered out due to WASP filter&quot;, y=&#39;Reads&#39;) +scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Map stat plots:</p>
+<pre class="r"><code>mapStats_wasp=read.table(&quot;../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt&quot;, stringsAsFactors = F, header = T)</code></pre>
+<p>Plot mappeded reads no MP by fractions:</p>
+<pre class="r"><code>mapStats_wasp_noMP=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(Mapped_noMP), sd=sd(Mapped_noMP))
+mapreads_plot=ggplot(mapStats_wasp_noMP, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) +  labs(title=&quot;Number of reads\n mapping and passing missprime filter&quot;, y=&quot;Number of sequence reads&quot;)</code></pre>
+<pre class="r"><code>mapStats_wasp_propnoMP=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(prop_MappedwithoutMP), sd=sd(prop_MappedwithoutMP))
+propmap_plot=ggplot(mapStats_wasp_propnoMP, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Proportion of reads\n mapping and passing missprime filter&quot;, y=&quot;Proportion of sequence reads&quot;)</code></pre>
+<pre class="r"><code>mapStats_wasp_reads=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(reads), sd=sd(reads))
+seqread_plot=ggplot(mapStats_wasp_reads, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Sequenced Reads&quot;, y=&quot;Number of sequence reads&quot;)</code></pre>
+<p>All plots:</p>
+<pre class="r"><code>library(cowplot)
+allmapstatplots=plot_grid(seqread_plot,mapreads_plot,propmap_plot,ncol = 3)
+allmapstatplots</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(allmapstatplots, file=&quot;../output/plots/MapStatBarPlots.png&quot;,width=15)</code></pre>
+<pre><code>Saving 15 x 5 in image</code></pre>
+<p>Boxplot:</p>
+<pre class="r"><code>seqread_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(reads), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Sequenced Reads&quot;, y=&quot;log10(Number of sequence reads)&quot;) 
+seqread_plotbar</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mapreads_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(Mapped_noMP), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Mapped Reads\n filtered for misspriming&quot;, y=&quot;log10(Mapped Reads)&quot;) 
+mapreads_plotbar</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-35-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>maprop_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=prop_MappedwithoutMP, fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Proportion Mapped Reads\n and filtered for misspriming&quot;, y=&quot;Proportion mapped post misspriming&quot;) 
+maprop_plotbar</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-35-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>allmapstatboxplots=plot_grid(seqread_plotbar,mapreads_plotbar,maprop_plotbar,ncol = 3)
+allmapstatboxplots</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(allmapstatboxplots, file=&quot;../output/plots/MapStatBoxPlots.png&quot;,width=15)</code></pre>
+<pre><code>Saving 15 x 5 in image</code></pre>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -690,14 +1136,30 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] bindrcpp_0.2.2  cowplot_0.9.3   forcats_0.3.0   stringr_1.3.1  
+ [5] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
+ [9] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.1.1   Rcpp_0.12.19      digest_0.6.17    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.23.0      magrittr_1.5      evaluate_0.11    
-[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.7.0     rmarkdown_1.10    tools_3.5.1      
-[16] stringr_1.3.1     yaml_2.2.0        compiler_3.5.1   
-[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] modelr_0.1.2      readxl_1.1.0      bindr_0.1.1      
+[16] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[19] workflowr_1.1.1   cellranger_1.1.0  rvest_0.3.2      
+[22] R.methodsS3_1.7.1 evaluate_0.11     labeling_0.3     
+[25] knitr_1.20        broom_0.5.0       Rcpp_0.12.19     
+[28] scales_1.0.0      backports_1.1.2   jsonlite_1.5     
+[31] hms_0.4.2         digest_0.6.17     stringi_1.2.4    
+[34] grid_3.5.1        rprojroot_1.3-2   cli_1.0.1        
+[37] tools_3.5.1       magrittr_1.5      lazyeval_0.2.1   
+[40] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
+[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
+[46] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.8   
+[49] R6_2.3.0          nlme_3.1-137      git2r_0.23.0     
+[52] compiler_3.5.1   </code></pre>
 </div>
 
 <hr>
