@@ -998,14 +998,37 @@ qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab="-log10 Total
 abline(0,1)
 ```
 
+
+```{r}
+diffIso_10FDR=diffIso %>% filter(-log10(p.adjust)>1)
+
+diffIso_10FDR_genes=diffIso_10FDR %>% separate(cluster, into = c("chr", "gene"), sep=":") %>% group_by(gene) %>% tally()
+```
+
+
 Look at the effect sizes and delta PSI values  
 
 ```{r}
 effectsize=read.table("../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt", stringsAsFactors = F, col.names=c('intron',  'logef' ,'Nuclear', 'Total','deltapsi'))
 
 effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))
+effectsize$logef=as.numeric(as.character(effectsize$logef))
 plot(sort(effectsize$deltapsi),main="Leafcutter delta PSI", ylab="Delta PSI", xlab="Peak Index")
+plot(sort(effectsize$logef),main="Leafcutter logef", ylab="log ef", xlab="Peak Index")
+
+
+effectsize_dpsi= effectsize %>% filter(abs(deltapsi) > .2) 
+
+effectsize_dpsi_gene= effectsize %>% filter(abs(deltapsi) > .2) %>% separate(intron, into=c("chr", 'start', 'end','gene'), sep=":") %>% group_by(gene) %>% tally()
+
 ```
+
+Intersect effectsize_dpsi genes and the diffIso_10FDR genes. 
+
+```{r}
+inboth=effectsize_dpsi_gene %>% inner_join(diffIso_10FDR_genes, by="gene")
+```
+
 
 I will look at the top PSI values to check these assignments:  
 
@@ -1837,6 +1860,6 @@ peakswAnno=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_
 ```{r}
 locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat="identity", fill="blue") + labs(x="Gene Location", y="Number of Peaks", title="Location distribution for all PAS with 5% Usage")
 locationOfPeaks
-ggsave(locationOfPeaks, file="../output/plots/PeakLocationByAnnotation.png")
+#ggsave(locationOfPeaks, file="../output/plots/PeakLocationByAnnotation.png")
 ```
 
