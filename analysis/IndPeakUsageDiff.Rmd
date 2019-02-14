@@ -410,7 +410,7 @@ perIndDiffUsage=function(ind, counts=TotalCounts_AllInd, usage=usageTot_2peak){
   count_ind_perc50= count_ind %>% filter(Percentile<.5, Percentile>.4)
   count_ind_perc60= count_ind %>% filter(Percentile<.6, Percentile>.5)
   count_ind_perc70= count_ind %>% filter(Percentile<.7, Percentile>.6)
-  count_ind_perc80= count_ind %>% filter(Percentile<8, Percentile>.7)
+  count_ind_perc80= count_ind %>% filter(Percentile<.8, Percentile>.7)
   count_ind_perc90= count_ind %>% filter(Percentile<.9, Percentile>.8)
   count_ind_perc100= count_ind %>% filter(Percentile<1, Percentile>.9)
   #subset and sum usage 
@@ -510,7 +510,7 @@ perIndDiffUsage_Z=function(ind, counts=TotalCounts_AllInd, usage=usageTot_2peak)
   count_ind_perc50= count_ind %>% filter(Percentile<.5, Percentile>.4)
   count_ind_perc60= count_ind %>% filter(Percentile<.6, Percentile>.5)
   count_ind_perc70= count_ind %>% filter(Percentile<.7, Percentile>.6)
-  count_ind_perc80= count_ind %>% filter(Percentile<8, Percentile>.7)
+  count_ind_perc80= count_ind %>% filter(Percentile<.8, Percentile>.7)
   count_ind_perc90= count_ind %>% filter(Percentile<.9, Percentile>.8)
   count_ind_perc100= count_ind %>% filter(Percentile<1, Percentile>.9)
   #subset and sum usage 
