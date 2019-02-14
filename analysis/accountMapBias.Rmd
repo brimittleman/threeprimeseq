@@ -9,6 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+
+```{r}
+library(tidyverse)
+library(cowplot)
+```
+
 We are worried there amy be false positives in the QTL analysis if the QTL is in the read and the snp leads to a mapping bias for the data. I can account for this using WASP. 
 
 
@@ -181,9 +188,521 @@ source activate three-prime-env
 
 
 for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP/*STARwWASP.bamAligned.out.bam)
-describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/combined.STARwWASP.bamAligned.out.bam//")
+do
+describer=$(echo ${i} | sed -e 's/.*STAR_bam_WASP\///' | sed -e "s/combined.STARwWASP.bamAligned.out.bam//")
 sbatch SortIndexStarwWASP.sh $describer
 done
 ```
 
+Now I want to filter out reads with mapping problems at place we see a variant. I want to keep reads with the vW:i:1 tag. ( I will resort and index these files after this step) 
+
+I can use pysam to do this. Then I can move the final sorted duplicate files.   
+
+filterBamBasedonWasp.py
+```{bash,eval=F}
+def main(Bamin, out):
+    okRead={}
+    #pysam to read in bam allignments
+    bamfile = pysam.AlignmentFile(Bamin, "rb")
+    finalBam =  pysam.AlignmentFile(out, "wb", template=bamfile)
+    n=0
+    k=0
+    #read name is the first col in each bam file
+    for read in bamfile.fetch():
+        #last piece is always the right piece  
+        #vw=read.split(\t)[-1]
+        if read.has_tag('vW'):
+            x= read.get_tag('vW')
+            print(x)
+            if x == 1:
+                k+=1
+                finalBam.write(read)
+            else:
+                n+=1
+                continue
+        else:
+          finalBam.write(read)
+  
+    print("with wv" + n)
+    print("pass filter" + k)
+    bamfile.close()
+    finalBam.close()
+    
+    
+    
+if __name__ == "__main__":
+    import sys, pysam
+    describer = sys.argv[1]
+    inBam="/project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/" + describer + "combined.STARwWASP.bamAligned.sort.bam"
+    outBam="/project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered/" + describer + "combined.STARwWASP.bamAligned.filtered.out.bam"
+    main(inBam, outBam)
+    
+    
+```
+
+Run this on all individuals:  
+
+
+run_filterBamBasedonWasp.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_filterBamBasedonWasp
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_filterBamBasedonWasp.out
+#SBATCH --error=run_filterBamBasedonWasp.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/*.bam)
+do
+describer=$(echo ${i} | sed -e 's/.*STAR_bam_WASP_sort\///' | sed -e "s/combined.STARwWASP.bamAligned.sort.bam//")
+python filterBamBasedonWasp.py $describer
+done 
+```
+
+
+Sort and index these:  
+
+SortIndexStarwWASP_filtered.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=SortIndexStarwWASP_filtered
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=SortIndexStarwWASP_filtered.out
+#SBATCH --error=SortIndexStarwWASP_filtered.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+describer=$1
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered/${describer}combined.STARwWASP.bamAligned.filtered.out.bam > /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/${describer}combined.STARwWASP.bamAligned.filtered.sort.bam
+samtools index /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/${describer}combined.STARwWASP.bamAligned.filtered.sort.bam
+
+```
+
+
+wrap_SortIndexStarwWASP_filtered.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=wrap_SortIndexStarwWASP_filtered
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=wrap_SortIndexStarwWASP_filtered.out
+#SBATCH --error=wrap_SortIndexStarwWASP_filtered.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered/*STARwWASP.bamAligned.filtered.out.bam)
+do
+describer=$(echo ${i} | sed -e 's/.*STAR_bam_WASP_filtered\///' | sed -e "s/combined.STARwWASP.bamAligned.filtered.out.bam//")
+sbatch SortIndexStarwWASP_filtered.sh $describer
+done
+```
+
+
+Now I need to make these into a bed format. I also will move the old files and but these in the sort/ bed/ dirs. This way I can use the same pipeline from the [Pipeline for 55 indivduals analysis](pipeline_55Ind.Rmd).  
+
+At this point I will move the old bam and bed files to different directories
+
+* /project2/gilad/briana/threeprimeseq/data/sort_oldmapp/  
+
+* /project2/gilad/briana/threeprimeseq/data/bed_sort_oldMap
+
+* /project2/gilad/briana/threeprimeseq/data/bed_oldMap  
+
+
+Run bam to bed:
+
+bam2BedandSort.waspmap.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=bam2BedandSort.waspmap
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=bam2BedandSort.waspmap.out
+#SBATCH --error=bam2BedandSort.waspmap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/*.bam)
+do
+describer=$(echo ${i} | sed -e 's/.*STAR_bam_WASP_filtered_sort\///' | sed -e "s/.STARwWASP.bamAligned.filtered.sort.bam//")
+bedtools bamtobed -i $i > /project2/gilad/briana/threeprimeseq/data/bed/YL-SP-$describer.combined.bed
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/bed/YL-SP-$describer.combined.bed > /project2/gilad/briana/threeprimeseq/data/bed_sort/YL-SP-$describer.combined.sort.bed
+done  
+
+
+```
+
+
+Move duplicate files and rename:  
+
+problem: these are called combined.combined (fix this)
+```{bash,eval=F}
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_10up)
+do
+describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/.combined.sort10up.bed//")
+mv $i /project2/gilad/briana/threeprimeseq/data/bed_10up/YL-SP-$describer-sort10up.bed
+done
+```
+
+
+Also move the bam files to the sort dir from /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/  
+
+```{bash,eval=F}
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_filtered_sort/*.bam)
+do 
+describer=$(echo ${i} | sed -e 's/.*STAR_bam_WASP_filtered_sort\///' | sed -e "s/.STARwWASP.bamAligned.filtered.sort.bam//")
+mv $i /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-$describer-sort.bam
+done
+```
+
+Index all of these files:  
+
+reIndex.sh
+```{bash,eval=F}
+#!/bin/bash
+#SBATCH --job-name=reIndex
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=reIndex.out
+#SBATCH --error=reIndex.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/sort/)
+samtools index /project2/gilad/briana/threeprimeseq/data/sort/$i 
+done
+```
+
+* Get 10 basepairs upstream: wrap_Upstream10Bases.sh  
+
+* Find sequence for these regions: Nuc10BasesUp.sh 
+
+Fixed names (ok now)
+```{bash,eval=F}
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/bed_sort/)
+do
+describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/.combined.sort.bed//")  
+cp $i  /project2/gilad/briana/threeprimeseq/data/bed_sort/YL-SP-$describer-sort.bed
+done
+```
+
+
+* find which are bad run_filterMissprimingInNuc10.sh  
+* filter bed file run_filterSortBedbyCleanedBed.sh  
+* sort clean bed file sort_filterSortBedbyCleanedBed.sh  
+* filter bam files wrap_filterBamforMP.pysam2.sh 
+
+* sort and index clean bam SortIndexBam_noMP.sh  
+* merge clean bam files mergeBamFiles_noMP.sh and mergeBamFiles_byfrac_noMP.sh
+* sort and index merged SortIndexMergedBam_noMP.sh  and SortIndex_mergeBamFiles_byfrac_noMP.sh
+
+
+- create BW mergedBam2Bedgraph.sh
+- make it a coverage file run_bgtocov_noMP.sh
+- call peaks run_callPeaksYL_noMP.sh
+- filter peaks
+    - cat /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/*.bed >     /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/APApeaks_merged_allchrom_noMP.bed
+    - make SAF file bed2saf_noMP.py
+    - run feature counts peak_fc_noMP.sh
+    - filter peaks run_filter_peaks_noMP.sh
+- name peaks
+
+```{bash,eval=F}
+170480 = wc -l /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.bed
+
+
+
+seq 1 170480 > peak.num.txt
+
+sort -k1,1 -k2,2n Filtered_APApeaks_merged_allchrom_noMP.bed > Filtered_APApeaks_merged_allchrom_noMP.sort.bed
+
+paste /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.bed peak.num.txt | column -s $'\t' -t > temp
+awk '{print $1 "\t" $2 "\t" $3 "\t" $7  "\t"  $4 "\t"  $5 "\t" $6}' temp >   /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.bed
+
+#cut the chr  
+
+sed 's/^chr//' /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.bed > /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR.bed
+
+```
+
+
+- Gene assignments mapnoMPPeaks2GenomeLoc.sh  
+
+
+- make SAF processGenLocPeakAnno2SAF.py
+- feature counts GeneLocAnno_fc_TN_noMP.sh
+- fix header fix_head_fc_geneLoc_tot_noMP.py
+- fix header fix_head_fc_geneLoc_nuc_noMP.py
+* create_fileid_geneLocAnno_total.py (remove top line)
+* create_fileid_geneLocAnno_nuclear.py (remove top line)
+- make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh  
+- counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py  
+- run_filter_5percUsagePeaks.sh  
+- filterPheno_bothFraction_GeneLocAnno_5perc.py  
+
+In /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/
+
+```{bash,eval=F}
+#zip file 
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc
+gzip filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc
+
+
+module load python
+#leafcutter script
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz
+
+python /project2/gilad/briana/threeprimeseq/code/prepare_phenotype_table.py filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz
+
+
+
+
+#source activate three-prime-env
+ sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz_prepare.sh
+sh filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz_prepare.sh
+
+
+#keep only 2 PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.PCs > filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.2PCs
+head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.PCs > filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.2PCs 
+```
+
+
+- makeSampleList_newGeneAnno.py  
+
+- APAqtl_nominal_GeneLocAnno_noMP_5percUsage.sh  
+
+- APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh 
+
+- run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh 
+
+
+
+REDO!!!
+QC reruns: 
+* filternamePeaks5percCov_GeneLocAnno_withAnno.py  
+
+```{r}
+peakswAnno=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF", header=T) %>% separate(GeneID, into=c("Peak", "chrom", "start", "end", "strand", "gene", "loc"),sep=":") %>% select(Peak, loc) %>% group_by(loc) %>% summarise(Num=n())
+
+```
+
+
+
+```{r}
+locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat="identity", fill="blue") + labs(x="Gene Location", y="Number of Peaks", title="Location distribution for all PAS with 5% Usage")
+locationOfPeaks
+ggsave(locationOfPeaks, file="../output/plots/PeakLocationByAnnotation.png")
+```
+
+
+* GetDistTXNend2Peak.py
+
+```{r}
+distTXN2Peak=read.table("../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN_newMAp.txt", col.names = c("Peak", "name2", "Distance", "Gene_Strand"),stringsAsFactors = F)
+txnanno=read.table("../data/RefSeq_annotations/Transcript2GeneName.dms", header=T,stringsAsFactors = F) %>% mutate(length=abs(txEnd-txStart)) %>% semi_join(distTXN2Peak, by="name2")
+distTXN2Peak =distTXN2Peak %>% mutate(AbsDist=abs(Distance))
+mean(txnanno$length)
+```
+```{r}
+distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x="Absolute Distance between end of Transcription and center of Peak", title="Distribution of transcription to peak absolute distance") +  geom_vline(xintercept=mean(txnanno$length), col="red") + annotate("text", x=1000000, y=.4, label="Average transcript length \n for genes in peaks", col='red')
+
+distTXN2PeakPlot
+```
+
+Look at number of reads lost due to WASP filter 
+
+
+getWASPfiltStats.py
+```{bash,eval=F}
+def main(Bamin,out,desc):
+    okRead={}
+    #pysam to read in bam allignments
+    outF=open(out, "w")
+    bamfile = pysam.AlignmentFile(Bamin, "rb")
+    n=0
+    k=0
+    #read name is the first col in each bam file
+    for read in bamfile.fetch():
+        #last piece is always the right piece  
+        #vw=read.split(\t)[-1]
+        if read.has_tag('vW'):
+            x= read.get_tag('vW')
+            #print(x)
+            if x == 1:
+                k+=1
+                #finalBam.write(read)
+            else:
+                n+=1
+                continue
+        else:
+          continue
+          #finalBam.write(read)
+    outF.write("%s\t%d\n"%(desc, n))
+    bamfile.close()
+    outF.clos()
+    
+    
+if __name__ == "__main__":
+    import sys, pysam
+    describer = sys.argv[1]
+    describer2=describer[:-1]
+    inBam="/project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/" + describer + "combined.STARwWASP.bamAligned.sort.bam"
+    outFile="/project2/gilad/briana/threeprimeseq/data/WASP_filt_stat/WASPFilt" + describer2 + ".txt"
+    main(inBam,outFile, describer2)
+
+```
+
+
+run_getWASPfiltStats.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_getWASPfiltStats
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_getWASPfiltStats.out
+#SBATCH --error=run_getWASPfiltStats.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/STAR_bam_WASP_sort/*.bam)
+do
+describer=$(echo ${i} | sed -e 's/.*STAR_bam_WASP_sort\///' | sed -e "s/combined.STARwWASP.bamAligned.sort.bam//")
+python getWASPfiltStats.py $describer
+done 
+```
+
+Cat all of the files together and move the duplicates to replicate folder  
+
+```{r}
+waspStat=read.table("../data/WASP_STAT/WASP_Filt_AllLineStats.txt",stringsAsFactors = F, col.names = c("Sample", "FilteredReads")) %>% separate(Sample, into=c("Line", "Fraction"), sep="-")
+```
+
+Plot  
+
+```{r}
+ggplot(waspStat, aes(x=Line, fill=Fraction, y=FilteredReads, by=Fraction)) + geom_bar(stat="identity", position="dodge")
+```
+
+make boxplot
+
+```{r}
+ggplot(waspStat, aes(x=Fraction, y=log10(FilteredReads), fill=Fraction)) + geom_boxplot()
+```
+
+Plto barplots by fractions with error bar  
+
+```{r}
+waspStat_sem= waspStat %>% group_by(Fraction) %>% summarise(mean=mean(FilteredReads), sd=sd(FilteredReads))
+
+ggplot(waspStat_sem, aes(x=Fraction, y=mean, fill=Fraction)) + geom_bar(stat='identity')  + geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,) + labs(title="Reads filtered out due to WASP filter", y='Reads') +scale_fill_manual(values=c("deepskyblue3","darkviolet"))
+```
+
+
+Map stat plots:  
+
+```{r}
+mapStats_wasp=read.table("../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt", stringsAsFactors = F, header = T)
+```
+
+Plot mappeded reads no MP by fractions:
+
+```{r}
+
+mapStats_wasp_noMP=mapStats_wasp %>% group_by(fraction) %>% summarise(mean=mean(Mapped_noMP), sd=sd(Mapped_noMP))
+mapreads_plot=ggplot(mapStats_wasp_noMP, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat='identity')+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c("deepskyblue3","darkviolet")) +  labs(title="Number of reads\n mapping and passing missprime filter", y="Number of sequence reads")
+```
+
+```{r}
+
+mapStats_wasp_propnoMP=mapStats_wasp %>% group_by(fraction) %>% summarise(mean=mean(prop_MappedwithoutMP), sd=sd(prop_MappedwithoutMP))
+propmap_plot=ggplot(mapStats_wasp_propnoMP, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat='identity')+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Proportion of reads\n mapping and passing missprime filter", y="Proportion of sequence reads")
+```
+
+
+```{r}
+
+mapStats_wasp_reads=mapStats_wasp %>% group_by(fraction) %>% summarise(mean=mean(reads), sd=sd(reads))
+seqread_plot=ggplot(mapStats_wasp_reads, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat='identity')+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Sequenced Reads", y="Number of sequence reads")
+```
+
+
+All plots:
+
+```{r}
+library(cowplot)
+allmapstatplots=plot_grid(seqread_plot,mapreads_plot,propmap_plot,ncol = 3)
+allmapstatplots
+
+ggsave(allmapstatplots, file="../output/plots/MapStatBarPlots.png",width=15)
+```
+
+Boxplot:  
+
+```{r}
+seqread_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(reads), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Sequenced Reads", y="log10(Number of sequence reads)") 
+seqread_plotbar
+
+
+
+mapreads_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(Mapped_noMP), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Mapped Reads\n filtered for misspriming", y="log10(Mapped Reads)") 
+mapreads_plotbar
+
+
+
+maprop_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=prop_MappedwithoutMP, fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c("deepskyblue3","darkviolet"))+ labs(title="Proportion Mapped Reads\n and filtered for misspriming", y="Proportion mapped post misspriming") 
+maprop_plotbar
+
+```
+
+
+```{r}
+allmapstatboxplots=plot_grid(seqread_plotbar,mapreads_plotbar,maprop_plotbar,ncol = 3)
+allmapstatboxplots
+
+ggsave(allmapstatboxplots, file="../output/plots/MapStatBoxPlots.png",width=15)
+```
 
