@@ -136,3 +136,108 @@ sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTL
 sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.bed > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed
 ```
 
+Look at which regions these map to.  
+
+mapQTLs2GenomeLoc.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mapQTLs2GenomeLoc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapQTLs2GenomeLoc.out
+#SBATCH --error=mapQTLs2GenomeLoc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#annotation: /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed
+
+#QTL nucelar: /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed
+
+#QTL total: /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
+
+
+bedtools map -a /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed -b /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed -c 4 -S -o distinct > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort_GeneAnno.bed
+
+
+bedtools map -a /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed -b /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed -c 4 -S -o distinct > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort_GeneAnno.bed
+
+```
+
+Most of the QTLs are not in any region.  
+
+
+###QTLs by coverage  
+
+```{r}
+TotalCounts_AllInd=read.table("../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into =c('peak', 'chr', 'start', 'end', 'strand', 'gene'), sep = ":") %>% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length, -gene) %>% rowMeans()
+
+TotalCounts_AllInd_genes=read.table("../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into =c('peak', 'chr', 'start', 'end', 'strand', 'gene'), sep = ":") %>% select(gene)
+
+ 
+TotalCounts_AllInd_mean=data.frame(cbind(Gene=TotalCounts_AllInd_genes,Exp=TotalCounts_AllInd)) %>% filter(Exp>0)
+#remove 0  
+
+
+
+TotalCounts_no0_perc= TotalCounts_AllInd_mean %>% mutate(Percentile = percent_rank(Exp)) 
+
+#Seperate by percentile
+TotalCounts_no0_perc10= TotalCounts_no0_perc %>% filter(Percentile<.1) 
+
+TotalCounts_no0_perc20= TotalCounts_no0_perc %>% filter(Percentile<.2& Percentile>.1)
+
+TotalCounts_no0_perc30= TotalCounts_no0_perc %>% filter(Percentile<.3& Percentile>.2)
+
+TotalCounts_no0_perc40= TotalCounts_no0_perc %>% filter(Percentile<.4& Percentile>.3)
+
+TotalCounts_no0_perc50= TotalCounts_no0_perc %>% filter(Percentile<.5& Percentile>.4)
+TotalCounts_no0_perc60= TotalCounts_no0_perc %>% filter(Percentile<.6& Percentile>.5)
+
+TotalCounts_no0_perc70= TotalCounts_no0_perc %>% filter(Percentile<.7& Percentile>.6)
+
+TotalCounts_no0_perc80= TotalCounts_no0_perc %>% filter(Percentile <.8 & Percentile>.7)
+TotalCounts_no0_perc90= TotalCounts_no0_perc %>% filter(Percentile<.9 & Percentile>.8)
+
+TotalCounts_no0_perc100= TotalCounts_no0_perc %>% filter( Percentile>.9)
+```
+
+
+Now I need to figure out the number of QTL gene in each percentile.  
+
+```{r}
+nucQTLGenes=nucQTLs %>% separate(pid, into=c('chr', 'start', 'end', 'id'), sep=":") %>% separate(id, sep="_", into=c("gene", 'strand', 'peak')) %>% select(gene) %>% unique()
+
+totQTLGenes=totQTLs %>% separate(pid, into=c('chr', 'start', 'end', 'id'), sep=":") %>% separate(id, sep="_", into=c("gene", 'strand', 'peak')) %>% select(gene) %>% unique()
+```
+
+
+Per percent- use   
+
+```{r}
+totGene10= totQTLGenes %>% semi_join(TotalCounts_no0_perc10,by="gene") %>%  nrow()
+totGene20= totQTLGenes %>% semi_join(TotalCounts_no0_perc20,by="gene")%>%  nrow()
+totGene30= totQTLGenes %>% semi_join(TotalCounts_no0_perc30,by="gene")%>%  nrow()
+totGene40= totQTLGenes %>% semi_join(TotalCounts_no0_perc40,by="gene")%>% nrow()
+totGene50= totQTLGenes %>% semi_join(TotalCounts_no0_perc50,by="gene")%>% nrow()
+totGene60= totQTLGenes %>% semi_join(TotalCounts_no0_perc60,by="gene")%>% nrow()
+totGene70= totQTLGenes %>% semi_join(TotalCounts_no0_perc70,by="gene")%>%  nrow()
+totGene80= totQTLGenes %>% semi_join(TotalCounts_no0_perc80,by="gene")%>%  nrow()
+totGene90= totQTLGenes %>% semi_join(TotalCounts_no0_perc90,by="gene")%>%  nrow()
+totGene100= totQTLGenes %>% semi_join(TotalCounts_no0_perc100,by="gene")%>%  nrow()
+
+
+totGene_allPerc=c(totGene10,totGene20,totGene30,totGene40,totGene50,totGene60,totGene70,totGene80, totGene90,totGene100)
+```
+
+
+plot this: 
+
+```{r}
+plot(totGene_allPerc)
+```
+Why are more genes included  
