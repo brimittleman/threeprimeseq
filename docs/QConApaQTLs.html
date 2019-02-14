@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-02-06</p>
+<p><strong>Last updated:</strong> 2019-02-14</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6bac9f93c4b0b305fb44aaedbc730cdfe6e91567" target="_blank">6bac9f9</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d09198c0557d4a1e285818837b2960a47069b535" target="_blank">d09198c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -392,6 +392,7 @@ Untracked files:
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/YL_QTL_test/
@@ -412,6 +413,7 @@ Untracked files:
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
     Untracked:  data/explainProtVar/
+    Untracked:  data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -456,12 +458,17 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData.csv
     Untracked:  data/threePrimeSeqMetaData55Ind.txt
     Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/ApproachForGeneAssignment.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
@@ -478,6 +485,7 @@ Unstaged changes:
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/peakQCPPlots.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
     Modified:   analysis/understandPeaks.Rmd
@@ -515,6 +523,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d09198c0557d4a1e285818837b2960a47069b535/analysis/QConApaQTLs.Rmd" target="_blank">d09198c</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-14
+</td>
+<td style="text-align:left;">
+expression and gene anno
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/450b3897ccf23b42719f2134a819affd08d61c0c/docs/QConApaQTLs.html" target="_blank">450b389</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/6bac9f93c4b0b305fb44aaedbc730cdfe6e91567/analysis/QConApaQTLs.Rmd" target="_blank">6bac9f9</a>
 </td>
 <td style="text-align:left;">
@@ -537,12 +579,12 @@ add distance plots for QC on APAqtls
 <pre><code>This is workflowr version 1.1.1
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ───────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>totQTLs=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)%&gt;% filter(-log10(bh)&gt;=1)
@@ -598,6 +640,36 @@ NucDist=read.table(&quot;../data/ApaQTLs/Distance2EndPeak.Nuclear.apaQTLs.txt&qu
 BothDist=data.frame(rbind(TotDist, NucDist))</code></pre>
 <pre class="r"><code>ggplot(BothDist, aes(x=Distance, by=Fraction, fill=Fraction))+geom_histogram(bins=70, alpha=.5) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Distance From apaQTL to End of Peak&quot; )</code></pre>
 <p><img src="figure/QConApaQTLs.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-5-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/450b3897ccf23b42719f2134a819affd08d61c0c/docs/figure/QConApaQTLs.Rmd/unnamed-chunk-5-1.png" target="_blank">450b389</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-06
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="where-are-the-snp" class="section level2">
 <h2>Where are the SNP</h2>
@@ -632,6 +704,89 @@ if __name__ == &quot;__main__&quot;:
 <pre class="bash"><code>sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.bed &gt; /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
 
 sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.bed &gt; /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed</code></pre>
+<p>Look at which regions these map to.</p>
+<p>mapQTLs2GenomeLoc.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mapQTLs2GenomeLoc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mapQTLs2GenomeLoc.out
+#SBATCH --error=mapQTLs2GenomeLoc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#annotation: /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed
+
+#QTL nucelar: /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed
+
+#QTL total: /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
+
+
+bedtools map -a /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed -b /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed -c 4 -S -o distinct &gt; /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort_GeneAnno.bed
+
+
+bedtools map -a /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed -b /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_FormatedallAnnotation.sort.bed -c 4 -S -o distinct &gt; /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort_GeneAnno.bed
+</code></pre>
+<p>Most of the QTLs are not in any region.</p>
+<div id="qtls-by-coverage" class="section level3">
+<h3>QTLs by coverage</h3>
+<pre class="r"><code>TotalCounts_AllInd=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, header=T, stringsAsFactors = F) %&gt;% separate(Geneid, into =c(&#39;peak&#39;, &#39;chr&#39;, &#39;start&#39;, &#39;end&#39;, &#39;strand&#39;, &#39;gene&#39;), sep = &quot;:&quot;) %&gt;% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length, -gene) %&gt;% rowMeans()
+
+TotalCounts_AllInd_genes=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, header=T, stringsAsFactors = F) %&gt;% separate(Geneid, into =c(&#39;peak&#39;, &#39;chr&#39;, &#39;start&#39;, &#39;end&#39;, &#39;strand&#39;, &#39;gene&#39;), sep = &quot;:&quot;) %&gt;% select(gene)
+
+ 
+TotalCounts_AllInd_mean=data.frame(cbind(Gene=TotalCounts_AllInd_genes,Exp=TotalCounts_AllInd)) %&gt;% filter(Exp&gt;0)
+#remove 0  
+
+
+
+TotalCounts_no0_perc= TotalCounts_AllInd_mean %&gt;% mutate(Percentile = percent_rank(Exp)) 
+
+#Seperate by percentile
+TotalCounts_no0_perc10= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.1) 
+
+TotalCounts_no0_perc20= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.2&amp; Percentile&gt;.1)
+
+TotalCounts_no0_perc30= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.3&amp; Percentile&gt;.2)
+
+TotalCounts_no0_perc40= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.4&amp; Percentile&gt;.3)
+
+TotalCounts_no0_perc50= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.5&amp; Percentile&gt;.4)
+TotalCounts_no0_perc60= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.6&amp; Percentile&gt;.5)
+
+TotalCounts_no0_perc70= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.7&amp; Percentile&gt;.6)
+
+TotalCounts_no0_perc80= TotalCounts_no0_perc %&gt;% filter(Percentile &lt;.8 &amp; Percentile&gt;.7)
+TotalCounts_no0_perc90= TotalCounts_no0_perc %&gt;% filter(Percentile&lt;.9 &amp; Percentile&gt;.8)
+
+TotalCounts_no0_perc100= TotalCounts_no0_perc %&gt;% filter( Percentile&gt;.9)</code></pre>
+<p>Now I need to figure out the number of QTL gene in each percentile.</p>
+<pre class="r"><code>nucQTLGenes=nucQTLs %&gt;% separate(pid, into=c(&#39;chr&#39;, &#39;start&#39;, &#39;end&#39;, &#39;id&#39;), sep=&quot;:&quot;) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &#39;strand&#39;, &#39;peak&#39;)) %&gt;% select(gene) %&gt;% unique()
+
+totQTLGenes=totQTLs %&gt;% separate(pid, into=c(&#39;chr&#39;, &#39;start&#39;, &#39;end&#39;, &#39;id&#39;), sep=&quot;:&quot;) %&gt;% separate(id, sep=&quot;_&quot;, into=c(&quot;gene&quot;, &#39;strand&#39;, &#39;peak&#39;)) %&gt;% select(gene) %&gt;% unique()</code></pre>
+<p>Per percent- use</p>
+<pre class="r"><code>totGene10= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc10,by=&quot;gene&quot;) %&gt;%  nrow()
+totGene20= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc20,by=&quot;gene&quot;)%&gt;%  nrow()
+totGene30= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc30,by=&quot;gene&quot;)%&gt;%  nrow()
+totGene40= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc40,by=&quot;gene&quot;)%&gt;% nrow()
+totGene50= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc50,by=&quot;gene&quot;)%&gt;% nrow()
+totGene60= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc60,by=&quot;gene&quot;)%&gt;% nrow()
+totGene70= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc70,by=&quot;gene&quot;)%&gt;%  nrow()
+totGene80= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc80,by=&quot;gene&quot;)%&gt;%  nrow()
+totGene90= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc90,by=&quot;gene&quot;)%&gt;%  nrow()
+totGene100= totQTLGenes %&gt;% semi_join(TotalCounts_no0_perc100,by=&quot;gene&quot;)%&gt;%  nrow()
+
+
+totGene_allPerc=c(totGene10,totGene20,totGene30,totGene40,totGene50,totGene60,totGene70,totGene80, totGene90,totGene100)</code></pre>
+<p>plot this:</p>
+<pre class="r"><code>plot(totGene_allPerc)</code></pre>
+<p><img src="figure/QConApaQTLs.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /> Why are more genes included</p>
+</div>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
