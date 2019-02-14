@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-02-13</p>
+<p><strong>Last updated:</strong> 2019-02-14</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4e0fbe4afbe04daade70f5f33e849acb0b254b0d" target="_blank">4e0fbe4</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/73ef57ee28916b2de34600c675d1494f67caf6a8" target="_blank">73ef57e</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -392,6 +392,7 @@ Untracked files:
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/YL_QTL_test/
@@ -459,6 +460,8 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -466,7 +469,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
-    Modified:   analysis/accountMapBias.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -515,6 +517,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/73ef57ee28916b2de34600c675d1494f67caf6a8/analysis/ApproachForGeneAssignment.Rmd" target="_blank">73ef57e</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-14
+</td>
+<td style="text-align:left;">
+add fdr cutoff for leafcutter results
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/5d371f7dd38859bb9ee2ee7f73d75d9b923dd8f0/docs/ApproachForGeneAssignment.html" target="_blank">5d371f7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-13
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1751,6 +1787,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5d371f7dd38859bb9ee2ee7f73d75d9b923dd8f0/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-35-1.png" target="_blank">5d371f7</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/brimittleman/threeprimeseq/blob/1def3fb49474592a08e1bf59b50960a3ba595a1c/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-35-1.png" target="_blank">1def3fb</a>
 </td>
 <td style="text-align:left;">
@@ -1763,57 +1810,39 @@ Briana Mittleman
 </tbody>
 </table>
 <p></details></p>
+<pre class="r"><code>diffIso_10FDR=diffIso %&gt;% filter(-log10(p.adjust)&gt;1)
+
+diffIso_10FDR_genes=diffIso_10FDR %&gt;% separate(cluster, into = c(&quot;chr&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% group_by(gene) %&gt;% tally()</code></pre>
 <p>Look at the effect sizes and delta PSI values</p>
 <pre class="r"><code>effectsize=read.table(&quot;../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt&quot;, stringsAsFactors = F, col.names=c(&#39;intron&#39;,  &#39;logef&#39; ,&#39;Nuclear&#39;, &#39;Total&#39;,&#39;deltapsi&#39;))
 
 effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))</code></pre>
 <pre><code>Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>effectsize$logef=as.numeric(as.character(effectsize$logef))</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code>plot(sort(effectsize$deltapsi),main=&quot;Leafcutter delta PSI&quot;, ylab=&quot;Delta PSI&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
-<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-36-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/1def3fb49474592a08e1bf59b50960a3ba595a1c/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-36-1.png" target="_blank">1def3fb</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2019-01-29
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(sort(effectsize$logef),main=&quot;Leafcutter logef&quot;, ylab=&quot;log ef&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-37-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>effectsize_dpsi= effectsize %&gt;% filter(abs(deltapsi) &gt; .2) 
+
+effectsize_dpsi_gene= effectsize %&gt;% filter(abs(deltapsi) &gt; .2) %&gt;% separate(intron, into=c(&quot;chr&quot;, &#39;start&#39;, &#39;end&#39;,&#39;gene&#39;), sep=&quot;:&quot;) %&gt;% group_by(gene) %&gt;% tally()</code></pre>
+<p>Intersect effectsize_dpsi genes and the diffIso_10FDR genes.</p>
+<pre class="r"><code>inboth=effectsize_dpsi_gene %&gt;% inner_join(diffIso_10FDR_genes, by=&quot;gene&quot;)</code></pre>
 <p>I will look at the top PSI values to check these assignments:</p>
 <pre class="r"><code>filterHighPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.4) %&gt;% arrange(deltapsi)
 slice(filterHighPSI, 1:10)</code></pre>
-<pre><code>                              intron              logef           Nuclear
-1       chr16:81123538:81123627:GCSH  -1.79087571426241 0.724883044705174
-2     chr3:25705115:25705187:MIR4442  -1.32432047353345 0.660590394608791
-3         chr6:84007319:84007404:ME1  -1.68685519425574 0.671530253986571
-4  chr19:36806427:36806515:LINC00665  -1.17617088053315 0.809837765186814
-5      chr14:47718556:47718593:MDGA2   -1.1825787812967 0.659822642518761
-6      chr14:51976014:51976057:FRMD6  -1.56759469994778 0.636611882071359
-7  chr20:58647920:58648008:C20orf197  -1.09984402063945 0.691727788494324
-8      chr6:37812035:37812094:ZFAND3  -1.61085385492872 0.617570611488878
-9     chr8:104953022:104953097:RIMS2  -1.39009184488063 0.611545558430189
-10  chr7:147596894:147596932:CNTNAP2 -0.827276301229926  0.72731101101958
+<pre><code>                              intron      logef           Nuclear
+1       chr16:81123538:81123627:GCSH -1.7908757 0.724883044705174
+2     chr3:25705115:25705187:MIR4442 -1.3243205 0.660590394608791
+3         chr6:84007319:84007404:ME1 -1.6868552 0.671530253986571
+4  chr19:36806427:36806515:LINC00665 -1.1761709 0.809837765186814
+5      chr14:47718556:47718593:MDGA2 -1.1825788 0.659822642518761
+6      chr14:51976014:51976057:FRMD6 -1.5675947 0.636611882071359
+7  chr20:58647920:58648008:C20orf197 -1.0998440 0.691727788494324
+8      chr6:37812035:37812094:ZFAND3 -1.6108539 0.617570611488878
+9     chr8:104953022:104953097:RIMS2 -1.3900918 0.611545558430189
+10  chr7:147596894:147596932:CNTNAP2 -0.8272763  0.72731101101958
                Total   deltapsi
 1  0.151199900846243 -0.5736831
 2  0.121029754316441 -0.5395606
@@ -1918,22 +1947,22 @@ nuclear: 0.14461538</p>
 <h3>Evaluate mid level differences</h3>
 <pre class="r"><code>filtermidPSI=effectsize %&gt;% filter(abs(deltapsi)&gt;.1,  abs(deltapsi)&lt;.2 ) %&gt;% arrange(desc(deltapsi))
 slice(filtermidPSI, 1:15)</code></pre>
-<pre><code>                             intron             logef            Nuclear
-1   chr7:116558622:116558788:CAPZA2  1.28459436326155  0.166180284419304
-2    chr5:115167277:115167361:ATG12 0.909881927754279  0.259166063283374
-3   chr2:136102694:136102780:ZRANB3  1.24760550899784 0.0955688783220675
-4  chr19:19223611:19223703:SLC25A42  1.37244962915517  0.743116509482767
-5      chr6:35541367:35541452:FKBP5 0.863187232428243  0.231509000435571
-6       chr11:8413414:8413511:STK33  1.25057093458231   0.19314125556685
-7   chr8:145747318:145747406:LRRC14  0.57866486133952  0.138310661259947
-8    chr14:93306089:93306171:GOLGA5 0.927253025303143  0.255386508299208
-9        chr6:49398073:49398145:MUT 0.514507311266853  0.293792753148935
-10  chr14:74181826:74181916:ELMSAN1 0.717385819075523  0.327901407093237
-11     chr7:72039499:72039585:TYW1B  1.16310751313402  0.203541290866254
-12    chr6:83878048:83878191:DOPEY1 0.860563963938396  0.183715086476799
-13  chr11:19197879:19197962:ZDHHC13 0.732473498709712  0.263254598861606
-14    chr18:23971562:23971647:TAF4B  1.23543317865466 0.0851874732097812
-15  chr13:43681462:43681563:DNAJC15 0.897804629299911  0.584785689718398
+<pre><code>                             intron     logef            Nuclear
+1   chr7:116558622:116558788:CAPZA2 1.2845944  0.166180284419304
+2    chr5:115167277:115167361:ATG12 0.9098819  0.259166063283374
+3   chr2:136102694:136102780:ZRANB3 1.2476055 0.0955688783220675
+4  chr19:19223611:19223703:SLC25A42 1.3724496  0.743116509482767
+5      chr6:35541367:35541452:FKBP5 0.8631872  0.231509000435571
+6       chr11:8413414:8413511:STK33 1.2505709   0.19314125556685
+7   chr8:145747318:145747406:LRRC14 0.5786649  0.138310661259947
+8    chr14:93306089:93306171:GOLGA5 0.9272530  0.255386508299208
+9        chr6:49398073:49398145:MUT 0.5145073  0.293792753148935
+10  chr14:74181826:74181916:ELMSAN1 0.7173858  0.327901407093237
+11     chr7:72039499:72039585:TYW1B 1.1631075  0.203541290866254
+12    chr6:83878048:83878191:DOPEY1 0.8605640  0.183715086476799
+13  chr11:19197879:19197962:ZDHHC13 0.7324735  0.263254598861606
+14    chr18:23971562:23971647:TAF4B 1.2354332 0.0851874732097812
+15  chr13:43681462:43681563:DNAJC15 0.8978046  0.584785689718398
                Total  deltapsi
 1  0.366129635692815 0.1999494
 2  0.459039198885798 0.1998731
@@ -2275,37 +2304,7 @@ distPeak2EndTXN.close()
 <pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 -43480518     -2617        22   -107542      2638   2049472 </code></pre>
 <pre class="r"><code>ggplot(distTXN2Peak, aes(x=Distance)) + geom_density()</code></pre>
-<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-50-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/a70015c1d8d14b738c8c8ac74fe9efe5495f5eb4/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-50-1.png" target="_blank">a70015c</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2019-01-31
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Look at furthest ones in igv.</p>
 <pre class="r"><code>distTXN2Peak %&gt;% arrange(Distance) %&gt;% slice(1:15)</code></pre>
 <pre><code>         Peak    name2  Distance Gene_Strand
@@ -2370,80 +2369,11 @@ summary(distTXN2Peak$AbsDist)</code></pre>
        0       84     2626   134050    20651 43480518 </code></pre>
 <pre class="r"><code>distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x=&quot;Absolute Distance between end of Transcription and center of Peak&quot;, title=&quot;Distribution of transcription to peak absolute distance&quot;) 
 distTXN2PeakPlot</code></pre>
-<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-53-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-53-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/a70015c1d8d14b738c8c8ac74fe9efe5495f5eb4/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-53-1.png" target="_blank">a70015c</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2019-01-31
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Make sure this is not different by strand</p>
 <pre class="r"><code>ggplot(distTXN2Peak, aes(x=AbsDist, by=Gene_Strand, fill=Gene_Strand)) + geom_density(alpha=.5) + scale_x_log10()</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
 <pre><code>Warning: Removed 4 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-54-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/a70015c1d8d14b738c8c8ac74fe9efe5495f5eb4/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-54-1.png" target="_blank">a70015c</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2019-01-31
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
-<p>I want to add to this the average gene length. I can get this from the txn start to txn end. Start is column 5 and end is column 6. I will filter for genes in the peaks.</p>
-<pre class="r"><code>txnanno=read.table(&quot;../data/RefSeq_annotations/Transcript2GeneName.dms&quot;, header=T,stringsAsFactors = F) %&gt;% mutate(length=abs(txEnd-txStart)) %&gt;% semi_join(distTXN2Peak, by=&quot;name2&quot;)
-
-mean(txnanno$length)</code></pre>
-<pre><code>[1] 60808.79</code></pre>
-<p>Now I want to add this value as a verticle line</p>
-<pre class="r"><code>distTXN2PeakPlot=distTXN2PeakPlot+  geom_vline(xintercept=mean(txnanno$length), col=&quot;red&quot;) + annotate(&quot;text&quot;, x=1000000, y=.4, label=&quot;Average transcript length \n for genes in peaks&quot;, col=&#39;red&#39;)
-distTXN2PeakPlot</code></pre>
 <p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of unnamed-chunk-56-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -2475,6 +2405,15 @@ Briana Mittleman
 </tbody>
 </table>
 <p></details></p>
+<p>I want to add to this the average gene length. I can get this from the txn start to txn end. Start is column 5 and end is column 6. I will filter for genes in the peaks.</p>
+<pre class="r"><code>txnanno=read.table(&quot;../data/RefSeq_annotations/Transcript2GeneName.dms&quot;, header=T,stringsAsFactors = F) %&gt;% mutate(length=abs(txEnd-txStart)) %&gt;% semi_join(distTXN2Peak, by=&quot;name2&quot;)
+
+mean(txnanno$length)</code></pre>
+<pre><code>[1] 60808.79</code></pre>
+<p>Now I want to add this value as a verticle line</p>
+<pre class="r"><code>distTXN2PeakPlot=distTXN2PeakPlot+  geom_vline(xintercept=mean(txnanno$length), col=&quot;red&quot;) + annotate(&quot;text&quot;, x=1000000, y=.4, label=&quot;Average transcript length \n for genes in peaks&quot;, col=&#39;red&#39;)
+distTXN2PeakPlot</code></pre>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="correlation-with-rna-seq" class="section level3">
 <h3>Correlation with RNA seq</h3>
@@ -2525,37 +2464,7 @@ F-statistic:  9416 on 1 and 10596 DF,  p-value: &lt; 2.2e-16</code></pre>
 #+ geom_text(aes(label=gene),hjust=0, vjust=0)
        
 corr_18486Tot </code></pre>
-<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-60-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/f91ab35a90c5485f29aebe06f7f51ff8ed3c4863/docs/figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-60-1.png" target="_blank">f91ab35</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2019-01-31
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>This is in line with the estimates from when I filtered out close genes and all of that. (<a href="https://brimittleman.github.io/threeprimeseq/InvestigatePeak2GeneAssignment.html" class="uri">https://brimittleman.github.io/threeprimeseq/InvestigatePeak2GeneAssignment.html</a>)</p>
 </div>
 <div id="where-are-the-peaks" class="section level3">
@@ -2658,9 +2567,8 @@ outFile.close()
 <pre class="r"><code>peakswAnno=read.table(&quot;../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF&quot;, header=T) %&gt;% separate(GeneID, into=c(&quot;Peak&quot;, &quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;loc&quot;),sep=&quot;:&quot;) %&gt;% select(Peak, loc) %&gt;% group_by(loc) %&gt;% summarise(Num=n())</code></pre>
 <pre class="r"><code>locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;blue&quot;) + labs(x=&quot;Gene Location&quot;, y=&quot;Number of Peaks&quot;, title=&quot;Location distribution for all PAS with 5% Usage&quot;)
 locationOfPeaks</code></pre>
-<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-64-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>ggsave(locationOfPeaks, file=&quot;../output/plots/PeakLocationByAnnotation.png&quot;)</code></pre>
-<pre><code>Saving 7 x 5 in image</code></pre>
+<p><img src="figure/ApproachForGeneAssignment.Rmd/unnamed-chunk-66-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#ggsave(locationOfPeaks, file=&quot;../output/plots/PeakLocationByAnnotation.png&quot;)</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
