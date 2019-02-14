@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-02-08</p>
+<p><strong>Last updated:</strong> 2019-02-14</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4118f08d4e8d307d04fd4b1080e2346f4b31e827" target="_blank">4118f08</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/3723be959a4165f64ac210fbcab00fea9c288912" target="_blank">3723be9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -392,6 +392,7 @@ Untracked files:
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/YL_QTL_test/
@@ -459,14 +460,17 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/ApproachForGeneAssignment.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
-    Modified:   analysis/accountMapBias.Rmd
+    Modified:   analysis/QConApaQTLs.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -515,6 +519,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3723be959a4165f64ac210fbcab00fea9c288912/analysis/IndPeakUsageDiff.Rmd" target="_blank">3723be9</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-14
+</td>
+<td style="text-align:left;">
+fix .8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7b049656a9356fdb1d07613b8f83b14c5fdc2cfe/docs/IndPeakUsageDiff.html" target="_blank">7b04965</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1099,7 +1137,7 @@ colnames(TotalCounts_AllInd)=colnames(usageTot_2peak)</code></pre>
   count_ind_perc50= count_ind %&gt;% filter(Percentile&lt;.5, Percentile&gt;.4)
   count_ind_perc60= count_ind %&gt;% filter(Percentile&lt;.6, Percentile&gt;.5)
   count_ind_perc70= count_ind %&gt;% filter(Percentile&lt;.7, Percentile&gt;.6)
-  count_ind_perc80= count_ind %&gt;% filter(Percentile&lt;8, Percentile&gt;.7)
+  count_ind_perc80= count_ind %&gt;% filter(Percentile&lt;.8, Percentile&gt;.7)
   count_ind_perc90= count_ind %&gt;% filter(Percentile&lt;.9, Percentile&gt;.8)
   count_ind_perc100= count_ind %&gt;% filter(Percentile&lt;1, Percentile&gt;.9)
   #subset and sum usage 
@@ -1232,7 +1270,7 @@ Briana Mittleman
   count_ind_perc50= count_ind %&gt;% filter(Percentile&lt;.5, Percentile&gt;.4)
   count_ind_perc60= count_ind %&gt;% filter(Percentile&lt;.6, Percentile&gt;.5)
   count_ind_perc70= count_ind %&gt;% filter(Percentile&lt;.7, Percentile&gt;.6)
-  count_ind_perc80= count_ind %&gt;% filter(Percentile&lt;8, Percentile&gt;.7)
+  count_ind_perc80= count_ind %&gt;% filter(Percentile&lt;.8, Percentile&gt;.7)
   count_ind_perc90= count_ind %&gt;% filter(Percentile&lt;.9, Percentile&gt;.8)
   count_ind_perc100= count_ind %&gt;% filter(Percentile&lt;1, Percentile&gt;.9)
   #subset and sum usage 
@@ -1266,7 +1304,38 @@ colnames(Percentile_z_melt)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &q
 
 
 ggplot(Percentile_z_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Peak usage difference Z score for individaul vs. others \n by percentile of gene counts arranged by reads counts&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
-<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /> Do this by the mapped reads:</p>
+<p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-41-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7b049656a9356fdb1d07613b8f83b14c5fdc2cfe/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-41-1.png" target="_blank">7b04965</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-08
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<p>Do this by the mapped reads:</p>
 <pre class="r"><code>Percentile_z_df2=as.data.frame(Percentile_z) %&gt;%   select(Percentile, Lineorder_map)
 
 #order the 
@@ -1276,6 +1345,36 @@ colnames(Percentile_z_melt2)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &
 
 ggplot(Percentile_z_melt2, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Peak usage difference Z score for individaul vs. others \n by percentile of gene counts arranged by mapped reads counts&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
 <p><img src="figure/IndPeakUsageDiff.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of unnamed-chunk-42-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7b049656a9356fdb1d07613b8f83b14c5fdc2cfe/docs/figure/IndPeakUsageDiff.Rmd/unnamed-chunk-42-1.png" target="_blank">7b04965</a>
+</td>
+<td style="text-align:left;">
+Briana Mittleman
+</td>
+<td style="text-align:left;">
+2019-02-08
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
