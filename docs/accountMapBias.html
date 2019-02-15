@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/606e562d86042f5e0b093d1b4cdf423502814038" target="_blank">606e562</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreea38fd8cc89151321c99b3576412429cd94f3bf4btargetblanka38fd8ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a38fd8cc89151321c99b3576412429cd94f3bf4b" target="_blank">a38fd8c</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreea38fd8cc89151321c99b3576412429cd94f3bf4btargetblanka38fd8ca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -707,6 +707,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a38fd8cc89151321c99b3576412429cd94f3bf4b/analysis/accountMapBias.Rmd" target="_blank">a38fd8c</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-15
+</td>
+<td>
+add QTL analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/4f17cca4f0d8625a915a916d0ab5e8c885a556e0/docs/accountMapBias.html" target="_blank">4f17cca</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1191,6 +1225,7 @@ sed &#39;s/^chr//&#39; /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noM
 <li>create_fileid_geneLocAnno_nuclear.py (remove top line)</li>
 <li>make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh<br />
 </li>
+<li>pheno2CountOnly_genelocAnno.R</li>
 <li>counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py<br />
 </li>
 <li>run_filter_5percUsagePeaks.sh<br />
@@ -1226,17 +1261,64 @@ head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quan
 <li><p>APAqtl_perm_GeneLocAnno_noMP_5percUsage.sh</p></li>
 <li><p>run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh</p></li>
 </ul>
-<p>REDO!!! QC reruns: * filternamePeaks5percCov_GeneLocAnno_withAnno.py</p>
+<pre class="r"><code>totQTLs=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)
+
+Sig_TotQTLs= totQTLs %&gt;% filter(-log10(bh)&gt;=1)
+nrow(Sig_TotQTLs)</code></pre>
+<pre><code>[1] 291</code></pre>
+<p>How many genes are tested:</p>
+<pre class="r"><code>totQTLs %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% select(gene) %&gt;% tally() %&gt;% nrow()</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 3 rows [886,
+887, 888].</code></pre>
+<pre><code>[1] 11183</code></pre>
+<pre class="r"><code>nucQTLs=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)
+
+Sig_NucQTLs= nucQTLs %&gt;% filter(-log10(bh)&gt;=1)
+nrow(Sig_NucQTLs)</code></pre>
+<pre><code>[1] 615</code></pre>
+<p>How many genes:</p>
+<pre class="r"><code>nucQTLs %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% select(gene) %&gt;% tally() %&gt;% nrow()</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 3 rows [1056,
+1057, 1058].</code></pre>
+<pre><code>[1] 11499</code></pre>
+<p>Write QTLs to get locations:</p>
+<pre class="r"><code>totQTLs_sig=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)%&gt;% filter(-log10(bh)&gt;=1)
+
+write.table(totQTLs_sig,&quot;../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;, row.names = F, col.names = F, quote = F)
+
+nucQTLs_sig=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt&quot;, stringsAsFactors = F, header=T)%&gt;% filter(-log10(bh)&gt;=1)
+
+write.table(nucQTLs_sig,&quot;../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;, row.names = F, col.names = F, quote = F)</code></pre>
+<p>getDistPeakEnd2QTL.py</p>
+<pre class="r"><code>TotDist=read.table(&quot;../data/ApaQTLs/Distance2EndPeak.Total.apaQTLs.txt&quot;, header=T) %&gt;% mutate(Fraction=&quot;Total&quot;) %&gt;% select(Fraction, Distance)
+NucDist=read.table(&quot;../data/ApaQTLs/Distance2EndPeak.Nuclear.apaQTLs.txt&quot;, header=T)%&gt;% mutate(Fraction=&quot;Nuclear&quot;) %&gt;% select(Fraction, Distance)
+
+BothDist=data.frame(rbind(TotDist, NucDist))
+
+ggplot(BothDist, aes(x=Distance, by=Fraction, fill=Fraction))+geom_histogram(bins=70, alpha=.5) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Distance From apaQTL to End of Peak&quot; )</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Where are the QTLs:</p>
+<p>QTLfile2Bed.py “Total” QTLfile2Bed.py “Nuclear”</p>
+<p>I will need to sort the output</p>
+<pre class="bash"><code>sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.bed &gt; /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.bed &gt; /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed</code></pre>
+<p>mapQTLs2GenomeLoc.sh</p>
+<p>QC reruns:</p>
+<ul>
+<li>processGenLocPeakAnno2SAF_withAnno.py</li>
+<li>filternamePeaks5percCov_GeneLocAnno_withAnno.py</li>
+</ul>
 <pre class="r"><code>peakswAnno=read.table(&quot;../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF&quot;, header=T) %&gt;% separate(GeneID, into=c(&quot;Peak&quot;, &quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;, &quot;loc&quot;),sep=&quot;:&quot;) %&gt;% select(Peak, loc) %&gt;% group_by(loc) %&gt;% summarise(Num=n())</code></pre>
 <pre class="r"><code>locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;blue&quot;) + labs(x=&quot;Gene Location&quot;, y=&quot;Number of Peaks&quot;, title=&quot;Location distribution for all PAS with 5% Usage&quot;)
 locationOfPeaks</code></pre>
-<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
-Past versions of unnamed-chunk-21-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
+Past versions of unnamed-chunk-28-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div id="fig-unnamed-chunk-28-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -1255,7 +1337,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/03c4f95073e043b9f08c5b1e9888221d287846ae/docs/figure/accountMapBias.Rmd/unnamed-chunk-21-1.png" target="_blank">03c4f95</a>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/03c4f95073e043b9f08c5b1e9888221d287846ae/docs/figure/accountMapBias.Rmd/unnamed-chunk-28-1.png" target="_blank">03c4f95</a>
 </td>
 <td>
 Briana Mittleman
@@ -1273,7 +1355,9 @@ Briana Mittleman
 <ul>
 <li>GetDistTXNend2Peak.py</li>
 </ul>
-<pre class="r"><code>distTXN2Peak=read.table(&quot;../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN_newMAp.txt&quot;, col.names = c(&quot;Peak&quot;, &quot;name2&quot;, &quot;Distance&quot;, &quot;Gene_Strand&quot;),stringsAsFactors = F)
+<p>convert /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF to bed file</p>
+<p>peaksGeneLocAnno_5percSAF2Bed.py</p>
+<pre class="r"><code>distTXN2Peak=read.table(&quot;../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN.txt&quot;, col.names = c(&quot;Peak&quot;, &quot;name2&quot;, &quot;Distance&quot;, &quot;Gene_Strand&quot;),stringsAsFactors = F)
 txnanno=read.table(&quot;../data/RefSeq_annotations/Transcript2GeneName.dms&quot;, header=T,stringsAsFactors = F) %&gt;% mutate(length=abs(txEnd-txStart)) %&gt;% semi_join(distTXN2Peak, by=&quot;name2&quot;)
 distTXN2Peak =distTXN2Peak %&gt;% mutate(AbsDist=abs(Distance))
 mean(txnanno$length)</code></pre>
@@ -1281,44 +1365,9 @@ mean(txnanno$length)</code></pre>
 <pre class="r"><code>distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x=&quot;Absolute Distance between end of Transcription and center of Peak&quot;, title=&quot;Distribution of transcription to peak absolute distance&quot;) +  geom_vline(xintercept=mean(txnanno$length), col=&quot;red&quot;) + annotate(&quot;text&quot;, x=1000000, y=.4, label=&quot;Average transcript length \n for genes in peaks&quot;, col=&#39;red&#39;)
 
 distTXN2PeakPlot</code></pre>
-<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
-Past versions of unnamed-chunk-23-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-23-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/03c4f95073e043b9f08c5b1e9888221d287846ae/docs/figure/accountMapBias.Rmd/unnamed-chunk-23-1.png" target="_blank">03c4f95</a>
-</td>
-<td>
-Briana Mittleman
-</td>
-<td>
-2019-02-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(distTXN2PeakPlot, file=&quot;../output/plots/DistanceBetweenPeakandTES.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <p>Look at number of reads lost due to WASP filter</p>
 <p>getWASPfiltStats.py</p>
 <pre class="bash"><code>def main(Bamin,out,desc):
@@ -1381,139 +1430,6 @@ done </code></pre>
 <pre class="r"><code>waspStat=read.table(&quot;../data/WASP_STAT/WASP_Filt_AllLineStats.txt&quot;,stringsAsFactors = F, col.names = c(&quot;Sample&quot;, &quot;FilteredReads&quot;)) %&gt;% separate(Sample, into=c(&quot;Line&quot;, &quot;Fraction&quot;), sep=&quot;-&quot;)</code></pre>
 <p>Plot</p>
 <pre class="r"><code>ggplot(waspStat, aes(x=Line, fill=Fraction, y=FilteredReads, by=Fraction)) + geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;)</code></pre>
-<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-1">
-Past versions of unnamed-chunk-27-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-27-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/03c4f95073e043b9f08c5b1e9888221d287846ae/docs/figure/accountMapBias.Rmd/unnamed-chunk-27-1.png" target="_blank">03c4f95</a>
-</td>
-<td>
-Briana Mittleman
-</td>
-<td>
-2019-02-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>make boxplot</p>
-<pre class="r"><code>ggplot(waspStat, aes(x=Fraction, y=log10(FilteredReads), fill=Fraction)) + geom_boxplot()</code></pre>
-<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
-Past versions of unnamed-chunk-28-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-28-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/03c4f95073e043b9f08c5b1e9888221d287846ae/docs/figure/accountMapBias.Rmd/unnamed-chunk-28-1.png" target="_blank">03c4f95</a>
-</td>
-<td>
-Briana Mittleman
-</td>
-<td>
-2019-02-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Plto barplots by fractions with error bar</p>
-<pre class="r"><code>waspStat_sem= waspStat %&gt;% group_by(Fraction) %&gt;% summarise(mean=mean(FilteredReads), sd=sd(FilteredReads))
-
-ggplot(waspStat_sem, aes(x=Fraction, y=mean, fill=Fraction)) + geom_bar(stat=&#39;identity&#39;)  + geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,) + labs(title=&quot;Reads filtered out due to WASP filter&quot;, y=&#39;Reads&#39;) +scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))</code></pre>
-<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-29-1">
-Past versions of unnamed-chunk-29-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-29-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/03c4f95073e043b9f08c5b1e9888221d287846ae/docs/figure/accountMapBias.Rmd/unnamed-chunk-29-1.png" target="_blank">03c4f95</a>
-</td>
-<td>
-Briana Mittleman
-</td>
-<td>
-2019-02-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Map stat plots:</p>
-<pre class="r"><code>mapStats_wasp=read.table(&quot;../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt&quot;, stringsAsFactors = F, header = T)</code></pre>
-<p>Plot mappeded reads no MP by fractions:</p>
-<pre class="r"><code>mapStats_wasp_noMP=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(Mapped_noMP), sd=sd(Mapped_noMP))
-mapreads_plot=ggplot(mapStats_wasp_noMP, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) +  labs(title=&quot;Number of reads\n mapping and passing missprime filter&quot;, y=&quot;Number of sequence reads&quot;)</code></pre>
-<pre class="r"><code>mapStats_wasp_propnoMP=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(prop_MappedwithoutMP), sd=sd(prop_MappedwithoutMP))
-propmap_plot=ggplot(mapStats_wasp_propnoMP, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Proportion of reads\n mapping and passing missprime filter&quot;, y=&quot;Proportion of sequence reads&quot;)</code></pre>
-<pre class="r"><code>mapStats_wasp_reads=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(reads), sd=sd(reads))
-seqread_plot=ggplot(mapStats_wasp_reads, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Sequenced Reads&quot;, y=&quot;Number of sequence reads&quot;)</code></pre>
-<p>All plots:</p>
-<pre class="r"><code>library(cowplot)
-allmapstatplots=plot_grid(seqread_plot,mapreads_plot,propmap_plot,ncol = 3)
-allmapstatplots</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-34-1">
@@ -1552,11 +1468,8 @@ Briana Mittleman
 </table>
 </div>
 </div>
-<pre class="r"><code>ggsave(allmapstatplots, file=&quot;../output/plots/MapStatBarPlots.png&quot;,width=15)</code></pre>
-<pre><code>Saving 15 x 5 in image</code></pre>
-<p>Boxplot:</p>
-<pre class="r"><code>seqread_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(reads), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Sequenced Reads&quot;, y=&quot;log10(Number of sequence reads)&quot;) 
-seqread_plotbar</code></pre>
+<p>make boxplot</p>
+<pre class="r"><code>ggplot(waspStat, aes(x=Fraction, y=log10(FilteredReads), fill=Fraction)) + geom_boxplot()</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-35-1">
@@ -1595,88 +1508,10 @@ Briana Mittleman
 </table>
 </div>
 </div>
-<pre class="r"><code>mapreads_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(Mapped_noMP), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Mapped Reads\n filtered for misspriming&quot;, y=&quot;log10(Mapped Reads)&quot;) 
-mapreads_plotbar</code></pre>
-<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-35-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-35-2">
-Past versions of unnamed-chunk-35-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-35-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/03c4f95073e043b9f08c5b1e9888221d287846ae/docs/figure/accountMapBias.Rmd/unnamed-chunk-35-2.png" target="_blank">03c4f95</a>
-</td>
-<td>
-Briana Mittleman
-</td>
-<td>
-2019-02-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>maprop_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=prop_MappedwithoutMP, fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Proportion Mapped Reads\n and filtered for misspriming&quot;, y=&quot;Proportion mapped post misspriming&quot;) 
-maprop_plotbar</code></pre>
-<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-35-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-35-3">
-Past versions of unnamed-chunk-35-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-35-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/03c4f95073e043b9f08c5b1e9888221d287846ae/docs/figure/accountMapBias.Rmd/unnamed-chunk-35-3.png" target="_blank">03c4f95</a>
-</td>
-<td>
-Briana Mittleman
-</td>
-<td>
-2019-02-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>allmapstatboxplots=plot_grid(seqread_plotbar,mapreads_plotbar,maprop_plotbar,ncol = 3)
-allmapstatboxplots</code></pre>
+<p>Plto barplots by fractions with error bar</p>
+<pre class="r"><code>waspStat_sem= waspStat %&gt;% group_by(Fraction) %&gt;% summarise(mean=mean(FilteredReads), sd=sd(FilteredReads))
+
+ggplot(waspStat_sem, aes(x=Fraction, y=mean, fill=Fraction)) + geom_bar(stat=&#39;identity&#39;)  + geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,) + labs(title=&quot;Reads filtered out due to WASP filter&quot;, y=&#39;Reads&#39;) +scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-36-1">
@@ -1715,8 +1550,41 @@ Briana Mittleman
 </table>
 </div>
 </div>
+<p>Map stat plots:</p>
+<pre class="r"><code>mapStats_wasp=read.table(&quot;../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt&quot;, stringsAsFactors = F, header = T)</code></pre>
+<p>Plot mappeded reads no MP by fractions:</p>
+<pre class="r"><code>mapStats_wasp_noMP=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(Mapped_noMP), sd=sd(Mapped_noMP))
+mapreads_plot=ggplot(mapStats_wasp_noMP, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) +  labs(title=&quot;Number of reads\n mapping and passing missprime filter&quot;, y=&quot;Number of sequence reads&quot;)</code></pre>
+<pre class="r"><code>mapStats_wasp_propnoMP=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(prop_MappedwithoutMP), sd=sd(prop_MappedwithoutMP))
+propmap_plot=ggplot(mapStats_wasp_propnoMP, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Proportion of reads\n mapping and passing missprime filter&quot;, y=&quot;Proportion of sequence reads&quot;)</code></pre>
+<pre class="r"><code>mapStats_wasp_reads=mapStats_wasp %&gt;% group_by(fraction) %&gt;% summarise(mean=mean(reads), sd=sd(reads))
+seqread_plot=ggplot(mapStats_wasp_reads, aes(x=fraction, y=mean, fill=fraction)) + geom_bar(stat=&#39;identity&#39;)+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)+ scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Sequenced Reads&quot;, y=&quot;Number of sequence reads&quot;)</code></pre>
+<p>All plots:</p>
+<pre class="r"><code>library(cowplot)
+allmapstatplots=plot_grid(seqread_plot,mapreads_plot,propmap_plot,ncol = 3)
+allmapstatplots</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(allmapstatplots, file=&quot;../output/plots/MapStatBarPlots.png&quot;,width=15)</code></pre>
+<pre><code>Saving 15 x 5 in image</code></pre>
+<p>Boxplot:</p>
+<pre class="r"><code>seqread_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(reads), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Sequenced Reads&quot;, y=&quot;log10(Number of sequence reads)&quot;) 
+seqread_plotbar</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mapreads_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(Mapped_noMP), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Mapped Reads\n filtered for misspriming&quot;, y=&quot;log10(Mapped Reads)&quot;) 
+mapreads_plotbar</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-42-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>maprop_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=prop_MappedwithoutMP, fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Proportion Mapped Reads\n and filtered for misspriming&quot;, y=&quot;Proportion mapped post misspriming&quot;) 
+maprop_plotbar</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-42-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>allmapstatboxplots=plot_grid(seqread_plotbar,mapreads_plotbar,maprop_plotbar,ncol = 3)
+allmapstatboxplots</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggsave(allmapstatboxplots, file=&quot;../output/plots/MapStatBoxPlots.png&quot;,width=15)</code></pre>
 <pre><code>Saving 15 x 5 in image</code></pre>
+<p>Peak length:</p>
+<pre class="r"><code>peaks=read.table(&quot;../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed&quot;,col.names=c(&quot;chr&quot;, &#39;start&#39;,&#39;end&#39;, &#39;peak&#39;, &#39;score&#39;, &#39;strand&#39;)) %&gt;% mutate(length=end-start)</code></pre>
+<pre class="r"><code>ggplot(peaks,aes(x=length)) + geom_histogram(bins=300) + labs(title=&quot;Peak Size&quot;, x=&quot;number of basepairs&quot;) + geom_vline(xintercept =mean(peaks$length),col=&quot;red&quot;)</code></pre>
+<p><img src="figure/accountMapBias.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
