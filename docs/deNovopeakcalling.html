@@ -26,7 +26,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -95,8 +96,14 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -112,7 +119,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -132,6 +138,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -153,18 +196,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -317,314 +419,539 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-09</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-02-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>threeprimeseq/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
 <p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4348871eae879ece3e83fb7f33fc65d868af2b98" target="_blank">4348871</a> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/606e562d86042f5e0b093d1b4cdf423502814038" target="_blank">606e562</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
+    Ignored:    data/perm_QTL_trans_noMP_5percov/
     Ignored:    output/.DS_Store
 
 Untracked files:
+    Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/4suDataIGV.Rmd
+    Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/EvaleQTLs.Rmd
+    Untracked:  analysis/YL_QTL_test.Rmd
+    Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
+    Untracked:  analysis/snake.config.notes.Rmd
+    Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  analysis/verifybam_dubs.Rmd
+    Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
+    Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ApaQTLs/
+    Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/DistTXN2Peak_genelocAnno/
+    Untracked:  data/GM12878.chromHMM.bed
+    Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LianoglouLCL/
+    Untracked:  data/LocusZoom/
+    Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
+    Untracked:  data/PeakCounts_noMP_5perc/
+    Untracked:  data/PeakCounts_noMP_genelocanno/
+    Untracked:  data/PeakUsage/
+    Untracked:  data/PeakUsage_noMP/
+    Untracked:  data/PeakUsage_noMP_GeneLocAnno/
+    Untracked:  data/PeaksUsed/
+    Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/RNAkalisto/
+    Untracked:  data/RefSeq_annotations/
+    Untracked:  data/TotalApaQTLs.txt
+    Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
+    Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/YL_QTL_test/
+    Untracked:  data/apaExamp/
+    Untracked:  data/apaQTL_examp_noMP/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
     Untracked:  data/bin200.Anuccov.bed
     Untracked:  data/bin200.nuccov.bed
+    Untracked:  data/clean_peaks/
+    Untracked:  data/comb_map_stats.csv
+    Untracked:  data/comb_map_stats.xlsx
+    Untracked:  data/comb_map_stats_39ind.csv
+    Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_GeneLocAnno/
+    Untracked:  data/diff_iso_proc/
+    Untracked:  data/diff_iso_trans/
+    Untracked:  data/ensemble_to_genename.txt
+    Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
+    Untracked:  data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
+    Untracked:  data/first50lines_closest.txt
+    Untracked:  data/gencov.test.csv
+    Untracked:  data/gencov.test.txt
+    Untracked:  data/gencov_zero.test.csv
+    Untracked:  data/gencov_zero.test.txt
     Untracked:  data/gene_cov/
+    Untracked:  data/joined
     Untracked:  data/leafcutter/
+    Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/molPheno_noMP/
+    Untracked:  data/mol_overlap/
+    Untracked:  data/mol_pheno/
+    Untracked:  data/nom_QTL/
+    Untracked:  data/nom_QTL_opp/
+    Untracked:  data/nom_QTL_trans/
     Untracked:  data/nuc6up/
+    Untracked:  data/nuc_10up/
+    Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
+    Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
+    Untracked:  data/perm_QTL_opp/
+    Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
+    Untracked:  data/protAndAPAAndExplmRes.Rda
+    Untracked:  data/protAndAPAlmRes.Rda
+    Untracked:  data/protAndExpressionlmRes.Rda
     Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  data/smash.cov.results.bed
+    Untracked:  data/smash.cov.results.csv
+    Untracked:  data/smash.cov.results.txt
+    Untracked:  data/smash_testregion/
     Untracked:  data/ssFC200.cov.bed
+    Untracked:  data/temp.file1
+    Untracked:  data/temp.file2
+    Untracked:  data/temp.gencov.test.txt
+    Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  data/threePrimeSeqMetaData55Ind.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
 
 Unstaged changes:
+    Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/NewPeakPostMP.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
+    Modified:   analysis/cleanupdtseq.internalpriming.Rmd
+    Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/mispriming_approach.Rmd
+    Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlapMolQTL.opposite.Rmd
+    Modified:   analysis/overlap_qtls.Rmd
+    Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/peakQCPPlots.Rmd
+    Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/pipeline_55Ind.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/test.smash.Rmd
+    Modified:   analysis/understandPeaks.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
-</li>
-</ul>
-<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-Rmd
+<td>
+html
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/4348871eae879ece3e83fb7f33fc65d868af2b98/analysis/deNovopeakcalling.Rmd" target="_blank">4348871</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/bd7f203910f19c1709c279e1df23fbb445da8ed0/docs/deNovopeakcalling.html" target="_blank">bd7f203</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-09
 </td>
-<td style="text-align:left;">
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4348871eae879ece3e83fb7f33fc65d868af2b98/analysis/deNovopeakcalling.Rmd" target="_blank">4348871</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-07-09
+</td>
+<td>
 call peaks on nuclear
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f4f19189e372c610cb22b8020035ea9dadc99bf5/docs/deNovopeakcalling.html" target="_blank">f4f1918</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/f4f19189e372c610cb22b8020035ea9dadc99bf5/docs/deNovopeakcalling.html" target="_blank">f4f1918</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2522654f0e90864f429121515856254655ae0d85/analysis/deNovopeakcalling.Rmd" target="_blank">2522654</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-06
 </td>
-<td style="text-align:left;">
+<td>
 fix axis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a0541e37d08c94cb1df9592aca3537ed38406b91/docs/deNovopeakcalling.html" target="_blank">a0541e3</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a0541e37d08c94cb1df9592aca3537ed38406b91/docs/deNovopeakcalling.html" target="_blank">a0541e3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/df5cfe4942df2cf4fcc82dffd8d5b3a7d1fdfe02/analysis/deNovopeakcalling.Rmd" target="_blank">df5cfe4</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-06
 </td>
-<td style="text-align:left;">
+<td>
 add Yangs peaks
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/9de36772e8b1b166540211cc7fcf5c076f223070/docs/deNovopeakcalling.html" target="_blank">9de3677</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/9de36772e8b1b166540211cc7fcf5c076f223070/docs/deNovopeakcalling.html" target="_blank">9de3677</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c619183e1288ef8f31ace4ee51fc3056d258d830/analysis/deNovopeakcalling.Rmd" target="_blank">c619183</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
-<td style="text-align:left;">
+<td>
 examine long peaks
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2d67ec51a1081d45a630bef20fac1692948657b8/docs/deNovopeakcalling.html" target="_blank">2d67ec5</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/2d67ec51a1081d45a630bef20fac1692948657b8/docs/deNovopeakcalling.html" target="_blank">2d67ec5</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/15c79674071d2330e1f4289e9eb7d611eed63b24/analysis/deNovopeakcalling.Rmd" target="_blank">15c7967</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
-<td style="text-align:left;">
+<td>
 add split analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/deNovopeakcalling.html" target="_blank">24c6663</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/deNovopeakcalling.html" target="_blank">24c6663</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-03
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/776fc62d1c6ee9e6f9dbb1511b64741aafe36a6a/analysis/deNovopeakcalling.Rmd" target="_blank">776fc62</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-03
 </td>
-<td style="text-align:left;">
+<td>
 genome cov stats
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b48f27c0e5bb534650122f0ef716de2f8ff23795/docs/deNovopeakcalling.html" target="_blank">b48f27c</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b48f27c0e5bb534650122f0ef716de2f8ff23795/docs/deNovopeakcalling.html" target="_blank">b48f27c</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-02
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/1e2ff4cbb34548e49fa92559fabe46615954324d/analysis/deNovopeakcalling.Rmd" target="_blank">1e2ff4c</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-02
 </td>
-<td style="text-align:left;">
+<td>
 evaluate bedgraph regions
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-<p></details></p>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <div id="create-bedgraph" class="section level2">
 <h2>Create Bedgraph</h2>
 <p>I will call peaks de novo in the combined total and nuclear fraction 3’ Seq. The data is reletevely clean so I will start with regions that have continuous coverage. I will first create a bedgraph.</p>
@@ -675,6 +1002,7 @@ bedgraph=$1
 describer=$(echo ${bedgraph} | sed -e &quot;s/.bedgraph$//&quot;)
 
 bedtools merge -c 4,4,4 -o count,mean,collapse -delim &quot;,&quot; -i /project2/gilad/briana/threeprimeseq/data/bedgraph/$1 &gt; /project2/gilad/briana/threeprimeseq/data/bedgraph/${describer}.peaks.bed
+
 </code></pre>
 <p>Run this first on the total bedgraph, TotalBamFiles_no0.bedgraph. The file has chromosome, start, end, number of regions, mean, and a string of the values.</p>
 <p>This is not exaclty what I want. I need to go back and do genome cov not collapsing with bedgraph.</p>
@@ -720,6 +1048,7 @@ gencov=$1
 describer=$(echo ${gencov} | sed -e &quot;s/.genomecov.no0.fixed.bed$//&quot;)
 
 bedtools merge -c 4,4,4 -o count,mean,collapse -delim &quot;,&quot; -i /project2/gilad/briana/threeprimeseq/data/bedgraph/$1 &gt; /project2/gilad/briana/threeprimeseq/data/bedgraph/${describer}.gencovpeaks.bed
+
 </code></pre>
 <p>This method gives us 811,637 regions.</p>
 </div>
@@ -728,7 +1057,6 @@ bedtools merge -c 4,4,4 -o count,mean,collapse -delim &quot;,&quot; -i /project2
 <div id="bedgraph-results" class="section level3">
 <h3>Bedgraph results</h3>
 <pre class="r"><code>library(dplyr)</code></pre>
-<pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.4.4</code></pre>
 <pre><code>
 Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>The following objects are masked from &#39;package:stats&#39;:
@@ -740,8 +1068,7 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <pre class="r"><code>library(ggplot2)
 library(readr)
 library(workflowr)</code></pre>
-<pre><code>Loading required package: rmarkdown</code></pre>
-<pre><code>This is workflowr version 1.0.1
+<pre><code>This is workflowr version 1.2.0
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyr)</code></pre>
 <p>First I will look at the bedgraph file. This is not as imformative becuase it combined regions with the same counts.</p>
@@ -749,71 +1076,85 @@ Run ?workflowr for help getting started</code></pre>
 <p>Plot the mean:</p>
 <pre class="r"><code>plot(sort(log10(total_bedgraph$mean), decreasing=T), xlab=&quot;Region&quot;, ylab=&quot;log10 of bedgraph region bin&quot;, main=&quot;Distribution of log10 region means from bedgraph&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-9-1.png" target="_blank">24c6663</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-03
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>I want to look at the distribution of how many bases are included in the regions.</p>
-<pre class="r"><code>Tregion_bases=total_bedgraph %&gt;% mutate(bases=end-start) %&gt;% select(bases)</code></pre>
-<pre><code>Warning: package &#39;bindrcpp&#39; was built under R version 3.4.4</code></pre>
-<pre class="r"><code>plot(sort(log10(Tregion_bases$bases), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in regions- log10&quot;)</code></pre>
+<pre class="r"><code>Tregion_bases=total_bedgraph %&gt;% mutate(bases=end-start) %&gt;% select(bases)
+
+plot(sort(log10(Tregion_bases$bases), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in regions- log10&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-10-1.png" target="_blank">24c6663</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-03
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Given the reads are abotu 60bp this is probably pretty good.</p>
 </div>
 <div id="genomecov-results" class="section level3">
@@ -823,68 +1164,82 @@ Briana Mittleman
 <p>Plot the mean:</p>
 <pre class="r"><code>plot(sort(log10(total_gencov$mean), decreasing=T), xlab=&quot;Region&quot;, ylab=&quot;log10 of mean bin count&quot;, main=&quot;Distribution of log10 region means&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-12-1.png" target="_blank">24c6663</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-03
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>plot(sort(log10(total_gencov$regions), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in regions- log10&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-13-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-13-1.png" target="_blank">24c6663</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-03
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Plot number of bases against the mean:</p>
 <pre class="r"><code>ggplot(total_gencov, aes(y=log10(regions), x=log10(mean))) +
          geom_point(na.rm = TRUE, size = 0.1) +
@@ -893,36 +1248,43 @@ Briana Mittleman
          xlab(&#39;Log10 Mean region coverage&#39;) + 
         ggtitle(&quot;Region size vs Region Coverage: Combined Total Libraries&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/24c6663bafcc674ca7aba33d1eb674018ce6f623/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-14-1.png" target="_blank">24c6663</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-03
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 </div>
 <div id="troubleshooting" class="section level2">
@@ -956,36 +1318,43 @@ awk &#39;{print $1 &quot;\t&quot; $2 &quot;\t&quot;  $2 &quot;\t&quot; $3}&#39; 
 <p>Plot the region size. I expect some of the long regions are gone.</p>
 <pre class="r"><code>plot(sort(log10(total_gencov_split$regions), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in regions- log10 SPLIT&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2d67ec51a1081d45a630bef20fac1692948657b8/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-18-1.png" target="_blank">2d67ec5</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Plot the region size against the mean:</p>
 <p>Plot number of bases against the mean:</p>
 <pre class="r"><code>splitplot=ggplot(total_gencov_split, aes(y=log10(regions), x=log10(mean))) +
@@ -1011,36 +1380,43 @@ colnames(loc_ch11_65266512_65268654_df)= c(&quot;count&quot;, &quot;loc&quot;)
 
 ggplot(loc_ch11_65266512_65268654_df, aes(x=loc, y=count)) + geom_line() + labs(y=&quot;Read Count&quot;, x=&quot;Peak Location&quot;, title=&quot;Example of long region called as 1 peak \n ch11 65266512-65268654&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/9de36772e8b1b166540211cc7fcf5c076f223070/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-21-1.png" target="_blank">9de3677</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Try one more. Example. line 816811, chr:17- 79476983- 79477761</p>
 <pre class="bash"><code> grep -n 79476983 TotalBamFiles.split.gencovpeaks.bed | awk &#39;{print $6}&#39; &gt; loc_ch17_79476983_79477761.txt</code></pre>
 <pre class="r"><code>loc_ch17_79476983_79477761=read.csv(&quot;../data/bedgraph_peaks/loc_ch17_79476983_79477761.txt&quot;, header=F) %&gt;% t
@@ -1052,36 +1428,43 @@ colnames(loc_ch17_79476983_79477761_df)= c(&quot;count&quot;, &quot;loc&quot;)
 
 ggplot(loc_ch17_79476983_79477761_df, aes(x=loc, y=count)) + geom_line() + labs(y=&quot;Read Count&quot;, x=&quot;Peak Location&quot;, title=&quot;Example of long region called as 1 peak \n ch17 79476983:79477761&quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-23-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/9de36772e8b1b166540211cc7fcf5c076f223070/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-23-1.png" target="_blank">9de3677</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>This one is not multiple peaks but it does need to be trimmed.</p>
 </div>
 </div>
@@ -1176,36 +1559,43 @@ if __name__ == &quot;__main__&quot;:
 <p>Plot the lengths</p>
 <pre class="r"><code>plot(sort(log10(YL_peaks$length), decreasing = T), xlab=&quot;Region&quot;, ylab=&quot;log10 of region size&quot;, main=&quot;Distribution of bases in YL regions- log10 &quot;)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-26-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a0541e37d08c94cb1df9592aca3537ed38406b91/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-26-1.png" target="_blank">a0541e3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-06
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Plot number of bases against the mean:</p>
 <pre class="r"><code>YLplot=ggplot(YL_peaks, aes(y=log10(length), x=log10(count))) +
          geom_point(na.rm = TRUE, size = 0.1) +
@@ -1215,7 +1605,6 @@ Briana Mittleman
         scale_y_continuous(limits = c(0, 3)) + 
         ggtitle(&quot;YL Peaks Combined Total Libraries&quot;)</code></pre>
 <pre class="r"><code>library(cowplot)</code></pre>
-<pre><code>Warning: package &#39;cowplot&#39; was built under R version 3.4.3</code></pre>
 <pre><code>
 Attaching package: &#39;cowplot&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:ggplot2&#39;:
@@ -1223,47 +1612,54 @@ Attaching package: &#39;cowplot&#39;</code></pre>
     ggsave</code></pre>
 <pre class="r"><code>plot_grid(splitplot, YLplot)</code></pre>
 <p><img src="figure/deNovopeakcalling.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-28-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
+Past versions of unnamed-chunk-28-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-28-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/f4f19189e372c610cb22b8020035ea9dadc99bf5/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-28-1.png" target="_blank">f4f1918</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-06
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a0541e37d08c94cb1df9592aca3537ed38406b91/docs/figure/deNovopeakcalling.Rmd/unnamed-chunk-28-1.png" target="_blank">a0541e3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-06
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 <div id="run-this-on-the-nuclear-fraction-bam" class="section level2">
 <h2>Run this on the Nuclear Fraction Bam</h2>
@@ -1312,19 +1708,23 @@ done
 <p>Thoughts:</p>
 <ul>
 <li><p>Remove peaks outside 1kb of the genes</p></li>
-<li><p>Remove peaks with low expression</p></li>
+<li>Remove peaks with low expression<br />
+<br> <br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p></li>
 </ul>
-</div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+<div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.4.2 (2017-09-28)
+<pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+Running under: macOS  10.14.1
 
 Matrix products: default
-BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -1333,24 +1733,22 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] cowplot_0.9.2   bindrcpp_0.2.2  tidyr_0.7.2     workflowr_1.0.1
-[5] rmarkdown_1.8.5 readr_1.1.1     ggplot2_2.2.1   dplyr_0.7.5    
+[1] cowplot_0.9.3   bindrcpp_0.2.2  tidyr_0.8.1     workflowr_1.2.0
+[5] readr_1.1.1     ggplot2_3.0.0   dplyr_0.7.6    
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.17      compiler_3.4.2    pillar_1.1.0     
- [4] git2r_0.21.0      plyr_1.8.4        bindr_0.1.1      
- [7] R.methodsS3_1.7.1 R.utils_2.6.0     tools_3.4.2      
-[10] digest_0.6.15     jsonlite_1.5      evaluate_0.10.1  
-[13] tibble_1.4.2      gtable_0.2.0      pkgconfig_2.0.1  
-[16] rlang_0.2.1       yaml_2.1.19       stringr_1.3.1    
-[19] knitr_1.18        hms_0.4.1         rprojroot_1.3-2  
-[22] grid_3.4.2        tidyselect_0.2.4  reticulate_1.4   
-[25] glue_1.2.0        R6_2.2.2          purrr_0.2.5      
-[28] magrittr_1.5      whisker_0.3-2     MASS_7.3-48      
-[31] backports_1.1.2   scales_0.5.0      htmltools_0.3.6  
-[34] assertthat_0.2.0  colorspace_1.3-2  labeling_0.3     
-[37] stringi_1.2.2     lazyeval_0.2.1    munsell_0.4.3    
-[40] R.oo_1.22.0      </code></pre>
+ [1] Rcpp_0.12.19     pillar_1.3.0     compiler_3.5.1   git2r_0.24.0    
+ [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.17   
+ [9] jsonlite_1.6     lattice_0.20-35  evaluate_0.13    tibble_1.4.2    
+[13] gtable_0.2.0     pkgconfig_2.0.2  rlang_0.2.2      Matrix_1.2-14   
+[17] yaml_2.2.0       withr_2.1.2      stringr_1.4.0    knitr_1.20      
+[21] fs_1.2.6         hms_0.4.2        rprojroot_1.3-2  grid_3.5.1      
+[25] tidyselect_0.2.4 reticulate_1.10  glue_1.3.0       R6_2.3.0        
+[29] rmarkdown_1.11   purrr_0.2.5      magrittr_1.5     whisker_0.3-2   
+[33] backports_1.1.2  scales_1.0.0     htmltools_0.3.6  MASS_7.3-50     
+[37] assertthat_0.2.0 colorspace_1.3-2 labeling_0.3     stringi_1.2.4   
+[41] lazyeval_0.2.1   munsell_0.5.0    crayon_1.3.4    </code></pre>
+</div>
 </div>
 
 <hr>
@@ -1377,6 +1775,7 @@ loaded via a namespace (and not attached):
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 -->
+
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
 http://docs.mathjax.org/en/latest/configuration.html.  This will make
@@ -1388,14 +1787,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
-</p>
-<hr>
 
 
 </div>

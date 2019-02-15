@@ -27,9 +27,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -104,6 +103,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -118,7 +120,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -138,6 +139,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -159,18 +197,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -323,69 +420,163 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-01-15</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-02-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>threeprimeseq/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
 <p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/57fbf88f14ff2df2cdbc771144a25b88f733d8f7" target="_blank">57fbf88</a> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/606e562d86042f5e0b093d1b4cdf423502814038" target="_blank">606e562</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
+    Ignored:    data/perm_QTL_trans_noMP_5percov/
     Ignored:    output/.DS_Store
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/4suDataIGV.Rmd
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
-    Untracked:  analysis/PreAshExplore.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  analysis/verifybam_dubs.Rmd
     Untracked:  code/PeaksToCoverPerReads.py
     Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ApaQTLs/
     Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
+    Untracked:  data/PeakCounts_noMP_5perc/
+    Untracked:  data/PeakCounts_noMP_genelocanno/
+    Untracked:  data/PeakUsage/
+    Untracked:  data/PeakUsage_noMP/
+    Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
+    Untracked:  data/PeaksUsed_noMP_5percCov/
     Untracked:  data/RNAkalisto/
+    Untracked:  data/RefSeq_annotations/
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/YL_QTL_test/
     Untracked:  data/apaExamp/
+    Untracked:  data/apaQTL_examp_noMP/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
     Untracked:  data/bin200.Anuccov.bed
@@ -395,10 +586,13 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_GeneLocAnno/
+    Untracked:  data/diff_iso_proc/
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
     Untracked:  data/explainProtVar/
+    Untracked:  data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -410,6 +604,7 @@ Untracked files:
     Untracked:  data/joined
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/molPheno_noMP/
     Untracked:  data/mol_overlap/
     Untracked:  data/mol_pheno/
     Untracked:  data/nom_QTL/
@@ -421,9 +616,14 @@ Untracked files:
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
     Untracked:  data/perm_QTL_trans_filt/
+    Untracked:  data/protAndAPAAndExplmRes.Rda
+    Untracked:  data/protAndAPAlmRes.Rda
+    Untracked:  data/protAndExpressionlmRes.Rda
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -435,6 +635,12 @@ Untracked files:
     Untracked:  data/temp.gencov.test.txt
     Untracked:  data/temp.gencov_zero.test.txt
     Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  data/threePrimeSeqMetaData55Ind.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -451,302 +657,336 @@ Unstaged changes:
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlapMolQTL.opposite.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/peakQCPPlots.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/test.smash.Rmd
     Modified:   analysis/understandPeaks.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
-</li>
-</ul>
-<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-Rmd
+<td>
+html
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/57fbf88f14ff2df2cdbc771144a25b88f733d8f7/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">57fbf88</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/characterizeNuclearApaQtls.html" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-15
 </td>
-<td style="text-align:left;">
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/57fbf88f14ff2df2cdbc771144a25b88f733d8f7/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">57fbf88</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-01-15
+</td>
+<td>
 update dist to peak plots
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/characterizeNuclearApaQtls.html" target="_blank">2ec5ffd</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/characterizeNuclearApaQtls.html" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/962e39bcfc173365546499232b60d586f6470f38/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">962e39b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 move chromhmm analysis to its own analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a7ecc84007e05d888a09732995c9a733457c2f3f/docs/characterizeNuclearApaQtls.html" target="_blank">a7ecc84</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a7ecc84007e05d888a09732995c9a733457c2f3f/docs/characterizeNuclearApaQtls.html" target="_blank">a7ecc84</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/e43bd073216238b870f4abea85b1fb962c82e489/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">e43bd07</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 group chromhmm by number
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b176cda51421ba4cf03400f59b31b30eeb7ba31a/docs/characterizeNuclearApaQtls.html" target="_blank">b176cda</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b176cda51421ba4cf03400f59b31b30eeb7ba31a/docs/characterizeNuclearApaQtls.html" target="_blank">b176cda</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/75467a16514b78f266c6fb4a0533e6d73846bddf/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">75467a1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-06
 </td>
-<td style="text-align:left;">
+<td>
 load in permutation results
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a5b4cf677cb4da813fbf7aee2733afe7dccfb8d6/docs/characterizeNuclearApaQtls.html" target="_blank">a5b4cf6</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a5b4cf677cb4da813fbf7aee2733afe7dccfb8d6/docs/characterizeNuclearApaQtls.html" target="_blank">a5b4cf6</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-29
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/afb0ce901919c79bb2117f5548f0e2839c70aba6/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">afb0ce9</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-29
 </td>
-<td style="text-align:left;">
+<td>
 change plot colors
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/805dec6d4a2b4f026b6738fece69ae5daf24244d/docs/characterizeNuclearApaQtls.html" target="_blank">805dec6</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/805dec6d4a2b4f026b6738fece69ae5daf24244d/docs/characterizeNuclearApaQtls.html" target="_blank">805dec6</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-26
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/5cb6b0bd668c8bf71bd004454e6fffaeaf7dadb3/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">5cb6b0b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-26
 </td>
-<td style="text-align:left;">
+<td>
 permutation code
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/96cfdcdc9dee62c2443381962d012f0e17f57c27/docs/characterizeNuclearApaQtls.html" target="_blank">96cfdcd</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/96cfdcdc9dee62c2443381962d012f0e17f57c27/docs/characterizeNuclearApaQtls.html" target="_blank">96cfdcd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-24
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/00b1020c35e7fd99f72e33159fb83aa93ac79d4e/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">00b1020</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-24
 </td>
-<td style="text-align:left;">
+<td>
 naive enrichment
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/characterizeNuclearApaQtls.html" target="_blank">de860f0</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/characterizeNuclearApaQtls.html" target="_blank">de860f0</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-24
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/96a97f4b407baa2e87100144f096a2a9c483e874/analysis/characterizeNuclearApaQtls.Rmd" target="_blank">96a97f4</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-24
 </td>
-<td style="text-align:left;">
+<td>
 add nuclear characterization
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-<p></details></p>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <p>This analysis is similar to the <a href="characterizeTotalApaQtls.html">Characterize Total APAqtl analysis</a></p>
 <p>I would like to study:</p>
 <ul>
@@ -770,15 +1010,16 @@ add nuclear characterization
 <h2>Upload Libraries and Data:</h2>
 <p>Library</p>
 <pre class="r"><code>library(workflowr)</code></pre>
-<pre><code>This is workflowr version 1.1.1
+<pre><code>This is workflowr version 1.2.0
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
 <pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
-✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ tidyr   0.8.1     ✔ stringr 1.4.0
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
@@ -842,69 +1083,105 @@ print(names(NuclearAPA))</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-3-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-3-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-3-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Zoom in to 100,000.</p>
 <pre class="r"><code>ggplot(NuclearAPA, aes(x=dist, fill=sig, by=sig)) + geom_density(alpha=.5)+coord_cartesian(xlim = c(-150000, 150000)) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-4-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-4-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-4-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-4-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 <div id="distance-from-snp-to-peak" class="section level3">
 <h3>Distance from snp to peak</h3>
@@ -921,36 +1198,54 @@ NuclearAPA_peakdist= NuclearAPA_peakdist %&gt;%  mutate(DisttoPeak= snpLOC-PeakC
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-7-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-7-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-7-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-7-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Look at the summarys based on significance:</p>
 <pre class="r"><code>NuclearAPA_peakdist_sig=NuclearAPA_peakdist %&gt;% filter(sig==1)
 NuclearAPA_peakdist_notsig=NuclearAPA_peakdist %&gt;% filter(sig==0)
@@ -966,36 +1261,54 @@ summary(NuclearAPA_peakdist_sig$DisttoPeak)</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-9-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-9-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-9-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Look like there are some outliers that are really far. I will remove variants greater than 1*10^6th away</p>
 <pre class="r"><code>NuclearAPA_peakdist_filt=NuclearAPA_peakdist %&gt;% filter(abs(DisttoPeak) &lt;= 1*(10^6))
 
@@ -1003,114 +1316,168 @@ ggplot(NuclearAPA_peakdist_filt, aes(y=DisttoPeak,x=sig, fill=sig, by=sig)) + ge
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(NuclearAPA_peakdist_filt, aes(x=DisttoPeak, fill=sig, by=sig)) + geom_density()  + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;)) + facet_grid(.~strand)+ scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-2">
+Past versions of unnamed-chunk-10-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-2.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-2.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-10-2.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>I am going to plot a violin plot for just the significant ones.</p>
 <pre class="r"><code>ggplot(NuclearAPA_peakdist_sig, aes(x=log10(abs(DisttoPeak)+1))) + geom_density(fill=&quot;deepskyblue3&quot;)+ labs(title=&quot;Nuclear: Distance from QTL to PAS Peak&quot;, x=&quot;Distance from SNP to PAS&quot;) </code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/a5b4cf677cb4da813fbf7aee2733afe7dccfb8d6/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" target="_blank">a5b4cf6</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a5b4cf677cb4da813fbf7aee2733afe7dccfb8d6/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" target="_blank">a5b4cf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-29
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-11-1.png" target="_blank">de860f0</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Within 1000 bases of the peak center.</p>
 <pre class="r"><code>NuclearAPA_peakdist_sig %&gt;% filter(abs(DisttoPeak) &lt; 1000) %&gt;% nrow()</code></pre>
 <pre><code>[1] 192</code></pre>
@@ -1150,107 +1517,161 @@ summary(gene_wQTL_N$sigGeneFactor)</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-17-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-17-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-17-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>I can do a similar analysis but test the variance in the gene expression.</p>
 <pre class="r"><code>ggplot(gene_wQTL_N, aes(x=exp.var, by=sigGeneFactor, fill=sigGeneFactor)) + geom_density(alpha=.3) + labs(title=&quot;Varriance in RNA expression by genes with significant QTL&quot;, x=&quot;Variance in normalized expression&quot;) + scale_fill_discrete(guide = guide_legend(title = &quot;Significant QTL&quot;))+ scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <pre><code>Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;,
 which will replace the existing scale.</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-18-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-18-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-18-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <div id="peak-coverage-for-qtls" class="section level3">
 <h3>Peak coverage for QTLs</h3>
 <p>I can also look at peak coverage for peaks with QLTs and those without. I will first look at this on peak level then mvoe to gene level. The peak scores come from the coverage in the peaks.</p>
 <p>The NuclearAPA_peakdist data frame has the information I need for this.</p>
 <pre class="r"><code>ggplot(NuclearAPA_peakdist, aes(x=PeakScore,fill=sig,by=sig)) + geom_density(alpha=.5)+ scale_x_log10() + labs(title=&quot;Peak score by significance&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-19-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-19-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-19-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-19-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>This is expected. It makes sense that we have more power to detect qtls in higher expressed peaks. This leads me to believe that filtering out low peaks may add power but will not mitigate the effect. ##Where are the SNPs</p>
 <p>I created the significant SNP files in the <a href="characterizeTotalApaQtls.html">Characterize Total APAqtl analysis</a> analysis.</p>
 <pre class="r"><code>chromHmm=read.table(&quot;../data/ChromHmmOverlap/chromHMM_regions.txt&quot;, col.names = c(&quot;number&quot;, &quot;name&quot;), stringsAsFactors = F)
@@ -1260,40 +1681,61 @@ NuclearOverlapHMM$number=as.integer(NuclearOverlapHMM$number)
 NuclearOverlapHMM_names=NuclearOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
 <pre class="r"><code>ggplot(NuclearOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-21-1.png" target="_blank">de860f0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de24d7d8dd03e95806894acbc71304bc8d0afee7/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-21-1.png" target="_blank">de24d7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2019-01-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/figure/characterizeNuclearApaQtls.Rmd/unnamed-chunk-21-1.png" target="_blank">de860f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-24
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
 </div>
 </div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+<br> <br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
@@ -1313,30 +1755,31 @@ attached base packages:
 other attached packages:
  [1] bindrcpp_0.2.2      cowplot_0.9.3       ggpubr_0.1.8       
  [4] magrittr_1.5        data.table_1.11.8   VennDiagram_1.6.20 
- [7] futile.logger_1.4.3 forcats_0.3.0       stringr_1.3.1      
+ [7] futile.logger_1.4.3 forcats_0.3.0       stringr_1.4.0      
 [10] dplyr_0.7.6         purrr_0.2.5         readr_1.1.1        
 [13] tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0      
-[16] tidyverse_1.2.1     reshape2_1.4.3      workflowr_1.1.1    
+[16] tidyverse_1.2.1     reshape2_1.4.3      workflowr_1.2.0    
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4     haven_1.1.2          lattice_0.20-35     
  [4] colorspace_1.3-2     htmltools_0.3.6      yaml_2.2.0          
- [7] rlang_0.2.2          R.oo_1.22.0          pillar_1.3.0        
-[10] glue_1.3.0           withr_2.1.2          R.utils_2.7.0       
-[13] RColorBrewer_1.1-2   lambda.r_1.2.3       modelr_0.1.2        
-[16] readxl_1.1.0         bindr_0.1.1          plyr_1.8.4          
-[19] munsell_0.5.0        gtable_0.2.0         cellranger_1.1.0    
-[22] rvest_0.3.2          R.methodsS3_1.7.1    evaluate_0.11       
-[25] labeling_0.3         knitr_1.20           broom_0.5.0         
-[28] Rcpp_0.12.19         formatR_1.5          backports_1.1.2     
-[31] scales_1.0.0         jsonlite_1.5         hms_0.4.2           
-[34] digest_0.6.17        stringi_1.2.4        rprojroot_1.3-2     
-[37] cli_1.0.1            tools_3.5.1          lazyeval_0.2.1      
-[40] futile.options_1.0.1 crayon_1.3.4         whisker_0.3-2       
-[43] pkgconfig_2.0.2      xml2_1.2.0           lubridate_1.7.4     
-[46] assertthat_0.2.0     rmarkdown_1.10       httr_1.3.1          
-[49] rstudioapi_0.8       R6_2.3.0             nlme_3.1-137        
-[52] git2r_0.23.0         compiler_3.5.1      </code></pre>
+ [7] rlang_0.2.2          pillar_1.3.0         glue_1.3.0          
+[10] withr_2.1.2          RColorBrewer_1.1-2   modelr_0.1.2        
+[13] lambda.r_1.2.3       readxl_1.1.0         bindr_0.1.1         
+[16] plyr_1.8.4           munsell_0.5.0        gtable_0.2.0        
+[19] cellranger_1.1.0     rvest_0.3.2          evaluate_0.13       
+[22] labeling_0.3         knitr_1.20           broom_0.5.0         
+[25] Rcpp_0.12.19         formatR_1.5          scales_1.0.0        
+[28] backports_1.1.2      jsonlite_1.6         fs_1.2.6            
+[31] hms_0.4.2            digest_0.6.17        stringi_1.2.4       
+[34] rprojroot_1.3-2      cli_1.0.1            tools_3.5.1         
+[37] lazyeval_0.2.1       futile.options_1.0.1 crayon_1.3.4        
+[40] whisker_0.3-2        pkgconfig_2.0.2      xml2_1.2.0          
+[43] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.11      
+[46] httr_1.3.1           rstudioapi_0.9.0     R6_2.3.0            
+[49] nlme_3.1-137         git2r_0.24.0         compiler_3.5.1      </code></pre>
+</div>
+</div>
 </div>
 
 <hr>
@@ -1363,6 +1806,7 @@ loaded via a namespace (and not attached):
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 -->
+
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
 http://docs.mathjax.org/en/latest/configuration.html.  This will make
@@ -1374,14 +1818,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 </div>

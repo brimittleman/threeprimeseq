@@ -22,9 +22,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -99,6 +98,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -113,7 +115,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -133,6 +134,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -154,18 +192,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -221,17 +318,65 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-02-07</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/3fea6443e9bd446a5da083b8b9ef810c249dca1a" target="_blank">3fea644</a> </summary></p>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-02-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>threeprimeseq/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/606e562d86042f5e0b093d1b4cdf423502814038" target="_blank">606e562</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
@@ -276,6 +421,7 @@ Untracked files:
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/YL_QTL_test/
@@ -341,6 +487,10 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData.csv
     Untracked:  data/threePrimeSeqMetaData55Ind.txt
     Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -348,6 +498,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/NewPeakPostMP.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -366,2183 +517,2213 @@ Unstaged changes:
     Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/test.smash.Rmd
     Modified:   analysis/understandPeaks.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
-</li>
-</ul>
-<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-Rmd
+<td>
+html
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/3fea6443e9bd446a5da083b8b9ef810c249dca1a/analysis/index.Rmd" target="_blank">3fea644</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b8cfd6ffc84bc9e2752e94ce76a747fe266bcc10/docs/index.html" target="_blank">b8cfd6f</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-02-07
 </td>
-<td style="text-align:left;">
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3fea6443e9bd446a5da083b8b9ef810c249dca1a/analysis/index.Rmd" target="_blank">3fea644</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-07
+</td>
+<td>
 add accountmapbias
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/450b3897ccf23b42719f2134a819affd08d61c0c/docs/index.html" target="_blank">450b389</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/450b3897ccf23b42719f2134a819affd08d61c0c/docs/index.html" target="_blank">450b389</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-02-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/6bac9f93c4b0b305fb44aaedbc730cdfe6e91567/analysis/index.Rmd" target="_blank">6bac9f9</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-02-06
 </td>
-<td style="text-align:left;">
+<td>
 add distance plots for QC on APAqtls
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/cc6b1ee6f99f9021ccbee65119f77db8d2590725/docs/index.html" target="_blank">cc6b1ee</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/cc6b1ee6f99f9021ccbee65119f77db8d2590725/docs/index.html" target="_blank">cc6b1ee</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-02-05
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3445a3b2e1afc8fcbb21ef640a92b116324ab272/docs/index.html" target="_blank">3445a3b</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/3445a3b2e1afc8fcbb21ef640a92b116324ab272/docs/index.html" target="_blank">3445a3b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-02-01
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/957a0ee240598e92f053139047f94037724100ee/analysis/index.Rmd" target="_blank">957a0ee</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-02-01
 </td>
-<td style="text-align:left;">
+<td>
 initiate 55 ind pipeline
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a97adbc8c88ed1a800aabcfa7cc7fad5ab2df63e/docs/index.html" target="_blank">a97adbc</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a97adbc8c88ed1a800aabcfa7cc7fad5ab2df63e/docs/index.html" target="_blank">a97adbc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-28
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a2911ff6b8b52d9320e90518db9ee0dc6433ff75/analysis/index.Rmd" target="_blank">a2911ff</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-28
 </td>
-<td style="text-align:left;">
+<td>
 start analysis for new gene peak assignemnt
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/712016289cf8bcd1ed567697099d7eaccc430e52/docs/index.html" target="_blank">7120162</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/712016289cf8bcd1ed567697099d7eaccc430e52/docs/index.html" target="_blank">7120162</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-24
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/9df8d7e46f7a0c276cc794dd1e69de0b64be90f1/analysis/index.Rmd" target="_blank">9df8d7e</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-24
 </td>
-<td style="text-align:left;">
+<td>
 add linear model code with res for stephens lab
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/aefc33040326e05c44fd4305c5d26249f41ef089/docs/index.html" target="_blank">aefc330</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/aefc33040326e05c44fd4305c5d26249f41ef089/docs/index.html" target="_blank">aefc330</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-22
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/fd184be6b12e4f11a774d09588aa5d3fdc5a26fd/analysis/index.Rmd" target="_blank">fd184be</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-22
 </td>
-<td style="text-align:left;">
+<td>
 add code for leafcutter on processed
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/6e2265324731fff1d31c0476dac4bfc5e9bf5761/docs/index.html" target="_blank">6e22653</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/6e2265324731fff1d31c0476dac4bfc5e9bf5761/docs/index.html" target="_blank">6e22653</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-17
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/7eaae548c220b51aa01de98d9fcb1dd54a0eeb21/analysis/index.Rmd" target="_blank">7eaae54</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-17
 </td>
-<td style="text-align:left;">
+<td>
 select peaks to use in deeptools plot
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a5d48fd8f5408c3f49eadb94058a4b57b576e3a6/docs/index.html" target="_blank">a5d48fd</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a5d48fd8f5408c3f49eadb94058a4b57b576e3a6/docs/index.html" target="_blank">a5d48fd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-16
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/6aa94e46191d361cdb422647f48195789fdcf789/analysis/index.Rmd" target="_blank">6aa94e4</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-16
 </td>
-<td style="text-align:left;">
+<td>
 plots for 5% usage
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e088c558ed7e0ea70b9287e27926bf2e08171251/docs/index.html" target="_blank">e088c55</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/e088c558ed7e0ea70b9287e27926bf2e08171251/docs/index.html" target="_blank">e088c55</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-14
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/6bc9243ded950fc7e317fd6ef901657801c66b46/analysis/index.Rmd" target="_blank">6bc9243</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-14
 </td>
-<td style="text-align:left;">
+<td>
 evaluate clean reads, make new file for misprime filter
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/580e24472c52b98efb062d7a15c0b436b2079a78/docs/index.html" target="_blank">580e244</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/580e24472c52b98efb062d7a15c0b436b2079a78/docs/index.html" target="_blank">580e244</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/42fcbdd1ff21ebf0e08b3df26501f37430f2290c/analysis/index.Rmd" target="_blank">42fcbdd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-11
 </td>
-<td style="text-align:left;">
+<td>
 initialize mispriming approach file
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4d935ce0b3a14790b1c1af714ee809938c63fe79/docs/index.html" target="_blank">4d935ce</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/4d935ce0b3a14790b1c1af714ee809938c63fe79/docs/index.html" target="_blank">4d935ce</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-03
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c3b3bbb4729ecbebed9f1b530d086b5a8f6024d9/analysis/index.Rmd" target="_blank">c3b3bbb</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2019-01-03
 </td>
-<td style="text-align:left;">
+<td>
 start covariate correlation with pc analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/785b8216e916fcc9ecfa66ee7f35622fd210b602/docs/index.html" target="_blank">785b821</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/785b8216e916fcc9ecfa66ee7f35622fd210b602/docs/index.html" target="_blank">785b821</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-12-20
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/d99a6f3a3875fd4b2482084467c9875b1579f9ca/analysis/index.Rmd" target="_blank">d99a6f3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-12-20
 </td>
-<td style="text-align:left;">
+<td>
 initializa comparison analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/index.html" target="_blank">6da90e9</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/6da90e9c6405976ca4cbeb59c6c07a30365e195f/docs/index.html" target="_blank">6da90e9</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-12-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/1b3647af4a89d265d4326caa129d77cb256746f7/docs/index.html" target="_blank">1b3647a</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/1b3647af4a89d265d4326caa129d77cb256746f7/docs/index.html" target="_blank">1b3647a</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-12-10
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/28e2214af39f9fa00f16b8464715af602c9f6d06/analysis/index.Rmd" target="_blank">28e2214</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-12-10
 </td>
-<td style="text-align:left;">
+<td>
 start qtls by included PC analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/cdfa5b2f6c15a6820451283a9dd704e13f5d4e6f/docs/index.html" target="_blank">cdfa5b2</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/cdfa5b2f6c15a6820451283a9dd704e13f5d4e6f/docs/index.html" target="_blank">cdfa5b2</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-12-05
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/655b58288654c0cff03f96faf4b235bb80d91391/analysis/index.Rmd" target="_blank">655b582</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-12-05
 </td>
-<td style="text-align:left;">
+<td>
 PCA with batch and read count
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/index.html" target="_blank">210b58b</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/210b58b2a0f472cefb26b16fad513ea3ca49d9d7/docs/index.html" target="_blank">210b58b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-29
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/413c8fddd492447ac0d51a7b928c56a3c941f41f/analysis/index.Rmd" target="_blank">413c8fd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-29
 </td>
-<td style="text-align:left;">
+<td>
 add filter QTL analysis and start explain pqtl
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/813a5000acdf4ddf85a19f3ae61c80bcfe41927a/docs/index.html" target="_blank">813a500</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/813a5000acdf4ddf85a19f3ae61c80bcfe41927a/docs/index.html" target="_blank">813a500</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-15
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/23c62c988586bb3cd15114d6c7bc28fba051c0fa/analysis/index.Rmd" target="_blank">23c62c9</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-15
 </td>
-<td style="text-align:left;">
+<td>
 add locus zoom initial analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e5b4d6a1db201c68f309fd701007d0b01610b8b2/docs/index.html" target="_blank">e5b4d6a</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/e5b4d6a1db201c68f309fd701007d0b01610b8b2/docs/index.html" target="_blank">e5b4d6a</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-15
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a9d3372ad4c9fc6ac9b95045a3abe7535cf8bc01/analysis/index.Rmd" target="_blank">a9d3372</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-15
 </td>
-<td style="text-align:left;">
+<td>
 fix gwas bullet
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/24821f2e800b26456114ff1400996f16ebbaff3d/docs/index.html" target="_blank">24821f2</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/24821f2e800b26456114ff1400996f16ebbaff3d/docs/index.html" target="_blank">24821f2</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-12
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/index.html" target="_blank">2ec5ffd</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/index.html" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/962e39bcfc173365546499232b60d586f6470f38/analysis/index.Rmd" target="_blank">962e39b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 move chromhmm analysis to its own analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3de08482d4164845cac29ac8b3fccc3d0a8e2eea/docs/index.html" target="_blank">3de0848</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/3de08482d4164845cac29ac8b3fccc3d0a8e2eea/docs/index.html" target="_blank">3de0848</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/b5f744f599ad5ec725eb3e31b86e804979f568b2/analysis/index.Rmd" target="_blank">b5f744f</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-06
 </td>
-<td style="text-align:left;">
+<td>
 initiate flash2mash
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/d01545f42315390a1a4fdac3f228b11a78b5e403/docs/index.html" target="_blank">d01545f</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/d01545f42315390a1a4fdac3f228b11a78b5e403/docs/index.html" target="_blank">d01545f</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-30
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/9c9486dfcd74721fe66d7e3a0eee0f51fef2566a/analysis/index.Rmd" target="_blank">9c9486d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-30
 </td>
-<td style="text-align:left;">
+<td>
 add genoem tracks code
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/0428c8cc7dbe48e523ec661d5a0215e784135d7b/docs/index.html" target="_blank">0428c8c</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/0428c8cc7dbe48e523ec661d5a0215e784135d7b/docs/index.html" target="_blank">0428c8c</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-29
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/42d0e3d7c7875581d9b5bd1d63dc658b03e21f11/analysis/index.Rmd" target="_blank">42d0e3d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-29
 </td>
-<td style="text-align:left;">
+<td>
 add gwas overlap to index
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/index.html" target="_blank">de860f0</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/de860f0e5f84639460e9157c55f0024274bfb7d4/docs/index.html" target="_blank">de860f0</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-24
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/96a97f4b407baa2e87100144f096a2a9c483e874/analysis/index.Rmd" target="_blank">96a97f4</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-24
 </td>
-<td style="text-align:left;">
+<td>
 add nuclear characterization
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/index.html" target="_blank">5649809</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/index.html" target="_blank">5649809</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-22
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c8dbaf06efdfed0b7563c03c01ccc390b6cea6c0/analysis/index.Rmd" target="_blank">c8dbaf0</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-22
 </td>
-<td style="text-align:left;">
+<td>
 add apa prot rna overlap
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/index.html" target="_blank">eb02fbc</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/eb02fbc3fdca9d239eeba2bac84bd1a4d20dc434/docs/index.html" target="_blank">eb02fbc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/f819c8e3a4ef75111646f1ca1e8343711c4133f3/analysis/index.Rmd" target="_blank">f819c8e</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-11
 </td>
-<td style="text-align:left;">
+<td>
 add distance metric analsis total apaQTL
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a7e5fa22643969bcb59ea9f7ab3696f6b82430d9/docs/index.html" target="_blank">a7e5fa2</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a7e5fa22643969bcb59ea9f7ab3696f6b82430d9/docs/index.html" target="_blank">a7e5fa2</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/1e7fbbb20e4aadbe860965f014b2aa62b19fe821/analysis/index.Rmd" target="_blank">1e7fbbb</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-11
 </td>
-<td style="text-align:left;">
+<td>
 update format
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/729c084f3118cae3ba8e7adde5c23797025f43ff/docs/index.html" target="_blank">729c084</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/729c084f3118cae3ba8e7adde5c23797025f43ff/docs/index.html" target="_blank">729c084</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/89f119a4d395b475d4f3e663f1509fb0b372b973/analysis/index.Rmd" target="_blank">89f119a</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-11
 </td>
-<td style="text-align:left;">
+<td>
 update format
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/22aa0872ec0621164f376f8225f985be6112e20f/docs/index.html" target="_blank">22aa087</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/22aa0872ec0621164f376f8225f985be6112e20f/docs/index.html" target="_blank">22aa087</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-08
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/11f9dfa2e7e97a7279afc91e4f1a8f2cdb1f856e/analysis/index.Rmd" target="_blank">11f9dfa</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-08
 </td>
-<td style="text-align:left;">
+<td>
 overlap molQTL opp dir
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/077ed603f855c9fd95c9e77bb1008695e8ba3891/docs/index.html" target="_blank">077ed60</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/077ed603f855c9fd95c9e77bb1008695e8ba3891/docs/index.html" target="_blank">077ed60</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-08
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/7369f8ebf5a521bb3cd265f35ae26915f39b5bee/docs/index.html" target="_blank">7369f8e</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/7369f8ebf5a521bb3cd265f35ae26915f39b5bee/docs/index.html" target="_blank">7369f8e</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-02
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/f66679bc1d71db8c924eba94a35f4643d179ae7e/analysis/index.Rmd" target="_blank">f66679b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-02
 </td>
-<td style="text-align:left;">
+<td>
 overlap plots at peak level
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2e0d959a51368bcfa9ebc00b54b6b86195e8835a/docs/index.html" target="_blank">2e0d959</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/2e0d959a51368bcfa9ebc00b54b6b86195e8835a/docs/index.html" target="_blank">2e0d959</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-01
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/9d6ee033c3a681f38437f2a0cee61cef97ac51da/analysis/index.Rmd" target="_blank">9d6ee03</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-01
 </td>
-<td style="text-align:left;">
+<td>
 add 4su plots
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/da0f70ef6a8662ab8ac9ee900915ed61e2e31fd6/docs/index.html" target="_blank">da0f70e</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/da0f70ef6a8662ab8ac9ee900915ed61e2e31fd6/docs/index.html" target="_blank">da0f70e</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-01
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/fecb046a72c0ed7df318d9642fa62e4c7af56cd8/analysis/index.Rmd" target="_blank">fecb046</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-01
 </td>
-<td style="text-align:left;">
+<td>
 fix overlapfile
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/ac983db135c4ca1872cc58b4efea050275858722/docs/index.html" target="_blank">ac983db</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/ac983db135c4ca1872cc58b4efea050275858722/docs/index.html" target="_blank">ac983db</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-01
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/35142fb308209cce516f74504f2f1a3abcfdff51/analysis/index.Rmd" target="_blank">35142fb</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-01
 </td>
-<td style="text-align:left;">
+<td>
 overlap QTL plots
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/149d033c96899a702b4c0a7320484cb980e3fb56/docs/index.html" target="_blank">149d033</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/149d033c96899a702b4c0a7320484cb980e3fb56/docs/index.html" target="_blank">149d033</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-26
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/aaed5fd02287453b28ab53c96adb5d51b5c385dd/docs/index.html" target="_blank">aaed5fd</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/aaed5fd02287453b28ab53c96adb5d51b5c385dd/docs/index.html" target="_blank">aaed5fd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-26
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/eda266ec447da55ce6a5e62e907e634cbc547a20/analysis/index.Rmd" target="_blank">eda266e</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-26
 </td>
-<td style="text-align:left;">
+<td>
 test peak to gene transcript dist
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/47cd4bf7e1f277a76f2c44c6869c62f2211868e9/docs/index.html" target="_blank">47cd4bf</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/47cd4bf7e1f277a76f2c44c6869c62f2211868e9/docs/index.html" target="_blank">47cd4bf</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-26
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b1bcf9916b400de7a1ae40bb2335c8ef064c9048/docs/index.html" target="_blank">b1bcf99</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b1bcf9916b400de7a1ae40bb2335c8ef064c9048/docs/index.html" target="_blank">b1bcf99</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-25
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/d3bb2874e82a9160c3a68644ff092be0c8d799d1/docs/index.html" target="_blank">d3bb287</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/d3bb2874e82a9160c3a68644ff092be0c8d799d1/docs/index.html" target="_blank">d3bb287</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-24
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/f7934ce5afa448c50043b68c5920186b0c66f460/analysis/index.Rmd" target="_blank">f7934ce</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-24
 </td>
-<td style="text-align:left;">
+<td>
 wflow_publish(c(“index.Rmd”, “39indQC.Rmd”))
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f92a58fb8dd5bf15e528a9d1762e34ae3c25e005/docs/index.html" target="_blank">f92a58f</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/f92a58fb8dd5bf15e528a9d1762e34ae3c25e005/docs/index.html" target="_blank">f92a58f</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/46b7343493337a9c20b5ce490b66cbb942467169/analysis/index.Rmd" target="_blank">46b7343</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-09-06
 </td>
-<td style="text-align:left;">
+<td>
 add overlap analysis with code to subset
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b4bda1b4c6cb9cd811f4133bca3184c00583c706/docs/index.html" target="_blank">b4bda1b</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b4bda1b4c6cb9cd811f4133bca3184c00583c706/docs/index.html" target="_blank">b4bda1b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-30
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e000583e8d094de80cd8cb12bc6cb3933f15a645/docs/index.html" target="_blank">e000583</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/e000583e8d094de80cd8cb12bc6cb3933f15a645/docs/index.html" target="_blank">e000583</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-30
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a5f527674983b1420a3c82e09ac39e69218d690b/analysis/index.Rmd" target="_blank">a5f5276</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-30
 </td>
-<td style="text-align:left;">
+<td>
 initialize diff iso pipeline
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/c6dc97bf8c0353ab9179b44a1f9ed8210f4c0adb/docs/index.html" target="_blank">c6dc97b</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/c6dc97bf8c0353ab9179b44a1f9ed8210f4c0adb/docs/index.html" target="_blank">c6dc97b</a>
 </td>
-<td style="text-align:left;">
+<td>
 brimittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-28
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/5564e259b7b24257b0d4e275873dafca7b024166/docs/index.html" target="_blank">5564e25</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/5564e259b7b24257b0d4e275873dafca7b024166/docs/index.html" target="_blank">5564e25</a>
 </td>
-<td style="text-align:left;">
+<td>
 brimittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/6b1b51c30cedc1bbdf21009104f126a8b4add401/analysis/index.Rmd" target="_blank">6b1b51c</a>
 </td>
-<td style="text-align:left;">
+<td>
 brimittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
-<td style="text-align:left;">
+<td>
 start qtl analsis, add to index
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/c67380e570e74625b061e504b345fae77f0e3a6e/docs/index.html" target="_blank">c67380e</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/c67380e570e74625b061e504b345fae77f0e3a6e/docs/index.html" target="_blank">c67380e</a>
 </td>
-<td style="text-align:left;">
+<td>
 brimittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-14
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/index.html" target="_blank">38bfbaf</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/38bfbaf6b3e1b6f8e8fd397af1b86d34dd711a9e/docs/index.html" target="_blank">38bfbaf</a>
 </td>
-<td style="text-align:left;">
+<td>
 brimittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-09
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/03761cbbf00f95021204eefca436dbb1f2146cbc/analysis/index.Rmd" target="_blank">03761cb</a>
 </td>
-<td style="text-align:left;">
+<td>
 brimittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-09
 </td>
-<td style="text-align:left;">
+<td>
 start peak explore analysis for 54 libraries
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e5a8da629657f8df6a23af081905e7dcab9fe98d/docs/index.html" target="_blank">e5a8da6</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/e5a8da629657f8df6a23af081905e7dcab9fe98d/docs/index.html" target="_blank">e5a8da6</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-30
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/422a428cf40c5283c7dc0ba0d3cc21d8739cddb3/analysis/index.Rmd" target="_blank">422a428</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-30
 </td>
-<td style="text-align:left;">
+<td>
 add peak cove pipeline and combined lane qc
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/0398fdb061b51ffc376cca2a37bee74727674489/docs/index.html" target="_blank">0398fdb</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/0398fdb061b51ffc376cca2a37bee74727674489/docs/index.html" target="_blank">0398fdb</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-25
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2d41f11ceda8b51e78e2a040bc3ab99084c228a9/analysis/index.Rmd" target="_blank">2d41f11</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-25
 </td>
-<td style="text-align:left;">
+<td>
 add expand smash to index
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3a5a8fe9a053a464ef64ed3c411bdedf82003927/docs/index.html" target="_blank">3a5a8fe</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/3a5a8fe9a053a464ef64ed3c411bdedf82003927/docs/index.html" target="_blank">3a5a8fe</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-25
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/a34f9c17e0111475b79b8ba65678d7cd03ccf7e8/docs/index.html" target="_blank">a34f9c1</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a34f9c17e0111475b79b8ba65678d7cd03ccf7e8/docs/index.html" target="_blank">a34f9c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-17
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/ca9cee943f269ffa18819efc8aa0ffa44f39f971/analysis/index.Rmd" target="_blank">ca9cee9</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-17
 </td>
-<td style="text-align:left;">
+<td>
 add smash test to index
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/c3ca148d27b4e58f712221b619052926fd20a50e/docs/index.html" target="_blank">c3ca148</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/c3ca148d27b4e58f712221b619052926fd20a50e/docs/index.html" target="_blank">c3ca148</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-17
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/dc4a51af1b101200e1685b760ac3f5c78db359b3/docs/index.html" target="_blank">dc4a51a</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/dc4a51af1b101200e1685b760ac3f5c78db359b3/docs/index.html" target="_blank">dc4a51a</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-16
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/4fede8412f8277c95afc167709e9e370c386cf8b/analysis/index.Rmd" target="_blank">4fede84</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-16
 </td>
-<td style="text-align:left;">
+<td>
 add eval brain analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/cfc8f437a3e2701980064f4423d8042c6144dd1d/docs/index.html" target="_blank">cfc8f43</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/cfc8f437a3e2701980064f4423d8042c6144dd1d/docs/index.html" target="_blank">cfc8f43</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-13
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/4a847692c90977347c2a192e8e68e1d2d02b6fa5/analysis/index.Rmd" target="_blank">4a84769</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-13
 </td>
-<td style="text-align:left;">
+<td>
 add analysis for coparing coverage of RNAseq and 3’ seq
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/210cd2b1dff2619ce69c54368d8d332412aa1677/docs/index.html" target="_blank">210cd2b</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/210cd2b1dff2619ce69c54368d8d332412aa1677/docs/index.html" target="_blank">210cd2b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/8b622c3a9568a7f7f8c639b02a1da43563cebbd3/analysis/index.Rmd" target="_blank">8b622c3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-07-05
 </td>
-<td style="text-align:left;">
+<td>
 add denovo to index
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/ee777df63592d6f252dd40a4cdc2c94baf53ffa9/docs/index.html" target="_blank">ee777df</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/ee777df63592d6f252dd40a4cdc2c94baf53ffa9/docs/index.html" target="_blank">ee777df</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-26
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/789d8ef3fbeb727e66635f978480d6b768b290dd/analysis/index.Rmd" target="_blank">789d8ef</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-26
 </td>
-<td style="text-align:left;">
+<td>
 start test macs analysis. download package
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/30b415e3b95d62eafebb6a4824a29fba6c727be2/docs/index.html" target="_blank">30b415e</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/30b415e3b95d62eafebb6a4824a29fba6c727be2/docs/index.html" target="_blank">30b415e</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-19
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/08b593457c104b333a203741789e2d632e85bfa1/docs/index.html" target="_blank">08b5934</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/08b593457c104b333a203741789e2d632e85bfa1/docs/index.html" target="_blank">08b5934</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-13
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/642faf0176cbdb3b251de2e62b9f5dc9d385bbdf/analysis/index.Rmd" target="_blank">642faf0</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-13
 </td>
-<td style="text-align:left;">
+<td>
 start PAS enrichment analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4ef7d85554ed0db97548af29c6d994675af4837e/docs/index.html" target="_blank">4ef7d85</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/4ef7d85554ed0db97548af29c6d994675af4837e/docs/index.html" target="_blank">4ef7d85</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/03c7b1448ea0c93a1d7a0b2d589e8ef964bf7bba/analysis/index.Rmd" target="_blank">03c7b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-11
 </td>
-<td style="text-align:left;">
+<td>
 start A analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/062808d7f8f0132374041057f946a2c28c32797b/docs/index.html" target="_blank">062808d</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/062808d7f8f0132374041057f946a2c28c32797b/docs/index.html" target="_blank">062808d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-07
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/86cfd9ff2fdd20c9bcc0f2872ca016b383d81700/docs/index.html" target="_blank">86cfd9f</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/86cfd9ff2fdd20c9bcc0f2872ca016b383d81700/docs/index.html" target="_blank">86cfd9f</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a19683c3a42318377499f44fdd98f7af8ce4d2fd/analysis/index.Rmd" target="_blank">a19683c</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-06
 </td>
-<td style="text-align:left;">
+<td>
 start dif isoform analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/710cf6a06e3904e99384341936f5c8b4a2a67428/docs/index.html" target="_blank">710cf6a</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/710cf6a06e3904e99384341936f5c8b4a2a67428/docs/index.html" target="_blank">710cf6a</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-29
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/d58bc138fd71227816b58cffda2ccf2df7199808/analysis/index.Rmd" target="_blank">d58bc13</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-29
 </td>
-<td style="text-align:left;">
+<td>
 start 200 bp analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/96ecbb125b7504e34275073c4369760db2ef8c3a/docs/index.html" target="_blank">96ecbb1</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/96ecbb125b7504e34275073c4369760db2ef8c3a/docs/index.html" target="_blank">96ecbb1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-26
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2076ce905888ca32e1fc086f15e954c7dde05450/analysis/index.Rmd" target="_blank">2076ce9</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-26
 </td>
-<td style="text-align:left;">
+<td>
 initial commit, gene level analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/b5cdd59432005e3c407edeab96984f4d90c65b45/docs/index.html" target="_blank">b5cdd59</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b5cdd59432005e3c407edeab96984f4d90c65b45/docs/index.html" target="_blank">b5cdd59</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-26
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/9a49459368772f030622712864c469ecee83a53a/analysis/index.Rmd" target="_blank">9a49459</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-26
 </td>
-<td style="text-align:left;">
+<td>
 start map qc analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/924952b3c14f5a58131b1b99ae8be276d3b2d37f/docs/index.html" target="_blank">924952b</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/924952b3c14f5a58131b1b99ae8be276d3b2d37f/docs/index.html" target="_blank">924952b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-09
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/f8ce0fcfc549967f30ad08e19962c8135bb5dc27/analysis/index.Rmd" target="_blank">f8ce0fc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-09
 </td>
-<td style="text-align:left;">
+<td>
 Update to 1.0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/f8ce0fcfc549967f30ad08e19962c8135bb5dc27/docs/index.html" target="_blank">f8ce0fc</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/f8ce0fcfc549967f30ad08e19962c8135bb5dc27/docs/index.html" target="_blank">f8ce0fc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-09
 </td>
-<td style="text-align:left;">
+<td>
 Update to 1.0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/3dd80ef12a6e2e8ba83dc7987ec22d667d4b7492/docs/index.html" target="_blank">3dd80ef</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/3dd80ef12a6e2e8ba83dc7987ec22d667d4b7492/docs/index.html" target="_blank">3dd80ef</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-08
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/519447d91969a0dc7db57d52cc61ecd71a9c53ab/analysis/index.Rmd" target="_blank">519447d</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-08
 </td>
-<td style="text-align:left;">
+<td>
 Add total.nuc.rnaseq analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/889c9c6fa9085578dbb6d3e233c1ee787daef080/docs/index.html" target="_blank">889c9c6</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/889c9c6fa9085578dbb6d3e233c1ee787daef080/docs/index.html" target="_blank">889c9c6</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-02
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/9d196cf4b24ebee34e9624c46536a9c5aeca4f44/docs/index.html" target="_blank">9d196cf</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/9d196cf4b24ebee34e9624c46536a9c5aeca4f44/docs/index.html" target="_blank">9d196cf</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-02
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/972ef3effabfa330e5e75404d603f5ed2fb2f5df/docs/index.html" target="_blank">972ef3e</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/972ef3effabfa330e5e75404d603f5ed2fb2f5df/docs/index.html" target="_blank">972ef3e</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-02
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/6cc5321541eca63223ad1bd790071d38ebb5bd7d/analysis/index.Rmd" target="_blank">6cc5321</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-02
 </td>
-<td style="text-align:left;">
+<td>
 add home page information
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/e12dd6cde00d646f994e07a4b5bd67138ad08494/docs/index.html" target="_blank">e12dd6c</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/e12dd6cde00d646f994e07a4b5bd67138ad08494/docs/index.html" target="_blank">e12dd6c</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-01
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0e95115337380d333adf3ee43adceea878e04ff8/analysis/index.Rmd" target="_blank">0e95115</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-01
 </td>
-<td style="text-align:left;">
+<td>
 add home page information
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/4c26d4c1641e60f953fe953c04c7e6151ec4511e/docs/index.html" target="_blank">4c26d4c</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/4c26d4c1641e60f953fe953c04c7e6151ec4511e/docs/index.html" target="_blank">4c26d4c</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-01
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/539892a301ff49ee88909de2718bf6abac3f4155/analysis/index.Rmd" target="_blank">539892a</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-01
 </td>
-<td style="text-align:left;">
+<td>
 Start workflowr project.
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-<p></details></p>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <p>Briana Mittleman</p>
 <p>This is the site I will use for my human 3’ seq project. I will have my workflow and analysis here. The three prime seq protocol I am using is Lexogen, QuantSeq 3’ mRNA-Seq library kit. The first analysis will be on the total and nucleic fractions of the LCL used in the net-seq analysis found at <a href="https://brimittleman.github.io/Net-seq/" class="uri">https://brimittleman.github.io/Net-seq/</a></p>
 <div id="initial-analysis-on-rna-seq-of-nuclear-and-total-fractions" class="section level2">
@@ -2705,6 +2886,7 @@ Start workflowr project.
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 -->
+
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
 http://docs.mathjax.org/en/latest/configuration.html.  This will make
@@ -2716,14 +2898,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 

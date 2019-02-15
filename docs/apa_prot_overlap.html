@@ -27,9 +27,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -104,6 +103,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -118,7 +120,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -138,6 +139,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -159,18 +197,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -323,59 +420,163 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-10-24</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-02-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>threeprimeseq/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
 <p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d8c6f3c5da410db72cab08afd52d4b05d4852812" target="_blank">d8c6f3c</a> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/606e562d86042f5e0b093d1b4cdf423502814038" target="_blank">606e562</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
+    Ignored:    data/perm_QTL_trans_noMP_5percov/
     Ignored:    output/.DS_Store
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
-    Untracked:  analysis/genometrack_figs.Rmd
+    Untracked:  analysis/4suDataIGV.Rmd
+    Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/EvaleQTLs.Rmd
+    Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  analysis/verifybam_dubs.Rmd
+    Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ApaQTLs/
     Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LianoglouLCL/
+    Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
+    Untracked:  data/PeakCounts_noMP_5perc/
+    Untracked:  data/PeakCounts_noMP_genelocanno/
+    Untracked:  data/PeakUsage/
+    Untracked:  data/PeakUsage_noMP/
+    Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
+    Untracked:  data/PeaksUsed_noMP_5percCov/
     Untracked:  data/RNAkalisto/
+    Untracked:  data/RefSeq_annotations/
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/YL_QTL_test/
     Untracked:  data/apaExamp/
+    Untracked:  data/apaQTL_examp_noMP/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
     Untracked:  data/bin200.Anuccov.bed
@@ -385,8 +586,13 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_GeneLocAnno/
+    Untracked:  data/diff_iso_proc/
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
+    Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
+    Untracked:  data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -398,17 +604,26 @@ Untracked files:
     Untracked:  data/joined
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/molPheno_noMP/
     Untracked:  data/mol_overlap/
     Untracked:  data/mol_pheno/
     Untracked:  data/nom_QTL/
     Untracked:  data/nom_QTL_opp/
     Untracked:  data/nom_QTL_trans/
     Untracked:  data/nuc6up/
+    Untracked:  data/nuc_10up/
     Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
+    Untracked:  data/protAndAPAAndExplmRes.Rda
+    Untracked:  data/protAndAPAlmRes.Rda
+    Untracked:  data/protAndExpressionlmRes.Rda
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -419,137 +634,185 @@ Untracked files:
     Untracked:  data/temp.file2
     Untracked:  data/temp.gencov.test.txt
     Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  data/threePrimeSeqMetaData55Ind.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
-    Modified:   analysis/39indQC.Rmd
-    Modified:   analysis/PeakToGeneAssignment.Rmd
+    Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/NewPeakPostMP.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
+    Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlapMolQTL.opposite.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/peakQCPPlots.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/pipeline_55Ind.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/test.smash.Rmd
+    Modified:   analysis/understandPeaks.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
-</li>
-</ul>
-<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/d8c6f3c5da410db72cab08afd52d4b05d4852812/analysis/apa_prot_overlap.Rmd" target="_blank">d8c6f3c</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-10-24
-</td>
-<td style="text-align:left;">
-add ven diagrams
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/70a8d68e3f30a742c9fe9e1dae6c6a37f229f981/analysis/apa_prot_overlap.Rmd" target="_blank">70a8d68</a>
-</td>
-<td style="text-align:left;">
-Briana Mittleman
-</td>
-<td style="text-align:left;">
-2018-10-23
-</td>
-<td style="text-align:left;">
-add anova pvalue to examples
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/apa_prot_overlap.html" target="_blank">5649809</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/apa_prot_overlap.html" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
-2018-10-22
+<td>
+2018-10-24
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/c8dbaf06efdfed0b7563c03c01ccc390b6cea6c0/analysis/apa_prot_overlap.Rmd" target="_blank">c8dbaf0</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d8c6f3c5da410db72cab08afd52d4b05d4852812/analysis/apa_prot_overlap.Rmd" target="_blank">d8c6f3c</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+<td>
+add ven diagrams
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/70a8d68e3f30a742c9fe9e1dae6c6a37f229f981/analysis/apa_prot_overlap.Rmd" target="_blank">70a8d68</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-10-23
+</td>
+<td>
+add anova pvalue to examples
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/apa_prot_overlap.html" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
-<td style="text-align:left;">
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c8dbaf06efdfed0b7563c03c01ccc390b6cea6c0/analysis/apa_prot_overlap.Rmd" target="_blank">c8dbaf0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-10-22
+</td>
+<td>
 add apa prot rna overlap
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-<p></details></p>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <p>I want to use this analysis to look at the genes with a APAQTL and a protein QTL. I am trying to understand how many of these are independent of RNA.</p>
 <p>I will first look at genes with significant QTLs in both phenotypes. I can use the pipeline I created in <a href="https://brimittleman.github.io/threeprimeseq/swarmPlots_QTLs.html" class="uri">https://brimittleman.github.io/threeprimeseq/swarmPlots_QTLs.html</a> to vizualize these snps.</p>
 <pre class="r"><code>library(workflowr)</code></pre>
-<pre><code>This is workflowr version 1.1.1
+<pre><code>This is workflowr version 1.2.0
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
-✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ tidyr   0.8.1     ✔ stringr 1.4.0
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(data.table)</code></pre>
@@ -661,36 +924,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;10:102740271&quot;, peak=&quot;peak44585&quot;, gene=&quot;ENSG00000055950&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-8-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-8-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-8-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-8-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Nuclear:</p>
 <ul>
 <li>SWAP70 peak49384 11:9732917</li>
@@ -709,36 +990,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;11:9732917&quot;, peak=&quot;peak49384&quot;, gene=&quot;ENSG00000133789&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-10-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-10-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-10-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-10-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <ul>
 <li>DHRS7B peak132739 17:21102458</li>
 </ul>
@@ -756,36 +1055,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;17:21102458&quot;, peak=&quot;peak132739&quot;, gene=&quot;ENSG00000109016&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-12-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-12-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-12-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-12-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <ul>
 <li>UBA6 peak240167 4:68502794</li>
 </ul>
@@ -803,36 +1120,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;4:68502794&quot;, peak=&quot;peak240167&quot;, gene=&quot;ENSG00000033178&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-14-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-14-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-14-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-14-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>This is not the most effective way to do this because I am overlapping by gene then looking at the effect of the apaQTL snp. I want a method that will look directly at the effect of one snp. I can use the overlap files I created based on the APA qtls in other phenotypes. I can overlap the phenotypes and look for snps that have low pvalues in APA and protien.</p>
 </div>
 <div id="snp-level" class="section level2">
@@ -853,134 +1188,162 @@ allOverlap_T=totAPAinsu30 %&gt;%  full_join(totAPAinsu60, by=c(&quot;Gene.name&q
 colnames(allOverlap_T)=c(&quot;Gene.name&quot;, &quot;sid&quot;, &quot;su30&quot;, &quot;su60&quot;, &quot;RNA&quot;, &quot;RNAg&quot;, &quot;ribo&quot;, &quot;prot&quot;)</code></pre>
 <pre class="r"><code>plot(sort(allOverlap_T$prot))</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-16-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-16-1.png" target="_blank">5649809</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>plot(allOverlap_T$RNA ~ allOverlap_T$prot)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-16-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-2">
+Past versions of unnamed-chunk-16-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-16-2.png" target="_blank">5649809</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>I want to make a ggplot of these where I color them by RNA pvalue:</p>
 <pre class="r"><code>allOverlap_T_lowP=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05)
 ggplot(allOverlap_T_lowP, aes(x=RNA, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0) + geom_vline(xintercept = .05, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-17-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-17-1.png" target="_blank">5649809</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(allOverlap_T_lowP, aes(x=RNAg, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0) + geom_vline(xintercept = .05, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-18-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-18-1.png" target="_blank">5649809</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>I can use these to look for examples of SNPs that are significant in prot but not in RNA.</p>
 <p>Look at some of these:</p>
 <p>Total RNA:<br />
@@ -1010,36 +1373,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;19:4236475&quot;, peak=&quot;peak152751&quot;, gene=&quot;ENSG00000105246&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-20-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-20-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-20-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-20-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>FBXL18 peak291746 7:5524129</p>
 <p>“The protein encoded by this gene is a member of a family of proteins that contain an approximately 40-amino acid F-box motif. This motif is important for interaction with SKP1 and for targeting some proteins for degradation.” genecards.org</p>
 <pre class="bash"><code>grep FBXL18 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
@@ -1059,36 +1440,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 <pre><code>Warning: Removed 4 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 4 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-22-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-22-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-22-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <ul>
 <li>PSMF1 peak193648 20:1131308</li>
 </ul>
@@ -1110,36 +1509,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 <pre><code>Warning: Removed 2 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-24-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
+Past versions of unnamed-chunk-24-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-24-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-24-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-24-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>I want to know the number of these that are &lt;.05 in protien and above .1 in RNA</p>
 <pre class="r"><code>allOverlap_T_lowP_highRNA=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNA&gt;.05)
 allOverlap_T_lowP_highRNAg=allOverlap_T %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNAg&gt;.05)</code></pre>
@@ -1165,68 +1582,82 @@ colnames(allOverlap_N)=c(&quot;Gene.name&quot;, &quot;sid&quot;, &quot;su30&quot
 allOverlap_N_lowP=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05)
 ggplot(allOverlap_N_lowP, aes(x=RNA, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0)+ geom_vline(xintercept = .05, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-28-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
+Past versions of unnamed-chunk-28-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-28-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-28-1.png" target="_blank">5649809</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(allOverlap_N_lowP, aes(x=RNAg, y=prot)) + geom_point()+ geom_text(aes(label=Gene.name),hjust=0, vjust=0)+ geom_vline(xintercept = .05, col=&quot;red&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-29-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-29-1">
+Past versions of unnamed-chunk-29-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-29-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-29-1.png" target="_blank">5649809</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>allOverlap_N_lowP_highRNA=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNA&gt;.05)
 allOverlap_N_lowP_highRNAg=allOverlap_N %&gt;% dplyr::filter(prot&lt;.05) %&gt;% dplyr::filter(RNAg&gt;.05)</code></pre>
 <p>39 snps with &lt; .05 for protein. Of those 28 have RNA pvalues greater than .05</p>
@@ -1256,36 +1687,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 <pre><code>Warning: Removed 3 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-35-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-35-1">
+Past versions of unnamed-chunk-35-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-35-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-35-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-35-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-35-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <ul>
 <li>LYAR peak235215 4:4196045</li>
 </ul>
@@ -1304,36 +1753,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 </code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;4:4196045&quot;, peak=&quot;peak235215&quot;, gene=&quot;ENSG00000145220&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-37-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-37-1">
+Past versions of unnamed-chunk-37-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-37-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-37-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-37-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-37-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>CD2BP2 peak122237 16:29898001</p>
 <p>From genecards: “in the cytoplasm, the encoded protein binds the cytoplasmic tail of human surface antigen CD2 via its C-terminal GYF domain, and regulate CD2-triggered T lymphocyte activation. In the nucleus, this protein is a component of the U5 small nuclear ribonucleoprotein complex and is involved in RNA splicing.”</p>
 <pre class="bash"><code>grep CD2BP2 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
@@ -1353,36 +1820,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 <pre><code>Warning: Removed 5 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 5 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-39-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-39-1">
+Past versions of unnamed-chunk-39-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-39-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-39-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-39-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-39-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>KDM2A peak55622 11:66851583</p>
 <pre class="bash"><code>grep KDM2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
 #ENSG00000173120
@@ -1401,36 +1886,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 <pre><code>Warning: Removed 8 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 8 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-41-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-41-1">
+Past versions of unnamed-chunk-41-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-41-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-41-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-41-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-41-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>RINT1 peak303436 7:105155320</p>
 <p>Interacts with double strand break repair protiens, regulates cell cycle and telomere length</p>
 <pre class="bash"><code>grep RINT1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
@@ -1450,36 +1953,54 @@ scp brimittleman@midway2.rcc.uchicago.edu:/project2/gilad/briana/threeprimeseq/d
 <pre><code>Warning: Removed 2 rows containing non-finite values (stat_compare_means).</code></pre>
 <pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-43-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-43-1">
+Past versions of unnamed-chunk-43-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-43-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-43-1.png" target="_blank">5649809</a>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-43-1.png" target="_blank">d59b3c1</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5649809b5974649e2d31ecf7dc6441beb7e28081/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-43-1.png" target="_blank">5649809</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
 2018-10-22
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 <div id="significance" class="section level3">
 <h3>Significance</h3>
@@ -1542,6 +2063,43 @@ NucRPoverlap=c(p_N/nrow(allOverlap_N),RP_N/nrow(allOverlap_N), RnotP_N/nrow(allO
 NucOverlapDF=data.frame(overlapNames,NucRPoverlap)
 ggplot(NucOverlapDF, aes(x=overlapNames, y=NucRPoverlap)) + geom_bar(stat=&quot;identity&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-46-1">
+Past versions of unnamed-chunk-46-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-46-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-46-1.png" target="_blank">d59b3c1</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>DO the same for total:</p>
 <pre class="r"><code>p_T=allOverlap_T %&gt;% filter(prot&lt;.05) %&gt;% nrow()
 RP_T=allOverlap_T %&gt;% filter(prot&lt;.05 &amp; RNA &lt;.05) %&gt;% nrow()
@@ -1553,14 +2111,125 @@ TotRPoverlap=c(p_T/nrow(allOverlap_T),RP_T/nrow(allOverlap_T), RnotP_T/nrow(allO
 TotOverlapDF=data.frame(overlapNames,TotRPoverlap)
 ggplot(TotOverlapDF, aes(x=overlapNames, y=TotRPoverlap)) + geom_bar(stat=&quot;identity&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-47-1">
+Past versions of unnamed-chunk-47-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-47-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-47-1.png" target="_blank">d59b3c1</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>allOverlapDF=TotOverlapDF %&gt;% full_join(NucOverlapDF, by=&quot;overlapNames&quot;)
 
 allOverlapDF_melt=melt(allOverlapDF, id.vars=&quot;overlapNames&quot;)
 
 ggplot(allOverlapDF_melt, aes(x=overlapNames, y=value, by=variable, fill=variable)) + geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + scale_fill_manual(values=c(&quot;darkviolet&quot;, &quot;deepskyblue3&quot;)) + labs(y=&quot;Proportion of APA QTLs&quot;, x=&quot;Category&quot;)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-48-1">
+Past versions of unnamed-chunk-48-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-48-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-48-1.png" target="_blank">d59b3c1</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>oT=overlapplotT=draw.pairwise.venn(area1=.08, area2=.07, cross.area = .02, category = c(&quot;Protein&quot;, &quot;RNA&quot;),lty = rep(&quot;solid&quot;, 2), fill = c(&quot;Blue&quot;, &quot;Orange&quot;), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2), euler.d = T, scaled=T)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-49-1">
+Past versions of unnamed-chunk-49-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-49-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-49-1.png" target="_blank">d59b3c1</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>png(&quot;../output/plots/overlapProtRNAvenT.png&quot;) 
 grid.arrange(gTree(children=oT), top=&quot;Total: Protein and RNA QTL overlap&quot;, bottom=&quot;Neither=.37&quot;)
 
@@ -1569,21 +2238,61 @@ dev.off()</code></pre>
                 2 </code></pre>
 <pre class="r"><code>oN=overlapplotN=draw.pairwise.venn(area1=.056, area2=.096, cross.area = .016, category = c(&quot;Protein&quot;, &quot;RNA&quot;),lty = rep(&quot;solid&quot;, 2), fill = c(&quot;Blue&quot;, &quot;Orange&quot;), alpha = rep(0.5, 2), cat.pos = c(0, 0), cat.dist = rep(0.025, 2), euler.d = T, scaled=T)</code></pre>
 <p><img src="figure/apa_prot_overlap.Rmd/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-50-1">
+Past versions of unnamed-chunk-50-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-50-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d59b3c136382a196f2ce31f4ea61f8109bf97dbd/docs/figure/apa_prot_overlap.Rmd/unnamed-chunk-50-1.png" target="_blank">d59b3c1</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-10-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>png(&quot;../output/plots/overlapProtRNAvenN.png&quot;) 
 
 grid.arrange(gTree(children=oN), top=&quot;Nuclear:Protein and RNA QTL overlap&quot;, bottom=&quot;Neither=.38&quot;)
 dev.off()</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
-<p>This doesnt look statistically significant but it does look like the total fraction has more pQTLs that are not eQTLs and in the nuclear you get the opposite effect.</p>
-</div>
-</div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+This doesnt look statistically significant but it does look like the total fraction has more pQTLs that are not eQTLs and in the nuclear you get the opposite effect.<br />
+<br> <br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+Running under: macOS  10.14.1
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
@@ -1600,29 +2309,31 @@ other attached packages:
  [1] bindrcpp_0.2.2      gridExtra_2.3       VennDiagram_1.6.20 
  [4] futile.logger_1.4.3 ggpubr_0.1.8        magrittr_1.5       
  [7] cowplot_0.9.3       data.table_1.11.8   forcats_0.3.0      
-[10] stringr_1.3.1       dplyr_0.7.6         purrr_0.2.5        
+[10] stringr_1.4.0       dplyr_0.7.6         purrr_0.2.5        
 [13] readr_1.1.1         tidyr_0.8.1         tibble_1.4.2       
-[16] ggplot2_3.0.0       tidyverse_1.2.1     workflowr_1.1.1    
+[16] ggplot2_3.0.0       tidyverse_1.2.1     workflowr_1.2.0    
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4     reshape2_1.4.3       haven_1.1.2         
  [4] lattice_0.20-35      colorspace_1.3-2     htmltools_0.3.6     
- [7] yaml_2.2.0           rlang_0.2.2          R.oo_1.22.0         
-[10] pillar_1.3.0         glue_1.3.0           withr_2.1.2         
-[13] R.utils_2.7.0        RColorBrewer_1.1-2   lambda.r_1.2.3      
-[16] modelr_0.1.2         readxl_1.1.0         bindr_0.1.1         
-[19] plyr_1.8.4           munsell_0.5.0        gtable_0.2.0        
-[22] cellranger_1.1.0     rvest_0.3.2          R.methodsS3_1.7.1   
-[25] evaluate_0.11        labeling_0.3         knitr_1.20          
-[28] broom_0.5.0          Rcpp_0.12.19         formatR_1.5         
-[31] scales_1.0.0         backports_1.1.2      jsonlite_1.5        
-[34] hms_0.4.2            digest_0.6.17        stringi_1.2.4       
-[37] rprojroot_1.3-2      cli_1.0.1            tools_3.5.1         
-[40] lazyeval_0.2.1       futile.options_1.0.1 crayon_1.3.4        
-[43] whisker_0.3-2        pkgconfig_2.0.2      xml2_1.2.0          
-[46] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.10      
-[49] httr_1.3.1           rstudioapi_0.8       R6_2.3.0            
-[52] nlme_3.1-137         git2r_0.23.0         compiler_3.5.1      </code></pre>
+ [7] yaml_2.2.0           rlang_0.2.2          pillar_1.3.0        
+[10] glue_1.3.0           withr_2.1.2          RColorBrewer_1.1-2  
+[13] lambda.r_1.2.3       modelr_0.1.2         readxl_1.1.0        
+[16] bindr_0.1.1          plyr_1.8.4           munsell_0.5.0       
+[19] gtable_0.2.0         cellranger_1.1.0     rvest_0.3.2         
+[22] evaluate_0.13        labeling_0.3         knitr_1.20          
+[25] broom_0.5.0          Rcpp_0.12.19         formatR_1.5         
+[28] scales_1.0.0         backports_1.1.2      jsonlite_1.6        
+[31] fs_1.2.6             hms_0.4.2            digest_0.6.17       
+[34] stringi_1.2.4        rprojroot_1.3-2      cli_1.0.1           
+[37] tools_3.5.1          lazyeval_0.2.1       futile.options_1.0.1
+[40] crayon_1.3.4         whisker_0.3-2        pkgconfig_2.0.2     
+[43] xml2_1.2.0           lubridate_1.7.4      assertthat_0.2.0    
+[46] rmarkdown_1.11       httr_1.3.1           rstudioapi_0.9.0    
+[49] R6_2.3.0             nlme_3.1-137         git2r_0.24.0        
+[52] compiler_3.5.1      </code></pre>
+</div>
+</div>
 </div>
 
 <hr>
@@ -1649,6 +2360,7 @@ loaded via a namespace (and not attached):
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 -->
+
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
 http://docs.mathjax.org/en/latest/configuration.html.  This will make
@@ -1660,14 +2372,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 </div>

@@ -26,9 +26,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -103,6 +102,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -117,7 +119,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -137,6 +138,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -158,18 +196,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -322,58 +419,163 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-15</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-02-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>threeprimeseq/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
 <p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/acf77f83b8c8ee87e9e8d4898adb929690701512" target="_blank">acf77f8</a> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/606e562d86042f5e0b093d1b4cdf423502814038" target="_blank">606e562</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
+    Ignored:    data/perm_QTL_trans_noMP_5percov/
     Ignored:    output/.DS_Store
 
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/4suDataIGV.Rmd
+    Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/EvaleQTLs.Rmd
+    Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  analysis/verifybam_dubs.Rmd
+    Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/ApaQTLs/
     Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/LianoglouLCL/
+    Untracked:  data/LocusZoom/
     Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
+    Untracked:  data/PeakCounts_noMP_5perc/
+    Untracked:  data/PeakCounts_noMP_genelocanno/
+    Untracked:  data/PeakUsage/
+    Untracked:  data/PeakUsage_noMP/
+    Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
+    Untracked:  data/PeaksUsed_noMP_5percCov/
     Untracked:  data/RNAkalisto/
+    Untracked:  data/RefSeq_annotations/
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
     Untracked:  data/YL-SP-18486-T-combined-genecov.txt
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/YL_QTL_test/
     Untracked:  data/apaExamp/
+    Untracked:  data/apaQTL_examp_noMP/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
     Untracked:  data/bin200.Anuccov.bed
@@ -383,9 +585,13 @@ Untracked files:
     Untracked:  data/comb_map_stats.xlsx
     Untracked:  data/comb_map_stats_39ind.csv
     Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_GeneLocAnno/
+    Untracked:  data/diff_iso_proc/
     Untracked:  data/diff_iso_trans/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
+    Untracked:  data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
     Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
     Untracked:  data/first50lines_closest.txt
@@ -397,17 +603,26 @@ Untracked files:
     Untracked:  data/joined
     Untracked:  data/leafcutter/
     Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/molPheno_noMP/
     Untracked:  data/mol_overlap/
     Untracked:  data/mol_pheno/
     Untracked:  data/nom_QTL/
     Untracked:  data/nom_QTL_opp/
     Untracked:  data/nom_QTL_trans/
     Untracked:  data/nuc6up/
+    Untracked:  data/nuc_10up/
     Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_otherphen/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
+    Untracked:  data/protAndAPAAndExplmRes.Rda
+    Untracked:  data/protAndAPAlmRes.Rda
+    Untracked:  data/protAndExpressionlmRes.Rda
     Untracked:  data/reads_mapped_three_prime_seq.csv
     Untracked:  data/smash.cov.results.bed
     Untracked:  data/smash.cov.results.csv
@@ -418,292 +633,338 @@ Untracked files:
     Untracked:  data/temp.file2
     Untracked:  data/temp.gencov.test.txt
     Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  data/threePrimeSeqMetaData55Ind.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
 
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
-    Modified:   analysis/39indQC.Rmd
+    Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/NewPeakPostMP.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlapMolQTL.opposite.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/peakQCPPlots.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
     Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/test.smash.Rmd
+    Modified:   analysis/understandPeaks.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
-</li>
-</ul>
-<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-Rmd
+<td>
+html
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/brimittleman/threeprimeseq/blob/acf77f83b8c8ee87e9e8d4898adb929690701512/analysis/chromHmm_enrichment.Rmd" target="_blank">acf77f8</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/6d4b5433ce50bad19a87d888e5c004006d5f33a5/docs/chromHmm_enrichment.html" target="_blank">6d4b543</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-15
 </td>
-<td style="text-align:left;">
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/acf77f83b8c8ee87e9e8d4898adb929690701512/analysis/chromHmm_enrichment.Rmd" target="_blank">acf77f8</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-11-15
+</td>
+<td>
 add res from uniq analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/89fa7d63b469f1816fa92765e1e5786ecfaa5900/docs/chromHmm_enrichment.html" target="_blank">89fa7d6</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/89fa7d63b469f1816fa92765e1e5786ecfaa5900/docs/chromHmm_enrichment.html" target="_blank">89fa7d6</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-13
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/595cdc05302a238e9bfd56915be603e99a85ee8b/analysis/chromHmm_enrichment.Rmd" target="_blank">595cdc0</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-13
 </td>
-<td style="text-align:left;">
+<td>
 add code for uniq no sig permutation
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/chromHmm_enrichment.html" target="_blank">086fbcc</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/chromHmm_enrichment.html" target="_blank">086fbcc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-13
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/1357eac2f73181ec1e6025eedbd790979a2601d0/analysis/chromHmm_enrichment.Rmd" target="_blank">1357eac</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-13
 </td>
-<td style="text-align:left;">
+<td>
 res from no sig analysis
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/ff8c9691a125898c9bf49f327c35186e5d2fc045/docs/chromHmm_enrichment.html" target="_blank">ff8c969</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/ff8c9691a125898c9bf49f327c35186e5d2fc045/docs/chromHmm_enrichment.html" target="_blank">ff8c969</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-12
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/d08f3f9d5a0adb0917704ecd105ebe7830b237f9/analysis/chromHmm_enrichment.Rmd" target="_blank">d08f3f9</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-12
 </td>
-<td style="text-align:left;">
+<td>
 fix code for no sig permutations
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/chromHmm_enrichment.html" target="_blank">83f1b14</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/chromHmm_enrichment.html" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/ab79f33b0858f7059283b2764531a884b8a1c218/analysis/chromHmm_enrichment.Rmd" target="_blank">ab79f33</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
-<td style="text-align:left;">
+<td>
 add enrichment analysis (messed up perm)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/chromHmm_enrichment.html" target="_blank">19b98b3</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/chromHmm_enrichment.html" target="_blank">19b98b3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/70cf09c19343a0c37c200842b84edebe43324a4f/analysis/chromHmm_enrichment.Rmd" target="_blank">70cf09c</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 add perm res
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/brimittleman/threeprimeseq/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/chromHmm_enrichment.html" target="_blank">2ec5ffd</a>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/chromHmm_enrichment.html" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/962e39bcfc173365546499232b60d586f6470f38/analysis/chromHmm_enrichment.Rmd" target="_blank">962e39b</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
-<td style="text-align:left;">
+<td>
 move chromhmm analysis to its own analysis
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-<p></details></p>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <p>Librarys</p>
 <pre class="r"><code>library(workflowr)</code></pre>
-<pre><code>This is workflowr version 1.1.1
+<pre><code>This is workflowr version 1.2.0
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(reshape2)
 library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
-✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ tidyr   0.8.1     ✔ stringr 1.4.0
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(VennDiagram)</code></pre>
@@ -755,47 +1016,54 @@ NuclearOverlapHMM_names=NuclearOverlapHMM %&gt;% left_join(chromHmm, by=&quot;nu
 <pre class="r"><code>NuclearOverlapHMM_names$number=as.character(NuclearOverlapHMM_names$number)
 ggplot(NuclearOverlapHMM_names, aes(x=number, fill=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-3-1.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-3-1.png" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Evaluate results for total:</p>
 <pre class="r"><code>TotalOverlapHMM=read.table(&quot;../data/ChromHmmOverlap/Tot_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
 
@@ -803,47 +1071,54 @@ TotalOverlapHMM_names=TotalOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number
 <pre class="r"><code>TotalOverlapHMM_names$number=as.character(TotalOverlapHMM_names$number)
 ggplot(TotalOverlapHMM_names, aes(x=number, fill=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Total APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-5-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-5-1.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-5-1.png" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <div id="pull-one-set-of-random-snps" class="section level2">
 <h2>Pull one set of random snps:</h2>
 <p>I do still need to get 880 random snps.</p>
@@ -865,42 +1140,50 @@ NucRnad_overlapHMM=RANDnuc.map(hmm, c=4)
 #save results  
 
 NucRnad_overlapHMM.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_trans/randomSnps/ApaQTL_nuclear_Random_overlapHMM.bed&quot;)
+
 </code></pre>
 <pre class="r"><code>NuclearRandOverlapHMM=read.table(&quot;../data/ChromHmmOverlap/ApaQTL_nuclear_Random_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;sid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
 
 NuclearRandOverlapHMM_names=NuclearRandOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)</code></pre>
 <pre class="r"><code>ggplot(NuclearRandOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls (Random)&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-9-1.png" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>To put this on the same plot I can count the number in each then plot them next to eachother.</p>
 <pre class="r"><code>random_perChromHMM_nuc=NuclearRandOverlapHMM_names %&gt;%  group_by(name) %&gt;% summarise(Random=n())
 sig_perChromHMM_nuc= NuclearOverlapHMM_names %&gt;%  group_by(name) %&gt;%  summarise(Nuclear_QTLs=n())
@@ -912,36 +1195,43 @@ names(perChrommHMM_nuc_melt)=c(&quot;Region&quot;,&quot;Set&quot;, &quot;N_Snps&
 <pre class="r"><code>chromenrichNuclearplot=ggplot(perChrommHMM_nuc_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;Enrichment of Nuclear QTLs by chromatin region&quot;, y=&quot;Number of Snps&quot;, x=&quot;Chromatin Region&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)
 chromenrichNuclearplot</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-11-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-11-1.png" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggsave(&quot;../output/plots/ChromHmmEnrich_Nuclear.png&quot;, chromenrichNuclearplot)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <div id="compare-enrichment-between-fractions" class="section level3">
@@ -1073,6 +1363,7 @@ if __name__ == &quot;__main__&quot;:
     inFile = &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/snp_bed_all/randomRes_%s_%s_ALLperm.sort.bed&quot;%(fraction,fraction, nsamp)
     outFile= &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s/chromHMM_overlap/randomres_overlapChromHMM_%s_%s_%s.txt&quot;%(fraction,fraction,nsamp, niter)
     main(inFile,outFile)
+
 </code></pre>
 <p>*Nuclear 880</p>
 <p>nuclear_random880_chromHmm.sh</p>
@@ -1172,103 +1463,124 @@ names(perChrommHMM_nuc_withPerm_melt)=c(&quot;Region&quot;,&quot;Set&quot;, &quo
 
 ggplot(perChrommHMM_nuc_withPerm_melt, aes(x=Region, y=N_Snps, by=Set, fill=Set)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;Enrichment of Nuclear QTLs by chromatin region&quot;, y=&quot;Number of Snps&quot;, x=&quot;Chromatin Region&quot;) + scale_fill_brewer(palette=&quot;Paired&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-21-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-21-1.png" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Enrichment is the actual/random:</p>
 <pre class="r"><code>perChrommHMM_nuc_withPerm_enrich = perChrommHMM_nuc_withPerm %&gt;% mutate(Nuclear_Enrichment=(Nuclear_QTLs-Random_perm)/Random_perm, chiSq=(Nuclear_QTLs-Random_perm)^2/Random_perm)
 
 ggplot(perChrommHMM_nuc_withPerm_enrich, aes(x=name, y=Nuclear_Enrichment)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;deepskyblue3&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;ChromHMM Enrichment of Nuclear ApaQTLs \n over 824 Random Permuations&quot;, x=&quot;Region&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-22-1.png" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(perChrommHMM_nuc_withPerm_enrich, aes(x=name, y=chiSq)) + geom_bar(stat=&quot;identity&quot;,fill=&quot;deepskyblue3&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=&quot;ChromHMM ChiSq of Nuclear ApaQTLs \n over 824 Random Permuations&quot;, x=&quot;Region&quot;) </code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-22-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-2">
+Past versions of unnamed-chunk-22-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2ec5ffd37187beac4a5124fbb700b2ea52a1e75a/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-22-2.png" target="_blank">2ec5ffd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>To parallelize this I will run the permutations in 4 bash scripts:</p>
 <p>nuc_random880_chromHmm_set1.sh</p>
 <pre class="bash"><code>#!/bin/bash
@@ -1638,289 +1950,338 @@ be dropped</code></pre>
 ggplot(allRand_mean_df_melt, aes(y=value, x=regions, by=variable, fill=variable))+ geom_histogram(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-38-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-38-1">
+Past versions of unnamed-chunk-38-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-38-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-38-1.png" target="_blank">19b98b3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>I want to look at specific distributions:</p>
 <pre class="r"><code>permutationResTotal_melt= melt(permutationResTotal, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-40-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-40-1">
+Past versions of unnamed-chunk-40-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-40-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-40-1.png" target="_blank">19b98b3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>For nuclear:</p>
 <pre class="r"><code>permutationResNuclear_melt= melt(permutationResNuclear, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-42-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-42-1">
+Past versions of unnamed-chunk-42-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-42-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-42-1.png" target="_blank">19b98b3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Try log scale:</p>
 <p>I want to add horizontal line where the actual QTL number is.</p>
 <pre class="r"><code>ggplot(permutationResTotal_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10() + labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 448 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-43-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-43-1">
+Past versions of unnamed-chunk-43-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-43-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-43-1.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-43-1.png" target="_blank">19b98b3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(permutationResNuclear_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 631 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-44-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-44-1">
+Past versions of unnamed-chunk-44-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-44-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-44-1.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-44-1.png" target="_blank">19b98b3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Try removing 0s:</p>
 <pre class="r"><code>permutationResTotal_melt_no0= permutationResTotal_melt %&gt;% filter(value&gt;0)
 ggplot(permutationResTotal_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)+ scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 407 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-45-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-45-1">
+Past versions of unnamed-chunk-45-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-45-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-1.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-1.png" target="_blank">19b98b3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>permutationResNuclear_melt_no0= permutationResNuclear_melt %&gt;% filter(value&gt;0)
 ggplot(permutationResNuclear_melt_no0, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number)+ scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 630 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-45-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-45-2">
+Past versions of unnamed-chunk-45-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-45-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-2.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/19b98b3e20dcdad8fa0039ae754c9bef22447cdd/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-45-2.png" target="_blank">19b98b3</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-07
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Look at enrichment by using the average</p>
 <pre class="r"><code>TotalPermMean=permutationResTotal_melt %&gt;% group_by(number) %&gt;% summarise(TotRandPerm=mean(value))
 TotalPermMean$number=as.character(TotalPermMean$number)
@@ -1948,140 +2309,168 @@ NuclearOverlapHMM_enrichment$NucQTL=as.double(NuclearOverlapHMM_enrichment$NucQT
 NuclearOverlapHMM_enrichment=NuclearOverlapHMM_enrichment %&gt;%mutate(NucEnrich=(NucQTL-NucRandPerm)/NucRandPerm)</code></pre>
 <pre class="r"><code>ggplot(NuclearOverlapHMM_enrichment, aes(y=NucEnrich, x=number, fill=name)) + geom_bar(stat=&quot;identity&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-49-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-49-1">
+Past versions of unnamed-chunk-49-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-49-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-49-1.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(TotalOverlapHMM_enrichment, aes(y=TotEnrich, x=number, fill=name)) + geom_bar(stat=&quot;identity&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-49-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-49-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-49-2">
+Past versions of unnamed-chunk-49-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-49-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-49-2.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Join together:</p>
 <pre class="r"><code>bothEnrich=NuclearOverlapHMM_enrichment %&gt;% full_join(TotalOverlapHMM_enrichment, by=c(&quot;name&quot;, &quot;number&quot;)) %&gt;% select(number, name, NucEnrich,TotEnrich)
 
 bothEnrich_melt=melt(bothEnrich, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(bothEnrich_melt, aes(x=number, by=variable, fill=name, y=value,col=variable)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;,alpha=.5) + scale_color_manual(values=c(&quot;darkviolet&quot;, &quot;deepskyblue3&quot;)) + labs(y=&quot;Enrichment from 1000 permutations&quot;, title=&quot;ChromHMM enrichment for \nTotal and Nuclear ApaQTLs&quot;,x=&quot;Region&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-51-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-51-1">
+Past versions of unnamed-chunk-51-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-51-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-51-1.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>Look only at the interesting ones by subsetting:</p>
 <pre class="r"><code>bothEnrich_melt_filt=bothEnrich_melt %&gt;% filter(str_detect(name,&quot;Active_Promoter|Txn_Elongation|Weak_Txn|Heterochrom/lo|Weak_Promoter|Poised_Promoter|Txn_Transition&quot;))
 
 
 ggplot(bothEnrich_melt_filt, aes(x=name, by=variable, fill=variable, y=value))+ geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(y=&quot;Enrichment&quot;, x=&quot;Category&quot;, title=&quot;ChromHMM categroies \n with oppositte Enrichemtn patterns&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-52-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-52-1">
+Past versions of unnamed-chunk-52-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-52-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/83f1b1419eb993f27c047d5d3a2355c4c84e24e1/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-52-1.png" target="_blank">83f1b14</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-08
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>The bimodal distributions may come from including both the significant and non significant genes in the test set. I need to remove all of the lines that come from a gene with a significant peak.</p>
 <div id="remove-significant-genes" class="section level3">
 <h3>Remove significant genes</h3>
@@ -2139,6 +2528,8 @@ def filter(fin,fout, sigGenes):
 
 filter(NucRes,Nuc_nonSig,Nuc_gene_list)
 filter(TotRes, Tot_nonSig, Tot_gene_list)
+
+
 </code></pre>
 <p>Call this in a bash script:<br />
 run_filterSigGenes.sh</p>
@@ -2360,6 +2751,7 @@ if __name__ == &quot;__main__&quot;:
     
     outFile= &quot;/project2/gilad/briana/threeprimeseq/data/random_QTLsnps/%s_noSig/snp_bed_noSig/randomRes_%s_%d_noSig_%s.bed&quot;%(fraction,fraction, nsamp, iter)
     main(inFile,outFile)
+
 </code></pre>
 <p>randomLines2Snp_noSig.sh</p>
 <pre class="bash"><code>#!/bin/bash
@@ -2519,138 +2911,166 @@ nucRand_mean_noSig=rowMeans(permutationResNuclear_noSig_noName)/1000</code></pre
 <pre class="r"><code>permutationResTotal_noSig_melt= melt(permutationResTotal_noSig, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResTotal_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-74-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-74-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-74-1">
+Past versions of unnamed-chunk-74-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-74-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-74-1.png" target="_blank">086fbcc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-13
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <p>For nuclear:</p>
 <pre class="r"><code>permutationResNuclear_noSig_melt= melt(permutationResNuclear_noSig, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResNuclear_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-76-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-76-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-76-1">
+Past versions of unnamed-chunk-76-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-76-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-76-1.png" target="_blank">086fbcc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-13
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(permutationResNuclear_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Nuclear&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 630 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-77-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-77-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-77-1">
+Past versions of unnamed-chunk-77-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-77-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-77-1.png" target="_blank">086fbcc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-13
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(permutationResTotal_noSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + scale_y_log10()+ labs(x=&quot;random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
 <pre><code>Warning: Removed 445 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-77-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of unnamed-chunk-77-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-77-2">
+Past versions of unnamed-chunk-77-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-77-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/086fbcc926b578d6d8b5a54523f7dbb7fad7e78c/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-77-2.png" target="_blank">086fbcc</a>
 </td>
-<td style="text-align:left;">
+<td>
 Briana Mittleman
 </td>
-<td style="text-align:left;">
+<td>
 2018-11-13
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 <div id="permute-only-from-unique-snps-tested" class="section level3">
 <h3>Permute only from unique snps tested</h3>
@@ -2962,9 +3382,83 @@ nucRand_mean_UniqnoSig=rowMeans(permutationResNuclear_UniqnoSig_noName)/1000</co
 <pre class="r"><code>permutationResTotal_UniqnoSig_melt= melt(permutationResTotal_UniqnoSig, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResTotal_UniqnoSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-90-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-90-1">
+Past versions of unnamed-chunk-90-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-90-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6d4b5433ce50bad19a87d888e5c004006d5f33a5/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-90-1.png" target="_blank">6d4b543</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>permutationResNuclear_UniqnoSig_melt= melt(permutationResNuclear_UniqnoSig, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(permutationResNuclear_UniqnoSig_melt, aes(x=value,fill=name)) + geom_histogram(bins=50) + facet_wrap(~number) + labs(x=&quot;N random Snps in category&quot;, title=&quot;Random permutation Total&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-92-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-92-1">
+Past versions of unnamed-chunk-92-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-92-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6d4b5433ce50bad19a87d888e5c004006d5f33a5/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-92-1.png" target="_blank">6d4b543</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>This is the model I will move forward with.</p>
 <p>Plot the enrichment:</p>
 <p>Look at enrichment by using the average</p>
@@ -2990,21 +3484,135 @@ NuclearOverlapHMM_Uniq_enrichment$NucQTL=as.double(NuclearOverlapHMM_Uniq_enrich
 NuclearOverlapHMM_Uniq_enrichment=NuclearOverlapHMM_Uniq_enrichment %&gt;%mutate(NucEnrich=(NucQTL-NucRandPerm)/NucRandPermSD)</code></pre>
 <pre class="r"><code>ggplot(NuclearOverlapHMM_Uniq_enrichment, aes(y=NucEnrich, x=number, fill=name)) + geom_bar(stat=&quot;identity&quot;) + labs(title=&quot;Nuclear ApaQTL enrichment Z score&quot;, y=&quot;Enrichment Z score&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-96-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-96-1">
+Past versions of unnamed-chunk-96-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-96-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6d4b5433ce50bad19a87d888e5c004006d5f33a5/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-96-1.png" target="_blank">6d4b543</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(TotalOverlapHMM_Uniq_enrichment, aes(y=TotEnrich, x=number, fill=name)) + geom_bar(stat=&quot;identity&quot;)+ labs(title=&quot;Total ApaQTL enrichment Z score&quot;, y=&quot;Enrichment Z score&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-96-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-96-2">
+Past versions of unnamed-chunk-96-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-96-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6d4b5433ce50bad19a87d888e5c004006d5f33a5/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-96-2.png" target="_blank">6d4b543</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>bothEnrich_uniq=NuclearOverlapHMM_Uniq_enrichment %&gt;% full_join(TotalOverlapHMM_Uniq_enrichment, by=c(&quot;name&quot;, &quot;number&quot;)) %&gt;% select(number, name, NucEnrich,TotEnrich)
 
 bothEnrich_uniqmelt=melt(bothEnrich_uniq, id.vars=c(&quot;number&quot;, &quot;name&quot;))</code></pre>
 <pre class="r"><code>ggplot(bothEnrich_uniqmelt, aes(x=number, by=variable, fill=variable, y=value,col=name)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;,alpha=.5) + scale_fill_manual(values=c(&quot;darkviolet&quot;, &quot;deepskyblue3&quot;)) + labs(y=&quot;Enrichment from 1000 permutations&quot;, title=&quot;ChromHMM enrichment for \nTotal and Nuclear ApaQTLs&quot;,x=&quot;Region&quot;)</code></pre>
 <p><img src="figure/chromHmm_enrichment.Rmd/unnamed-chunk-98-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-98-1">
+Past versions of unnamed-chunk-98-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-98-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6d4b5433ce50bad19a87d888e5c004006d5f33a5/docs/figure/chromHmm_enrichment.Rmd/unnamed-chunk-98-1.png" target="_blank">6d4b543</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2018-11-15
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+<br> <br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+Running under: macOS  10.14.1
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
@@ -3020,30 +3628,31 @@ attached base packages:
 other attached packages:
  [1] bindrcpp_0.2.2      cowplot_0.9.3       ggpubr_0.1.8       
  [4] magrittr_1.5        data.table_1.11.8   VennDiagram_1.6.20 
- [7] futile.logger_1.4.3 forcats_0.3.0       stringr_1.3.1      
+ [7] futile.logger_1.4.3 forcats_0.3.0       stringr_1.4.0      
 [10] dplyr_0.7.6         purrr_0.2.5         readr_1.1.1        
 [13] tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0      
-[16] tidyverse_1.2.1     reshape2_1.4.3      workflowr_1.1.1    
+[16] tidyverse_1.2.1     reshape2_1.4.3      workflowr_1.2.0    
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4     haven_1.1.2          lattice_0.20-35     
  [4] colorspace_1.3-2     htmltools_0.3.6      yaml_2.2.0          
- [7] rlang_0.2.2          R.oo_1.22.0          pillar_1.3.0        
-[10] glue_1.3.0           withr_2.1.2          R.utils_2.7.0       
-[13] RColorBrewer_1.1-2   lambda.r_1.2.3       modelr_0.1.2        
-[16] readxl_1.1.0         bindr_0.1.1          plyr_1.8.4          
-[19] munsell_0.5.0        gtable_0.2.0         cellranger_1.1.0    
-[22] rvest_0.3.2          R.methodsS3_1.7.1    evaluate_0.11       
-[25] labeling_0.3         knitr_1.20           broom_0.5.0         
-[28] Rcpp_0.12.19         formatR_1.5          backports_1.1.2     
-[31] scales_1.0.0         jsonlite_1.5         hms_0.4.2           
-[34] digest_0.6.17        stringi_1.2.4        rprojroot_1.3-2     
-[37] cli_1.0.1            tools_3.5.1          lazyeval_0.2.1      
-[40] futile.options_1.0.1 crayon_1.3.4         whisker_0.3-2       
-[43] pkgconfig_2.0.2      xml2_1.2.0           lubridate_1.7.4     
-[46] assertthat_0.2.0     rmarkdown_1.10       httr_1.3.1          
-[49] rstudioapi_0.8       R6_2.3.0             nlme_3.1-137        
-[52] git2r_0.23.0         compiler_3.5.1      </code></pre>
+ [7] rlang_0.2.2          pillar_1.3.0         glue_1.3.0          
+[10] withr_2.1.2          RColorBrewer_1.1-2   modelr_0.1.2        
+[13] lambda.r_1.2.3       readxl_1.1.0         bindr_0.1.1         
+[16] plyr_1.8.4           munsell_0.5.0        gtable_0.2.0        
+[19] cellranger_1.1.0     rvest_0.3.2          evaluate_0.13       
+[22] labeling_0.3         knitr_1.20           broom_0.5.0         
+[25] Rcpp_0.12.19         formatR_1.5          scales_1.0.0        
+[28] backports_1.1.2      jsonlite_1.6         fs_1.2.6            
+[31] hms_0.4.2            digest_0.6.17        stringi_1.2.4       
+[34] rprojroot_1.3-2      cli_1.0.1            tools_3.5.1         
+[37] lazyeval_0.2.1       futile.options_1.0.1 crayon_1.3.4        
+[40] whisker_0.3-2        pkgconfig_2.0.2      xml2_1.2.0          
+[43] lubridate_1.7.4      assertthat_0.2.0     rmarkdown_1.11      
+[46] httr_1.3.1           rstudioapi_0.9.0     R6_2.3.0            
+[49] nlme_3.1-137         git2r_0.24.0         compiler_3.5.1      </code></pre>
+</div>
+</div>
 </div>
 
 <hr>
@@ -3070,6 +3679,7 @@ loaded via a namespace (and not attached):
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 -->
+
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
 http://docs.mathjax.org/en/latest/configuration.html.  This will make
@@ -3081,14 +3691,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 </div>
