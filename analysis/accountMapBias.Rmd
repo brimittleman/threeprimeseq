@@ -473,10 +473,12 @@ sed 's/^chr//' /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filter
 * fix header fix_head_fc_geneLoc_nuc_noMP.py
 * create_fileid_geneLocAnno_total.py (remove top line)
 * create_fileid_geneLocAnno_nuclear.py (remove top line)
-- make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh  
-- counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py  
-- run_filter_5percUsagePeaks.sh  
+* make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh  
+* pheno2CountOnly_genelocAnno.R
+* counts to numeric convertCount2Numeric_noMP_GeneLocAnno.py  
+* run_filter_5percUsagePeaks.sh  
 - filterPheno_bothFraction_GeneLocAnno_5perc.py  
+
 
 In /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/
 
@@ -515,9 +517,82 @@ head -n 3 filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quan
 - run_APAqtlpermCorrectQQplot_GeneLocAnno_noMP_5perUs.sh 
 
 
+```{r}
+totQTLs=read.table("../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt", stringsAsFactors = F, header=T)
 
-REDO!!!
+Sig_TotQTLs= totQTLs %>% filter(-log10(bh)>=1)
+nrow(Sig_TotQTLs)
+```
+How many genes are tested:  
+
+```{r}
+totQTLs %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% select(gene) %>% tally() %>% nrow()
+ 
+
+```
+
+
+
+
+```{r}
+nucQTLs=read.table("../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt", stringsAsFactors = F, header=T)
+
+Sig_NucQTLs= nucQTLs %>% filter(-log10(bh)>=1)
+nrow(Sig_NucQTLs)
+```
+
+How many genes:  
+
+```{r}
+nucQTLs %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% select(gene) %>% tally() %>% nrow()
+```
+Write QTLs to get locations:  
+
+```{r}
+totQTLs_sig=read.table("../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt", stringsAsFactors = F, header=T)%>% filter(-log10(bh)>=1)
+
+write.table(totQTLs_sig,"../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", row.names = F, col.names = F, quote = F)
+
+nucQTLs_sig=read.table("../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt", stringsAsFactors = F, header=T)%>% filter(-log10(bh)>=1)
+
+write.table(nucQTLs_sig,"../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", row.names = F, col.names = F, quote = F)
+```
+
+
+getDistPeakEnd2QTL.py 
+
+
+```{r}
+TotDist=read.table("../data/ApaQTLs/Distance2EndPeak.Total.apaQTLs.txt", header=T) %>% mutate(Fraction="Total") %>% select(Fraction, Distance)
+NucDist=read.table("../data/ApaQTLs/Distance2EndPeak.Nuclear.apaQTLs.txt", header=T)%>% mutate(Fraction="Nuclear") %>% select(Fraction, Distance)
+
+BothDist=data.frame(rbind(TotDist, NucDist))
+
+ggplot(BothDist, aes(x=Distance, by=Fraction, fill=Fraction))+geom_histogram(bins=70, alpha=.5) + scale_fill_manual(values=c("deepskyblue3","darkviolet")) + labs(title="Distance From apaQTL to End of Peak" )
+
+```
+
+Where are the QTLs:  
+
+QTLfile2Bed.py "Total"
+QTLfile2Bed.py "Nuclear"
+
+
+I will need to sort the output
+
+```{bash,eval=F}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.bed > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.bed > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed
+```
+
+
+mapQTLs2GenomeLoc.sh
+
+
 QC reruns: 
+
+* processGenLocPeakAnno2SAF_withAnno.py
 * filternamePeaks5percCov_GeneLocAnno_withAnno.py  
 
 ```{r}
@@ -536,8 +611,11 @@ ggsave(locationOfPeaks, file="../output/plots/PeakLocationByAnnotation.png")
 
 * GetDistTXNend2Peak.py
 
+convert /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF to bed file
+
+peaksGeneLocAnno_5percSAF2Bed.py
 ```{r}
-distTXN2Peak=read.table("../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN_newMAp.txt", col.names = c("Peak", "name2", "Distance", "Gene_Strand"),stringsAsFactors = F)
+distTXN2Peak=read.table("../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN.txt", col.names = c("Peak", "name2", "Distance", "Gene_Strand"),stringsAsFactors = F)
 txnanno=read.table("../data/RefSeq_annotations/Transcript2GeneName.dms", header=T,stringsAsFactors = F) %>% mutate(length=abs(txEnd-txStart)) %>% semi_join(distTXN2Peak, by="name2")
 distTXN2Peak =distTXN2Peak %>% mutate(AbsDist=abs(Distance))
 mean(txnanno$length)
@@ -546,6 +624,8 @@ mean(txnanno$length)
 distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x="Absolute Distance between end of Transcription and center of Peak", title="Distribution of transcription to peak absolute distance") +  geom_vline(xintercept=mean(txnanno$length), col="red") + annotate("text", x=1000000, y=.4, label="Average transcript length \n for genes in peaks", col='red')
 
 distTXN2PeakPlot
+
+ggsave(distTXN2PeakPlot, file="../output/plots/DistanceBetweenPeakandTES.png")
 ```
 
 Look at number of reads lost due to WASP filter 
@@ -704,5 +784,17 @@ allmapstatboxplots=plot_grid(seqread_plotbar,mapreads_plotbar,maprop_plotbar,nco
 allmapstatboxplots
 
 ggsave(allmapstatboxplots, file="../output/plots/MapStatBoxPlots.png",width=15)
+```
+
+Peak length:  
+
+
+```{r}
+peaks=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed",col.names=c("chr", 'start','end', 'peak', 'score', 'strand')) %>% mutate(length=end-start)
+
+```
+
+```{r}
+ggplot(peaks,aes(x=length)) + geom_histogram(bins=300) + labs(title="Peak Size", x="number of basepairs") + geom_vline(xintercept =mean(peaks$length),col="red")
 ```
 
