@@ -435,22 +435,22 @@ done
 * sort and index merged SortIndexMergedBam_noMP.sh  and SortIndex_mergeBamFiles_byfrac_noMP.sh
 
 
-- create BW mergedBam2Bedgraph.sh
-- make it a coverage file run_bgtocov_noMP.sh
-- call peaks run_callPeaksYL_noMP.sh
-- filter peaks
+* create BW mergedBam2Bedgraph.sh
+* make it a coverage file run_bgtocov_noMP.sh
+* call peaks run_callPeaksYL_noMP.sh
+* filter peaks
     - cat /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/*.bed >     /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP/APApeaks_merged_allchrom_noMP.bed
     - make SAF file bed2saf_noMP.py
     - run feature counts peak_fc_noMP.sh
     - filter peaks run_filter_peaks_noMP.sh
-- name peaks
+* name peaks
 
 ```{bash,eval=F}
-170480 = wc -l /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.bed
+170824 = wc -l /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filtered/Filtered_APApeaks_merged_allchrom_noMP.bed
 
 
 
-seq 1 170480 > peak.num.txt
+seq 1 170824 > peak.num.txt
 
 sort -k1,1 -k2,2n Filtered_APApeaks_merged_allchrom_noMP.bed > Filtered_APApeaks_merged_allchrom_noMP.sort.bed
 
@@ -464,13 +464,13 @@ sed 's/^chr//' /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_filter
 ```
 
 
-- Gene assignments mapnoMPPeaks2GenomeLoc.sh  
+* Gene assignments mapnoMPPeaks2GenomeLoc.sh  
 
 
-- make SAF processGenLocPeakAnno2SAF.py
-- feature counts GeneLocAnno_fc_TN_noMP.sh
-- fix header fix_head_fc_geneLoc_tot_noMP.py
-- fix header fix_head_fc_geneLoc_nuc_noMP.py
+* make SAF processGenLocPeakAnno2SAF.py
+* feature counts GeneLocAnno_fc_TN_noMP.sh
+* fix header fix_head_fc_geneLoc_tot_noMP.py
+* fix header fix_head_fc_geneLoc_nuc_noMP.py
 * create_fileid_geneLocAnno_total.py (remove top line)
 * create_fileid_geneLocAnno_nuclear.py (remove top line)
 - make phenotype run_makePhen_sep_GeneLocAnno_noMP.sh  
