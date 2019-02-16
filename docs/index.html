@@ -369,10 +369,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/606e562d86042f5e0b093d1b4cdf423502814038" target="_blank">606e562</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeb7a0e322230bf7234c98dc7518d4232b49cfda22targetblankb7a0e32a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/b7a0e322230bf7234c98dc7518d4232b49cfda22" target="_blank">b7a0e32</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree606e562d86042f5e0b093d1b4cdf423502814038targetblank606e562a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeb7a0e322230bf7234c98dc7518d4232b49cfda22targetblankb7a0e32a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -468,6 +468,7 @@ Untracked files:
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
+    Untracked:  data/perm_QTL_diffWindow/
     Untracked:  data/perm_QTL_opp/
     Untracked:  data/perm_QTL_trans/
     Untracked:  data/perm_QTL_trans_filt/
@@ -558,6 +559,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b7a0e322230bf7234c98dc7518d4232b49cfda22/analysis/index.Rmd" target="_blank">b7a0e32</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-15
+</td>
+<td>
+add window size qtl analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/4f17cca4f0d8625a915a916d0ab5e8c885a556e0/docs/index.html" target="_blank">4f17cca</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2859,6 +2894,7 @@ Start workflowr project.
 <li><p><a href="IndPeakUsageDiff.html">Individual differences in peak usage</a></p></li>
 <li><p><a href="QConApaQTLs.html">QC plots for understanding apaQTLs</a></p></li>
 <li><p><a href="accountMapBias.html">Test if mapping bias leads to false positive QTLs</a></p></li>
+<li><p><a href="TestQTLbySizeRegion.html">Number of QTLs by window size</a></p></li>
 </ul>
 </div>
 
