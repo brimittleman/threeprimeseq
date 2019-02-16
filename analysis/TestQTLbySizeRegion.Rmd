@@ -371,3 +371,37 @@ ggplot(diffWindow_melt,aes(x=WindowSize, y=nQTL, by=Fraction, fill=Fraction)) + 
 
 ```
 
+Look at this but with the number of genes:  
+
+```{r}
+howManyQTLGenes=function(window, fraction){
+  file=paste("../data/perm_QTL_diffWindow/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.", fraction, ".fixed.pheno_5perc_permResBH_", window, ".txt", sep = "" )
+  inFile=read.table(file, stringsAsFactors = F, header = T) %>% separate(pid,into=c("chr", "start", "end", "id"),sep=":") %>% separate(id, into=c("gene", 'strand', 'peak'), sep="_") 
+  sigQTL=inFile %>% filter(-log10(bh)>=1)
+  sigGenes= sigQTL %>% group_by(gene) %>% tally()
+  return(nrow(sigGenes))
+}
+```
+
+```{r}
+QTLGenesbyWindow_T=c(235,howManyQTLGenes("40KB", "Total"), howManyQTLGenes("30KB", "Total"),howManyQTLGenes("20KB", "Total"),howManyQTLGenes("10KB", "Total") )
+QTLGenesWindow_N=c(496,howManyQTLGenes("40KB", "Nuclear"), howManyQTLGenes("30KB", "Nuclear"),howManyQTLGenes("20KB", "Nuclear"),howManyQTLGenes("10KB", "Nuclear") )
+
+
+diffWindowG=as.data.frame(cbind(WindowSize=window_sizes, Total=QTLGenesbyWindow_T, Nuclear=QTLGenesWindow_N))
+
+diffWindowG_melt=melt(diffWindowG, id.vars = "WindowSize")                       
+colnames(diffWindowG_melt)=c("WindowSize", "Fraction", "QTLGenes")   
+```
+
+
+```{r}
+ggplot(diffWindowG_melt,aes(x=WindowSize, y=QTLGenes, by=Fraction, fill=Fraction)) + geom_bar(stat="identity", position="dodge") +scale_fill_manual(values=c("darkviolet","deepskyblue3")) + labs(title="apaQTL Genes at FDR 10% by cis Window Size", x="Window size (kb)")
+```
+
+```{r}
+QTLGenesbyWindow_T
+
+QTLGenesWindow_N
+```
+

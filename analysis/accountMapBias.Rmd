@@ -527,7 +527,9 @@ How many genes are tested:
 
 ```{r}
 totQTLs %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% select(gene) %>% tally() %>% nrow()
- 
+
+sigQTLTGenes=Sig_TotQTLs %>%  separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>%  group_by(gene) %>% tally() %>% nrow()
+sigQTLTGenes
 
 ```
 
@@ -545,6 +547,9 @@ How many genes:
 
 ```{r}
 nucQTLs %>% separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% select(gene) %>% tally() %>% nrow()
+
+sigQTLNGenes=Sig_NucQTLs %>%  separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>%  group_by(gene) %>% tally() %>% nrow()
+sigQTLNGenes
 ```
 Write QTLs to get locations:  
 
