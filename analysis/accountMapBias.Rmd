@@ -595,44 +595,6 @@ sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQ
 mapQTLs2GenomeLoc.sh
 
 
-QC reruns: 
-
-* processGenLocPeakAnno2SAF_withAnno.py
-* filternamePeaks5percCov_GeneLocAnno_withAnno.py  
-
-```{r}
-peakswAnno=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF", header=T) %>% separate(GeneID, into=c("Peak", "chrom", "start", "end", "strand", "gene", "loc"),sep=":") %>% select(Peak, loc) %>% group_by(loc) %>% summarise(Num=n())
-
-```
-
-
-
-```{r}
-locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat="identity", fill="blue") + labs(x="Gene Location", y="Number of Peaks", title="Location distribution for all PAS with 5% Usage")
-locationOfPeaks
-ggsave(locationOfPeaks, file="../output/plots/PeakLocationByAnnotation.png")
-```
-
-
-* GetDistTXNend2Peak.py
-
-convert /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF to bed file
-
-peaksGeneLocAnno_5percSAF2Bed.py
-```{r}
-distTXN2Peak=read.table("../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN.txt", col.names = c("Peak", "name2", "Distance", "Gene_Strand"),stringsAsFactors = F)
-txnanno=read.table("../data/RefSeq_annotations/Transcript2GeneName.dms", header=T,stringsAsFactors = F) %>% mutate(length=abs(txEnd-txStart)) %>% semi_join(distTXN2Peak, by="name2")
-distTXN2Peak =distTXN2Peak %>% mutate(AbsDist=abs(Distance))
-mean(txnanno$length)
-```
-```{r}
-distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x="Absolute Distance between end of Transcription and center of Peak", title="Distribution of transcription to peak absolute distance") +  geom_vline(xintercept=mean(txnanno$length), col="red") + annotate("text", x=1000000, y=.4, label="Average transcript length \n for genes in peaks", col='red')
-
-distTXN2PeakPlot
-
-ggsave(distTXN2PeakPlot, file="../output/plots/DistanceBetweenPeakandTES.png")
-```
-
 Look at number of reads lost due to WASP filter 
 
 
@@ -789,17 +751,5 @@ allmapstatboxplots=plot_grid(seqread_plotbar,mapreads_plotbar,maprop_plotbar,nco
 allmapstatboxplots
 
 ggsave(allmapstatboxplots, file="../output/plots/MapStatBoxPlots.png",width=15)
-```
-
-Peak length:  
-
-
-```{r}
-peaks=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed",col.names=c("chr", 'start','end', 'peak', 'score', 'strand')) %>% mutate(length=end-start)
-
-```
-
-```{r}
-ggplot(peaks,aes(x=length)) + geom_histogram(bins=300) + labs(title="Peak Size", x="number of basepairs") + geom_vline(xintercept =mean(peaks$length),col="red")
 ```
 

@@ -1,0 +1,182 @@
+---
+title: "Peak Plots"
+author: "Briana Mittleman"
+date: "2/16/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(workflowr)
+library(tidyverse)
+library(reshape2)
+library(cowplot)
+```
+
+I want to remake a lot of the peak QC plots I have been making with the new mapped and proccessed data created in the [accounting for mappping bias analysis](accountMapBias.html) 
+
+
+* Peaks per gene  
+
+* Number of genes with 1 peak, 2 peaks, more peaks  
+
+* Distance between gene and TES  
+
+* Peaks in each category  
+
+* Peak Size 
+
+
+
+###Peak per gene:  
+
+I will do this for total and nuclear 5% seperatly then for the peaks I used in the QTL analysis.  
+
+Nuclear peaks: 42127: /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt
+
+Total peaks: 36915: /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt
+
+
+```{r}
+peakNames=c("chr", 'start','end','gene','strand','name', 'mean')
+totalPeaks=read.table("../data/PeaksUsed_noMP_5percCov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt", stringsAsFactors = F, col.names = peakNames)
+nuclearPeaks=read.table("../data/PeaksUsed_noMP_5percCov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt", stringsAsFactors = F, col.names = peakNames)
+```
+
+
+Peaks per gene:  
+
+```{r}
+totalPeaks_genes=totalPeaks %>% group_by(gene) %>% summarise(nPeaks=n()) %>% group_by(nPeaks) %>% summarise(GenesWithNPeaks=n())
+nuclearPeaks_genes=nuclearPeaks %>% group_by(gene) %>% summarise(nPeaks=n())%>% group_by(nPeaks) %>% summarise(GenesWithNPeaks=n())
+
+nPeaksBoth=totalPeaks_genes %>% full_join(nuclearPeaks_genes, by="nPeaks")
+
+colnames(nPeaksBoth)= c("Npeaks", "Total", "Nuclear")
+nPeaksBoth$Total= nPeaksBoth$Total %>% replace_na(0)
+
+#melt nPeaksBoth
+nPeaksBoth_melt=melt(nPeaksBoth, id.var="Npeaks")
+colnames(nPeaksBoth_melt)= c("PAS", "Fraction", "Genes")
+
+peakUsage5perc=ggplot(nPeaksBoth_melt, aes(x=PAS, y=Genes, fill=Fraction)) + geom_bar(stat="identity", position = "dodge") + labs(title="Number of Genes by PAS Number \n 5% Usage",x="Number of PAS in Gene") + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + facet_grid(~Fraction)
+
+peakUsage5perc
+
+ggsave(peakUsage5perc, file="../output/plots/PeakNumberPerGenebyFrac.png")
+```
+
+Plot this with the peaks used in the fraction
+
+```{r}
+allPeaks=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", stringsAsFactors = F, col.names = c("chr", 'start','end', 'id', 'score', 'strand')) %>% separate(id, into=c("gene", "peak"), sep=":")%>% group_by(gene) %>% summarise(nPeaks=n()) %>% group_by(nPeaks) %>% summarise(GenesWithNPeaks=n())
+
+colnames(allPeaks)=c("PAS","Genes" )
+
+allPeaksGenes=ggplot(allPeaks, aes(x=PAS, y=Genes)) + geom_bar(stat="identity",fill="blue") + labs(title="Number of Genes by PAS Count: \n PAS Used in QTL analysis",x="Number of PAS in Gene") + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold")) 
+
+allPeaksGenes
+
+ggsave(allPeaksGenes, file="../output/plots/PeakNumberPerGeneUsedinQTL.png")
+```
+### Number of genes with 1 peak, 2 peaks, more peaks  
+
+
+Make this as a boxplot  
+
+```{r}
+GeneAnno=read.table("../data/RefSeq_annotations/Transcript2GeneName.dms", stringsAsFactors = F, header=T) %>% select(name2) %>%  unique()
+colnames(GeneAnno)="gene"
+genesWithpeak= read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", stringsAsFactors = F, col.names = c("chr", 'start','end', 'id', 'score', 'strand')) %>% separate(id, into=c("gene", "peak"), sep=":") %>% select(gene) %>% unique()
+
+Geneswith0= GeneAnno %>% anti_join(genesWithpeak, by="gene") %>% nrow()
+Geneswith0
+```
+
+
+To get the genes with 0 peaks I need to pull in the gene annotation file  
+```{r}
+
+morethan2= allPeaks %>% filter(PAS > 2) 
+colSums(morethan2)
+Category=c("0 PAS", "1 PAS", "2 PAS", "More than 2 PAS")
+genesPerCat=c(11896/27115, 4909/27115, 2949/27115, 7361/27115)
+
+genesPerCat_df=as.data.frame(cbind(Category,genesPerCat))
+
+genesPerCat_df$genesPerCat=as.numeric(as.character(genesPerCat_df$genesPerCat))
+
+lab0=paste("Genes =", "11896", sep=" ")
+lab1=paste("Genes =", "4909", sep=" ")
+lab2=paste("Genes =", "2949", sep=" ")
+labMore=paste("Genes =", "7361", sep=" ")
+
+
+propGenesbyPAS=ggplot(genesPerCat_df, aes(x="", y=genesPerCat, fill=Category)) + geom_bar(stat="identity") + labs(x="Total Genes = 27115", y="Proportion of Genes", title="Proportion of Genes by number of PAS") + annotate("text", x="", y= .7, label=lab0) + annotate("text", x="", y= .5, label=lab1) + annotate("text", x="", y= .33, label=lab2) + annotate("text", x="", y= .2, label=labMore)
+
+propGenesbyPAS
+
+
+ggsave(propGenesbyPAS, file="../output/plots/PropOfGenesByPASnum.png")
+```
+
+
+###Distance between TES and peak  
+
+* GetDistTXNend2Peak.py
+
+convert /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF to bed file
+
+peaksGeneLocAnno_5percSAF2Bed.py
+```{r}
+distTXN2Peak=read.table("../data/DistTXN2Peak_genelocAnno/distPeak2EndTXN.txt", col.names = c("Peak", "name2", "Distance", "Gene_Strand"),stringsAsFactors = F)
+txnanno=read.table("../data/RefSeq_annotations/Transcript2GeneName.dms", header=T,stringsAsFactors = F) %>% mutate(length=abs(txEnd-txStart)) %>% semi_join(distTXN2Peak, by="name2")
+distTXN2Peak =distTXN2Peak %>% mutate(AbsDist=abs(Distance))
+mean(txnanno$length)
+```
+
+```{r}
+distTXN2PeakPlot=ggplot(distTXN2Peak, aes(x=AbsDist + 1)) + geom_density() + scale_x_log10() + labs(x="Absolute Distance between end of Transcription and center of Peak", title="Distribution of transcription to peak absolute distance") +  geom_vline(xintercept=mean(txnanno$length), col="red") + annotate("text", x=1000000, y=.4, label="Average transcript length \n for genes in peaks", col='red')
+
+distTXN2PeakPlot
+
+ggsave(distTXN2PeakPlot, file="../output/plots/DistanceBetweenPeakandTES.png")
+```
+
+
+###Peaks per category  
+
+* processGenLocPeakAnno2SAF_withAnno.py
+* filternamePeaks5percCov_GeneLocAnno_withAnno.py  
+
+```{r}
+peakswAnno=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF", header=T) %>% separate(GeneID, into=c("Peak", "chrom", "start", "end", "strand", "gene", "loc"),sep=":") %>% select(Peak, loc) %>% group_by(loc) %>% summarise(Num=n())
+
+```
+
+
+
+```{r}
+locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat="identity", fill="blue") + labs(x="Gene Location", y="Number of Peaks", title="Location distribution for all PAS with 5% Usage")
+locationOfPeaks
+ggsave(locationOfPeaks, file="../output/plots/PeakLocationByAnnotation.png")
+```
+
+
+###Peak Size  
+
+Peak length:  
+
+
+```{r}
+peaks=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed",col.names=c("chr", 'start','end', 'peak', 'score', 'strand')) %>% mutate(length=end-start)
+
+```
+
+```{r}
+ggplot(peaks,aes(x=length)) + geom_histogram(bins=300) + labs(title="Peak Size", x="number of basepairs") + geom_vline(xintercept =mean(peaks$length),col="red")
+```
