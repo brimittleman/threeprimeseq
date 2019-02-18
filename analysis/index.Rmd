@@ -160,4 +160,4 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Leafcutter differential PAU analysis](diffIsoAnalysisNewMapping.html)  
 
-
+* [Characterize apaQTLs](characterize_apaQTLs.Rmd)

@@ -1,0 +1,256 @@
+---
+title: "Characterize apaQTLs"
+author: "Briana Mittleman"
+date: "2/16/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this analysis I will look at the apaQTLs to draw biological insight. To do this I will run the following analysis:
+
+* Look at chromatin regions for QTLs (chromHMM)
+
+* Overlap apaQTLs between fractions  
+
+* Overlap apaQTLs with GWAS  
+
+
+
+##Overlap with GWAS catelog  
+
+I did this analysis with the QTLs in the preprocessed 39 individual analysis. I will follow a similar pipeline here. I will find all of the snps in LD with the QTLs then test for these in the GWAS catelog. The pipeline I used to get the LD for all of the snp is shown [here](apaQTLoverlapGWAS.Rmd). The plink files are in /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/. There are both map and ped files.  
+
+
+I can now adapt the subset_plink4QTLs.py file to take the current QTLs list. The file just has the QTLs with the chromosome and position. I can make this and put it in: 
+
+/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed  
+
+The 50mb QTLs are in /project2/gilad/briana/threeprimeseq/data/ApaQTLs.  
+
+* NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt  
+* TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt  
+
+The QTL snps are in the 6th column.  
+
+```{bash,eval=F}
+cut -f6 -d" " /project2/gilad/briana/threeprimeseq/data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt | uniq > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/NuclearQTLs_uniq_50mb.txt
+cut -f6 -d" "  /project2/gilad/briana/threeprimeseq/data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt | uniq > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/TotalQTLs_uniq_50mb.txt
+```
+
+I can convert these the the way they are in GEU snp files tony made (snp_num_pos)  
+
+QTLs2GeuSnps_proc.py
+
+```{bash,eval=F}
+tot_in=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/TotalQTLs_uniq_50mb.txt", "r")  
+nuc_in=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/NuclearQTLs_uniq_50mb.txt", "r")
+
+tot_out=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/TotalQTLs_uniq_50mb_GEU.txt", "w") 
+nuc_out=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/NuclearQTLs_uniq_50mb_GEU.txt", "w") 
+
+
+def fix_file(fin, fout):
+  for ln in fin:
+    chrom, pos = ln.split(":")
+    fout.write("snp_%s_%s"%(chrom,pos))
+  fout.close()
+  
+
+fix_file(tot_in, tot_out)
+fix_file(nuc_in, nuc_out)
+```
+
+subset_plink4QTLs_proc.py  
+
+```{bash,eval=F}
+def main(genFile, qtlFile, outFile):
+  #convert snp file to a list: 
+  def file_to_list(file):
+    snp_list=[]
+    for ln in file:
+      snp=ln.strip()
+      snp_list.append(snp)
+    return(snp_list)
+
+  gen=open(genFile,"r")
+  fout=open(outFile, "w")
+  qtls=open(qtlFile, "r")
+  qtl_list=file_to_list(qtls)
+  for ln in gen:
+      snp=ln.split()[2]
+      if snp in qtl_list:
+          fout.write(ln)
+  fout.close()
+    
+
+if __name__ == "__main__":
+    import sys
+    chrom=sys.argv[1]
+    fraction=sys.argv[2]
+    genFile = "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/geu_plinkYRI_LDchr%s.ld"%(chrom)
+    outFile= "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/%sApaQTL_LD/chr%s.%sQTL.LD.geno.ld"%(fraction,chrom,fraction)
+    qtlFile= "/project2/gilad/briana/threeprimeseq/data/ApaQTLs/%sQTLs_uniq_50mb_GEU.txt"%(fraction)
+    main(genFile, qtlFile, outFile) 
+```
+
+ 
+run_subset_plink4QTLs_proc.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name= run_subset_plink4QTLs_proc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_subset_plink4QTLs_proc.out
+#SBATCH --error=run_subset_plink4QTLs_proc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i  in {1..22};
+do
+python subset_plink4QTLs_proc.py ${i} "Total"
+done
+
+for i  in {1..22};
+do
+python subset_plink4QTLs_proc.py ${i} "Nuclear"
+done
+```
+
+
+This added 2446 total snps and 6258 nuclear snps.  
+
+Cat and remove indels:  
+
+```{bash,eval=F}
+cat chr* > allChr.TotalQTL.LD.gene.ld
+grep -v indel allChr.TotalQTL.LD.gene.ld > allChr.TotalQTL.LD.gene.ld_noIndel
+
+cat chr* > allChr.NuclearQTL.LD.gene.ld
+grep -v indel allChr.NuclearQTL.LD.gene.ld > allChr.NuclearQTL.LD.gene.ld_noIndel
+```
+
+
+
+Make these bed files:
+
+
+makeAlloverlapbed_proc.py
+```{bash,eval=F}
+
+#load files:  
+
+QTL_total=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/TotalQTLs_uniq_50mb_GEU.txt", "r")
+QTL_nuclear=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/NuclearQTLs_uniq_50mb_GEU.txt", "r")
+LD_total=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/TotalApaQTL_LD/allChr.TotalQTL.LD.gene.ld_noIndel", "r")
+LD_nuclear=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/NuclearApaQTL_LD/allChr.NuclearQTL.LD.gene.ld_noIndel", "r")
+outFile= open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllOverlapSnps.bed", "w")
+
+#function for qtl to bed format
+def qtl2bed(fqtl, fraction, fout=outFile):
+    for ln in fqtl:
+        snp, chrom, pos = ln.split("_")
+        start=int(pos)-1
+        end= int(pos)
+        fout.write("%s\t%d\t%d\tQTL_%s\n"%(chrom, start, end,fraction))
+
+#function for ld to bed format 
+def ld2bed(fLD, fraction, fout=outFile):
+    for ln in fLD:
+        snpID=ln.split()[5]
+        snp, chrom, pos= snpID.split("_")
+        start=int(pos)-1
+        end=int(pos)
+        fout.write("%s\t%d\t%d\tLD_%s\n"%(chrom, start, end,fraction))
+
+
+#I will run each of these for both fractions to get all of the snps in the out file. 
+
+
+qtl2bed(QTL_nuclear, "Nuclear")
+qtl2bed(QTL_total, "Total")
+ld2bed(LD_nuclear, "Nuclear")
+ld2bed(LD_total, "Total")
+
+
+outFile.close()
+```
+
+
+Sort this: 
+
+```{bash,eval=F}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllOverlapSnps.bed > /project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllOverlapSnps.sort.bed
+```
+
+Overlap with GWAS  
+
+I can use the overlapSNPsGWAS.py file I created in the previous rendition of this analysis but run it with these files.  
+
+run_overlapSNPsGWAS_proc.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_overlapSNPsGWAS_proc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=run_overlapSNPsGWAS_proc.out
+#SBATCH --error=run_overlapSNPsGWAS_proc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+python overlapSNPsGWAS.py  "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllOverlapSnps.sort.bed" "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllSnps_GWASoverlapped.txt"
+```
+
+Total QTLs overlap: 
+rs3117582 6:31620520  
+
+Total LD overlap:  
+
+* rs2282301 1:155868625   
+* rs3596 12:95696420    
+* rs2277862 20:34152782  
+* rs2517713 6:29918099  
+
+Nuclear QTL overlap:  
+
+rs7206971 17:45425115  
+
+Nucelar LD overlapL
+
+* rs10889353 1:63118196  
+* rs2282301 1:155868625
+* rs10859871 12:95711876  
+* rs10133111 14:103377321
+* rs17382723 2:242053546  
+* rs2277862 20:34152782  
+* rs2298428 22:21982892  
+* rs13160562 5:96111371  
+* rs29784 5:172595308   
+* rs2517713 6:29918099    
+* rs3077 6:33033022  
+
+Are these eQTLs?  
+
+
+
+
+
+
+
