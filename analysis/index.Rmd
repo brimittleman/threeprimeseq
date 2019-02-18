@@ -154,6 +154,10 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Number of QTLs by window size](TestQTLbySizeRegion.html)  
 
-* [Peak QC plots](peakQCplotsSTARprocessing.Rmd)  
+* [Peak QC plots](peakQCplotsSTARprocessing.html)  
+
+* [apaQTLs by Read Count percentile](apaQTLsbyCountPercentile.html)  
+
+* [Leafcutter differential PAU analysis](diffIsoAnalysisNewMapping.html)  
 
 

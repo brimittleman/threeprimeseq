@@ -1,0 +1,18 @@
+---
+title: "DiffIsoAnalaysis New mapping"
+author: "Briana Mittleman"
+date: "2/18/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+* filternamePeaks5percCov_GeneLocAnno.py
+* bothFrac_processed_GeneLocAnno_FC.sh 
+* fix_head_fc_procBothFrac_GeneLocAnno.py 
+* fc2leafphen_processed_GeneLocAnno.py  
+* subset_diffisopheno_processed_GeneLocAnno.py/ run_subset_diffisopheno_processed_GeneLocAnno.sh 
+* makeLCSampleList_processed_GeneLocAnno.py  
+* run_leafcutter_ds_bychrom_processed_GeneLocAnno.sh

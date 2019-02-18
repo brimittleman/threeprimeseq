@@ -1,0 +1,167 @@
+---
+title: "apaQTLs by gene count percentile"
+author: "Briana Mittleman"
+date: "2/18/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will use this analysis to look at the number of apaQTL genes by the percentile of the counts for the gene. This may help us know if we want to sequence the libraries deeper.  
+
+
+
+```{r}
+library(workflowr)
+library(tidyverse)
+library(cowplot)
+library(reshape2)
+```
+
+##QTL genes  
+First, upload the QTL gene.  
+```{r}
+nucQTLs=read.table("../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt",stringsAsFactors = F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval", "bh"))
+
+nucQTLsGenes= nucQTLs%>%separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>% select(gene) %>% unique()
+
+
+totQTLs=read.table("../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt",stringsAsFactors = F, col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval", "bh"))
+
+totQTLsGenes= totQTLs%>%separate(pid, into=c("chr", "start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_") %>% select(gene) %>% unique()
+  
+```
+
+How many of the genes overlap:
+```{r}
+QTLgene_both=totQTLsGenes %>% inner_join(nucQTLsGenes, by="gene")
+nrow(QTLgene_both) 
+```
+This means 141 genes have a QTL for both. It does not tell me if the QTL is the same.
+
+
+##Gene Counts  
+
+I can get this from the prefiltered peak counts. /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc  
+
+/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc  
+
+
+I can pull these files in, group them by gene and get summaries. 
+
+
+###Total  
+```{r}
+totPeakCounts=read.table("../data/AllPeak_counts/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc", header = T, stringsAsFactors = F) %>% select(-Chr, -Start, -End, -Strand, -Length) %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(-peak, -chr,-start, -end, -strand, -gene)
+totPeakCountsGene=read.table("../data/AllPeak_counts/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc", header = T, stringsAsFactors = F) %>% select(-Chr, -Start, -End, -Strand, -Length) %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene)
+#sum across ind.
+totPeakCounts_Sum=rowSums(totPeakCounts)
+totPeakCountsGeneSum=as.data.frame(cbind(totPeakCountsGene,totPeakCounts_Sum)) %>% group_by(gene) %>% summarise(TotalCount=sum(totPeakCounts_Sum)) %>% mutate(Percentile = percent_rank(TotalCount)) 
+
+```
+
+
+Subset by percetile:  
+
+```{r}
+totalCount_10= totPeakCountsGeneSum %>% filter(Percentile<.1)
+totalCount_20= totPeakCountsGeneSum %>% filter(Percentile<.2, Percentile>.1)
+totalCount_30= totPeakCountsGeneSum %>% filter(Percentile<.3, Percentile>.2)
+totalCount_40= totPeakCountsGeneSum %>% filter(Percentile<.4, Percentile>.3)
+totalCount_50= totPeakCountsGeneSum %>% filter(Percentile<.5, Percentile>.4)
+totalCount_60= totPeakCountsGeneSum %>% filter(Percentile<.6, Percentile>.5)
+totalCount_70= totPeakCountsGeneSum %>% filter(Percentile<.7, Percentile>.6)
+totalCount_80= totPeakCountsGeneSum %>% filter(Percentile<.8, Percentile>.7)
+totalCount_90= totPeakCountsGeneSum %>% filter(Percentile<.9, Percentile>.8)
+totalCount_100= totPeakCountsGeneSum %>% filter(Percentile<1, Percentile>.9)
+
+```
+
+
+###Nuclear
+
+```{r}
+nucPeakCounts=read.table("../data/AllPeak_counts/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc", header = T, stringsAsFactors = F) %>% select(-Chr, -Start, -End, -Strand, -Length) %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(-peak, -chr,-start, -end, -strand, -gene)
+nucPeakCountsGene=read.table("../data/AllPeak_counts/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc", header = T, stringsAsFactors = F) %>% select(-Chr, -Start, -End, -Strand, -Length) %>% separate(Geneid, into=c("peak", "chr", "start", "end", "strand", "gene"), sep=":") %>% select(gene)
+#sum across ind.
+nucPeakCounts_Sum=rowSums(nucPeakCounts)
+nucPeakCountsGeneSum=as.data.frame(cbind(nucPeakCountsGene,nucPeakCounts_Sum)) %>% group_by(gene) %>% summarise(NuclearCount=sum(nucPeakCounts_Sum)) %>% mutate(Percentile = percent_rank(NuclearCount)) 
+
+```
+
+```{r}
+nuclearCount_10= nucPeakCountsGeneSum %>% filter(Percentile<.1)
+nuclearCount_20= nucPeakCountsGeneSum %>% filter(Percentile<.2, Percentile>.1)
+nuclearCount_30= nucPeakCountsGeneSum %>% filter(Percentile<.3, Percentile>.2)
+nuclearCount_40= nucPeakCountsGeneSum %>% filter(Percentile<.4, Percentile>.3)
+nuclearCount_50= nucPeakCountsGeneSum %>% filter(Percentile<.5, Percentile>.4)
+nuclearCount_60= nucPeakCountsGeneSum %>% filter(Percentile<.6, Percentile>.5)
+nuclearCount_70= nucPeakCountsGeneSum %>% filter(Percentile<.7, Percentile>.6)
+nuclearCount_80= nucPeakCountsGeneSum %>% filter(Percentile<.8, Percentile>.7)
+nuclearCount_90= nucPeakCountsGeneSum %>% filter(Percentile<.9, Percentile>.8)
+nuclearCount_100= nucPeakCountsGeneSum %>% filter(Percentile<1, Percentile>.9)
+
+```
+
+
+##QTL genes  
+
+I can get the percentile for each QTL gene.  
+
+```{r}
+totQTLGene_Perc= totQTLsGenes %>% inner_join(totPeakCountsGeneSum, by="gene") %>% mutate(roundPerc=round(Percentile, digits=1)) %>% group_by(roundPerc) %>% summarise(Ngenes=n())
+nucQTLGene_Perc= nucQTLsGenes %>% inner_join(nucPeakCountsGeneSum, by="gene")%>% mutate(roundPerc=round(Percentile, digits=1)) %>% group_by(roundPerc) %>% summarise(Ngenes=n())
+
+bothPerc=totQTLGene_Perc %>% full_join(nucQTLGene_Perc,  by = c("roundPerc"))
+bothPerc$Ngenes.x= bothPerc$Ngenes.x %>% replace_na(0)
+colnames(bothPerc)= c("Percentile", "Total", "Nuclear")
+
+
+bothPerc_melt= melt(bothPerc, id.vars = "Percentile") 
+colnames(bothPerc_melt) =c("Percentile", "Fraction", "Genes")
+```
+
+Plot: 
+
+
+```{r}
+ggplot(bothPerc_melt, aes(x=Percentile, y= Genes, by=Fraction, fill=Fraction)) + geom_bar(stat="identity", position = "dodge") + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("darkviolet","deepskyblue3"))  
+```
+
+To make is a percente of genes in the category I will divide each number of genes category by the number of total QTL genes. For total this is  291 and for nuclear it is 496
+
+```{r}
+totQTLGene_Perc_prop= totQTLsGenes %>% inner_join(totPeakCountsGeneSum, by="gene") %>% mutate(roundPerc=round(Percentile, digits=1)) %>% group_by(roundPerc) %>% summarise(Ngenes=n()) %>% mutate(PercGenes=Ngenes/291)
+nucQTLGene_Perc_prop= nucQTLsGenes %>% inner_join(nucPeakCountsGeneSum, by="gene")%>% mutate(roundPerc=round(Percentile, digits=1)) %>% group_by(roundPerc) %>% summarise(Ngenes=n()) %>%mutate(PercGenes=Ngenes/496)
+
+
+bothPercProp=totQTLGene_Perc_prop %>% full_join(nucQTLGene_Perc_prop,  by = c("roundPerc")) %>% select(roundPerc, starts_with("perc"))
+bothPercProp$PercGenes.x= bothPercProp$PercGenes.x %>% replace_na(0)
+colnames(bothPercProp)= c("Percentile", "Total", "Nuclear")
+
+
+bothPercPrp_melt= melt(bothPercProp, id.vars = "Percentile") 
+colnames(bothPercPrp_melt) =c("Percentile", "Fraction", "GenesProp")
+```
+
+```{r}
+QTLSbyCountPerc=ggplot(bothPercPrp_melt, aes(x=Percentile, y=GenesProp, fill=Fraction)) +geom_bar(stat="identity", position = "dodge")+labs(title="Proportion of QTL genes by Read count percentile",y="Proportion of QTLs", x="Read Cound percentile") +  theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face="bold"), axis.title.x=element_text(size=12,face="bold"))+ scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + facet_grid(~Fraction)
+QTLSbyCountPerc
+
+ggsave(QTLSbyCountPerc, file="../output/plots/QTLSbyCountPerc.png")
+```
+
+
+Plot the distribution of the percentile:  
+
+```{r}
+totQTLGene_Percentile= totQTLsGenes %>% inner_join(totPeakCountsGeneSum, by="gene") 
+
+ggplot(totQTLGene_Percentile,aes( x=Percentile)) + geom_histogram(bins=50)
+
+nucQTLGene_Percentile= nucQTLsGenes %>% inner_join(nucPeakCountsGeneSum, by="gene")
+ggplot(nucQTLGene_Percentile,aes( x=Percentile)) + geom_histogram(bins=50)
+```
+
