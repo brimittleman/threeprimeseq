@@ -241,6 +241,31 @@ plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/L
 ```
 
 
+RNADTPlotmyPeaks_noMPFilt.sh
+
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RNADTPlotmyPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNADTPlotmyPeaks_noMPFilt.out
+#SBATCH --error=RNADTPlotmyPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Combined Reads at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksNompfilt.png
+```
+
+
 
 I want to make one of these that look at total, nuclear, and RNA at peaks assigned to an intron. This means I need to subset the peak file to only include these. I can do this similar to how I did the UTR subset in [this analysis](pipeline_55Ind.Rmd)  
 
@@ -316,6 +341,107 @@ computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/merge
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntron_Nompfilt.gz --refPointLabel "Called Intronic PAS" --plotTitle "Combined Reads at Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntronNompfilt.png
 ```
 
+RNA seq only:
+
+RNADTPlotmyIntronPeaks_noMPFilt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RNADTPlotmyIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNADTPlotmyIntronPeaks_noMPFilt.out
+#SBATCH --error=RNADTPlotmyIntronPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Nompfilt.gz --refPointLabel "Called Intronic PAS" --plotTitle "Combined Reads at Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntronNompfilt.png
+```
+
+
+I should try this with the nuclear RNA samples  
+
+I need to merge them and make a BW.  
+
+
+mergeNucRNAseq.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeNucRNAseq
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeNucRNAseq.out
+#SBATCH --error=mergeNucRNAseq.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+samtools merge /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.bam  /project2/gilad/briana/Total_Nuc_RNA_seq_data/170428_K00242_0214_AHK2GMBBXX-YG-SP20/data/sort/YG-SP20-Nuc-2_S5_L005_R1_001-sort.bam /project2/gilad/briana/Total_Nuc_RNA_seq_data/170428_K00242_0214_AHK2GMBBXX-YG-SP20/data/sort/YG-SP20-Nuc-1_S2_L005_R1_001-sort.bam
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.bam > /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bam
+
+samtools index /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bam
+```
+
+NucBam2BW.sh 
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NucBam2BW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NucBam2BW.out
+#SBATCH --error=NucBam2BW.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#total  
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bam -o /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bw
+
+```
+
+NucRNADTPlotmyIntronPeaks_noMPFilt.sh 
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NucRNADTPlotmyIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NucRNADTPlotmyIntronPeaks_noMPFilt.out
+#SBATCH --error=NucRNADTPlotmyIntronPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Nompfilt.gz --refPointLabel "Called Intronic PAS" --plotTitle "Combined Reads at Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntronNompfilt.png
+```
+
+
 
 BothFracDTPlotTSS.sh
 
@@ -347,6 +473,7 @@ outFile.close()
 
 BothFracRNADTPlotTSS_noMPFilt.sh
 
+LOOKS WIERD  
 ```{bash,eval=F}
 #!/bin/bash
 
@@ -415,6 +542,6 @@ source activate three-prime-env
 
 computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TESAllGenes.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz
 
-plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz --refPointLabel "Called TES" --plotTitle "Combined Reads at TES" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.png
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz --refPointLabel "Called TES" --plotTitle "Combined Reads at TES" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.png
 ```
 
