@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree3c1f0490368cd5508664674f57fee5ac5025eb95targetblank3c1f049a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/3c1f0490368cd5508664674f57fee5ac5025eb95" target="_blank">3c1f049</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2d86d89955517a186c92172abc87f00bc397787ftargetblank2d86d89a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2d86d89955517a186c92172abc87f00bc397787f" target="_blank">2d86d89</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree3c1f0490368cd5508664674f57fee5ac5025eb95targetblank3c1f049a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2d86d89955517a186c92172abc87f00bc397787ftargetblank2d86d89a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -566,6 +566,7 @@ Untracked files:
     Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/QTL_overlap/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
     Untracked:  data/TotalApaQTLs.txt
@@ -654,6 +655,7 @@ Unstaged changes:
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diffIsoAnalysisNewMapping.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
@@ -715,6 +717,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2d86d89955517a186c92172abc87f00bc397787f/analysis/characterize_apaQTLs.Rmd" target="_blank">2d86d89</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+add pi1 anaysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/beb0d714e5bdb4af3c7bfaa998b39b49cbff51e8/docs/characterize_apaQTLs.html" target="_blank">beb0d71</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/3c1f0490368cd5508664674f57fee5ac5025eb95/analysis/characterize_apaQTLs.Rmd" target="_blank">3c1f049</a>
 </td>
 <td>
@@ -734,12 +770,120 @@ add gwas overlap
 </div>
 </div>
 </div>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.2.0
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.4.0
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(qvalue)</code></pre>
 <p>In this analysis I will look at the apaQTLs to draw biological insight. To do this I will run the following analysis:</p>
 <ul>
 <li><p>Look at chromatin regions for QTLs (chromHMM)</p></li>
 <li><p>Overlap apaQTLs between fractions</p></li>
 <li><p>Overlap apaQTLs with GWAS</p></li>
 </ul>
+<div id="overlap-apaqtls-between-fractions." class="section level2">
+<h2>Overlap apaQTLs between fractions.</h2>
+<p>Goal: Find the nominal pvalue for the significant snp peak pair in oposite fraction. I can make a dictionary with the total and nuclear QTLs then run through the nominal files to get the pvalues:</p>
+<p>Start with apa QTLs:</p>
+<ul>
+<li><p>/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed</p></li>
+<li><p>/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed</p></li>
+</ul>
+<p>NomResFromOppFrac.py</p>
+<pre class="bash"><code>
+
+nucQTLs=&quot;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed&quot;  
+totQTLs=&quot;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed&quot;  
+
+nucNom=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+totNom=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+
+outnuc=&quot;/project2/gilad/briana/threeprimeseq/data/QTL_Overlap/TotQTLs_inNucFractionRes.txt&quot;
+outtot=&quot;/project2/gilad/briana/threeprimeseq/data/QTL_Overlap/NucQTLs_inTotFractionRes.txt&quot;
+
+
+def oppFract(inRes, inQTL, out):
+    fout=open(out, &quot;w&quot;)
+    qtl_dic={}
+    #SNP is key, peak is value
+    for ln in open(inQTL,&quot;r&quot;):
+        snp=ln.split()[2]
+        chrom=ln.split()[0]
+        peak=ln.split()[3].split(&quot;:&quot;)[0]
+        qtl=str(chrom) + &quot;:&quot; + str(snp)
+        if qtl not in qtl_dic.keys():
+            qtl_dic[qtl]=[peak]
+        else: 
+            qtl_dic[qtl].append(peak)
+    #print(qtl_dic)
+    for ln in open(inRes, &quot;r&quot;):
+        pval=ln.split()[3]
+        snp=ln.split()[1]
+        peak=ln.split()[0].split(&quot;:&quot;)[3].split(&quot;_&quot;)[-1]
+        if snp in qtl_dic.keys():
+            if peak in qtl_dic[snp]:
+                fout.write(&quot;%s\t%s\t%s\n&quot;%(snp, peak, pval))   
+    fout.close()
+    
+
+oppFract(nucNom, totQTLs,outnuc)  
+oppFract(totNom, nucQTLs, outtot)  
+                </code></pre>
+<p>Run in bash: run_NomResFromOppFrac.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=NomResFromOppFrac
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=NomResFromOppFrac.out
+#SBATCH --error=NomResFromOppFrac.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python NomResFromOppFrac.py</code></pre>
+<pre class="r"><code>names=c(&quot;SNP&quot;, &quot;peak&quot;, &quot;pval&quot;)
+NucQTLinTot=read.table(&quot;../data/QTL_overlap/NucQTLs_inTotFractionRes.txt&quot;, stringsAsFactors = F, col.names = names)
+TotQTLinNuc=read.table(&quot;../data/QTL_overlap/TotQTLs_inNucFractionRes.txt&quot;, stringsAsFactors = F, col.names = names)</code></pre>
+<p>Get pi values:</p>
+<pre class="r"><code>qvalTot= pi0est(NucQTLinTot$pval, pi0.method = &quot;bootstrap&quot;)
+1-qvalTot$pi0</code></pre>
+<pre><code>[1] 0.8424242</code></pre>
+<pre class="r"><code>qvalNuc= pi0est(TotQTLinNuc$pval, pi0.method = &quot;bootstrap&quot;)
+1-qvalNuc$pi0</code></pre>
+<pre><code>[1] 0.9197861</code></pre>
+<p>plots:</p>
+<pre class="r"><code>par(mfrow=c(1,2))
+hist(NucQTLinTot$pval,xlab=&quot;Total apaQTL pvalue&quot;, main=&quot;Nuclear apaQTLs \nin Total Fraction&quot;)
+text(.6,200, paste(&quot;pi_1=&quot;, round((1-qvalTot$pi0), digit=3), sep=&quot; &quot;))
+hist(TotQTLinNuc$pval,xlab=&quot;Nuclear apaQTL pvalue&quot;, main=&quot;Total apaQTLs \nin Nuclear Fraction&quot;)
+text(.6,125, paste(&quot;pi_1=&quot;, round((1-qvalNuc$pi0), digit=3), sep=&quot; &quot;))</code></pre>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>png(&quot;../output/plots/apaFractionOverlapPi1.png&quot;, width=1000, height = 500)
+par(mfrow=c(1,2))
+hist(NucQTLinTot$pval,xlab=&quot;Total apaQTL pvalue&quot;, main=&quot;Nuclear apaQTLs \nin Total Fraction&quot;)
+text(.6,200, paste(&quot;pi_1=&quot;, round((1-qvalTot$pi0), digit=3), sep=&quot; &quot;))
+hist(TotQTLinNuc$pval,xlab=&quot;Nuclear apaQTL pvalue&quot;, main=&quot;Total apaQTLs \nin Nuclear Fraction&quot;)
+text(.6,125, paste(&quot;pi_1=&quot;, round((1-qvalNuc$pi0), digit=3), sep=&quot; &quot;))
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<p>This provides evidence for high degree of QTL sharing with increased sharing total to nuclear. This demonstrates to me that there are nuclear QTLs that do not persist in the total fraction. I will want to learn more about these.</p>
+</div>
 <div id="overlap-with-gwas-catelog" class="section level2">
 <h2>Overlap with GWAS catelog</h2>
 <p>I did this analysis with the QTLs in the preprocessed 39 individual analysis. I will follow a similar pipeline here. I will find all of the snps in LD with the QTLs then test for these in the GWAS catelog. The pipeline I used to get the LD for all of the snp is shown <a href="apaQTLoverlapGWAS.Rmd">here</a>. The plink files are in /project2/gilad/briana/threeprimeseq/data/GWAS_overlap/. There are both map and ped files.</p>
@@ -952,12 +1096,25 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] qvalue_2.12.0   forcats_0.3.0   stringr_1.4.0   dplyr_0.7.6    
+ [5] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
+ [9] ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.2.0
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0 Rcpp_0.12.19    digest_0.6.17   rprojroot_1.3-2
- [5] backports_1.1.2 git2r_0.24.0    magrittr_1.5    evaluate_0.13  
- [9] stringi_1.2.4   fs_1.2.6        whisker_0.3-2   rmarkdown_1.11 
-[13] tools_3.5.1     stringr_1.4.0   glue_1.3.0      yaml_2.2.0     
-[17] compiler_3.5.1  htmltools_0.3.6 knitr_1.20     </code></pre>
+ [1] tidyselect_0.2.4 reshape2_1.4.3   splines_3.5.1    haven_1.1.2     
+ [5] lattice_0.20-35  colorspace_1.3-2 htmltools_0.3.6  yaml_2.2.0      
+ [9] rlang_0.2.2      pillar_1.3.0     glue_1.3.0       withr_2.1.2     
+[13] modelr_0.1.2     readxl_1.1.0     bindrcpp_0.2.2   bindr_0.1.1     
+[17] plyr_1.8.4       munsell_0.5.0    gtable_0.2.0     cellranger_1.1.0
+[21] rvest_0.3.2      evaluate_0.13    knitr_1.20       broom_0.5.0     
+[25] Rcpp_0.12.19     scales_1.0.0     backports_1.1.2  jsonlite_1.6    
+[29] fs_1.2.6         hms_0.4.2        digest_0.6.17    stringi_1.2.4   
+[33] grid_3.5.1       rprojroot_1.3-2  cli_1.0.1        tools_3.5.1     
+[37] magrittr_1.5     lazyeval_0.2.1   crayon_1.3.4     whisker_0.3-2   
+[41] pkgconfig_2.0.2  xml2_1.2.0       lubridate_1.7.4  assertthat_0.2.0
+[45] rmarkdown_1.11   httr_1.3.1       rstudioapi_0.9.0 R6_2.3.0        
+[49] nlme_3.1-137     git2r_0.24.0     compiler_3.5.1  </code></pre>
 </div>
 </div>
 
