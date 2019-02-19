@@ -267,7 +267,7 @@ plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/L
 
 
 
-I want to make one of these that look at total, nuclear, and RNA at peaks assigned to an intron. This means I need to subset the peak file to only include these. I can do this similar to how I did the UTR subset in [this analysis](pipeline_55Ind.Rmd)  
+I want to make one of these that look at total, nuclear, and RNA at peaks assigned to an intron. This means I need to subset the peak file to only include these. I can do this similar to how I did the UTR subset in [this analysis](pipeline_55Ind.html)  
 
 I want to make a bedfile with these peaks. I need to also make sure they are in the final clean peaks 
 
@@ -443,7 +443,8 @@ plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/L
 
 
 
-BothFracDTPlotTSS.sh
+
+####TES and TSS (not looking right)
 
 files to make: new TSS file from the annotation in the new gene loc annocation pipeline  
 
@@ -473,7 +474,7 @@ outFile.close()
 
 BothFracRNADTPlotTSS_noMPFilt.sh
 
-LOOKS WIERD  
+
 ```{bash,eval=F}
 #!/bin/bash
 
