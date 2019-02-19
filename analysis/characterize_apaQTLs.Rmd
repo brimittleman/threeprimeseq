@@ -476,8 +476,70 @@ Nucelar LD overlapL
 Are these eQTLs?  
 
 
+Pull these snps from the eQTLs nominal pvalues:  
 
 
+Process the AllSnps_GWASoverlapped.txt file to have the RS id, the snp, and where it was found.
+
+formatGWASOverlap.py  
+```{bash,eval=F}
+inFile="/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllSnps_GWASoverlapped.txt"
+
+outFile=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllSnps_GWASoverlapped_format.txt","w")
+
+for i in open(inFile, "r"):
+   chrom=i.split()[0]
+   loc=i.split()[2]
+   snp=chrom + ":" + loc
+   found=i.split()[3]
+   rs=i.split()[7].split(":")[0]
+   outFile.write("%s\t%s\t%s\n"%(snp, rs, found))
+outFile.close()
+
+```
+
+This is 14 uniq snps.  
+
+/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out
+
+I need to go throguh this file and check for the snps. I can do this by making a dictionary of the uniq snps in the overlap then testing the lines ib the nominal file. I want to keep the gene, snp, and pvalue for these associations  
+getexpPvalOverlap.py
+```{bash,eval=F}
+overlapSnps="/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllSnps_GWASoverlapped_format.txt"
+outF=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/eQTL_pval_GWASOverlap.txt","w")  
+nomRes="/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out"  
+
+snps_dic={}
+for ln in open(overlapSnps, "r"):
+    snp=ln.split()[0]
+    if snp not in snps_dic.keys():
+        snps_dic[snp]=""  
+
+for ln in open(nomRes,"r"):
+    snp=ln.split()[1]
+    if snp in snps_dic.keys():
+        gene=ln.split()[0].split(".")[0]
+        pval=ln.split()[3]
+        outF.write("%s\t%s\t%s\n"%(snp,gene,pval))
+outF.close()
+```
 
 
+I can pull this in and get the lowest pval for each one  
+
+```{r}
+eQTLpvalOverlapGWAS=read.table("../data/ApaQTLs/eQTL_pval_GWASOverlap.txt", stringsAsFactors = F, col.names = c("snp", "gene", "pval"))
+```
+
+```{r}
+eQTLpvalOverlapGWAS_min= eQTLpvalOverlapGWAS %>% group_by(snp) %>% summarise(pvalM=min(pval)) %>% mutate(noSig=ifelse(pvalM<.05, "yes", "no"))
+```
+
+FIlter by the non sig ones to look at as exmaples: 
+
+```{r}
+eQTLpvalOverlapGWAS_NotSig= eQTLpvalOverlapGWAS_min %>% filter(noSig=="no")
+
+eQTLpvalOverlapGWAS_NotSig
+```
 
