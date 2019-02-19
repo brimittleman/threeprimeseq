@@ -1,0 +1,114 @@
+---
+title: "Protein and RNA pvalues for apaQTLs"
+author: "Briana Mittleman"
+date: "2/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For a lot of this project I have been looking at the relationship between APA, RNA, and protein. I want to use trhis analysis to get the nominal pvalues for the associations of the snp:gene pairs found in the APA qtl analysis. This will help me find examples and look at the distributions overall. 
+
+I want a file that has the nominal pvalues for each of the apaQTls in the total 3', nuclear 3', RNA, and protein. I will have to convert the gene names. 
+
+Start with a dictionary of the QTLs. It will have the snp as the key and converted gene as the value. I can then write out the associations.
+
+I can do this seperate for RNA and protein with total and nuclear by having a script that can take all of the combinations. After I get the results I can merge them and add NAs for missing measurements.  
+
+
+I can ask questions like, given a snp is a apaQTL what is nom association in other pheno.  
+
+Molpval4ApaQTL.py
+```{bash,eval=F}
+
+
+def main(QTL, phen, outF, phenotype):  
+    fout=open(outF,"w")
+    geneNames=open("/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt","r")
+    #gene name dictionary  
+    geneDic={}
+    geneDicOpp={}
+    for i, ln in enumerate(geneNames):
+        if i >0:
+            ID=ln.split()[0]
+            gene=ln.split()[1]
+            if gene not in geneDic.keys():
+                geneDic[gene]=[ID]
+            else: 
+                geneDic[gene].append(ID)
+            geneDicOpp[ID]=gene
+    print(geneDicOpp.keys())
+    #qtl dic
+    qtlDic={}
+    for ln in open(QTL,"r"):
+        snp=ln.split()[5]
+        gene=ln.split()[0].split(":")[-1].split("_")[0]
+        #gene_id=geneDic[gene]
+        qtlDic[snp]=gene
+    #loop over pheno
+    for ln in open(phen,"r"):
+        snp=ln.split()[1]
+        if snp in qtlDic.keys():
+            if phenotype == "RNA":
+                gene=ln.split()[0].split(".")[0]
+                if gene not in geneDicOpp.keys():
+                    next
+                geneName=geneDicOpp[gene]
+            else:
+                gene=ln.split()[0]
+                if gene not in geneDicOpp.keys():
+                    next
+                geneName=geneDicOpp[gene]
+            if qtlDic[snp]==geneName:
+               pval=ln.split()[3]
+               fout.write("%s\t%s\t%s\t%s\n"%(snp, gene, geneName, pval))
+    fout.close()
+
+
+
+
+
+    
+if __name__ == "__main__":
+    import sys
+    fraction = sys.argv[1]
+    pheno = sys.argv[2]
+    inQTL="/project2/gilad/briana/threeprimeseq/data/ApaQTLs/%sapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt"%(fraction)
+    if pheno == "RNA":
+        inPhen="/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out"
+    if pheno =="Protein":  
+        inPhen= "/project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot_fixed.nominal.out"
+    out="/project2/gilad/briana/threeprimeseq/data/ApaQTLs_otherPhen/%sQTLsin%s.txt"%(fraction, pheno)
+    main(inQTL, inPhen, out, pheno)
+    
+```
+
+
+Run this on all combinations:  
+
+run_Molpval4ApaQTL.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_Molpval4ApaQTL
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_Molpval4ApaQTL.out
+#SBATCH --error=run_Molpval4ApaQTL.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+python Molpval4ApaQTL.py Total RNA
+python Molpval4ApaQTL.py Nuclear RNA
+python Molpval4ApaQTL.py Total Protein
+python Molpval4ApaQTL.py Nuclear Protein
+
+```
+
