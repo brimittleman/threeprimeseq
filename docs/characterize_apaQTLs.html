@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebcce5dfd14928191a48c526894bb2782de40f424targetblankbcce5dfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/bcce5dfd14928191a48c526894bb2782de40f424" target="_blank">bcce5df</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree9bc1a3800743858e5820db31d69c35fad97c6af6targetblank9bc1a38a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/9bc1a3800743858e5820db31d69c35fad97c6af6" target="_blank">9bc1a38</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebcce5dfd14928191a48c526894bb2782de40f424targetblankbcce5dfa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree9bc1a3800743858e5820db31d69c35fad97c6af6targetblank9bc1a38a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -551,12 +551,14 @@ Untracked files:
     Untracked:  data/APApeaksYL.total.inbrain.bed
     Untracked:  data/AllPeak_counts/
     Untracked:  data/ApaQTLs/
+    Untracked:  data/ApaQTLs_otherPhen/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
+    Untracked:  data/LocusZoom_proc/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
     Untracked:  data/PeakCounts_noMP_5perc/
@@ -668,7 +670,6 @@ Unstaged changes:
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/peakQCPPlots.Rmd
-    Modified:   analysis/peakQCplotsSTARprocessing.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
@@ -714,6 +715,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/9bc1a3800743858e5820db31d69c35fad97c6af6/analysis/characterize_apaQTLs.Rmd" target="_blank">9bc1a38</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-19
+</td>
+<td>
+add eif2a lz
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a20b63cf93370a96d805e6c1e3c5c2bb27a04eec/docs/characterize_apaQTLs.html" target="_blank">a20b63c</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1719,7 +1754,8 @@ sbatch run_createQTLsnpMolPhenTable.sh &quot;1&quot; &quot;1:63018852&quot; &quo
   full_plot= plot_grid(apaNplot,apaTplot, RNAplot, protplot,nrow=2)
   return (full_plot)
 }</code></pre>
-<pre class="r"><code>plotQTL_func(SNP=&quot;1:63018852&quot;, peak=&quot;peak5329&quot;, gene=&quot;ENSG00000116641&quot;)</code></pre>
+<pre class="r"><code>DOC7_boxplots=plotQTL_func(SNP=&quot;1:63018852&quot;, peak=&quot;peak5329&quot;, gene=&quot;ENSG00000116641&quot;)
+DOC7_boxplots</code></pre>
 <p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-36-1">
@@ -1745,6 +1781,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a20b63cf93370a96d805e6c1e3c5c2bb27a04eec/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-36-1.png" target="_blank">a20b63c</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/ab45fe833d06dbc7a0393e64700b8bc2c7041ef5/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-36-1.png" target="_blank">ab45fe8</a>
 </td>
 <td>
@@ -1758,6 +1805,8 @@ Briana Mittleman
 </table>
 </div>
 </div>
+<pre class="r"><code>ggsave(DOC7_boxplots, file=&quot;../output/plots/DOC7_boxplots.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <p>Only ApaPlot:</p>
 <pre class="r"><code>plotAPAQTL_func= function(SNP, peak, gene){
   apaN_file=read.table(paste(&quot;../data/apaExamp_proc/qtlSNP_PeakAPANuclear.&quot;, SNP, peak, &quot;.txt&quot;, sep = &quot;&quot; ), header=T)
@@ -1820,6 +1869,49 @@ Briana Mittleman
 <p>/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.sort.bed</p>
 <p>1 63118195 63118196 rs10889353:19060911:DOCK7 0.32</p>
 <p>In GWAS associated with LDL cholesteral and similar phenotypes</p>
+<div id="locus-zoom-for-this-plot" class="section level4">
+<h4>Locus zoom for this plot</h4>
+<pre class="bash"><code>grep DOCK7 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000116641
+
+
+grep peak5329  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/NuclearAPA.peak5329.DOCK7.nomNuc.txt
+
+grep peak5329  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt  &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/TotalAPA.peak5329.DOCK7.nomTotal.txt
+
+grep ENSG00000116641 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/RNA.DOCK7.nomTotal.txt
+
+grep ENSG00000116641 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/Prot.DOCK7.nomTotal.txt
+
+ grep ENSG00000116641 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/Ribo.DOCK7.nomTotal.txt</code></pre>
+<pre class="r"><code>APATotal_DOCK7_LZ=read.table(&quot;../data/LocusZoom_proc/TotalAPA.peak5329.DOCK7.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(APATotal_DOCK7_LZ,&quot;../data/LocusZoom_proc/apaTotalDOCK7_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+
+APANuclear_DOCK7_LZ=read.table(&quot;../data/LocusZoom_proc/NuclearAPA.peak5329.DOCK7.nomNuc.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+write.table(APANuclear_DOCK7_LZ,&quot;../data/LocusZoom_proc/apaNuclearDOCK7_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+
+prot_DOCK7_LZ=read.table(&quot;../data/LocusZoom_proc/Prot.DOCK7.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+write.table(prot_DOCK7_LZ,&quot;../data/LocusZoom_proc/ProtDOCK7_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+#sed -e &#39;s/^/Chr/&#39;
+
+
+RNA_DOCK7_LZ=read.table(&quot;../data/LocusZoom_proc/RNA.DOCK7.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(RNA_DOCK7_LZ,&quot;../data/LocusZoom_proc/RNADOCK7_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+#sed -e &#39;s/^/Chr/&#39;
+
+
+ribo_DOCK7_LZ=read.table(&quot;../data/LocusZoom_proc/Ribo.DOCK7.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(ribo_DOCK7_LZ,&quot;../data/LocusZoom_proc/RiboDOCK7_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+#sed -e &#39;s/^/Chr/&#39;</code></pre>
+<p>Put these on the locus zoom site.</p>
+</div>
 </div>
 <div id="section-1" class="section level3">
 <h3>12:95672642</h3>
@@ -1834,13 +1926,13 @@ python createQTLsnpAPAPhenTable_proc.py 12 12:95672642   peak39092 Nuclear
 sbatch run_createQTLsnpMolPhenTable.sh &quot;12&quot; &quot;12:95672642&quot; &quot;ENSG00000028203&quot;</code></pre>
 <p>No protein for this gene</p>
 <pre class="r"><code>plotQTL_func(SNP=&quot;12:95672642&quot;, peak=&quot;peak39092&quot;, gene=&quot;ENSG00000028203&quot;)</code></pre>
-<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-40-1">
-Past versions of unnamed-chunk-40-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-42-1">
+Past versions of unnamed-chunk-42-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-40-1" class="collapse">
+<div id="fig-unnamed-chunk-42-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -1859,7 +1951,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/ab45fe833d06dbc7a0393e64700b8bc2c7041ef5/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-40-1.png" target="_blank">ab45fe8</a>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a20b63cf93370a96d805e6c1e3c5c2bb27a04eec/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-42-1.png" target="_blank">a20b63c</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-19
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ab45fe833d06dbc7a0393e64700b8bc2c7041ef5/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-42-1.png" target="_blank">ab45fe8</a>
 </td>
 <td>
 Briana Mittleman
@@ -1893,13 +1996,13 @@ python createQTLsnpAPAPhenTable_proc.py 2 2:242018994   peak96962 Nuclear
 sbatch run_createQTLsnpMolPhenTable.sh &quot;2&quot; &quot;2:242018994&quot; &quot;ENSG00000122085&quot;</code></pre>
 <p>No protein for this gene</p>
 <pre class="r"><code>plotQTL_func(SNP=&quot;2:242018994&quot;, peak=&quot;peak96962&quot;, gene=&quot;ENSG00000122085&quot;)</code></pre>
-<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-42-1">
-Past versions of unnamed-chunk-42-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-44-1">
+Past versions of unnamed-chunk-44-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-42-1" class="collapse">
+<div id="fig-unnamed-chunk-44-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -1918,7 +2021,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/ab45fe833d06dbc7a0393e64700b8bc2c7041ef5/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-42-1.png" target="_blank">ab45fe8</a>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a20b63cf93370a96d805e6c1e3c5c2bb27a04eec/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-44-1.png" target="_blank">a20b63c</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-19
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/ab45fe833d06dbc7a0393e64700b8bc2c7041ef5/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-44-1.png" target="_blank">ab45fe8</a>
 </td>
 <td>
 Briana Mittleman
@@ -1947,13 +2061,13 @@ sbatch run_createQTLsnpMolPhenTable.sh &quot;5&quot; &quot;5:172580291&quot; &qu
 <pre class="r"><code>plotQTL_func(SNP=&quot;5:172580291&quot;, peak=&quot;peak135178&quot;, gene=&quot;ENSG00000113734&quot;)</code></pre>
 <pre><code>Warning: Removed 1 rows containing non-finite values (stat_boxplot).</code></pre>
 <pre><code>Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-44-1">
-Past versions of unnamed-chunk-44-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-46-1">
+Past versions of unnamed-chunk-46-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-44-1" class="collapse">
+<div id="fig-unnamed-chunk-46-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -1972,7 +2086,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/brimittleman/threeprimeseq/blob/ab45fe833d06dbc7a0393e64700b8bc2c7041ef5/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-44-1.png" target="_blank">ab45fe8</a>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a20b63cf93370a96d805e6c1e3c5c2bb27a04eec/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-46-1.png" target="_blank">a20b63c</a>
 </td>
 <td>
 Briana Mittleman
@@ -1998,8 +2112,67 @@ python createQTLsnpAPAPhenTable_proc.py 3 3:150302010 peak114357 Total
 python createQTLsnpAPAPhenTable_proc.py 3 3:150302010 peak114357 Nuclear
 
 sbatch run_createQTLsnpMolPhenTable.sh &quot;3&quot; &quot;3:150302010&quot; &quot;ENSG00000144895&quot;</code></pre>
-<pre class="r"><code>plotQTL_func(SNP=&quot;3:150302010&quot;, peak=&quot;peak114357&quot;, gene=&quot;ENSG00000144895&quot;)</code></pre>
-<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>EIF2a_plot=plotQTL_func(SNP=&quot;3:150302010&quot;, peak=&quot;peak114357&quot;, gene=&quot;ENSG00000144895&quot;)
+EIF2a_plot</code></pre>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-48-1">
+Past versions of unnamed-chunk-48-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-48-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a20b63cf93370a96d805e6c1e3c5c2bb27a04eec/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-48-1.png" target="_blank">a20b63c</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggsave(EIF2a_plot, file=&quot;../output/plots/EIF2a_boxplots.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<div id="locus-zoom-for-this-one" class="section level4">
+<h4>Locus zoom for this one</h4>
+<p>(only have to redo the APA plots)</p>
+<pre class="bash"><code>grep EIF2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000144895
+
+
+grep peak114357  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/NuclearAPA.peak114357.EIF2A.nomNuc.txt
+
+grep peak114357 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt  &gt; /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/TotalAPA.peak114357.EIF2A.nomTotal.txt
+</code></pre>
+<pre class="r"><code>APATotal_EIF2A_LZ=read.table(&quot;../data/LocusZoom_proc/TotalAPA.peak114357.EIF2A.nomTotal.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+
+write.table(APATotal_EIF2A_LZ,&quot;../data/LocusZoom_proc/apaTotalEIF2A_LZ.txt&quot;, col.names = T, row.names = F, quote = F)
+
+
+APANuclear_EIF2A_LZ=read.table(&quot;../data/LocusZoom_proc/NuclearAPA.peak114357.EIF2A.nomNuc.txt&quot;, stringsAsFactors = F, col.names = c(&quot;PeakID&quot;, &quot;SNP&quot;, &quot;Dist&quot;, &quot;P&quot;,&quot;slope&quot;))  %&gt;% select( SNP, P)
+write.table(APANuclear_EIF2A_LZ,&quot;../data/LocusZoom_proc/apaNuclearEIF2A_LZ.txt&quot;, col.names = T, row.names = F, quote = F)</code></pre>
+</div>
 </div>
 <div id="churc1" class="section level3">
 <h3>Churc1</h3>
@@ -2013,7 +2186,7 @@ python createQTLsnpAPAPhenTable_proc.py 14 14:65389250   peak48989 Nuclear
 
 sbatch run_createQTLsnpMolPhenTable.sh &quot;14&quot; &quot;14:65389250&quot; &quot;ENSG00000258289&quot;</code></pre>
 <pre class="r"><code>plotQTL_func(SNP=&quot;14:65389250&quot;, peak=&quot;peak48989&quot;, gene=&quot;ENSG00000258289&quot;)</code></pre>
-<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /> No protein but this is a good example of one that is an eQTL</p>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /> No protein but this is a good example of one that is an eQTL</p>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
