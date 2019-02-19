@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(workflowr)
 library(tidyverse)
 library(qvalue)
+library(reshape2)
 ```
 
 In this analysis I will look at the apaQTLs to draw biological insight. To do this I will run the following analysis:
@@ -23,6 +24,99 @@ In this analysis I will look at the apaQTLs to draw biological insight. To do th
 * Overlap apaQTLs between fractions  
 
 * Overlap apaQTLs with GWAS  
+
+* QTL examples  
+
+##Chromatin regions for QTLs  
+
+This will start with the sig QTL bed files:  
+
+* /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed
+
+* /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
+
+
+Creare a python script using pybedtools:  
+
+
+ChromHMM.QTLs.py
+```{bash,eval=F}
+
+import pybedtools 
+
+sigNuc=pybedtools.BedTool('/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed') 
+
+sigTot=pybedtools.BedTool('/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed')
+
+hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+
+#map hmm to snps  
+Tot_overlapHMM=sigTot.map(hmm, c=4)
+
+Nuc_overlapHMM=sigNuc.map(hmm,c=4)
+
+#save results  
+
+Tot_overlapHMM.saveas("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Tot_overlapHMM.bed")
+
+Nuc_overlapHMM.saveas("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuc_overlapHMM.bed")
+```
+Run in three-prime-env  
+
+```{r}
+chromHmm=read.table("../data/ChromHmmOverlap/chromHMM_regions.txt", col.names = c("number", "name"), stringsAsFactors = F)
+TotalOverlapHMM=read.table("../data/ApaQTLs/Tot_overlapHMM.bed", col.names=c("chrom", "start", "end", "pid", "significance", "strand", "number"))
+TotalOverlapHMM_names=TotalOverlapHMM %>% left_join(chromHmm, by="number")
+
+NuclearOverlapHMM=read.table("../data/ApaQTLs/Nuc_overlapHMM.bed", col.names=c("chrom", "start", "end", "pid", "significance", "strand", "number"))
+NuclearOverlapHMM_names=NuclearOverlapHMM %>% left_join(chromHmm, by="number")
+
+
+ggplot(TotalOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Total APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(NuclearOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title="ChromHMM labels for Nuclear APAQtls" , y="Number of SNPs", x="Region")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+Group them to put on plot together  
+```{r}
+NuclearOverlapHMM_names_byname= NuclearOverlapHMM_names %>% group_by(name) %>% summarise(Nuclear=n())
+TotalOverlapHMM_names_byname= TotalOverlapHMM_names %>% group_by(name) %>% summarise(Total=n())
+
+
+bothFracHMM= TotalOverlapHMM_names_byname %>% full_join(NuclearOverlapHMM_names_byname, by="name")
+bothFracHMM$Nuclear= bothFracHMM$Nuclear %>% replace_na(0)
+```
+
+melt and plot  
+
+```{r}
+bothFracHMM_melt= melt(bothFracHMM,id.vars="name")
+colnames(bothFracHMM_melt)=c("Region", "Fraction", "NQTLs")
+
+apaQTLsChromregion=ggplot(bothFracHMM_melt, aes(x=Region, y=NQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat="identity", position = "dodge")+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + labs(title="apaQTLs by chromatin region")
+apaQTLsChromregion
+
+
+ggsave(apaQTLsChromregion, file="../output/plots/apaQTLsbyChromHMM.png", width = 7, height = 5)
+```
+
+
+
+```{r}
+
+bothFracHMM_prop= bothFracHMM %>% mutate(Total_prop=Total/291) %>% mutate(Nuclear_prop=Nuclear/615) %>% select(-Total,-Nuclear) 
+
+bothFracHMM_prop_melt= melt(bothFracHMM_prop,id.vars="name")
+colnames(bothFracHMM_prop_melt)=c("Region", "Fraction", "PropQTLs")
+
+
+propapaQTLsChromregion=ggplot(bothFracHMM_prop_melt, aes(x=Region, y=PropQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat="identity", position = "dodge")+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + labs(y="Proportion of apaQTLs", title="Proportion of apaQTLs by chromatin region")
+propapaQTLsChromregion
+
+ggsave(propapaQTLsChromregion, file="../output/plots/proportionapaQTLsbyChromHMM.png", width = 7, height = 5)
+```
+
+
+I will need to get matched snps to look for enrichment in these values.  
 
 ##Overlap apaQTLs between fractions.  
 
