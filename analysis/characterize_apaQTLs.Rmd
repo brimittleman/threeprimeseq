@@ -710,7 +710,10 @@ plotQTL_func= function(SNP, peak, gene){
 
 
 ```{r}
-plotQTL_func(SNP="1:63018852", peak="peak5329", gene="ENSG00000116641")
+DOC7_boxplots=plotQTL_func(SNP="1:63018852", peak="peak5329", gene="ENSG00000116641")
+DOC7_boxplots
+
+ggsave(DOC7_boxplots, file="../output/plots/DOC7_boxplots.png")
 ```
 
 Only ApaPlot:  
@@ -750,6 +753,58 @@ FInd this in the catelog:
 
 
 In GWAS associated with LDL cholesteral and similar phenotypes  
+
+
+####Locus zoom for this plot  
+
+```{bash,eval=F}
+grep DOCK7 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000116641
+
+
+grep peak5329  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/NuclearAPA.peak5329.DOCK7.nomNuc.txt
+
+grep peak5329  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt  > /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/TotalAPA.peak5329.DOCK7.nomTotal.txt
+
+grep ENSG00000116641 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_RNAseq_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/RNA.DOCK7.nomTotal.txt
+
+grep ENSG00000116641 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_prot.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/Prot.DOCK7.nomTotal.txt
+
+ grep ENSG00000116641 /project2/gilad/briana/threeprimeseq/data/molecular_QTLs/nom/fastqtl_qqnorm_ribo_phase2.fixed.nominal.out > /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/Ribo.DOCK7.nomTotal.txt
+```
+
+
+```{r}
+APATotal_DOCK7_LZ=read.table("../data/LocusZoom_proc/TotalAPA.peak5329.DOCK7.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_DOCK7_LZ,"../data/LocusZoom_proc/apaTotalDOCK7_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+APANuclear_DOCK7_LZ=read.table("../data/LocusZoom_proc/NuclearAPA.peak5329.DOCK7.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(APANuclear_DOCK7_LZ,"../data/LocusZoom_proc/apaNuclearDOCK7_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+prot_DOCK7_LZ=read.table("../data/LocusZoom_proc/Prot.DOCK7.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(prot_DOCK7_LZ,"../data/LocusZoom_proc/ProtDOCK7_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+RNA_DOCK7_LZ=read.table("../data/LocusZoom_proc/RNA.DOCK7.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(RNA_DOCK7_LZ,"../data/LocusZoom_proc/RNADOCK7_LZ.txt", col.names = T, row.names = F, quote = F)
+
+#sed -e 's/^/Chr/'
+
+
+ribo_DOCK7_LZ=read.table("../data/LocusZoom_proc/Ribo.DOCK7.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(ribo_DOCK7_LZ,"../data/LocusZoom_proc/RiboDOCK7_LZ.txt", col.names = T, row.names = F, quote = F)
+#sed -e 's/^/Chr/'
+```
+
+
+Put these on the locus zoom site.  
 
 ###12:95672642  
 peak39092 VEZT 12:95672642
@@ -840,9 +895,35 @@ sbatch run_createQTLsnpMolPhenTable.sh "3" "3:150302010" "ENSG00000144895"
 ```
 
 ```{r}
-plotQTL_func(SNP="3:150302010", peak="peak114357", gene="ENSG00000144895")
+EIF2a_plot=plotQTL_func(SNP="3:150302010", peak="peak114357", gene="ENSG00000144895")
+EIF2a_plot
+
+ggsave(EIF2a_plot, file="../output/plots/EIF2a_boxplots.png")
+```
+#### Locus zoom for this one 
+(only have to redo the APA plots)
+
+```{bash,eval=F}
+grep EIF2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000144895
+
+
+grep peak114357  /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt > /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/NuclearAPA.peak114357.EIF2A.nomNuc.txt
+
+grep peak114357 /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt  > /project2/gilad/briana/threeprimeseq/data/LocusZoom_proc/TotalAPA.peak114357.EIF2A.nomTotal.txt
+
 ```
 
+
+```{r}
+APATotal_EIF2A_LZ=read.table("../data/LocusZoom_proc/TotalAPA.peak114357.EIF2A.nomTotal.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+
+write.table(APATotal_EIF2A_LZ,"../data/LocusZoom_proc/apaTotalEIF2A_LZ.txt", col.names = T, row.names = F, quote = F)
+
+
+APANuclear_EIF2A_LZ=read.table("../data/LocusZoom_proc/NuclearAPA.peak114357.EIF2A.nomNuc.txt", stringsAsFactors = F, col.names = c("PeakID", "SNP", "Dist", "P","slope"))  %>% select( SNP, P)
+write.table(APANuclear_EIF2A_LZ,"../data/LocusZoom_proc/apaNuclearEIF2A_LZ.txt", col.names = T, row.names = F, quote = F)
+```
 
 ###Churc1 
 
