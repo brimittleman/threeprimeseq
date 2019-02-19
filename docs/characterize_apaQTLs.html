@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2d86d89955517a186c92172abc87f00bc397787ftargetblank2d86d89a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2d86d89955517a186c92172abc87f00bc397787f" target="_blank">2d86d89</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree1b5032e5f42f8b4c91c9ff7e367f5e0dc1434d5atargetblank1b5032ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1b5032e5f42f8b4c91c9ff7e367f5e0dc1434d5a" target="_blank">1b5032e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2d86d89955517a186c92172abc87f00bc397787ftargetblank2d86d89a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree1b5032e5f42f8b4c91c9ff7e367f5e0dc1434d5atargetblank1b5032ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -717,6 +717,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1b5032e5f42f8b4c91c9ff7e367f5e0dc1434d5a/analysis/characterize_apaQTLs.Rmd" target="_blank">1b5032e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+add chromHMM analysus
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/fe8c55bf8ebacd5c558d2fdcae4d8ffab52e47ce/docs/characterize_apaQTLs.html" target="_blank">fe8c55b</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2d86d89955517a186c92172abc87f00bc397787f/analysis/characterize_apaQTLs.Rmd" target="_blank">2d86d89</a>
 </td>
 <td>
@@ -783,13 +817,87 @@ Run ?workflowr for help getting started</code></pre>
 <pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(qvalue)</code></pre>
+<pre class="r"><code>library(qvalue)
+library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
 <p>In this analysis I will look at the apaQTLs to draw biological insight. To do this I will run the following analysis:</p>
 <ul>
 <li><p>Look at chromatin regions for QTLs (chromHMM)</p></li>
 <li><p>Overlap apaQTLs between fractions</p></li>
 <li><p>Overlap apaQTLs with GWAS</p></li>
+<li><p>QTL examples</p></li>
 </ul>
+<div id="chromatin-regions-for-qtls" class="section level2">
+<h2>Chromatin regions for QTLs</h2>
+<p>This will start with the sig QTL bed files:</p>
+<ul>
+<li><p>/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed</p></li>
+<li><p>/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed</p></li>
+</ul>
+<p>Creare a python script using pybedtools:</p>
+<p>ChromHMM.QTLs.py</p>
+<pre class="bash"><code>
+import pybedtools 
+
+sigNuc=pybedtools.BedTool(&#39;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed&#39;) 
+
+sigTot=pybedtools.BedTool(&#39;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed&#39;)
+
+hmm=pybedtools.BedTool(&quot;/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed&quot;)
+
+#map hmm to snps  
+Tot_overlapHMM=sigTot.map(hmm, c=4)
+
+Nuc_overlapHMM=sigNuc.map(hmm,c=4)
+
+#save results  
+
+Tot_overlapHMM.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Tot_overlapHMM.bed&quot;)
+
+Nuc_overlapHMM.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuc_overlapHMM.bed&quot;)</code></pre>
+<p>Run in three-prime-env</p>
+<pre class="r"><code>chromHmm=read.table(&quot;../data/ChromHmmOverlap/chromHMM_regions.txt&quot;, col.names = c(&quot;number&quot;, &quot;name&quot;), stringsAsFactors = F)
+TotalOverlapHMM=read.table(&quot;../data/ApaQTLs/Tot_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;pid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
+TotalOverlapHMM_names=TotalOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)
+
+NuclearOverlapHMM=read.table(&quot;../data/ApaQTLs/Nuc_overlapHMM.bed&quot;, col.names=c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;pid&quot;, &quot;significance&quot;, &quot;strand&quot;, &quot;number&quot;))
+NuclearOverlapHMM_names=NuclearOverlapHMM %&gt;% left_join(chromHmm, by=&quot;number&quot;)
+
+
+ggplot(TotalOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Total APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(NuclearOverlapHMM_names, aes(x=name)) + geom_bar() + labs(title=&quot;ChromHMM labels for Nuclear APAQtls&quot; , y=&quot;Number of SNPs&quot;, x=&quot;Region&quot;)+theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /> Group them to put on plot together</p>
+<pre class="r"><code>NuclearOverlapHMM_names_byname= NuclearOverlapHMM_names %&gt;% group_by(name) %&gt;% summarise(Nuclear=n())
+TotalOverlapHMM_names_byname= TotalOverlapHMM_names %&gt;% group_by(name) %&gt;% summarise(Total=n())
+
+
+bothFracHMM= TotalOverlapHMM_names_byname %&gt;% full_join(NuclearOverlapHMM_names_byname, by=&quot;name&quot;)
+bothFracHMM$Nuclear= bothFracHMM$Nuclear %&gt;% replace_na(0)</code></pre>
+<p>melt and plot</p>
+<pre class="r"><code>bothFracHMM_melt= melt(bothFracHMM,id.vars=&quot;name&quot;)
+colnames(bothFracHMM_melt)=c(&quot;Region&quot;, &quot;Fraction&quot;, &quot;NQTLs&quot;)
+
+apaQTLsChromregion=ggplot(bothFracHMM_melt, aes(x=Region, y=NQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + labs(title=&quot;apaQTLs by chromatin region&quot;)
+apaQTLsChromregion</code></pre>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(apaQTLsChromregion, file=&quot;../output/plots/apaQTLsbyChromHMM.png&quot;, width = 7, height = 5)</code></pre>
+<pre class="r"><code>bothFracHMM_prop= bothFracHMM %&gt;% mutate(Total_prop=Total/291) %&gt;% mutate(Nuclear_prop=Nuclear/615) %&gt;% select(-Total,-Nuclear) 
+
+bothFracHMM_prop_melt= melt(bothFracHMM_prop,id.vars=&quot;name&quot;)
+colnames(bothFracHMM_prop_melt)=c(&quot;Region&quot;, &quot;Fraction&quot;, &quot;PropQTLs&quot;)
+
+
+propapaQTLsChromregion=ggplot(bothFracHMM_prop_melt, aes(x=Region, y=PropQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + labs(y=&quot;Proportion of apaQTLs&quot;, title=&quot;Proportion of apaQTLs by chromatin region&quot;)
+propapaQTLsChromregion</code></pre>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(propapaQTLsChromregion, file=&quot;../output/plots/proportionapaQTLsbyChromHMM.png&quot;, width = 7, height = 5)</code></pre>
+<p>I will need to get matched snps to look for enrichment in these values.</p>
+</div>
 <div id="overlap-apaqtls-between-fractions." class="section level2">
 <h2>Overlap apaQTLs between fractions.</h2>
 <p>Goal: Find the nominal pvalue for the significant snp peak pair in oposite fraction. I can make a dictionary with the total and nuclear QTLs then run through the nominal files to get the pvalues:</p>
@@ -872,7 +980,7 @@ hist(NucQTLinTot$pval,xlab=&quot;Total apaQTL pvalue&quot;, main=&quot;Nuclear a
 text(.6,200, paste(&quot;pi_1=&quot;, round((1-qvalTot$pi0), digit=3), sep=&quot; &quot;))
 hist(TotQTLinNuc$pval,xlab=&quot;Nuclear apaQTL pvalue&quot;, main=&quot;Total apaQTLs \nin Nuclear Fraction&quot;)
 text(.6,125, paste(&quot;pi_1=&quot;, round((1-qvalNuc$pi0), digit=3), sep=&quot; &quot;))</code></pre>
-<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>png(&quot;../output/plots/apaFractionOverlapPi1.png&quot;, width=1000, height = 500)
 par(mfrow=c(1,2))
 hist(NucQTLinTot$pval,xlab=&quot;Total apaQTL pvalue&quot;, main=&quot;Nuclear apaQTLs \nin Total Fraction&quot;)
@@ -1097,24 +1205,25 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] qvalue_2.12.0   forcats_0.3.0   stringr_1.4.0   dplyr_0.7.6    
- [5] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2   
- [9] ggplot2_3.0.0   tidyverse_1.2.1 workflowr_1.2.0
+ [1] bindrcpp_0.2.2  reshape2_1.4.3  qvalue_2.12.0   forcats_0.3.0  
+ [5] stringr_1.4.0   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
+ [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+[13] workflowr_1.2.0
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4 reshape2_1.4.3   splines_3.5.1    haven_1.1.2     
- [5] lattice_0.20-35  colorspace_1.3-2 htmltools_0.3.6  yaml_2.2.0      
- [9] rlang_0.2.2      pillar_1.3.0     glue_1.3.0       withr_2.1.2     
-[13] modelr_0.1.2     readxl_1.1.0     bindrcpp_0.2.2   bindr_0.1.1     
-[17] plyr_1.8.4       munsell_0.5.0    gtable_0.2.0     cellranger_1.1.0
-[21] rvest_0.3.2      evaluate_0.13    knitr_1.20       broom_0.5.0     
-[25] Rcpp_0.12.19     scales_1.0.0     backports_1.1.2  jsonlite_1.6    
-[29] fs_1.2.6         hms_0.4.2        digest_0.6.17    stringi_1.2.4   
-[33] grid_3.5.1       rprojroot_1.3-2  cli_1.0.1        tools_3.5.1     
-[37] magrittr_1.5     lazyeval_0.2.1   crayon_1.3.4     whisker_0.3-2   
-[41] pkgconfig_2.0.2  xml2_1.2.0       lubridate_1.7.4  assertthat_0.2.0
-[45] rmarkdown_1.11   httr_1.3.1       rstudioapi_0.9.0 R6_2.3.0        
-[49] nlme_3.1-137     git2r_0.24.0     compiler_3.5.1  </code></pre>
+ [1] tidyselect_0.2.4 splines_3.5.1    haven_1.1.2      lattice_0.20-35 
+ [5] colorspace_1.3-2 htmltools_0.3.6  yaml_2.2.0       rlang_0.2.2     
+ [9] pillar_1.3.0     glue_1.3.0       withr_2.1.2      modelr_0.1.2    
+[13] readxl_1.1.0     bindr_0.1.1      plyr_1.8.4       munsell_0.5.0   
+[17] gtable_0.2.0     cellranger_1.1.0 rvest_0.3.2      evaluate_0.13   
+[21] labeling_0.3     knitr_1.20       broom_0.5.0      Rcpp_0.12.19    
+[25] scales_1.0.0     backports_1.1.2  jsonlite_1.6     fs_1.2.6        
+[29] hms_0.4.2        digest_0.6.17    stringi_1.2.4    grid_3.5.1      
+[33] rprojroot_1.3-2  cli_1.0.1        tools_3.5.1      magrittr_1.5    
+[37] lazyeval_0.2.1   crayon_1.3.4     whisker_0.3-2    pkgconfig_2.0.2 
+[41] xml2_1.2.0       lubridate_1.7.4  assertthat_0.2.0 rmarkdown_1.11  
+[45] httr_1.3.1       rstudioapi_0.9.0 R6_2.3.0         nlme_3.1-137    
+[49] git2r_0.24.0     compiler_3.5.1  </code></pre>
 </div>
 </div>
 
