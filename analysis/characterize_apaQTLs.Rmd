@@ -15,6 +15,7 @@ library(workflowr)
 library(tidyverse)
 library(qvalue)
 library(reshape2)
+library(cowplot)
 ```
 
 In this analysis I will look at the apaQTLs to draw biological insight. To do this I will run the following analysis:
@@ -543,3 +544,281 @@ eQTLpvalOverlapGWAS_NotSig= eQTLpvalOverlapGWAS_min %>% filter(noSig=="no")
 eQTLpvalOverlapGWAS_NotSig
 ```
 
+
+1:63118196 in LD with nuclear QTL  (find which it is LD with )  
+```{bash,eval=F}
+grep snp_1_63118196 chr1.NuclearQTL.LD.geno.ld
+#snp_1_63018852  
+#r2 .91
+
+```
+
+ 12:95696420 LD with total QTL 
+
+```{bash,eval=F}
+grep snp_12_95696420 TotalApaQTL_LD/chr12.TotalQTL.LD.geno.ld
+#snp_12_95672642
+#r2 =1  
+
+```
+
+12:95711876 LD_Nuclear
+```{bash,eval=F}
+grep snp_12_95711876 NuclearApaQTL_LD/chr12.NuclearQTL.LD.geno.ld
+#snp_12_95688540
+#r2 =1  
+```
+
+2:242053546  LD_Nuclear
+
+```{bash,eval=F}
+grep snp_2_242053546 NuclearApaQTL_LD/chr2.NuclearQTL.LD.geno.ld
+#snp_2_242018994
+#r2 = .94  
+```
+
+5:172595308 LD Nuclear  
+
+```{bash,eval=F}
+grep snp_5_172595308 NuclearApaQTL_LD/chr5.NuclearQTL.LD.geno.ld
+#snp_5_172580291
+#r2 = .938    
+```
+
+##Exampls plots:  
+
+In [this analysis file](swarmPlots_QTLs.html) I made boxplots for example QTLs. Here I can look at these.  
+
+###1:63018852   
+First example 1:63018852 (nuclear QTL) DOCK7 peak5329 (2 GWAS hits for this snp and gene)
+
+```{bash,eval=F}
+grep DOCK7 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000116641  
+```
+
+
+createQTLsnpAPAPhenTable_proc.py
+
+```{bash,eval=F}
+def main(PhenFile, GenFile, outFile, snp, peak):
+    fout=open(outFile, "w")
+    #Phen=open(PhenFile, "r")
+    Gen=open(GenFile, "r")
+    #get ind and pheno info
+    def get_pheno():
+      Phen=open(PhenFile, "r")
+      for num, ln in enumerate(Phen):
+          if num == 0:
+              indiv= ln.split()[4:]
+          else:
+              id=ln.split()[3].split(":")[3]
+              peakID=id.split("_")[2]
+              if peakID == peak:
+                  pheno_list=ln.split()[4:]
+                  pheno_data=list(zip(indiv,pheno_list))
+                  #print(pheno_data)
+                  return(pheno_data)
+    def get_geno():
+      for num, lnG in enumerate(Gen):
+          if num == 13:
+              Ind_geno=lnG.split()[9:]
+          if num >= 14: 
+              sid= lnG.split()[2]
+              if sid == snp: 
+                  gen_list=lnG.split()[9:]
+                  allele1=[]
+                  allele2=[]
+                  for i in gen_list:
+                      genotype=i.split(":")[0]
+                      allele1.append(genotype.split("|")[0])
+                      allele2.append(genotype.split("|")[1])
+            #now i have my indiv., phen, allele 1, alle 2     
+                  geno_data=list(zip(Ind_geno, allele1, allele2))
+                  #print(geno_data)
+                  return(geno_data)
+
+    phenotype=get_pheno()
+    pheno_df=pd.DataFrame(data=phenotype,columns=["Ind", "Pheno"])
+    #print(pheno_df)
+    genotype=get_geno()
+    geno_df=pd.DataFrame(data=genotype, columns=["Ind", "Allele1", "Allele2"])
+    #print(geno_df)
+    full_df=pd.merge(geno_df, pheno_df, how="inner", on="Ind")
+    full_df.to_csv(fout, sep="\t", encoding='utf-8', index=False)
+    fout.close()
+    
+
+if __name__ == "__main__":
+    import sys
+    import pandas as pd
+    chrom=sys.argv[1]
+    snp = sys.argv[2]
+    peak = sys.argv[3]
+    fraction=sys.argv[4]
+    
+    PhenFile = "/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.%s.fixed.pheno_5perc.fc.gz.phen_chr%s"%(fraction, chrom)
+    GenFile= "/project2/gilad/briana/YRI_geno_hg19/chr%s.dose.filt.vcf"%(chrom)
+    outFile = "/project2/gilad/briana/threeprimeseq/data/ApaQTL_proc_examples/qtlSNP_PeakAPA%s.%s%s.txt"%(fraction, snp, peak)
+    main(PhenFile, GenFile, outFile, snp, peak)
+```
+
+**createQTLsnpMolPhenTable.py changed the output dir**  
+```{bash,eval=F}
+python createQTLsnpAPAPhenTable_proc.py 1 1:63018852  peak5329 Total
+python createQTLsnpAPAPhenTable_proc.py 1 1:63018852  peak5329 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "1" "1:63018852" "ENSG00000116641"
+
+```
+
+
+
+Function to make plots:  
+
+```{r}
+plotQTL_func= function(SNP, peak, gene){
+  apaN_file=read.table(paste("../data/apaExamp_proc/qtlSNP_PeakAPANuclear.", SNP, peak, ".txt", sep = "" ), header=T)
+  apaT_file=read.table(paste("../data/apaExamp_proc/qtlSNP_PeakAPATotal.", SNP, peak, ".txt", sep = "" ), header=T)
+  su30_file=read.table(paste("../data/apaExamp_proc/qtlSNP_Peak_4su_30_", SNP, gene, ".txt", sep=""), header = T)
+  su60_file=read.table(paste("../data/apaExamp_proc/qtlSNP_Peak_4su_60_", SNP, gene, ".txt", sep=""), header=T)
+  RNA_file=read.table(paste("../data/apaExamp_proc/qtlSNP_Peak_RNAseq_", SNP, gene, ".txt", sep=""),header=T)
+  RNAg_file=read.table(paste("../data/apaExamp_proc/qtlSNP_Peak_RNAseqGeuvadis_", SNP, gene, ".txt", sep=""), header = T)
+  ribo_file=read.table(paste("../data/apaExamp_proc/qtlSNP_Peak_ribo_", SNP, gene, ".txt", sep=""),header=T)
+  prot_file=read.table(paste("../data/apaExamp_proc/qtlSNP_Peak_prot.", SNP, gene, ".txt", sep=""), header=T)
+  
+  ggplot_func= function(file, molPhen,GENE){
+    file = file %>% mutate(genotype=Allele1 + Allele2)
+    file$genotype= as.factor(as.character(file$genotype))
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y="Phenotpye",title=paste(molPhen, GENE, sep=": ")) + scale_fill_brewer(palette="Paired")
+    return(plot)
+  }
+  
+  apaNplot=ggplot_func(apaN_file, "Apa Nuclear", gene)
+  apaTplot=ggplot_func(apaT_file, "Apa Total", gene)
+  su30plot=ggplot_func(su30_file, "4su30",gene)
+  su60plot=ggplot_func(su60_file, "4su60",gene)
+  RNAplot=ggplot_func(RNA_file, "RNA Seq",gene)
+  RNAgPlot=ggplot_func(RNAg_file, "RNA Seq Geuvadis",gene)
+  riboPlot= ggplot_func(ribo_file, "Ribo Seq",gene)
+  protplot=ggplot_func(prot_file, "Protein",gene)
+  
+  full_plot= plot_grid(apaNplot,apaTplot, RNAplot, protplot,nrow=1)
+  return (full_plot)
+}
+```
+
+
+```{r}
+plotQTL_func(SNP="1:63018852", peak="peak5329", gene="ENSG00000116641")
+```
+
+Only ApaPlot:  
+
+```{r}
+plotAPAQTL_func= function(SNP, peak, gene){
+  apaN_file=read.table(paste("../data/apaExamp_proc/qtlSNP_PeakAPANuclear.", SNP, peak, ".txt", sep = "" ), header=T)
+  apaT_file=read.table(paste("../data/apaExamp_proc/qtlSNP_PeakAPATotal.", SNP, peak, ".txt", sep = "" ), header=T)
+  
+  ggplot_func= function(file, molPhen,GENE){
+    file = file %>% mutate(genotype=Allele1 + Allele2)
+    file$genotype= as.factor(as.character(file$genotype))
+    plot=ggplot(file, aes(y=Pheno, x=genotype, by=genotype, fill=genotype)) + geom_boxplot(width=.25) + geom_jitter() + labs(y="Phenotpye",title=paste(molPhen, GENE, sep=": ")) + scale_fill_brewer(palette="Paired")
+    return(plot)
+  }
+  
+  apaNplot=ggplot_func(apaN_file, "Apa Nuclear", gene)
+  apaTplot=ggplot_func(apaT_file, "Apa Total", gene)
+
+  
+  full_plot= plot_grid(apaNplot,apaTplot,nrow=1)
+  return (full_plot)
+}
+```
+
+
+```{r}
+plotAPAQTL_func(SNP="1:63018852", peak="peak5329", gene="DOCK7")
+```
+
+
+FInd this in the catelog: 
+
+/project2/gilad/briana/genome_anotation_data/hg19GwasCatalog.sort.bed
+
+1	63118195	63118196	rs10889353:19060911:DOCK7	0.32
+
+
+In GWAS associated with LDL cholesteral and similar phenotypes  
+
+###12:95672642  
+peak39092 VEZT 12:95672642
+
+```{bash,eval=F}
+grep VEZT /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000028203 
+gunzip /project2/gilad/briana/YRI_geno_hg19/chr12.dose.filt.vcf.gz
+
+python createQTLsnpAPAPhenTable_proc.py 12 12:95672642 peak39092 Total
+python createQTLsnpAPAPhenTable_proc.py 12 12:95672642   peak39092 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "12" "12:95672642" "ENSG00000028203"
+```
+
+No protein for this gene  
+```{r}
+plotQTL_func(SNP="12:95672642", peak="peak39092", gene="ENSG00000028203")
+```
+
+###12:95688540  
+
+Nuclear QTL  
+
+VEZT  peak39092
+
+Same gene peak  
+
+###2:242018994
+
+Nuclear QTL  
+MTERF4 peak96962 2:242018994
+
+
+```{bash,eval=F}
+grep MTERF4 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000122085 
+gunzip /project2/gilad/briana/YRI_geno_hg19/chr2.dose.filt.vcf.gz
+
+python createQTLsnpAPAPhenTable_proc.py 2 2:242018994 peak96962 Total
+python createQTLsnpAPAPhenTable_proc.py 2 2:242018994   peak96962 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "2" "2:242018994" "ENSG00000122085"
+```
+
+No protein for this gene  
+```{r}
+plotQTL_func(SNP="2:242018994", peak="peak96962", gene="ENSG00000122085")
+```
+
+No protein data  
+
+
+###5:172580291
+BNIP1  _peak135178 5:172580291
+Nuclear QTL 
+
+```{bash,eval=F}
+grep BNIP1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000113734 
+gunzip /project2/gilad/briana/YRI_geno_hg19/chr5.dose.filt.vcf.gz
+
+python createQTLsnpAPAPhenTable_proc.py 5 5:172580291 peak135178 Total
+python createQTLsnpAPAPhenTable_proc.py 5 5:172580291   peak135178 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "5" "5:172580291" "ENSG00000113734"
+```
+
+```{r}
+plotQTL_func(SNP="5:172580291", peak="peak135178", gene="ENSG00000113734")
+```
+Not sure whats up with total  
