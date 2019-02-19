@@ -180,3 +180,241 @@ peaks=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allch
 ```{r}
 ggplot(peaks,aes(x=length)) + geom_histogram(bins=300) + labs(title="Peak Size", x="number of basepairs") + geom_vline(xintercept =mean(peaks$length),col="red")
 ```
+
+
+###Deep tools:  
+
+files to remake:  
+
+Merged bam files are in /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP
+
+Code is mergeBam2BW.sh
+
+
+mergeBam2BW.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeBam2B
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeBam2BW.out
+#SBATCH --error=mergeBam2BW.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#total  
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.sort.bam -o /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw  
+
+#nuclear  
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.sort.bam -o /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw    
+```
+
+
+
+BothFracRNADTPlotmyPeaks_noMPFilt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracRNADTPlotmyPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracRNADTPlotmyPeaks_noMPFilt.out
+#SBATCH --error=BothFracRNADTPlotmyPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Combined Reads at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.png
+```
+
+
+
+I want to make one of these that look at total, nuclear, and RNA at peaks assigned to an intron. This means I need to subset the peak file to only include these. I can do this similar to how I did the UTR subset in [this analysis](pipeline_55Ind.Rmd)  
+
+I want to make a bedfile with these peaks. I need to also make sure they are in the final clean peaks 
+
+
+makeIntronPeakBed.py
+```{bash,eval=F}
+inFile="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed"
+outFile=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed" , "w")
+okPeaks=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", "r")
+
+
+okPeak_dic={}
+for ln in okPeaks:
+    peak=ln.split()[3].split(":")[1]
+    peak_num=peak[4:]
+    okPeak_dic[peak_num]=""
+
+
+
+for ln in open(inFile, "r"):
+    chrom, start, end, peak, cov, strand, score, anno = ln.split()
+    if anno==".": 
+        continue  
+    anno_lst=anno.split(",")
+    if len(anno_lst)==1:
+        gene=anno_lst[0].split(":")[1]
+        if anno_lst[0].split(":")[0]=="intron":
+            if peak in okPeak_dic.keys():
+                peak_i=int(peak)
+                start_i=int(start)
+                end_i=int(end)
+                type="intron"
+                outFile.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_i, end_i, type,score, strand))
+    else:
+        type_dic={}
+        for each in anno_lst:
+            type_dic[each.split(":")[0]]=each.split(":")[1]
+        if "utr3" in type_dic.keys():
+            continue
+        if "intron" in type_dic.keys():
+             if peak in okPeak_dic.keys():
+                 peak_i=int(peak)
+                 start_i=int(start)
+                 end_i=int(end)
+                 type="intron"
+                 outFile.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_i, end_i,type ,score, strand))
+outFile.close()
+```
+
+
+BothFracRNADTPlotmyIntronPeaks_noMPFilt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracRNADTPlotmyIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracRNADTPlotmyIntronPeaks_noMPFilt.out
+#SBATCH --error=BothFracRNADTPlotmyIntronPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntron_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntron_Nompfilt.gz --refPointLabel "Called Intronic PAS" --plotTitle "Combined Reads at Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntronNompfilt.png
+```
+
+
+BothFracDTPlotTSS.sh
+
+files to make: new TSS file from the annotation in the new gene loc annocation pipeline  
+
+getTss.py
+```{bash,eval=F}
+
+
+TXN2Gene_file=open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms","r")
+
+outFile=open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TSSAllGenes.bed", "w")
+
+for i, ln in enumerate(TXN2Gene_file):
+    if i >0 :
+        chrom=ln.split()[2]
+        chromf=chrom[3:]
+        start=int(ln.split()[4])-1 
+        end=int(ln.split()[4])
+        txn=ln.split()[1]
+        genename=ln.split()[12]
+        id=txn + ":" + genename
+        strand=ln.split()[3]
+        score="."
+        outFile.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chromf, start, end, id, score, strand))
+
+outFile.close()
+```
+
+BothFracRNADTPlotTSS_noMPFilt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracRNADTPlotTSS_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracRNADTPlotTSS_noMPFilt.out
+#SBATCH --error=BothFracRNADTPlotTSS_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TSSAllGenes.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.gz --refPointLabel "Called TSS" --plotTitle "Combined Reads at TSS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.png
+```
+
+
+getTES.py
+
+```{bash,eval=F}
+
+
+TXN2Gene_file=open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms","r")
+
+outFile=open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TESAllGenes.bed", "w")
+
+for i, ln in enumerate(TXN2Gene_file):
+    if i >0 :
+        chrom=ln.split()[2]
+        chromf=chrom[3:]
+        start=int(ln.split()[5])-1 
+        end=int(ln.split()[5])
+        txn=ln.split()[1]
+        genename=ln.split()[12]
+        id=txn + ":" + genename
+        strand=ln.split()[3]
+        score="."
+        outFile.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chromf, start, end, id, score, strand))
+
+outFile.close()
+```
+
+
+BothFracRNADTPlotTES_noMPFilt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracRNADTPlotTES_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracRNADTPlotTES_noMPFilt.out
+#SBATCH --error=BothFracRNADTPlotTESnoMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TESAllGenes.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz --refPointLabel "Called TES" --plotTitle "Combined Reads at TES" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.png
+```
+
