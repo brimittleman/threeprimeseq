@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-18
+<strong>Last updated:</strong> 2019-02-19
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebcb2f86006d7004d0560ed04a6ccd2a32f1c8f21targetblankbcb2f86a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/bcb2f86006d7004d0560ed04a6ccd2a32f1c8f21" target="_blank">bcb2f86</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee0461e4b92f6006994aa06cef7432087d7b3312atargetblanke0461e4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e0461e4b92f6006994aa06cef7432087d7b3312a" target="_blank">e0461e4</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebcb2f86006d7004d0560ed04a6ccd2a32f1c8f21targetblankbcb2f86a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee0461e4b92f6006994aa06cef7432087d7b3312atargetblanke0461e4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,7 +541,6 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/characterize_apaQTLs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -567,6 +566,7 @@ Untracked files:
     Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/QTL_overlap/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
     Untracked:  data/TotalApaQTLs.txt
@@ -643,6 +643,7 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
+    Untracked:  output/deeptools_plots/
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -655,6 +656,7 @@ Unstaged changes:
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diffIsoAnalysisNewMapping.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
@@ -711,6 +713,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e0461e4b92f6006994aa06cef7432087d7b3312a/analysis/apaQTLsbyCountPercentile.Rmd" target="_blank">e0461e4</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-19
+</td>
+<td>
+add plots filtered by gene with 2 peaks
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/4ea438ecbc784c72fd7334c43e790d79f564aabb/docs/apaQTLsbyCountPercentile.html" target="_blank">4ea438e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -837,6 +873,43 @@ colnames(bothPerc_melt) =c(&quot;Percentile&quot;, &quot;Fraction&quot;, &quot;G
 <p>Plot:</p>
 <pre class="r"><code>ggplot(bothPerc_melt, aes(x=Percentile, y= Genes, by=Fraction, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  </code></pre>
 <p><img src="figure/apaQTLsbyCountPercentile.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4ea438ecbc784c72fd7334c43e790d79f564aabb/docs/figure/apaQTLsbyCountPercentile.Rmd/unnamed-chunk-9-1.png" target="_blank">4ea438e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>To make is a percente of genes in the category I will divide each number of genes category by the number of total QTL genes. For total this is 291 and for nuclear it is 496</p>
 <pre class="r"><code>totQTLGene_Perc_prop= totQTLsGenes %&gt;% inner_join(totPeakCountsGeneSum, by=&quot;gene&quot;) %&gt;% mutate(roundPerc=round(Percentile, digits=1)) %&gt;% group_by(roundPerc) %&gt;% summarise(Ngenes=n()) %&gt;% mutate(PercGenes=Ngenes/291)
 nucQTLGene_Perc_prop= nucQTLsGenes %&gt;% inner_join(nucPeakCountsGeneSum, by=&quot;gene&quot;)%&gt;% mutate(roundPerc=round(Percentile, digits=1)) %&gt;% group_by(roundPerc) %&gt;% summarise(Ngenes=n()) %&gt;%mutate(PercGenes=Ngenes/496)
@@ -852,16 +925,95 @@ colnames(bothPercPrp_melt) =c(&quot;Percentile&quot;, &quot;Fraction&quot;, &quo
 <pre class="r"><code>QTLSbyCountPerc=ggplot(bothPercPrp_melt, aes(x=Percentile, y=GenesProp, fill=Fraction)) +geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;)+labs(title=&quot;Proportion of QTL genes by Read count percentile&quot;,y=&quot;Proportion of QTLs&quot;, x=&quot;Read Cound percentile&quot;) +  theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + facet_grid(~Fraction)
 QTLSbyCountPerc</code></pre>
 <p><img src="figure/apaQTLsbyCountPercentile.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4ea438ecbc784c72fd7334c43e790d79f564aabb/docs/figure/apaQTLsbyCountPercentile.Rmd/unnamed-chunk-11-1.png" target="_blank">4ea438e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(QTLSbyCountPerc, file=&quot;../output/plots/QTLSbyCountPerc.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
-<p>Plot the distribution of the percentile:</p>
-<pre class="r"><code>totQTLGene_Percentile= totQTLsGenes %&gt;% inner_join(totPeakCountsGeneSum, by=&quot;gene&quot;) 
+<p>Filter to only look at genes with at least 2 peaks and build the percentiles off these. To do this I will filter the unfiltered peak counts by genes with two peaks in the 5% peaks used in the QTL analysis.</p>
+<p>Pull in filtered peaks:</p>
+<pre class="r"><code>Peaks=read.table(&quot;../data/PeakUsage_noMP_GeneLocAnno/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed&quot;, stringsAsFactors = F, col.names = c(&quot;chr&quot;, &#39;start&#39;, &#39;end&#39;, &#39;id&#39;, &#39;score&#39;, &#39;strand&#39;)) 
+Genes2Peaks= Peaks %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;peak&quot;), sep=&quot;:&quot;) %&gt;% group_by(gene) %&gt;% summarise(nPeak=n()) %&gt;% filter(nPeak&gt;=2) %&gt;% select(gene)</code></pre>
+<p>Now filter the total and nuclear peaks that are in these genes before making the percentile plots.</p>
+<p>Total</p>
+<pre class="r"><code>totPeakCounts_FiltGene=read.table(&quot;../data/AllPeak_counts/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc&quot;, header = T, stringsAsFactors = F) %&gt;% select(-Chr, -Start, -End, -Strand, -Length) %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% semi_join(Genes2Peaks, by=&quot;gene&quot;)%&gt;% select(-peak, -chr,-start, -end, -strand, -gene)
 
-ggplot(totQTLGene_Percentile,aes( x=Percentile)) + geom_histogram(bins=50)</code></pre>
-<p><img src="figure/apaQTLsbyCountPercentile.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>nucQTLGene_Percentile= nucQTLsGenes %&gt;% inner_join(nucPeakCountsGeneSum, by=&quot;gene&quot;)
-ggplot(nucQTLGene_Percentile,aes( x=Percentile)) + geom_histogram(bins=50)</code></pre>
-<p><img src="figure/apaQTLsbyCountPercentile.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+totPeakCountsFiltGene=read.table(&quot;../data/AllPeak_counts/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc&quot;, header = T, stringsAsFactors = F) %&gt;% select(-Chr, -Start, -End, -Strand, -Length) %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% semi_join(Genes2Peaks, by=&quot;gene&quot;) %&gt;% select(gene)
+#sum across ind.
+totPeakCounts_FiltSum=rowSums(totPeakCounts_FiltGene)
+totPeakCountsFiltGeneSum=as.data.frame(cbind(totPeakCountsFiltGene,totPeakCounts_FiltSum)) %&gt;% group_by(gene) %&gt;% summarise(TotalCount=sum(totPeakCounts_FiltSum)) %&gt;% mutate(Percentile = percent_rank(TotalCount)) </code></pre>
+<p>Nuclear</p>
+<pre class="r"><code>nucPeakCounts_FiltGene=read.table(&quot;../data/AllPeak_counts/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc&quot;, header = T, stringsAsFactors = F) %&gt;% select(-Chr, -Start, -End, -Strand, -Length) %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% semi_join(Genes2Peaks, by=&quot;gene&quot;)%&gt;% select(-peak, -chr,-start, -end, -strand, -gene)
+
+nucPeakCountsFiltGene=read.table(&quot;../data/AllPeak_counts/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc&quot;, header = T, stringsAsFactors = F) %&gt;% select(-Chr, -Start, -End, -Strand, -Length) %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% semi_join(Genes2Peaks, by=&quot;gene&quot;) %&gt;% select(gene)
+#sum across ind.
+nucPeakCounts_FiltSum=rowSums(nucPeakCounts_FiltGene)
+nucPeakCountsFiltGeneSum=as.data.frame(cbind(nucPeakCountsFiltGene,nucPeakCounts_FiltSum)) %&gt;% group_by(gene) %&gt;% summarise(NuclearCount=sum(nucPeakCounts_FiltSum)) %&gt;% mutate(Percentile = percent_rank(NuclearCount)) </code></pre>
+<p>I can get the percentile for each QTL gene.</p>
+<pre class="r"><code>totQTLFiltGene_Perc= totQTLsGenes %&gt;% inner_join(totPeakCountsFiltGeneSum, by=&quot;gene&quot;) %&gt;% mutate(roundPerc=round(Percentile, digits=1)) %&gt;% group_by(roundPerc) %&gt;% summarise(Ngenes=n())
+nucQTLFiltGene_Perc= nucQTLsGenes %&gt;% inner_join(nucPeakCountsFiltGeneSum, by=&quot;gene&quot;)%&gt;% mutate(roundPerc=round(Percentile, digits=1)) %&gt;% group_by(roundPerc) %&gt;% summarise(Ngenes=n())
+
+bothPerc_filt=totQTLFiltGene_Perc %&gt;% full_join(nucQTLFiltGene_Perc,  by = c(&quot;roundPerc&quot;))
+bothPerc_filt$Ngenes.x= bothPerc_filt$Ngenes.x %&gt;% replace_na(0)
+colnames(bothPerc_filt)= c(&quot;Percentile&quot;, &quot;Total&quot;, &quot;Nuclear&quot;)
+
+
+bothPercfilt_melt= melt(bothPerc_filt, id.vars = &quot;Percentile&quot;) 
+colnames(bothPercfilt_melt) =c(&quot;Percentile&quot;, &quot;Fraction&quot;, &quot;Genes&quot;)</code></pre>
+<p>Plot:</p>
+<pre class="r"><code>ggplot(bothPercfilt_melt, aes(x=Percentile, y= Genes, by=Fraction, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;) + theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  </code></pre>
+<p><img src="figure/apaQTLsbyCountPercentile.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Do it by percent</p>
+<pre class="r"><code>totQTLFiltGene_Perc_prop= totQTLsGenes %&gt;% inner_join(totPeakCountsFiltGeneSum, by=&quot;gene&quot;) %&gt;% mutate(roundPerc=round(Percentile, digits=1)) %&gt;% group_by(roundPerc) %&gt;% summarise(Ngenes=n()) %&gt;% mutate(PercGenes=Ngenes/291)
+nucQTLFiltGene_Perc_prop= nucQTLsGenes %&gt;% inner_join(nucPeakCountsFiltGeneSum, by=&quot;gene&quot;)%&gt;% mutate(roundPerc=round(Percentile, digits=1)) %&gt;% group_by(roundPerc) %&gt;% summarise(Ngenes=n()) %&gt;%mutate(PercGenes=Ngenes/496)
+
+
+bothPercFiltProp=totQTLFiltGene_Perc_prop %&gt;% full_join(nucQTLFiltGene_Perc_prop,  by = c(&quot;roundPerc&quot;)) %&gt;% select(roundPerc, starts_with(&quot;perc&quot;))
+bothPercFiltProp$PercGenes.x= bothPercFiltProp$PercGenes.x %&gt;% replace_na(0)
+colnames(bothPercFiltProp)= c(&quot;Percentile&quot;, &quot;Total&quot;, &quot;Nuclear&quot;)
+
+
+bothPercPrpFilt_melt= melt(bothPercFiltProp, id.vars = &quot;Percentile&quot;) 
+colnames(bothPercPrpFilt_melt) =c(&quot;Percentile&quot;, &quot;Fraction&quot;, &quot;GenesProp&quot;)</code></pre>
+<pre class="r"><code>QTLSbyCountPerc_filt=ggplot(bothPercPrpFilt_melt, aes(x=Percentile, y=GenesProp, fill=Fraction)) +geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;)+labs(title=&quot;Proportion of QTL genes by Read count percentile\n Genes with 2 peaks in QTL analysis&quot;,y=&quot;Proportion of QTLs&quot;, x=&quot;Read Cound percentile&quot;) +  theme(axis.text.y = element_text(size=12),axis.title.y=element_text(size=10,face=&quot;bold&quot;), axis.title.x=element_text(size=12,face=&quot;bold&quot;))+ scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + facet_grid(~Fraction)
+QTLSbyCountPerc_filt</code></pre>
+<p><img src="figure/apaQTLsbyCountPercentile.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(QTLSbyCountPerc_filt, file=&quot;../output/plots/QTLSbyCountPerc_Genes2Peaks.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
