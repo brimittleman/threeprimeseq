@@ -9,6 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r}
+library(workflowr)
+library(tidyverse)
+library(qvalue)
+```
+
 In this analysis I will look at the apaQTLs to draw biological insight. To do this I will run the following analysis:
 
 * Look at chromatin regions for QTLs (chromHMM)
@@ -17,6 +24,132 @@ In this analysis I will look at the apaQTLs to draw biological insight. To do th
 
 * Overlap apaQTLs with GWAS  
 
+##Overlap apaQTLs between fractions.  
+
+Goal: Find the nominal pvalue for the significant snp peak pair in oposite fraction. I can make a dictionary with the total and nuclear QTLs then run through the nominal files to get the pvalues:  
+
+Start with apa QTLs:  
+
+
+* /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed
+
+* /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
+
+
+NomResFromOppFrac.py
+```{bash,eval=F}
+
+
+nucQTLs="/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed"  
+totQTLs="/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed"  
+
+nucNom="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"
+totNom="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"
+
+outnuc="/project2/gilad/briana/threeprimeseq/data/QTL_Overlap/TotQTLs_inNucFractionRes.txt"
+outtot="/project2/gilad/briana/threeprimeseq/data/QTL_Overlap/NucQTLs_inTotFractionRes.txt"
+
+
+def oppFract(inRes, inQTL, out):
+    fout=open(out, "w")
+    qtl_dic={}
+    #SNP is key, peak is value
+    for ln in open(inQTL,"r"):
+        snp=ln.split()[2]
+        chrom=ln.split()[0]
+        peak=ln.split()[3].split(":")[0]
+        qtl=str(chrom) + ":" + str(snp)
+        if qtl not in qtl_dic.keys():
+            qtl_dic[qtl]=[peak]
+        else: 
+            qtl_dic[qtl].append(peak)
+    #print(qtl_dic)
+    for ln in open(inRes, "r"):
+        pval=ln.split()[3]
+        snp=ln.split()[1]
+        peak=ln.split()[0].split(":")[3].split("_")[-1]
+        if snp in qtl_dic.keys():
+            if peak in qtl_dic[snp]:
+                fout.write("%s\t%s\t%s\n"%(snp, peak, pval))   
+    fout.close()
+    
+
+oppFract(nucNom, totQTLs,outnuc)  
+oppFract(totNom, nucQTLs, outtot)  
+                
+```
+
+Run in bash:
+run_NomResFromOppFrac.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NomResFromOppFrac
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=NomResFromOppFrac.out
+#SBATCH --error=NomResFromOppFrac.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python NomResFromOppFrac.py
+```
+
+```{r}
+names=c("SNP", "peak", "pval")
+NucQTLinTot=read.table("../data/QTL_overlap/NucQTLs_inTotFractionRes.txt", stringsAsFactors = F, col.names = names)
+TotQTLinNuc=read.table("../data/QTL_overlap/TotQTLs_inNucFractionRes.txt", stringsAsFactors = F, col.names = names)
+```
+
+
+Get pi values:  
+
+
+```{r}
+qvalTot= pi0est(NucQTLinTot$pval, pi0.method = "bootstrap")
+1-qvalTot$pi0
+
+
+```
+
+
+```{r}
+qvalNuc= pi0est(TotQTLinNuc$pval, pi0.method = "bootstrap")
+1-qvalNuc$pi0
+
+
+```
+
+
+plots:  
+
+
+```{r}
+par(mfrow=c(1,2))
+hist(NucQTLinTot$pval,xlab="Total apaQTL pvalue", main="Nuclear apaQTLs \nin Total Fraction")
+text(.6,200, paste("pi_1=", round((1-qvalTot$pi0), digit=3), sep=" "))
+hist(TotQTLinNuc$pval,xlab="Nuclear apaQTL pvalue", main="Total apaQTLs \nin Nuclear Fraction")
+text(.6,125, paste("pi_1=", round((1-qvalNuc$pi0), digit=3), sep=" "))
+```
+
+```{r}
+png("../output/plots/apaFractionOverlapPi1.png", width=1000, height = 500)
+par(mfrow=c(1,2))
+hist(NucQTLinTot$pval,xlab="Total apaQTL pvalue", main="Nuclear apaQTLs \nin Total Fraction")
+text(.6,200, paste("pi_1=", round((1-qvalTot$pi0), digit=3), sep=" "))
+hist(TotQTLinNuc$pval,xlab="Nuclear apaQTL pvalue", main="Total apaQTLs \nin Nuclear Fraction")
+text(.6,125, paste("pi_1=", round((1-qvalNuc$pi0), digit=3), sep=" "))
+dev.off()
+```
+
+
+This provides evidence for high degree of QTL sharing with increased sharing total to nuclear. This demonstrates to me that there are nuclear QTLs that do not persist in the total fraction. I will want to learn more about these.  
 
 
 ##Overlap with GWAS catelog  
