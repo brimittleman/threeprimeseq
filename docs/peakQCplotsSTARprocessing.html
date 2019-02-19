@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-16
+<strong>Last updated:</strong> 2019-02-18
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef8c76ea9596e24e3cf8ae8994c66ebb89ae77c01targetblankf8c76eaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f8c76ea9596e24e3cf8ae8994c66ebb89ae77c01" target="_blank">f8c76ea</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef0cf94527f37b2d52347d6cdfd6da2c6b85470cctargetblankf0cf945a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f0cf94527f37b2d52347d6cdfd6da2c6b85470cc" target="_blank">f0cf945</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef8c76ea9596e24e3cf8ae8994c66ebb89ae77c01targetblankf8c76eaa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef0cf94527f37b2d52347d6cdfd6da2c6b85470cctargetblankf0cf945a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,7 +541,6 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/characterize_apaQTLs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -550,6 +549,7 @@ Untracked files:
     Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/AllPeak_counts/
     Untracked:  data/ApaQTLs/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
@@ -566,6 +566,7 @@ Untracked files:
     Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/QTL_overlap/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
     Untracked:  data/TotalApaQTLs.txt
@@ -654,6 +655,7 @@ Unstaged changes:
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diffIsoAnalysisNewMapping.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
@@ -709,6 +711,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f0cf94527f37b2d52347d6cdfd6da2c6b85470cc/analysis/peakQCplotsSTARprocessing.Rmd" target="_blank">f0cf945</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+add deeptools plot code
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/peakQCplotsSTARprocessing.html" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -791,6 +827,43 @@ peakUsage5perc=ggplot(nPeaksBoth_melt, aes(x=PAS, y=Genes, fill=Fraction)) + geo
 
 peakUsage5perc</code></pre>
 <p><img src="figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-3-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(peakUsage5perc, file=&quot;../output/plots/PeakNumberPerGenebyFrac.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <p>Plot this with the peaks used in the fraction</p>
@@ -802,6 +875,43 @@ allPeaksGenes=ggplot(allPeaks, aes(x=PAS, y=Genes)) + geom_bar(stat=&quot;identi
 
 allPeaksGenes</code></pre>
 <p><img src="figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-4-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(allPeaksGenes, file=&quot;../output/plots/PeakNumberPerGeneUsedinQTL.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
@@ -837,6 +947,43 @@ propGenesbyPAS=ggplot(genesPerCat_df, aes(x=&quot;&quot;, y=genesPerCat, fill=Ca
 
 propGenesbyPAS</code></pre>
 <p><img src="figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-6-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(propGenesbyPAS, file=&quot;../output/plots/PropOfGenesByPASnum.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
@@ -856,6 +1003,43 @@ mean(txnanno$length)</code></pre>
 
 distTXN2PeakPlot</code></pre>
 <p><img src="figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-8-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(distTXN2PeakPlot, file=&quot;../output/plots/DistanceBetweenPeakandTES.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
@@ -869,6 +1053,43 @@ distTXN2PeakPlot</code></pre>
 <pre class="r"><code>locationOfPeaks=ggplot(peakswAnno, aes(x=loc, y=Num)) + geom_bar(stat=&quot;identity&quot;, fill=&quot;blue&quot;) + labs(x=&quot;Gene Location&quot;, y=&quot;Number of Peaks&quot;, title=&quot;Location distribution for all PAS with 5% Usage&quot;)
 locationOfPeaks</code></pre>
 <p><img src="figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-10-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(locationOfPeaks, file=&quot;../output/plots/PeakLocationByAnnotation.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
@@ -877,7 +1098,235 @@ locationOfPeaks</code></pre>
 <p>Peak length:</p>
 <pre class="r"><code>peaks=read.table(&quot;../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed&quot;,col.names=c(&quot;chr&quot;, &#39;start&#39;,&#39;end&#39;, &#39;peak&#39;, &#39;score&#39;, &#39;strand&#39;)) %&gt;% mutate(length=end-start)</code></pre>
 <pre class="r"><code>ggplot(peaks,aes(x=length)) + geom_histogram(bins=300) + labs(title=&quot;Peak Size&quot;, x=&quot;number of basepairs&quot;) + geom_vline(xintercept =mean(peaks$length),col=&quot;red&quot;)</code></pre>
-<img src="figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /> <br> <br>
+<p><img src="figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/peakQCplotsSTARprocessing.Rmd/unnamed-chunk-12-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="deep-tools" class="section level3">
+<h3>Deep tools:</h3>
+<p>files to remake:</p>
+<p>Merged bam files are in /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP</p>
+<p>Code is mergeBam2BW.sh</p>
+<p>mergeBam2BW.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mergeBam2B
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeBam2BW.out
+#SBATCH --error=mergeBam2BW.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#total  
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllTotalSamples.MergedBamFiles.noMP.sort.bam -o /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw  
+
+#nuclear  
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/mergedBams_NoMP/AllNuclearSamples.MergedBamFiles.noMP.sort.bam -o /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw    </code></pre>
+<p>BothFracRNADTPlotmyPeaks_noMPFilt.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=BothFracRNADTPlotmyPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracRNADTPlotmyPeaks_noMPFilt.out
+#SBATCH --error=BothFracRNADTPlotmyPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.gz --refPointLabel &quot;Called PAS&quot; --plotTitle &quot;Combined Reads at All Called PAS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.png</code></pre>
+<p>I want to make one of these that look at total, nuclear, and RNA at peaks assigned to an intron. This means I need to subset the peak file to only include these. I can do this similar to how I did the UTR subset in <a href="pipeline_55Ind.Rmd">this analysis</a></p>
+<p>I want to make a bedfile with these peaks. I need to also make sure they are in the final clean peaks</p>
+<p>makeIntronPeakBed.py</p>
+<pre class="bash"><code>inFile=&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed&quot;
+outFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed&quot; , &quot;w&quot;)
+okPeaks=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed&quot;, &quot;r&quot;)
+
+
+okPeak_dic={}
+for ln in okPeaks:
+    peak=ln.split()[3].split(&quot;:&quot;)[1]
+    peak_num=peak[4:]
+    okPeak_dic[peak_num]=&quot;&quot;
+
+
+
+for ln in open(inFile, &quot;r&quot;):
+    chrom, start, end, peak, cov, strand, score, anno = ln.split()
+    if anno==&quot;.&quot;: 
+        continue  
+    anno_lst=anno.split(&quot;,&quot;)
+    if len(anno_lst)==1:
+        gene=anno_lst[0].split(&quot;:&quot;)[1]
+        if anno_lst[0].split(&quot;:&quot;)[0]==&quot;intron&quot;:
+            if peak in okPeak_dic.keys():
+                peak_i=int(peak)
+                start_i=int(start)
+                end_i=int(end)
+                type=&quot;intron&quot;
+                outFile.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start_i, end_i, type,score, strand))
+    else:
+        type_dic={}
+        for each in anno_lst:
+            type_dic[each.split(&quot;:&quot;)[0]]=each.split(&quot;:&quot;)[1]
+        if &quot;utr3&quot; in type_dic.keys():
+            continue
+        if &quot;intron&quot; in type_dic.keys():
+             if peak in okPeak_dic.keys():
+                 peak_i=int(peak)
+                 start_i=int(start)
+                 end_i=int(end)
+                 type=&quot;intron&quot;
+                 outFile.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start_i, end_i,type ,score, strand))
+outFile.close()</code></pre>
+<p>BothFracRNADTPlotmyIntronPeaks_noMPFilt.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=BothFracRNADTPlotmyIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracRNADTPlotmyIntronPeaks_noMPFilt.out
+#SBATCH --error=BothFracRNADTPlotmyIntronPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntron_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntron_Nompfilt.gz --refPointLabel &quot;Called Intronic PAS&quot; --plotTitle &quot;Combined Reads at Intronic PAS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntronNompfilt.png</code></pre>
+<p>BothFracDTPlotTSS.sh</p>
+<p>files to make: new TSS file from the annotation in the new gene loc annocation pipeline</p>
+<p>getTss.py</p>
+<pre class="bash"><code>
+
+TXN2Gene_file=open(&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms&quot;,&quot;r&quot;)
+
+outFile=open(&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TSSAllGenes.bed&quot;, &quot;w&quot;)
+
+for i, ln in enumerate(TXN2Gene_file):
+    if i &gt;0 :
+        chrom=ln.split()[2]
+        chromf=chrom[3:]
+        start=int(ln.split()[4])-1 
+        end=int(ln.split()[4])
+        txn=ln.split()[1]
+        genename=ln.split()[12]
+        id=txn + &quot;:&quot; + genename
+        strand=ln.split()[3]
+        score=&quot;.&quot;
+        outFile.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chromf, start, end, id, score, strand))
+
+outFile.close()</code></pre>
+<p>BothFracRNADTPlotTSS_noMPFilt.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=BothFracRNADTPlotTSS_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracRNADTPlotTSS_noMPFilt.out
+#SBATCH --error=BothFracRNADTPlotTSS_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TSSAllGenes.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.gz --refPointLabel &quot;Called TSS&quot; --plotTitle &quot;Combined Reads at TSS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.png</code></pre>
+<p>getTES.py</p>
+<pre class="bash"><code>
+
+TXN2Gene_file=open(&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/Transcript2GeneName.dms&quot;,&quot;r&quot;)
+
+outFile=open(&quot;/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TESAllGenes.bed&quot;, &quot;w&quot;)
+
+for i, ln in enumerate(TXN2Gene_file):
+    if i &gt;0 :
+        chrom=ln.split()[2]
+        chromf=chrom[3:]
+        start=int(ln.split()[5])-1 
+        end=int(ln.split()[5])
+        txn=ln.split()[1]
+        genename=ln.split()[12]
+        id=txn + &quot;:&quot; + genename
+        strand=ln.split()[3]
+        score=&quot;.&quot;
+        outFile.write(&quot;%s\t%s\t%s\t%s\t%s\t%s\n&quot;%(chromf, start, end, id, score, strand))
+
+outFile.close()</code></pre>
+<p>BothFracRNADTPlotTES_noMPFilt.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=BothFracRNADTPlotTES_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracRNADTPlotTES_noMPFilt.out
+#SBATCH --error=BothFracRNADTPlotTESnoMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TESAllGenes.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz --refPointLabel &quot;Called TES&quot; --plotTitle &quot;Combined Reads at TES&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.png</code></pre>
+<br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
