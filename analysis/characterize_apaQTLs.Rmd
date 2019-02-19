@@ -703,7 +703,7 @@ plotQTL_func= function(SNP, peak, gene){
   riboPlot= ggplot_func(ribo_file, "Ribo Seq",gene)
   protplot=ggplot_func(prot_file, "Protein",gene)
   
-  full_plot= plot_grid(apaNplot,apaTplot, RNAplot, protplot,nrow=1)
+  full_plot= plot_grid(apaNplot,apaTplot, RNAplot, protplot,nrow=2)
   return (full_plot)
 }
 ```
@@ -822,3 +822,45 @@ sbatch run_createQTLsnpMolPhenTable.sh "5" "5:172580291" "ENSG00000113734"
 plotQTL_func(SNP="5:172580291", peak="peak135178", gene="ENSG00000113734")
 ```
 Not sure whats up with total  
+
+###EIF2A  
+
+3:150302010 rs14434 peak114357
+
+
+```{bash,eval=F}
+grep EIF2A /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000144895 
+gunzip /project2/gilad/briana/YRI_geno_hg19/chr3.dose.filt.vcf.gz
+
+python createQTLsnpAPAPhenTable_proc.py 3 3:150302010 peak114357 Total
+python createQTLsnpAPAPhenTable_proc.py 3 3:150302010 peak114357 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "3" "3:150302010" "ENSG00000144895"
+```
+
+```{r}
+plotQTL_func(SNP="3:150302010", peak="peak114357", gene="ENSG00000144895")
+```
+
+
+###Churc1 
+
+14:65389250 peak48989 TotalQTL  rs10131002  
+
+```{bash,eval=F}
+grep CHURC1 /project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt
+#ENSG00000258289 
+gunzip /project2/gilad/briana/YRI_geno_hg19/chr14.dose.filt.vcf.gz
+
+python createQTLsnpAPAPhenTable_proc.py 14 14:65389250 peak48989 Total
+python createQTLsnpAPAPhenTable_proc.py 14 14:65389250   peak48989 Nuclear
+
+sbatch run_createQTLsnpMolPhenTable.sh "14" "14:65389250" "ENSG00000258289"
+```
+
+```{r}
+plotQTL_func(SNP="14:65389250", peak="peak48989", gene="ENSG00000258289")
+```
+No protein but this is a good example of one that is an eQTL  
+
