@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef0cf94527f37b2d52347d6cdfd6da2c6b85470cctargetblankf0cf945a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f0cf94527f37b2d52347d6cdfd6da2c6b85470cc" target="_blank">f0cf945</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeaf9929ec0acd403ea6cda8960110f74a050ec42atargetblankaf9929ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/af9929ec0acd403ea6cda8960110f74a050ec42a" target="_blank">af9929e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef0cf94527f37b2d52347d6cdfd6da2c6b85470cctargetblankf0cf945a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeaf9929ec0acd403ea6cda8960110f74a050ec42atargetblankaf9929ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -643,6 +643,7 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
+    Untracked:  output/deeptools_plots/
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -711,6 +712,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/af9929ec0acd403ea6cda8960110f74a050ec42a/analysis/peakQCplotsSTARprocessing.Rmd" target="_blank">af9929e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+rna alone
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/d27ed26f4cb421a3b249abb75080a3ec180f012d/docs/peakQCplotsSTARprocessing.html" target="_blank">d27ed26</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1181,6 +1216,25 @@ source activate three-prime-env
 computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.gz --refPointLabel &quot;Called PAS&quot; --plotTitle &quot;Combined Reads at All Called PAS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksNompfilt.png</code></pre>
+<p>RNADTPlotmyPeaks_noMPFilt.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=RNADTPlotmyPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNADTPlotmyPeaks_noMPFilt.out
+#SBATCH --error=RNADTPlotmyPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksNompfilt.gz --refPointLabel &quot;Called PAS&quot; --plotTitle &quot;Combined Reads at All Called PAS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksNompfilt.png</code></pre>
 <p>I want to make one of these that look at total, nuclear, and RNA at peaks assigned to an intron. This means I need to subset the peak file to only include these. I can do this similar to how I did the UTR subset in <a href="pipeline_55Ind.Rmd">this analysis</a></p>
 <p>I want to make a bedfile with these peaks. I need to also make sure they are in the final clean peaks</p>
 <p>makeIntronPeakBed.py</p>
@@ -1244,6 +1298,86 @@ source activate three-prime-env
 computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntron_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntron_Nompfilt.gz --refPointLabel &quot;Called Intronic PAS&quot; --plotTitle &quot;Combined Reads at Intronic PAS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_myPeaksIntronNompfilt.png</code></pre>
+<p>RNA seq only:</p>
+<p>RNADTPlotmyIntronPeaks_noMPFilt.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=RNADTPlotmyIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNADTPlotmyIntronPeaks_noMPFilt.out
+#SBATCH --error=RNADTPlotmyIntronPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Nompfilt.gz --refPointLabel &quot;Called Intronic PAS&quot; --plotTitle &quot;Combined Reads at Intronic PAS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntronNompfilt.png</code></pre>
+<p>I should try this with the nuclear RNA samples</p>
+<p>I need to merge them and make a BW.</p>
+<p>mergeNucRNAseq.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mergeNucRNAseq
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeNucRNAseq.out
+#SBATCH --error=mergeNucRNAseq.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+samtools merge /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.bam  /project2/gilad/briana/Total_Nuc_RNA_seq_data/170428_K00242_0214_AHK2GMBBXX-YG-SP20/data/sort/YG-SP20-Nuc-2_S5_L005_R1_001-sort.bam /project2/gilad/briana/Total_Nuc_RNA_seq_data/170428_K00242_0214_AHK2GMBBXX-YG-SP20/data/sort/YG-SP20-Nuc-1_S2_L005_R1_001-sort.bam
+
+samtools sort /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.bam &gt; /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bam
+
+samtools index /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bam</code></pre>
+<p>NucBam2BW.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=NucBam2BW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NucBam2BW.out
+#SBATCH --error=NucBam2BW.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#total  
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bam -o /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bw
+</code></pre>
+<p>NucRNADTPlotmyIntronPeaks_noMPFilt.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=NucRNADTPlotmyIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NucRNADTPlotmyIntronPeaks_noMPFilt.out
+#SBATCH --error=NucRNADTPlotmyIntronPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5percCov_INTRON.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Nompfilt.gz --refPointLabel &quot;Called Intronic PAS&quot; --plotTitle &quot;Combined Reads at Intronic PAS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntronNompfilt.png</code></pre>
 <p>BothFracDTPlotTSS.sh</p>
 <p>files to make: new TSS file from the annotation in the new gene loc annocation pipeline</p>
 <p>getTss.py</p>
@@ -1268,6 +1402,7 @@ for i, ln in enumerate(TXN2Gene_file):
 
 outFile.close()</code></pre>
 <p>BothFracRNADTPlotTSS_noMPFilt.sh</p>
+<p>LOOKS WIERD</p>
 <pre class="bash"><code>#!/bin/bash
 
 #SBATCH --job-name=BothFracRNADTPlotTSS_noMPFilt
@@ -1325,7 +1460,7 @@ source activate three-prime-env
 
 computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_TESAllGenes.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz
 
-plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz --refPointLabel &quot;Called TES&quot; --plotTitle &quot;Combined Reads at TES&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.png</code></pre>
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.gz --refPointLabel &quot;Called TES&quot; --plotTitle &quot;Combined Reads at TES&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TES_Nompfilt.png</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
