@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r}
+library(workflowr)
+library(reshape2)
+library(tidyverse)
+library(qvalue)
+```
+
 For a lot of this project I have been looking at the relationship between APA, RNA, and protein. I want to use trhis analysis to get the nominal pvalues for the associations of the snp:gene pairs found in the APA qtl analysis. This will help me find examples and look at the distributions overall. 
 
 I want a file that has the nominal pvalues for each of the apaQTls in the total 3', nuclear 3', RNA, and protein. I will have to convert the gene names. 
@@ -110,5 +118,84 @@ python Molpval4ApaQTL.py Nuclear RNA
 python Molpval4ApaQTL.py Total Protein
 python Molpval4ApaQTL.py Nuclear Protein
 
+```
+
+
+Pull these in: 
+
+```{r}
+NucRNA=read.table("../data/ApaQTLs_otherPhen/NuclearQTLsinRNA.txt", col.names = c("SNP", "Gene", "GeneName", "RNA_P"),stringsAsFactors = F)
+TotRNA=read.table("../data/ApaQTLs_otherPhen/TotalQTLsinRNA.txt", col.names = c("SNP", "Gene", "GeneName", "RNA_P"),stringsAsFactors = F)
+NucProt=read.table("../data/ApaQTLs_otherPhen/NuclearQTLsinProtein.txt", col.names = c("SNP", "Gene", "GeneName", "Prot_P"),stringsAsFactors = F)
+TotProt=read.table("../data/ApaQTLs_otherPhen/TotalQTLsinProtein.txt", col.names = c("SNP", "Gene", "GeneName", "Prot_P"),stringsAsFactors = F)
+```
+
+
+
+Pi1 values: 
+
+Nuclear: 
+
+* RNA
+```{r}
+NucRNAPi=pi0est(NucRNA$RNA_P, pi0.method = "bootstrap")
+1-NucRNAPi$pi0
+```
+* Protein  
+```{r}
+NucProtPi=pi0est(NucProt$Prot_P, pi0.method = "bootstrap")
+1-NucProtPi$pi0
+```
+
+Total:  
+
+* RNA 
+```{r}
+TotRNAPi=pi0est(TotRNA$RNA_P, pi0.method = "bootstrap")
+1-TotRNAPi$pi0
+
+```
+* Protein   
+```{r}
+TotProtPi=pi0est(TotProt$Prot_P, pi0.method = "bootstrap")
+1-TotProtPi$pi0
+```
+
+Histograms:  
+
+```{r}
+par(mfrow=c(3,2))
+hist(TotRNA$RNA_P,xlab="RNA Pvalue", main="Total apaQTLs \nin RNA")  
+text(.6,50, paste("pi_1=", round((1-TotRNAPi$pi0), digit=3), sep=" "))
+hist(TotProt$Prot_P,xlab="Protein Pvalue", main="Total apaQTLs \nin Protein")
+text(.6,20, paste("pi_1=", round((1-TotProtPi$pi0), digit=3), sep=" "))
+hist(NucRNA$RNA_P,xlab="RNA Pvalue", main="Nuclear apaQTLs \nin RNA")  
+text(.6,90, paste("pi_1=", round((1-NucRNAPi$pi0), digit=3), sep=" "))
+hist(NucProt$Prot_P,xlab="Protein Pvalue", main="Nuclear apaQTLs \nin Protein")
+text(.6,30, paste("pi_1=", round((1-NucProtPi$pi0), digit=3), sep=" "))
+
+```
+
+
+Put together to look at examples and distributions:  
+
+```{r}
+NucOverlap=NucRNA %>% full_join(NucProt, by=c("SNP", "Gene", "GeneName"))
+
+NucOverlap_melt=melt(NucOverlap, id.vars = c("SNP", "Gene", "GeneName"))
+colnames(NucOverlap_melt)=c("SNP", "Gene", "GeneName", "Pheno", "Pvalue")
+
+ggplot(NucOverlap_melt, aes(x=Pvalue, by=Pheno, fill=Pheno))+ geom_density(alpha=.5) +labs(title="RNA and Protien Pvalues for Nuclear apaQTLs") + scale_fill_manual(values=c("yellow","blue"))
+
+```
+
+
+```{r}
+TotOverlap=TotRNA %>% full_join(TotProt, by=c("SNP", "Gene", "GeneName"))
+
+TotOverlap_melt=melt(TotOverlap, id.vars = c("SNP", "Gene", "GeneName"))
+colnames(TotOverlap_melt)=c("SNP", "Gene", "GeneName", "Pheno", "Pvalue")
+
+ggplot(TotOverlap_melt, aes(x=Pvalue, by=Pheno, fill=Pheno))+ geom_density(alpha=.5) + labs(title="RNA and Protien Pvalues for Total apaQTLs") + scale_fill_manual(values=c("yellow","blue"))
 ```
 
