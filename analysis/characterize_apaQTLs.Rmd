@@ -945,3 +945,174 @@ plotQTL_func(SNP="14:65389250", peak="peak48989", gene="ENSG00000258289")
 ```
 No protein but this is a good example of one that is an eQTL  
 
+
+
+##Matched SNP for enrichment  
+
+Use https://data.broadinstitute.org/mpg/snpsnap/match_snps.html to get matched snps. Give it the total and nuclear QTLs in chr:pos format  
+
+
+/Users/bmittleman1/Documents/Gilad_lab/threeprimeseq/data/ApaQTLs
+
+```{bash,eval=F}
+cut -f6 -d" " NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt > NuclearapaQTLs_SNPonly.txt
+
+cut -f6 -d" " TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt > TotalapaQTLs_SNPonly.txt
+```
+
+
+I am asking for 1 snp per input. I am asking for annotation and specifying west african population. I have not exclued teh HLA snps.  
+
+I will need to make a bed file from the matches to run the overlap with the HMM regions.  This will be simplt bed with just chrom, pos-1, pos.  
+
+
+Move to Midway
+
+/project2/gilad/briana/threeprimeseq/data/MatchedSnp
+
+
+matched2bed.py
+```{bash,eval=F}  
+nucSnp="/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps.txt"
+totSnp="/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps.txt"
+nucBed="/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps.bed"
+totBed="/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps.bed"  
+
+
+def toBed(Fin,Fout):
+    fout=open(Fout, "w")
+    fin= open(Fin, "r")
+    for i, ln in enumerate(fin):
+        if i >0: 
+            qtl, match = ln.split()
+            chrom=match.split(":")[0]
+            pos=match.split(":")[1]
+            start=int(pos) -1
+            end=int(pos)
+            fout.write("%s\t%s\t%s\n"%(chrom, start, end))
+    fout.close()
+
+
+toBed(nucSnp,nucBed)
+toBed(totSnp,totBed)  
+
+
+```
+Sort them: 
+
+```{bash,eval=F}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps.bed > /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps_sort.bed
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps.bed > /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps_sort.bed
+```
+
+
+SCript to get HMM  
+
+ChromHMM.MatchedSNPs.py
+
+```{bash,eval=F}
+
+import pybedtools 
+
+sigNuc=pybedtools.BedTool('/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps_sort.bed') 
+
+sigTot=pybedtools.BedTool('/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps_sort.bed')
+
+hmm=pybedtools.BedTool("/project2/gilad/briana/genome_anotation_data/GM12878.chromHMM.sort.bed")
+
+#map hmm to snps  
+Tot_overlapHMM=sigTot.map(hmm, c=4)
+
+Nuc_overlapHMM=sigNuc.map(hmm,c=4)
+
+#save results  
+
+Tot_overlapHMM.saveas("/project2/gilad/briana/threeprimeseq/data/MatchedSnp/TotMatched_overlapHMM.bed")
+
+Nuc_overlapHMM.saveas("/project2/gilad/briana/threeprimeseq/data/MatchedSnp/NucMatched_overlapHMM.bed")
+```
+
+
+Move here: 
+
+remove the 1 snp in the nuclear file with a "." 
+```{r}
+TotalMatchedOverlapHMM=read.table("../data/MatchedSnps/TotMatched_overlapHMM.bed", col.names=c("chrom", "start", "end",  "number"),stringsAsFactors = F)
+TotalMatchedOverlapHMM_names=TotalMatchedOverlapHMM %>% left_join(chromHmm, by="number")
+
+NuclearMatchedOverlapHMM=read.table("../data/MatchedSnps/NucMatched_overlapHMM.bed", col.names=c("chrom", "start", "end", "number"),stringsAsFactors = F)
+NuclearMatchedOverlapHMM_names=NuclearMatchedOverlapHMM %>% left_join(chromHmm, by="number")
+```
+Group togetehr: 
+
+```{r}
+NuclearMatchedOverlapHMM_names_byname= NuclearMatchedOverlapHMM_names %>% group_by(name) %>% summarise(Nuclear=n())
+TotalMatchedOverlapHMM_names_byname= TotalMatchedOverlapHMM_names %>% group_by(name) %>% summarise(Total=n())
+
+
+bothFracMatchedHMM= TotalMatchedOverlapHMM_names_byname %>% full_join(NuclearMatchedOverlapHMM_names_byname, by="name")
+
+```
+
+melt and plot  
+
+```{r}
+bothFracMatchedHMM_melt= melt(bothFracMatchedHMM,id.vars="name")
+colnames(bothFracMatchedHMM_melt)=c("Region", "Fraction", "NQTLs")
+
+apaMatchedChromregion=ggplot(bothFracMatchedHMM_melt, aes(x=Region, y=NQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat="identity", position = "dodge")+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + labs(title="Matched SNPS by chromatin region")
+apaMatchedChromregion
+```
+
+Get proportions:  
+
+```{r}
+
+bothFracMatchedHMM_prop= bothFracMatchedHMM %>% mutate(Total_prop=Total/254) %>% mutate(Nuclear_prop=Nuclear/527) %>% select(-Total,-Nuclear) 
+
+bothFracMatchedHMM_prop_melt= melt(bothFracMatchedHMM_prop,id.vars="name")
+colnames(bothFracMatchedHMM_prop_melt)=c("Region", "Fraction", "PropQTLs")
+
+
+propapaQTLsMatchedChromregion=ggplot(bothFracMatchedHMM_prop_melt, aes(x=Region, y=PropQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat="identity", position = "dodge")+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + labs(y="Proportion of apaQTLs", title="Proportion of matched SNPs by chromatin region")
+propapaQTLsMatchedChromregion
+```
+
+
+Look at the difference between matched and actual QTLs:  
+
+```{r}
+PropHMM_QTLandMatch= bothFracMatchedHMM_prop %>% inner_join(bothFracHMM_prop, by="name")
+colnames(PropHMM_QTLandMatch)=c("name", "Total_Matched", "Nuclear_Matched", "Total_QTL", "Nuclear_QTL")
+
+PropHMM_QTLandMatch_diff =PropHMM_QTLandMatch %>% mutate(TotalDiff=Total_QTL-Total_Matched, NuclearDiff=Nuclear_QTL-Nuclear_Matched) %>% select(-Total_Matched, -Total_QTL, -Nuclear_Matched, -Nuclear_QTL)
+colnames(PropHMM_QTLandMatch_diff)= c("name","Total", "Nuclear" )
+
+
+PropHMM_QTLandMatch_diff_melt=melt(PropHMM_QTLandMatch_diff, id.vars="name")
+colnames(PropHMM_QTLandMatch_diff_melt)= c("Region", "Fraction", "Difference")
+
+                                          
+```
+
+
+```{r}
+diffPropPlot=ggplot(PropHMM_QTLandMatch_diff_melt, aes(x=Region, y=Difference, by=Fraction, fill=Fraction))+ geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))+labs(y="Difference in proportion of SNPs", title="Enrichment of QTLs compared to \nmatched SNPs by chromatin region")
+diffPropPlot
+
+ggsave(diffPropPlot, filename ="../output/plots/DiffPropChromHMM.png")
+```
+
+
+```{r}
+PropHMM_QTLandMatch_melt=melt(PropHMM_QTLandMatch, id.vars="name") %>% separate(variable,sep="_", into=c("Fraction", "Set"))
+
+colnames(PropHMM_QTLandMatch_melt)=c("Region", "Fraction", "Set", "Proportion")
+```
+
+
+```{r}
+ggplot(PropHMM_QTLandMatch_melt, aes(x=Region, by=Set, y=Proportion, fill=Set)) + geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +facet_grid(~Fraction) + scale_fill_manual(values=c("grey", "blue"))
+```
+
