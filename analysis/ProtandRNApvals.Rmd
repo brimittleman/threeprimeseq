@@ -164,7 +164,8 @@ TotProtPi=pi0est(TotProt$Prot_P, pi0.method = "bootstrap")
 Histograms:  
 
 ```{r}
-par(mfrow=c(3,2))
+png("../output/plots/OverlapRNAandProtPi.png")
+par(mfrow=c(2,2))
 hist(TotRNA$RNA_P,xlab="RNA Pvalue", main="Total apaQTLs \nin RNA")  
 text(.6,50, paste("pi_1=", round((1-TotRNAPi$pi0), digit=3), sep=" "))
 hist(TotProt$Prot_P,xlab="Protein Pvalue", main="Total apaQTLs \nin Protein")
@@ -173,7 +174,7 @@ hist(NucRNA$RNA_P,xlab="RNA Pvalue", main="Nuclear apaQTLs \nin RNA")
 text(.6,90, paste("pi_1=", round((1-NucRNAPi$pi0), digit=3), sep=" "))
 hist(NucProt$Prot_P,xlab="Protein Pvalue", main="Nuclear apaQTLs \nin Protein")
 text(.6,30, paste("pi_1=", round((1-NucProtPi$pi0), digit=3), sep=" "))
-
+dev.off()
 ```
 
 
