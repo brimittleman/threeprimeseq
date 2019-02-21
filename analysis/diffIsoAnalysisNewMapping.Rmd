@@ -9,6 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(tidyverse)
+library(workflowr)
+library(reshape2)
+```
+
+
 * filternamePeaks5percCov_GeneLocAnno.py
 * bothFrac_processed_GeneLocAnno_FC.sh 
 * fix_head_fc_procBothFrac_GeneLocAnno.py 
@@ -16,3 +23,133 @@ knitr::opts_chunk$set(echo = TRUE)
 * subset_diffisopheno_processed_GeneLocAnno.py/ run_subset_diffisopheno_processed_GeneLocAnno.sh 
 * makeLCSampleList_processed_GeneLocAnno.py  
 * run_leafcutter_ds_bychrom_processed_GeneLocAnno.sh
+
+Leafcutter environment:
+module unload Anaconda3
+module load Anaconda3/5.3.0
+conda activate leafcutter
+
+
+```{bash,eval=F}
+awk '{if(NR>1)print}' /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*.txt_effect_sizes.txt > /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt
+
+awk '{if(NR>1)print}' /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*cluster_significance.txt > /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt
+```
+
+
+```{r}
+diffIso=read.table("../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt", header = F,col.names = c("status",   "loglr",    "df",   "p",    "cluster",  "p.adjust"),stringsAsFactors = F,sep="\t") %>% filter(status == "Success")
+
+
+diffIso$p.adjust=as.numeric(as.character(diffIso$p.adjust))
+```
+
+
+Make plot  
+```{r}
+png("../output/plots/DiffIsoQQplot.png")
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab="-log10 Total Adjusted Leafcutter pvalue", xlab="-log 10 Uniform expectation", main="Leafcutter differencial isoform analysis between fractions")
+abline(0,1)
+dev.off()
+
+```
+
+
+```{r}
+diffIso_10FDR=diffIso %>% filter(-log10(p.adjust)>1)
+
+diffIso_10FDR_genes=diffIso_10FDR %>% separate(cluster, into = c("chr", "gene"), sep=":") %>% group_by(gene) %>% tally()
+
+nrow(diffIso_10FDR_genes)
+```
+There are 8227 significant genes 
+```{r}
+effectsize=read.table("../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt", stringsAsFactors = F, col.names=c('intron',  'logef' ,'Nuclear', 'Total','deltapsi'))
+
+effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))
+effectsize$logef=as.numeric(as.character(effectsize$logef))
+
+plot(sort(effectsize$deltapsi),main="Leafcutter delta PSI", ylab="Delta PSI", xlab="Peak Index")
+```
+```{r}
+effectsize_dpsi= effectsize %>% filter(abs(deltapsi) > .2) 
+
+effectsize_dpsi_gene= effectsize %>% filter(abs(deltapsi) > .2) %>% separate(intron, into=c("chr", 'start', 'end','gene'), sep=":") %>% group_by(gene) %>% tally()
+
+nrow(effectsize_dpsi)
+nrow(effectsize_dpsi_gene)
+
+```
+
+```{r}
+inboth=effectsize_dpsi_gene %>% inner_join(diffIso_10FDR_genes, by="gene")
+nrow(inboth)
+```
+
+
+
+There are 1983 genes that are significant at 10 FDR with peaks with delta psi > .2. There are 2574 peaks in this set.  
+
+```{r}
+arrange(effectsize_dpsi,deltapsi) %>% head()
+```
+
+
+How many total genes tested: 
+
+```{r}
+diffIsoGene=diffIso %>% separate(cluster, into=c("chrom", "gene"), sep = ":") 
+
+length(unique(diffIsoGene$gene))
+```
+
+We tested 9790 genes and  8227 are significant at FDR 10%  
+
+I can make a plot that separates genes into tested, if passes has fdr 10%, if it has a peak greater than .2 delta psi.  
+
+```{r}
+sigandPSIGene=effectsize_dpsi_gene$gene
+SiggenesDF=diffIso_10FDR %>% separate(cluster, into=c("chrom", "gene"), sep = ":")  %>% select(gene)
+Siggenes = SiggenesDF$gene
+LCgeneDF=diffIsoGene %>% select(gene)
+LCgene=LCgeneDF$gene
+```
+
+
+```{r}
+type=c("NotSig", "Sig", "SigHighDPAU")
+nGenes=c(1563, 6244,1983)
+nGenesProp=c(1563/9790, 6244/9790, 1983/9790)
+LCDF=data.frame(cbind(type, nGenes, nGenesProp))
+LCDF$nGenesProp=as.numeric(as.character(LCDF$nGenesProp))
+
+```
+
+
+
+```{r}
+
+labT=paste("Genes =", "1563", sep=" ")
+labS=paste("Genes =", "6244", sep=" ")
+labD=paste("Genes =", "1983", sep=" ")
+
+
+
+
+LCResplot=ggplot(LCDF, aes(x=" ", y=nGenesProp, fill=type))+ geom_bar(stat="identity") + labs(x="Total Genes = 9790", y="Proportion of Genes", title="Proportion of Genes \nby Differencial PAU Test Result") + annotate("text", x=" ", y= .1, label=labT) + annotate("text", x=" ", y= .5, label=labS) + annotate("text", x=" ", y= .9, label=labD) + scale_fill_brewer(palette="RdYlBu")
+
+LCResplot
+
+
+ggsave(LCResplot, file="../output/plots/LCResPlot.png",height=8, width=5)
+```
+As a boxplot: 
+
+```{r}
+LCResplotpie=ggplot(LCDF, aes(x=" ", y=nGenesProp, fill=type))+ geom_bar(stat="identity") + labs(x="Total Genes = 9790", y="Proportion of Genes", title="Proportion of Genes \nby Differencial PAU Test Result")  + scale_fill_brewer(palette="RdYlBu")+ coord_polar("y")
+
+LCResplotpie
+ggsave(LCResplotpie, file="../output/plots/LCResBoxPie.png")
+
+```
+
