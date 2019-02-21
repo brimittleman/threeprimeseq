@@ -231,3 +231,28 @@ QTLSbyCountPerc_filt
 
 ggsave(QTLSbyCountPerc_filt, file="../output/plots/QTLSbyCountPerc_Genes2Peaks.png")
 ```
+
+
+
+Dont round: look at distibution:
+
+```{r}
+totperc=totQTLsGenes %>% inner_join(totPeakCountsFiltGeneSum, by="gene")
+
+totbyexp=ggplot(totperc, aes(x=Percentile)) + geom_density(fill="darkviolet") + labs(x="Count Percentile" ,title="Total Apa QTLs by Count Percentile") 
+```
+
+```{r}
+nucperc=nucQTLsGenes %>% inner_join(nucPeakCountsFiltGeneSum, by="gene")
+
+nucbyexp=ggplot(nucperc, aes(x=Percentile)) + geom_density(fill="deepskyblue3") + labs(x="Count Percentile" ,title="Nuclear Apa QTLs by Count Percentile") 
+```
+
+
+```{r}
+bothQTLbyExp=plot_grid(totbyexp,nucbyexp)
+bothQTLbyExp
+ggsave(bothQTLbyExp, file="../output/plots/BothQTLSbyCountPerc_Genes2Peaks_density.png")
+
+```
+
