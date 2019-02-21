@@ -116,12 +116,21 @@ lab2=paste("Genes =", "2949", sep=" ")
 labMore=paste("Genes =", "7361", sep=" ")
 
 
-propGenesbyPAS=ggplot(genesPerCat_df, aes(x="", y=genesPerCat, fill=Category)) + geom_bar(stat="identity") + labs(x="Total Genes = 27115", y="Proportion of Genes", title="Proportion of Genes by number of PAS") + annotate("text", x="", y= .7, label=lab0) + annotate("text", x="", y= .5, label=lab1) + annotate("text", x="", y= .33, label=lab2) + annotate("text", x="", y= .2, label=labMore)
+propGenesbyPAS=ggplot(genesPerCat_df, aes(x="", y=genesPerCat, fill=Category)) + geom_bar(stat="identity") + labs(x="Total Genes = 27115", y="Proportion of Genes", title="Proportion of Genes by number of PAS") + annotate("text", x="", y= .7, label=lab0) + annotate("text", x="", y= .5, label=lab1) + annotate("text", x="", y= .33, label=lab2) + annotate("text", x="", y= .2, label=labMore) +  scale_fill_brewer(palette="RdYlBu")
 
 propGenesbyPAS
 
 
-ggsave(propGenesbyPAS, file="../output/plots/PropOfGenesByPASnum.png")
+ggsave(propGenesbyPAS, file="../output/plots/PropOfGenesByPASnum.png",height=8, width=5)
+```
+Box plot 
+
+```{r}
+propGenesbyPASpi=ggplot(genesPerCat_df, aes(x="", y=genesPerCat, fill=Category)) + geom_bar(stat="identity") + labs(x="Total Genes = 27115", y="Proportion of Genes", title="Proportion of Genes by number of PAS") +coord_polar("y")  +  scale_fill_brewer(palette="RdYlBu")
+
+propGenesbyPASpi
+
+ggsave(propGenesbyPASpi, file="../output/plots/PropOfGenesByPASnum_piplot.png")
 ```
 
 
@@ -572,17 +581,17 @@ for i, ln in enumerate(TXN2Gene_file):
 outFile.close()
 ```
 
-BothFracRNADTPlotTSS_noMPFilt.sh
+RNADTPlotTSS_noMPFilt.sh
 
 
 ```{bash,eval=F}
 #!/bin/bash
 
-#SBATCH --job-name=BothFracRNADTPlotTSS_noMPFilt
+#SBATCH --job-name=RNADTPlotTSS_noMPFilt
 #SBATCH --account=pi-yangili1
 #SBATCH --time=24:00:00
-#SBATCH --output=BothFracRNADTPlotTSS_noMPFilt.out
-#SBATCH --error=BothFracRNADTPlotTSS_noMPFilt.err
+#SBATCH --output=RNADTPlotTSS_noMPFilt.out
+#SBATCH --error=RNADTPlotTSS_noMPFilt.err
 #SBATCH --partition=bigmem2
 #SBATCH --mem=100G
 #SBATCH --mail-type=END
@@ -591,11 +600,34 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.gz
+computeMatrix reference-point -S  /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TSS_Nompfilt.gz
 
-plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.gz --refPointLabel "Called TSS" --plotTitle "Combined Reads at TSS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFracRNA_TSS_Nompfilt.png
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TSS_Nompfilt.gz --refPointLabel "Called TSS" --plotTitle "Combined Reads at TSS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TSS_Nompfilt.png
 ```
 
+BothFracDTPlotTSS_noMPFilt.sh
+
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPlotTSS_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=BothFracDTPlotTSS_noMPFilt.out
+#SBATCH --error=BothFracDTPlotTSS_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw  -R /project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_TSS_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_TSS_Nompfilt.gz --refPointLabel "Called TSS" --plotTitle "Combined Reads at TSS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_TSS_Nompfilt.png
+```
 
 getTES.py
 
