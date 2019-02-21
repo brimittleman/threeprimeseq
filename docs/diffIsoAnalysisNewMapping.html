@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-18
+<strong>Last updated:</strong> 2019-02-21
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebcb2f86006d7004d0560ed04a6ccd2a32f1c8f21targetblankbcb2f86a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/bcb2f86006d7004d0560ed04a6ccd2a32f1c8f21" target="_blank">bcb2f86</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed2109870a9bcac0c98f14f713b1ab3a0ff0aa8b2targetblankd210987a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d2109870a9bcac0c98f14f713b1ab3a0ff0aa8b2" target="_blank">d210987</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebcb2f86006d7004d0560ed04a6ccd2a32f1c8f21targetblankbcb2f86a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed2109870a9bcac0c98f14f713b1ab3a0ff0aa8b2targetblankd210987a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,7 +541,6 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/characterize_apaQTLs.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -552,12 +551,15 @@ Untracked files:
     Untracked:  data/APApeaksYL.total.inbrain.bed
     Untracked:  data/AllPeak_counts/
     Untracked:  data/ApaQTLs/
+    Untracked:  data/ApaQTLs_otherPhen/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
+    Untracked:  data/LocusZoom_proc/
+    Untracked:  data/MatchedSnps/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
     Untracked:  data/PeakCounts_noMP_5perc/
@@ -567,6 +569,7 @@ Untracked files:
     Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/QTL_overlap/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
     Untracked:  data/TotalApaQTLs.txt
@@ -577,6 +580,7 @@ Untracked files:
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/YL_QTL_test/
     Untracked:  data/apaExamp/
+    Untracked:  data/apaExamp_proc/
     Untracked:  data/apaQTL_examp_noMP/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
@@ -643,7 +647,7 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
-    Untracked:  docs/figure/apaQTLsbyCountPercentile.Rmd/
+    Untracked:  output/deeptools_plots/
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -666,7 +670,6 @@ Unstaged changes:
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/peakQCPPlots.Rmd
-    Modified:   analysis/peakQCplotsSTARprocessing.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
@@ -717,6 +720,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d2109870a9bcac0c98f14f713b1ab3a0ff0aa8b2/analysis/diffIsoAnalysisNewMapping.Rmd" target="_blank">d210987</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-21
+</td>
+<td>
+add res and plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/4ea438ecbc784c72fd7334c43e790d79f564aabb/docs/diffIsoAnalysisNewMapping.html" target="_blank">4ea438e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/bcb2f86006d7004d0560ed04a6ccd2a32f1c8f21/analysis/diffIsoAnalysisNewMapping.Rmd" target="_blank">bcb2f86</a>
 </td>
 <td>
@@ -736,6 +773,25 @@ add qtl by per and diff iso
 </div>
 </div>
 </div>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.4.0
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.2.0
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
 <ul>
 <li>filternamePeaks5percCov_GeneLocAnno.py</li>
 <li>bothFrac_processed_GeneLocAnno_FC.sh</li>
@@ -745,13 +801,107 @@ add qtl by per and diff iso
 <li>subset_diffisopheno_processed_GeneLocAnno.py/ run_subset_diffisopheno_processed_GeneLocAnno.sh</li>
 <li>makeLCSampleList_processed_GeneLocAnno.py<br />
 </li>
-<li>run_leafcutter_ds_bychrom_processed_GeneLocAnno.sh <br> <br>
+<li>run_leafcutter_ds_bychrom_processed_GeneLocAnno.sh</li>
+</ul>
+<p>Leafcutter environment: module unload Anaconda3 module load Anaconda3/5.3.0 conda activate leafcutter</p>
+<pre class="bash"><code>awk &#39;{if(NR&gt;1)print}&#39; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*.txt_effect_sizes.txt &gt; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt
+
+awk &#39;{if(NR&gt;1)print}&#39; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_chr*cluster_significance.txt &gt; /project2/gilad/briana/threeprimeseq/data/diff_iso_processed_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt</code></pre>
+<pre class="r"><code>diffIso=read.table(&quot;../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_cluster_significance.txt&quot;, header = F,col.names = c(&quot;status&quot;,   &quot;loglr&quot;,    &quot;df&quot;,   &quot;p&quot;,    &quot;cluster&quot;,  &quot;p.adjust&quot;),stringsAsFactors = F,sep=&quot;\t&quot;) %&gt;% filter(status == &quot;Success&quot;)
+
+
+diffIso$p.adjust=as.numeric(as.character(diffIso$p.adjust))</code></pre>
+<p>Make plot</p>
+<pre class="r"><code>png(&quot;../output/plots/DiffIsoQQplot.png&quot;)
+qqplot(-log10(runif(nrow(diffIso))), -log10(diffIso$p.adjust),ylab=&quot;-log10 Total Adjusted Leafcutter pvalue&quot;, xlab=&quot;-log 10 Uniform expectation&quot;, main=&quot;Leafcutter differencial isoform analysis between fractions&quot;)
+abline(0,1)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<pre class="r"><code>diffIso_10FDR=diffIso %&gt;% filter(-log10(p.adjust)&gt;1)
+
+diffIso_10FDR_genes=diffIso_10FDR %&gt;% separate(cluster, into = c(&quot;chr&quot;, &quot;gene&quot;), sep=&quot;:&quot;) %&gt;% group_by(gene) %&gt;% tally()
+
+nrow(diffIso_10FDR_genes)</code></pre>
+<pre><code>[1] 8227</code></pre>
+<p>There are 8227 significant genes</p>
+<pre class="r"><code>effectsize=read.table(&quot;../data/diff_iso_GeneLocAnno/TN_diff_isoform_GeneLocAnno_AllChrom.txt_effect_sizes.txt&quot;, stringsAsFactors = F, col.names=c(&#39;intron&#39;,  &#39;logef&#39; ,&#39;Nuclear&#39;, &#39;Total&#39;,&#39;deltapsi&#39;))
+
+effectsize$deltapsi=as.numeric(as.character(effectsize$deltapsi))</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>effectsize$logef=as.numeric(as.character(effectsize$logef))</code></pre>
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>plot(sort(effectsize$deltapsi),main=&quot;Leafcutter delta PSI&quot;, ylab=&quot;Delta PSI&quot;, xlab=&quot;Peak Index&quot;)</code></pre>
+<p><img src="figure/diffIsoAnalysisNewMapping.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>effectsize_dpsi= effectsize %&gt;% filter(abs(deltapsi) &gt; .2) 
+
+effectsize_dpsi_gene= effectsize %&gt;% filter(abs(deltapsi) &gt; .2) %&gt;% separate(intron, into=c(&quot;chr&quot;, &#39;start&#39;, &#39;end&#39;,&#39;gene&#39;), sep=&quot;:&quot;) %&gt;% group_by(gene) %&gt;% tally()
+
+nrow(effectsize_dpsi)</code></pre>
+<pre><code>[1] 2574</code></pre>
+<pre class="r"><code>nrow(effectsize_dpsi_gene)</code></pre>
+<pre><code>[1] 1983</code></pre>
+<pre class="r"><code>inboth=effectsize_dpsi_gene %&gt;% inner_join(diffIso_10FDR_genes, by=&quot;gene&quot;)
+nrow(inboth)</code></pre>
+<pre><code>[1] 1983</code></pre>
+<p>There are 1983 genes that are significant at 10 FDR with peaks with delta psi &gt; .2. There are 2574 peaks in this set.</p>
+<pre class="r"><code>arrange(effectsize_dpsi,deltapsi) %&gt;% head()</code></pre>
+<pre><code>                              intron     logef           Nuclear
+1 chr1:151134497:151134579:TNFAIP8L2 -1.531127  0.78054161651153
+2       chr21:43762910:43762982:TFF2 -1.292723   0.7517177403328
+3      chr3:23306502:23306675:UBE2E2 -1.576854 0.689518624324535
+4       chr14:67029307:67029417:GPHN -1.178720  0.79525048466399
+5         chr6:84007319:84007404:ME1 -1.941535 0.637895884685942
+6    chr7:73885912:73885994:GTF2IRD1 -1.094156 0.803004504625396
+              Total   deltapsi
+1 0.142652878646319 -0.6378887
+2 0.185782405086405 -0.5659353
+3 0.152772791233433 -0.5367458
+4 0.268829380937913 -0.5264211
+5 0.115849020504727 -0.5220469
+6 0.313645034829832 -0.4893595</code></pre>
+<p>How many total genes tested:</p>
+<pre class="r"><code>diffIsoGene=diffIso %&gt;% separate(cluster, into=c(&quot;chrom&quot;, &quot;gene&quot;), sep = &quot;:&quot;) 
+
+length(unique(diffIsoGene$gene))</code></pre>
+<pre><code>[1] 9790</code></pre>
+<p>We tested 9790 genes and 8227 are significant at FDR 10%</p>
+<p>I can make a plot that separates genes into tested, if passes has fdr 10%, if it has a peak greater than .2 delta psi.</p>
+<pre class="r"><code>sigandPSIGene=effectsize_dpsi_gene$gene
+SiggenesDF=diffIso_10FDR %&gt;% separate(cluster, into=c(&quot;chrom&quot;, &quot;gene&quot;), sep = &quot;:&quot;)  %&gt;% select(gene)
+Siggenes = SiggenesDF$gene
+LCgeneDF=diffIsoGene %&gt;% select(gene)
+LCgene=LCgeneDF$gene</code></pre>
+<pre class="r"><code>type=c(&quot;NotSig&quot;, &quot;Sig&quot;, &quot;SigHighDPAU&quot;)
+nGenes=c(1563, 6244,1983)
+nGenesProp=c(1563/9790, 6244/9790, 1983/9790)
+LCDF=data.frame(cbind(type, nGenes, nGenesProp))
+LCDF$nGenesProp=as.numeric(as.character(LCDF$nGenesProp))</code></pre>
+<pre class="r"><code>labT=paste(&quot;Genes =&quot;, &quot;1563&quot;, sep=&quot; &quot;)
+labS=paste(&quot;Genes =&quot;, &quot;6244&quot;, sep=&quot; &quot;)
+labD=paste(&quot;Genes =&quot;, &quot;1983&quot;, sep=&quot; &quot;)
+
+
+
+
+LCResplot=ggplot(LCDF, aes(x=&quot; &quot;, y=nGenesProp, fill=type))+ geom_bar(stat=&quot;identity&quot;) + labs(x=&quot;Total Genes = 9790&quot;, y=&quot;Proportion of Genes&quot;, title=&quot;Proportion of Genes \nby Differencial PAU Test Result&quot;) + annotate(&quot;text&quot;, x=&quot; &quot;, y= .1, label=labT) + annotate(&quot;text&quot;, x=&quot; &quot;, y= .5, label=labS) + annotate(&quot;text&quot;, x=&quot; &quot;, y= .9, label=labD) + scale_fill_brewer(palette=&quot;RdYlBu&quot;)
+
+LCResplot</code></pre>
+<p><img src="figure/diffIsoAnalysisNewMapping.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(LCResplot, file=&quot;../output/plots/LCResPlot.png&quot;,height=8, width=5)</code></pre>
+<p>As a boxplot:</p>
+<pre class="r"><code>LCResplotpie=ggplot(LCDF, aes(x=&quot; &quot;, y=nGenesProp, fill=type))+ geom_bar(stat=&quot;identity&quot;) + labs(x=&quot;Total Genes = 9790&quot;, y=&quot;Proportion of Genes&quot;, title=&quot;Proportion of Genes \nby Differencial PAU Test Result&quot;)  + scale_fill_brewer(palette=&quot;RdYlBu&quot;)+ coord_polar(&quot;y&quot;)
+
+LCResplotpie</code></pre>
+<p><img src="figure/diffIsoAnalysisNewMapping.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(LCResplotpie, file=&quot;../output/plots/LCResBoxPie.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
 </button>
-</p></li>
-</ul>
+</p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
@@ -768,12 +918,29 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] bindrcpp_0.2.2  reshape2_1.4.3  workflowr_1.2.0 forcats_0.3.0  
+ [5] stringr_1.4.0   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
+ [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0 Rcpp_0.12.19    digest_0.6.17   rprojroot_1.3-2
- [5] backports_1.1.2 git2r_0.24.0    magrittr_1.5    evaluate_0.13  
- [9] stringi_1.2.4   fs_1.2.6        whisker_0.3-2   rmarkdown_1.11 
-[13] tools_3.5.1     stringr_1.4.0   glue_1.3.0      yaml_2.2.0     
-[17] compiler_3.5.1  htmltools_0.3.6 knitr_1.20     </code></pre>
+ [1] tidyselect_0.2.4   haven_1.1.2        lattice_0.20-35   
+ [4] colorspace_1.3-2   htmltools_0.3.6    yaml_2.2.0        
+ [7] rlang_0.2.2        pillar_1.3.0       glue_1.3.0        
+[10] withr_2.1.2        RColorBrewer_1.1-2 modelr_0.1.2      
+[13] readxl_1.1.0       bindr_0.1.1        plyr_1.8.4        
+[16] munsell_0.5.0      gtable_0.2.0       cellranger_1.1.0  
+[19] rvest_0.3.2        evaluate_0.13      labeling_0.3      
+[22] knitr_1.20         broom_0.5.0        Rcpp_0.12.19      
+[25] scales_1.0.0       backports_1.1.2    jsonlite_1.6      
+[28] fs_1.2.6           hms_0.4.2          digest_0.6.17     
+[31] stringi_1.2.4      grid_3.5.1         rprojroot_1.3-2   
+[34] cli_1.0.1          tools_3.5.1        magrittr_1.5      
+[37] lazyeval_0.2.1     crayon_1.3.4       whisker_0.3-2     
+[40] pkgconfig_2.0.2    xml2_1.2.0         lubridate_1.7.4   
+[43] assertthat_0.2.0   rmarkdown_1.11     httr_1.3.1        
+[46] rstudioapi_0.9.0   R6_2.3.0           nlme_3.1-137      
+[49] git2r_0.24.0       compiler_3.5.1    </code></pre>
 </div>
 
 <hr>
