@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee5ff5286e6f659982932f39be9bab92e686382actargetblanke5ff528a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e5ff5286e6f659982932f39be9bab92e686382ac" target="_blank">e5ff528</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeb0b45a75684fe089921d9e65b633746bcef4a2cetargetblankb0b45a7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/b0b45a75684fe089921d9e65b633746bcef4a2ce" target="_blank">b0b45a7</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee5ff5286e6f659982932f39be9bab92e686382actargetblanke5ff528a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeb0b45a75684fe089921d9e65b633746bcef4a2cetargetblankb0b45a7a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -559,6 +559,7 @@ Untracked files:
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
     Untracked:  data/LocusZoom_proc/
+    Untracked:  data/MatchedSnps/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
     Untracked:  data/PeakCounts_noMP_5perc/
@@ -715,6 +716,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b0b45a75684fe089921d9e65b633746bcef4a2ce/analysis/ProtandRNApvals.Rmd" target="_blank">b0b45a7</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+<td>
+save plot
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/7d671f5d914b234b01679d43e535a8229a537eb4/docs/ProtandRNApvals.html" target="_blank">7d671f5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -910,7 +945,8 @@ TotProt=read.table(&quot;../data/ApaQTLs_otherPhen/TotalQTLsinProtein.txt&quot;,
 1-TotProtPi$pi0</code></pre>
 <pre><code>[1] 0.3333333</code></pre>
 <p>Histograms:</p>
-<pre class="r"><code>par(mfrow=c(3,2))
+<pre class="r"><code>png(&quot;../output/plots/OverlapRNAandProtPi.png&quot;)
+par(mfrow=c(2,2))
 hist(TotRNA$RNA_P,xlab=&quot;RNA Pvalue&quot;, main=&quot;Total apaQTLs \nin RNA&quot;)  
 text(.6,50, paste(&quot;pi_1=&quot;, round((1-TotRNAPi$pi0), digit=3), sep=&quot; &quot;))
 hist(TotProt$Prot_P,xlab=&quot;Protein Pvalue&quot;, main=&quot;Total apaQTLs \nin Protein&quot;)
@@ -918,8 +954,10 @@ text(.6,20, paste(&quot;pi_1=&quot;, round((1-TotProtPi$pi0), digit=3), sep=&quo
 hist(NucRNA$RNA_P,xlab=&quot;RNA Pvalue&quot;, main=&quot;Nuclear apaQTLs \nin RNA&quot;)  
 text(.6,90, paste(&quot;pi_1=&quot;, round((1-NucRNAPi$pi0), digit=3), sep=&quot; &quot;))
 hist(NucProt$Prot_P,xlab=&quot;Protein Pvalue&quot;, main=&quot;Nuclear apaQTLs \nin Protein&quot;)
-text(.6,30, paste(&quot;pi_1=&quot;, round((1-NucProtPi$pi0), digit=3), sep=&quot; &quot;))</code></pre>
-<p><img src="figure/ProtandRNApvals.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+text(.6,30, paste(&quot;pi_1=&quot;, round((1-NucProtPi$pi0), digit=3), sep=&quot; &quot;))
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
 <p>Put together to look at examples and distributions:</p>
 <pre class="r"><code>NucOverlap=NucRNA %&gt;% full_join(NucProt, by=c(&quot;SNP&quot;, &quot;Gene&quot;, &quot;GeneName&quot;))
 
@@ -929,6 +967,43 @@ colnames(NucOverlap_melt)=c(&quot;SNP&quot;, &quot;Gene&quot;, &quot;GeneName&qu
 ggplot(NucOverlap_melt, aes(x=Pvalue, by=Pheno, fill=Pheno))+ geom_density(alpha=.5) +labs(title=&quot;RNA and Protien Pvalues for Nuclear apaQTLs&quot;) + scale_fill_manual(values=c(&quot;yellow&quot;,&quot;blue&quot;))</code></pre>
 <pre><code>Warning: Removed 300 rows containing non-finite values (stat_density).</code></pre>
 <p><img src="figure/ProtandRNApvals.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7d671f5d914b234b01679d43e535a8229a537eb4/docs/figure/ProtandRNApvals.Rmd/unnamed-chunk-10-1.png" target="_blank">7d671f5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>TotOverlap=TotRNA %&gt;% full_join(TotProt, by=c(&quot;SNP&quot;, &quot;Gene&quot;, &quot;GeneName&quot;))
 
 TotOverlap_melt=melt(TotOverlap, id.vars = c(&quot;SNP&quot;, &quot;Gene&quot;, &quot;GeneName&quot;))
@@ -937,6 +1012,43 @@ colnames(TotOverlap_melt)=c(&quot;SNP&quot;, &quot;Gene&quot;, &quot;GeneName&qu
 ggplot(TotOverlap_melt, aes(x=Pvalue, by=Pheno, fill=Pheno))+ geom_density(alpha=.5) + labs(title=&quot;RNA and Protien Pvalues for Total apaQTLs&quot;) + scale_fill_manual(values=c(&quot;yellow&quot;,&quot;blue&quot;))</code></pre>
 <pre><code>Warning: Removed 133 rows containing non-finite values (stat_density).</code></pre>
 <p><img src="figure/ProtandRNApvals.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7d671f5d914b234b01679d43e535a8229a537eb4/docs/figure/ProtandRNApvals.Rmd/unnamed-chunk-11-1.png" target="_blank">7d671f5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
