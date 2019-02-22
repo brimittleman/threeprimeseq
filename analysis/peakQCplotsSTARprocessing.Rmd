@@ -778,5 +778,274 @@ computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ATAC_
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/ATAC_myPeaksIntron_Nompfilt.gz --refPointLabel "Called Intronic PAS" --plotTitle "ATAC-seq at Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/ATAC_myPeaksIntronNompfilt.png
 ```
  
+####3' UTR peaks  
 Do it with the 3' UTR peaks  
 
+Find the scripts for the UTR only peaks  
+
+processGenLocPeakAnno2SAF_3UTRonly.py
+
+I will subset Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_3UTR.SAF for those in the 5percent coverage.   
+
+The peak needs to be in /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF
+
+filter_UTRpeak_5perc.py
+```{bash,eval=F}
+fiveperc=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.SAF","r")
+utr=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_3UTR.SAF","r")
+outBed=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5perc_3UTR.bed","w")
+
+
+#make ok dic  
+
+okPeak={}
+for i, ln in enumerate(fiveperc):
+    if i >0:
+        peak=ln.split()[0]
+        okPeak[peak]=""
+
+#filter and write bed  
+
+for i,ln in enumerate(utr):
+    if i > 0:
+        peak = ln.split()[0]
+        if peak in okPeak.keys():
+            num=peak.split(":")[0]
+            gene=peak.split(":")[-1]
+            chrom=ln.split()[1]
+            start=ln.split()[2]
+            end=ln.split()[3]
+            strand=ln.split()[4]
+            id=num + ":" + gene
+            score="."
+            outBed.write("%s\t%s\t%s\t%s\t%s\t%s\n"%(chrom, start, end,id,score,strand ))
+            
+outBed.close()
+```
+
+This is 20 thousand peaks.  
+
+
+Fix strand:  
+
+
+fix3UTRPeakStrand.py
+```{bash,eval=F}
+In="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5perc_3UTR.bed"
+Out="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5perc_FixedStrand_3UTR.bed"
+
+def fix_strand(Fin,Fout):
+    fout=open(Fout,"w")
+    for ln in open(Fin, "r"):
+        chrom, start, end, name, score, strand = ln.split()
+        if strand=="+":
+            fout.write("%s\t%s\t%s\t%s\t%s\t-\n"%(chrom,start,end,name,score))
+        else:
+            fout.write("%s\t%s\t%s\t%s\t%s\t+\n"%(chrom,start,end,name,score))
+    fout.close()
+    
+    
+fix_strand(In, Out)
+
+```
+
+
+Make the deep tools plots:  
+
+* Nuclear RNA 
+* ATAC
+
+
+ATACDTPlotUTRPeaks_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=ATACDTPlotUTRPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=ATACDTPlotUTRPeaks_noMPFilt.out
+#SBATCH --error=ATACDTPlotUTRPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ATAC_mergeBW/ATAC_merged.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5perc_FixedStrand_3UTR.bed -b 300 -a 300  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/ATAC_myPeaksUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/ATAC_myPeaksUTR_Nompfilt.gz --refPointLabel "Called 3' UTR PAS" --plotTitle "ATAC-seq at 3' UTR PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/ATAC_myPeaksUTR_Nompfilt.png  
+```
+
+NucRNADTPlotmyUTR_noMPFilt.sh 
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NucRNADTPlotmyUTR_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NucRNADTPlotmyUTR_noMPFilt.out
+#SBATCH --error=NucRNADTPlotmyUTR_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5perc_FixedStrand_3UTR.bed -b 300 -a 300  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksUTR_Nompfilt.gz --refPointLabel "Called 3' UTR PAS" --plotTitle "Combined Reads at 3' UTR PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksUTRNompfilt.png
+```
+
+
+####Filter internal to higher usage:  
+
+I need to find the usage for each of the peaks and take only the top 200 intronic by average usage. I can do this in R.  
+
+I need the file with the average usage.  
+
+I can do this based on the nuclear peaks  
+
+
+filterTop200UsageNuclearIntronPeaks.R
+```{r,eval=F}
+library(tidyverse)
+
+#get nuclear mean usage  
+nuclearPeakUs=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc", header = T, stringsAsFactors = F) %>% separate(chrom, sep = ":", into = c("chr", "start", "end", "id")) %>% separate(id, sep="_", into=c("gene", "strand", "peak"))
+ind=colnames(nuclearPeakUs)[7:dim(nuclearPeakUs)[2]]
+nuclearPeakUs_CountNum=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.CountsOnlyNumeric.txt", col.names = ind)
+
+nuclearPeak=as.data.frame(cbind(nuclearPeakUs[,1:6], nuclearPeakUs_CountNum))
+nuclearPeakUs_CountNum_mean=rowMeans(nuclearPeakUs_CountNum)
+NuclearPeakUSMean=as.data.frame(cbind(nuclearPeakUs[,1:6],nuclearPeakUs_CountNum_mean))
+
+#load in intron peaks  
+intron=read.table("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON.bed", stringsAsFactors = F, col.names = c("ch", "start", "end", "loc", "score", "strand")) %>% mutate(chr=paste("chr", ch, sep="")) 
+NuclearPeakUSMean$start=as.integer(NuclearPeakUSMean$start)
+NuclearPeakUSMean$end=as.integer(NuclearPeakUSMean$end)
+#join                  
+                  
+intron_usage= intron %>% inner_join(NuclearPeakUSMean, by=c("chr","start", "end"))  %>% select(ch, start, end, loc, score, strand.x, nuclearPeakUs_CountNum_mean) %>% arrange(desc(nuclearPeakUs_CountNum_mean)) %>% select(-nuclearPeakUs_CountNum_mean)  %>%slice(1:200)
+
+write.table(intron_usage, file="/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.bed", quote=F, row.names = F, col.names = F)
+                   
+                   
+                   
+```
+
+DO this for total as well 
+
+filterTop200UsageNuclearIntronPeaks_total.R
+```{r,eval=F}
+library(tidyverse)
+
+#get nuclear mean usage  
+totalPeakUs=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc", header = T, stringsAsFactors = F) %>% separate(chrom, sep = ":", into = c("chr", "start", "end", "id")) %>% separate(id, sep="_", into=c("gene", "strand", "peak"))
+ind=colnames(totalPeakUs)[7:dim(totalPeakUs)[2]]
+totalPeakUs_CountNum=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt", col.names = ind)
+
+totalPeak=as.data.frame(cbind(totalPeakUs[,1:6], totalPeakUs_CountNum))
+totalPeakUs_CountNum_mean=rowMeans(totalPeakUs_CountNum)
+TotalPeakUSMean=as.data.frame(cbind(totalPeakUs[,1:6],totalPeakUs_CountNum_mean))
+
+#load in intron peaks  
+intron=read.table("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON.bed", stringsAsFactors = F, col.names = c("ch", "start", "end", "loc", "score", "strand")) %>% mutate(chr=paste("chr", ch, sep="")) 
+TotalPeakUSMean$start=as.integer(TotalPeakUSMean$start)
+TotalPeakUSMean$end=as.integer(TotalPeakUSMean$end)
+#join                  
+                  
+intron_usage= intron %>% inner_join(TotalPeakUSMean, by=c("chr","start", "end"))  %>% select(ch, start, end, loc, score, strand.x, totalPeakUs_CountNum_mean) %>% arrange(desc(totalPeakUs_CountNum_mean)) %>%  select(-totalPeakUs_CountNum_mean)%>%  slice(1:200)
+
+write.table(intron_usage, file="/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.bed", quote=F, row.names = F, col.names = F, sep="\t")
+```
+
+
+Sort these files to use in DT:  
+
+```{bash,eval=F}
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.bed > /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.sort.bed
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.bed > /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.Nuclear.sort.bed
+```
+
+
+NucRNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150.sh 
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NucRNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NucRNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150.out
+#SBATCH --error=NucRNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.Nuclear.sort.bed -b 300 -a 300  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Top200Nuc_Nompfilt150.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Top200Nuc_Nompfilt150.gz --refPointLabel "Called Intronic PAS" --plotTitle "Nuclear RNAseq at Nuclear Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Top200Nuc_Nompfilt150.png
+```
+
+
+NucRNADTPlotmyIntronPeaks_Top200Tot_noMPFilt_150.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NucRNADTPlotmyIntronPeaks_noMPFilt_150
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NucRNADTPlotmyIntronPeaks_noMPFilt150.out
+#SBATCH --error=NucRNADTPlotmyIntronPeaks_noMPFilt150.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/NuclearRNA/NuclearRNA_merged.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.Nuclear.sort.bed -b 300 -a 300  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Top200Tot_Nompfilt150.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Top200Tot_Nompfilt150.gz --refPointLabel "Called Intronic PAS" --plotTitle "Nuclear RNAseq at Total Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/NucRNA_myPeaksIntron_Top200Tot_Nompfilt150.png
+```
+
+
+Look at these in the top nuclear in RNA seq:  
+RNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150.sh 
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=RNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=RNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150.out
+#SBATCH --error=RNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=50G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.Nuclear.sort.bed -b 300 -a 300  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.gz --refPointLabel "Called Intronic PAS" --plotTitle "RNAseq at Nuclear Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.png
+```
+
+
+Does not help...
