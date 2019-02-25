@@ -964,7 +964,7 @@ Run this:
 Inds=colnames(TotalCounts_allInd)[2:ncol(TotalCounts_allInd)]
 Percentile=c(10,20,30,40,50,60,70,80,90,100)
 for (i in Inds){
-  x= perIndDiffUsage(i)
+  x= perIndDiffUsage(i,TotalCounts_allInd,usageTot_2peak)
   Percentile=cbind(Percentile, x)
 }
 colnames(Percentile)=c("Percentile", Inds)
@@ -981,4 +981,81 @@ colnames(Percentile_melt)=c("Percentile", "Individual", "AvgUsageDiff")
 ```{r}
 ggplot(Percentile_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Average peak usage difference for individaul vs. others") + scale_fill_gradientn(colours = c("white", "red", "black"))
 ```
+
+##Add premerged libraries:  
+Add in these samples premerged to look at difference
+
+Total counts are in: 
+
+/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc
+
+```{r}
+totalCounts_noRep=read.table("../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", header = T, stringsAsFactors = F) %>% select(Geneid, Chr, Start, End, Strand, Length, X18499_T, X18912_T, X19093_T, X19140_T) %>%  separate(Geneid, into =c('peak', 'chr', 'start', 'end', 'strand', 'gene'), sep = ":") %>% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %>% group_by(gene) %>% mutate(PeakCount=n()) %>% filter(PeakCount==2) %>% select(-PeakCount) %>% ungroup() 
+```
+
+I need to convert these to usage:  
+
+```{bash,eval=F}
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz | cut -f1 -d" " --complement | sed '1d' > /project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc_counts 
+```
+
+Run: 5percCovUsageToNumeric.py
+
+```{bash,eval=F}
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz | cut -f1 -d" " | sed '1d' > /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/PeakIDs_tot.txt
+
+paste /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/PeakIDs_tot.txt filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.txt > filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt
+```
+
+Move /project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt (to replicates for now)
+
+```{r}
+names=read.table("../data/PeakUsage_noMP_GeneLocAnno/PeakUsageHeader.txt",stringsAsFactors = F) %>% t %>% as_data_frame()
+
+usageTot_noRep=read.table("../data/Replicates_usage/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt", header=F, stringsAsFactors = F)
+colnames(usageTot_noRep)= names$V1
+
+
+usageTot_2peak_noRep= usageTot_noRep  %>% separate(chrom, into=c("chr", "start", "end", "geneInf"), sep =":") %>% separate(geneInf, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% mutate(nPeak=n()) %>% filter(nPeak==2) %>% select(-chr, -start, -end, -strand, -peak, -nPeak) %>% ungroup() %>% select(gene,NA18499, NA18912, NA19093, NA19140 )
+colnames(usageTot_2peak_noRep)= c("gene","1Rep_NA18499", "1Rep_NA18912", "1Rep_NA19093", "1Rep_NA19140" )
+
+```
+
+Merge the usage and counts:
+
+```{r}
+Usage_both=usageTot_2peak_noRep %>% bind_cols(usageTot_2peak) %>% select(-gene1)
+
+Counts_both=totalCounts_noRep %>% full_join(TotalCounts_allInd,by="gene")
+colnames(Counts_both)= c("gene", "1Rep_NA18499", "1Rep_NA18912", "1Rep_NA19093", "1Rep_NA19140", "NA18499", "NA18912", "NA19093", "NA19140" )
+```
+
+
+Run fucntion:
+
+```{r}
+Inds_comp=colnames(Counts_both)[2:ncol(Counts_both)]
+Percentile_comb=c(10,20,30,40,50,60,70,80,90,100)
+for (i in Inds_comp){
+  x= perIndDiffUsage(i,Counts_both,Usage_both)
+  Percentile_comb=cbind(Percentile_comb, x)
+}
+colnames(Percentile_comb)=c("Percentile", Inds_comp)
+
+
+```
+
+
+```{r}
+#order the 
+Percentile_comb_df=as.data.frame(Percentile_comb) 
+Percentile_comb_melt=melt(Percentile_comb_df, id.vars=c("Percentile"))
+colnames(Percentile_comb_melt)=c("Percentile", "Individual", "AvgUsageDiff")
+```
+
+```{r}
+ggplot(Percentile_comb_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Average peak usage difference for individaul vs. others") + scale_fill_gradientn(colours = c("white", "red", "black"))
+```
+
+
 
