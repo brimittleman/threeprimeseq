@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebd4b3dca639f45243a9559f2516499e43434a0edtargetblankbd4b3dca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/bd4b3dca639f45243a9559f2516499e43434a0ed" target="_blank">bd4b3dc</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee1b0add4a6bb5fa8bd51647619afe0f4dd5dddc0targetblanke1b0adda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e1b0add4a6bb5fa8bd51647619afe0f4dd5dddc0" target="_blank">e1b0add</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebd4b3dca639f45243a9559f2516499e43434a0edtargetblankbd4b3dca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee1b0add4a6bb5fa8bd51647619afe0f4dd5dddc0targetblanke1b0adda" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -725,6 +725,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e1b0add4a6bb5fa8bd51647619afe0f4dd5dddc0/analysis/mergeReplicates.Rmd" target="_blank">e1b0add</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-25
+</td>
+<td>
+add comparison
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/3a296139dfe46815a25887ba4f746c0784c73d7e/docs/mergeReplicates.html" target="_blank">3a29613</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/bd4b3dca639f45243a9559f2516499e43434a0ed/analysis/mergeReplicates.Rmd" target="_blank">bd4b3dc</a>
 </td>
 <td>
@@ -748,13 +782,13 @@ add usage diff heatplot
 <pre><code>This is workflowr version 1.2.0
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.4.0
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
 <pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
@@ -1571,7 +1605,7 @@ colnames(TotalCounts_allInd)=colnames(usageTot_2peak)</code></pre>
 <pre class="r"><code>Inds=colnames(TotalCounts_allInd)[2:ncol(TotalCounts_allInd)]
 Percentile=c(10,20,30,40,50,60,70,80,90,100)
 for (i in Inds){
-  x= perIndDiffUsage(i)
+  x= perIndDiffUsage(i,TotalCounts_allInd,usageTot_2peak)
   Percentile=cbind(Percentile, x)
 }
 colnames(Percentile)=c(&quot;Percentile&quot;, Inds)</code></pre>
@@ -1581,6 +1615,86 @@ Percentile_melt=melt(Percentile_df, id.vars=c(&quot;Percentile&quot;))
 colnames(Percentile_melt)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &quot;AvgUsageDiff&quot;)</code></pre>
 <pre class="r"><code>ggplot(Percentile_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Average peak usage difference for individaul vs. others&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
 <p><img src="figure/mergeReplicates.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-34-1">
+Past versions of unnamed-chunk-34-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-34-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/3a296139dfe46815a25887ba4f746c0784c73d7e/docs/figure/mergeReplicates.Rmd/unnamed-chunk-34-1.png" target="_blank">3a29613</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="add-premerged-libraries" class="section level2">
+<h2>Add premerged libraries:</h2>
+<p>Add in these samples premerged to look at difference</p>
+<p>Total counts are in:</p>
+<p>/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc</p>
+<pre class="r"><code>totalCounts_noRep=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, header = T, stringsAsFactors = F) %&gt;% select(Geneid, Chr, Start, End, Strand, Length, X18499_T, X18912_T, X19093_T, X19140_T) %&gt;%  separate(Geneid, into =c(&#39;peak&#39;, &#39;chr&#39;, &#39;start&#39;, &#39;end&#39;, &#39;strand&#39;, &#39;gene&#39;), sep = &quot;:&quot;) %&gt;% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %&gt;% group_by(gene) %&gt;% mutate(PeakCount=n()) %&gt;% filter(PeakCount==2) %&gt;% select(-PeakCount) %&gt;% ungroup() </code></pre>
+<p>I need to convert these to usage:</p>
+<pre class="bash"><code>less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz | cut -f1 -d&quot; &quot; --complement | sed &#39;1d&#39; &gt; /project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc_counts </code></pre>
+<p>Run: 5percCovUsageToNumeric.py</p>
+<pre class="bash"><code>less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz | cut -f1 -d&quot; &quot; | sed &#39;1d&#39; &gt; /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/PeakIDs_tot.txt
+
+paste /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/PeakIDs_tot.txt filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.txt &gt; filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt</code></pre>
+<p>Move /project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt (to replicates for now)</p>
+<pre class="r"><code>names=read.table(&quot;../data/PeakUsage_noMP_GeneLocAnno/PeakUsageHeader.txt&quot;,stringsAsFactors = F) %&gt;% t %&gt;% as_data_frame()
+
+usageTot_noRep=read.table(&quot;../data/Replicates_usage/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.numeric.named.txt&quot;, header=F, stringsAsFactors = F)
+colnames(usageTot_noRep)= names$V1
+
+
+usageTot_2peak_noRep= usageTot_noRep  %&gt;% separate(chrom, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneInf&quot;), sep =&quot;:&quot;) %&gt;% separate(geneInf, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;) %&gt;% group_by(gene) %&gt;% mutate(nPeak=n()) %&gt;% filter(nPeak==2) %&gt;% select(-chr, -start, -end, -strand, -peak, -nPeak) %&gt;% ungroup() %&gt;% select(gene,NA18499, NA18912, NA19093, NA19140 )</code></pre>
+<pre><code>Warning: Expected 3 pieces. Additional pieces discarded in 3 rows [4917,
+4918, 4919].</code></pre>
+<pre class="r"><code>colnames(usageTot_2peak_noRep)= c(&quot;gene&quot;,&quot;1Rep_NA18499&quot;, &quot;1Rep_NA18912&quot;, &quot;1Rep_NA19093&quot;, &quot;1Rep_NA19140&quot; )</code></pre>
+<p>Merge the usage and counts:</p>
+<pre class="r"><code>Usage_both=usageTot_2peak_noRep %&gt;% bind_cols(usageTot_2peak) %&gt;% select(-gene1)
+
+Counts_both=totalCounts_noRep %&gt;% full_join(TotalCounts_allInd,by=&quot;gene&quot;)
+colnames(Counts_both)= c(&quot;gene&quot;, &quot;1Rep_NA18499&quot;, &quot;1Rep_NA18912&quot;, &quot;1Rep_NA19093&quot;, &quot;1Rep_NA19140&quot;, &quot;NA18499&quot;, &quot;NA18912&quot;, &quot;NA19093&quot;, &quot;NA19140&quot; )</code></pre>
+<p>Run fucntion:</p>
+<pre class="r"><code>Inds_comp=colnames(Counts_both)[2:ncol(Counts_both)]
+Percentile_comb=c(10,20,30,40,50,60,70,80,90,100)
+for (i in Inds_comp){
+  x= perIndDiffUsage(i,Counts_both,Usage_both)
+  Percentile_comb=cbind(Percentile_comb, x)
+}
+colnames(Percentile_comb)=c(&quot;Percentile&quot;, Inds_comp)</code></pre>
+<pre class="r"><code>#order the 
+Percentile_comb_df=as.data.frame(Percentile_comb) 
+Percentile_comb_melt=melt(Percentile_comb_df, id.vars=c(&quot;Percentile&quot;))
+colnames(Percentile_comb_melt)=c(&quot;Percentile&quot;, &quot;Individual&quot;, &quot;AvgUsageDiff&quot;)</code></pre>
+<pre class="r"><code>ggplot(Percentile_comb_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title=&quot;Average peak usage difference for individaul vs. others&quot;) + scale_fill_gradientn(colours = c(&quot;white&quot;, &quot;red&quot;, &quot;black&quot;))</code></pre>
+<p><img src="figure/mergeReplicates.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
