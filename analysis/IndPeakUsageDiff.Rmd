@@ -15,6 +15,7 @@ library(workflowr)
 library(reshape2)
 library(matrixStats)
 library(tidyverse)
+library(cowplot)
 ```
 
 So far i have been looking at mean peak usage for my filters. As a QC metric, I want to look at the variance in this measurement. I want to understand the reproducibility of the data at a usage percent level. I also want to see if this value is dependent on coverage. I will look at the peaks used in the [QTL analysis with 55 individuals](pipeline_55Ind.html) and comopute an RNSD value for each gene. This value is computed as $\sqrt{\sum_{n=1}^N (X-Y)^2}$. Here n is the number of peaks in the gene up to N. X and Y are different individuals. I will plot this value for each gene. I can do this for 2 individuals with low depth and 2 with high depth.   
@@ -563,5 +564,59 @@ Percentile_z_melt2=melt(Percentile_z_df2, id.vars=c("Percentile"))
 colnames(Percentile_z_melt2)=c("Percentile", "Individual", "AvgUsageDiff")
 
 ggplot(Percentile_z_melt2, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Peak usage difference Z score for individaul vs. others \n by percentile of gene counts arranged by mapped reads counts") + scale_fill_gradientn(colours = c("white", "red", "black"))
+```
+
+Try ordering this by library concentration:  
+
+```{r}
+concentration=metadataTotal %>% arrange(desc(library_conc))  %>% select(line) %>% mutate(sample=paste("NA" , line, sep=""))
+concentration=concentration$sample
+
+Percentile_df_conc=as.data.frame(Percentile) %>%   select(Percentile, concentration)
+
+#order the 
+
+Percentile_conc_melt=melt(Percentile_df_conc, id.vars=c("Percentile"))
+colnames(Percentile_conc_melt)=c("Percentile", "Individual", "AvgUsageDiff")
+
+
+ggplot(Percentile_conc_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Average peak usage difference for individaul vs. others \n by lib conc ") + scale_fill_gradientn(colours = c("white", "red", "black")) 
+```
+order by batch:
+
+```{r}
+batch=metadataTotal %>% arrange(desc(batch))  %>% select(line) %>% mutate(sample=paste("NA" , line, sep=""))
+batch=batch$sample
+
+Percentile_df_batch=as.data.frame(Percentile) %>%   select(Percentile, batch)
+
+#order the 
+
+Percentile_batch_melt=melt(Percentile_df_batch, id.vars=c("Percentile"))
+colnames(Percentile_batch_melt)=c("Percentile", "Individual", "AvgUsageDiff")
+
+
+ggplot(Percentile_batch_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Average peak usage difference for individaul vs. others \n by batch") + scale_fill_gradientn(colours = c("white", "red", "black")) 
+```
+
+
+Investigate some of these meta data params:  
+
+
+```{r}
+
+metadataTotal$batch=as.factor(metadataTotal$batch)
+reads=ggplot(metadataTotal, aes(y=reads, x=batch, fill=batch)) + geom_boxplot(position="dodge") + labs(title="Batch by read count") 
+
+conc=ggplot(metadataTotal, aes(by=batch, y=library_conc, x=batch,fill=batch)) + geom_boxplot() + labs(title="Batch by library concentration")
+
+map=ggplot(metadataTotal, aes(by=batch, y=Mapped_noMP, x=batch,fill=batch)) + geom_boxplot() + labs(title="Batch by mapped no MP")
+
+
+
+mapProp=ggplot(metadataTotal, aes(by=batch, y=prop_MappedwithoutMP, x=batch,fill=batch)) + geom_boxplot() + labs(title="Batch by proportion mapped no MP")
+
+
+plot_grid(conc, reads, map, mapProp)
 ```
 
