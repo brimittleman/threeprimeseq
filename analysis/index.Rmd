@@ -164,3 +164,5 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Look at processed apaQTLs in other fractions](ProtandRNApvals.html)  
 
+* [Can we explain non-chromatin eQTLs](unexplainedeQTL_analysis.html)
+

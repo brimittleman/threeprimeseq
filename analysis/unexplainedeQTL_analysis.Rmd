@@ -1,0 +1,124 @@
+---
+title: "Explore Unexplained QTLs"
+author: "Briana Mittleman"
+date: "2/25/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+One original goal for this project was too see if APA qtls could explain a number of the unexplianed eQTLs Yang found in the integrated molQTL science paper. He has provided me a list of explained eQTLs (chromatin associatated) and unexplained eQTLs. As a first pass, I want to look at the loci/gene associations in my QTL data. If there is significant sharing I expect lower pvalues for the apa associatiations at these loci. I will start with all peaks in the e genes.
+
+
+These data have 1163 explained loci and 801 unexplained loci. 
+
+I want to make a python script that can take either of these and the nominal results for my total or nuclear apaQTLs. It will extract any association for a peak in one of these genes.  
+
+First sort these. They are chr, pos, gene,
+
+```{b}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/explained_FDR10.txt > /project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/explained_FDR10.sort.txt
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/unexplained_FDR10.txt > /project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/unexplained_FDR10.sort.txt
+
+```
+
+Take some of this code from [this analysis](ProtandRNApvals.html)
+
+
+APApval4eQTL.py
+```{bash,eval=F}
+def main(eQTL,apaQTL, outF):  
+    fout=open(outF,"w")
+    geneNames=open("/project2/gilad/briana/genome_anotation_data/ensemble_to_genename.txt","r")
+    #gene name dictionary  
+    geneDic={}
+    geneDicOpp={}
+    for i, ln in enumerate(geneNames):
+        if i >0:
+            ID=ln.split()[0]
+            gene=ln.split()[1]
+            if gene not in geneDic.keys():
+                geneDic[gene]=[ID]
+            else: 
+                geneDic[gene].append(ID)
+            geneDicOpp[ID]=gene
+    qtl_dic={}
+    for ln in open(eQTL,"r"):
+        chrom=ln.split()[0][3:]
+        pos=ln.split()[1]
+        snp=chrom + ":" + pos
+        gene=ln.split()[2]
+        if gene not in geneDicOpp.keys():
+            continue
+        geneName=geneDicOpp[gene]
+        qtl_dic[snp]=geneName
+    for ln in open(apaQTL, "r"):
+        snp=ln.split()[1]
+        gene=ln.split()[0].split(":")[-1].split("_")[0]
+        peak=ln.split()[0].split(":")[-1].split("_")[-1]
+        pval=ln.split()[3]
+        if snp in qtl_dic.keys():
+            if qtl_dic[snp]==gene:
+                fout.write("%s\t%s\t%s\t%s\n"%(snp, gene, peak, pval))
+    fout.close()
+            
+    
+if __name__ == "__main__":
+    import sys
+    fraction = sys.argv[1]
+    eqtl = sys.argv[2]
+    inQTL="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.%s.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"%(fraction)
+    eQTLin="/project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/%s_FDR10.sort.txt"%(eQTL)
+    outFile="/project2/gilad/briana/threeprimeseq/data/ExplaineQTLS/NomPval_%sApaQTLs_for%seQTLs.txt"%(fraction, eQTL)
+    main(eQTLin,inQTL,outFile)
+    
+    
+```
+
+Run this overall combinations:  
+runAPApval4eQTL.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=runAPApval4eQTL
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=runAPApval4eQTL.out
+#SBATCH --error=runAPApval4eQTL.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+python APApval4eQTL.py Total explained
+python APApval4eQTL.py Total unexplained
+
+python APApval4eQTL.py Nuclear explained
+python APApval4eQTL.py Nuclear unexplained
+
+```
+
+
+Genes not in the switch gene name file:  
+ENSG00000136653
+ENSG00000116957
+ENSG00000177236
+ENSG00000269963
+ENSG00000205047
+ENSG00000261317
+ENSG00000224113
+ENSG00000108278
+ENSG00000174100
+ENSG00000108292
+ENSG00000141720
+ENSG00000269545
+ENSG00000232698
+ENSG00000197146
+ENSG00000269781
