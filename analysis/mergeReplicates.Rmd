@@ -1,0 +1,984 @@
+---
+title: "Merge Replicates"
+author: "Briana Mittleman"
+date: "2/21/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(workflowr)
+library(tidyverse)
+library(reshape2)
+```
+
+In this analysis I will merge replicates to see if more seq reads helps with coverage per gene and variance between peak usage score.  
+##Process replicate samples  
+
+/project2/gilad/briana/threeprimeseq/data/sort/  
+/project2/gilad/briana/threeprimeseq/data/Replicates/  
+/project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam/
+
+18499-N-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam  YL-SP-18499-N-combined-sort.bam 
+18499-T-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam  YL-SP-18499-T-combined-sort.bam  
+
+18912-N-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam YL-SP-18912-N-combined-sort.bam
+18912-T-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam YL-SP-18912-N-combined-sort.bam
+
+19093-N-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam YL-SP-19093-N-combined-sort.bam 
+19093-T-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam YL-SP-19093-T-combined-sort.bam  
+
+19140-N-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam YL-SP-19140-N-combined-sort.bam
+19140-T-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam YL-SP-19140-T-combined-sort.bam
+
+
+mergeReplicateBams.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeReplicateBams
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeReplicateBams.out
+#SBATCH --error=mergeReplicateBams.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in "18499-N" "18499-T" "18912-N" "18912-T"  "19093-N" "19093-T" "19140-N" "19140-T" 
+do 
+samtools merge /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam/YL-SP-$i-mergedReps-combined.bam /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-$i-combined-sort.bam /project2/gilad/briana/threeprimeseq/data/Replicates/$i-batch4.combined.STARwWASP.bamAligned.filtered.sort.bam 
+samtools sort /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam/YL-SP-$i-mergedReps-combined.bam > /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam/YL-SP-$i-mergedReps-combined-sort.bam
+samtools index /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam/YL-SP-$i-mergedReps-combined-sort.bam
+done
+
+
+```
+
+Bam to bed:  
+
+bam2BedandSort.replicates.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=bam2BedandSort.replicates
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=bam2BedandSort.replicates.out
+#SBATCH --error=bam2BedandSort.replicates.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env 
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam/*-sort.bam )
+do
+describer=$(echo ${i} |sed -e 's/.*YL-SP-//'  | sed -e "s/-mergedReps-combined-sort.bam//")
+bedtools bamtobed -i $i > /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBed/YL-SP-$describer-mergedReps-combined.bed
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBed/YL-SP-$describer-mergedReps-combined.bed > /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBed/YL-SP-$describer-mergedReps-combined-sort.bed
+done 
+
+```
+
+Next step is to get the 10 bp upstream:  
+
+Upstream10Bases_replicates.py
+```{bash,eval=F}
+#python  
+def main(Fin, Fout):
+  outBed=open(Fout, "w")
+  chrom_lengths=open("/project2/gilad/briana/genome_anotation_data/chrom_lengths2.sort.bed","r")
+  #make a dictionary with chrom lengths
+  length_dic={}
+  for i in chrom_lengths:
+    chrom, start, end = i.split()
+    length_dic[str(chrom)]=int(end)  
+
+#write file 
+  for ln in open(Fin):
+    chrom, start, end, name, score, strand = ln.split()
+    chrom=str(chrom)
+    if strand=="+":
+      start_new=int(start)-10
+      if start_new <= 1:
+        start_new = 0 
+      end_new= int(start)
+      if end_new == 0:
+        end_new=1
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+    if strand == "-":
+      start_new=int(end)
+      end_new=int(end) + 10
+      if end_new >= length_dic[chrom]:
+        end_new = length_dic[chrom] 
+        start_new=end_new-1 
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+  outBed.close()  
+
+if __name__ == "__main__":
+    import sys
+    inFile = sys.argv[1]
+    fileNoPath=inFile.split("/")[-1]
+    fileshort=fileNoPath[:-4]
+    outFile="/project2/gilad/briana/threeprimeseq/data/Replicates_bed_10up/" + fileshort + "10up.bed"
+    main(inFile, outFile)
+```
+
+wrap_Upstream10Bases_rep.sh   
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=w_Upstream10Bases_rep
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=w_Upstream10Bases_rep.out
+#SBATCH --error=w_Upstream10Bases_rep.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=8G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3  
+
+source activate three-prime-env
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBed/*sort.bed); do
+            python  Upstream10Bases_replicates.py  $i 
+        done
+```
+
+Nuc10BasesUp_replicate.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=Nuc10BasesUp_replicate
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=Nuc10BasesUp_replicate.out
+#SBATCH --error=Nuc10BasesUp_replicate.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/Replicates_bed_10up/*);do
+   describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/-mergedReps-combined-sort10up.bed$//")
+   bedtools nuc -s -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed $i > /project2/gilad/briana/threeprimeseq/data/Replicates_nuc_10up/TenBaseUP.${describer}.txt   
+done
+```
+
+replicates_filterMissprimingInNuc10.py
+```{bash,eval=F}
+def main(Fin, Fout):
+  outBed=open(Fout, "w")
+  inBed=open(Fin, "r")
+  for ind, ln in enumerate(inBed):
+    if ind >=1:
+      chrom,start, end, name, score, strand, pctAT, pctGC, A, C, G, T, N, Other, Length, Sequence = ln.split()
+      Tperc= float(T) / float(Length)
+      if Tperc < .7:
+          if "TTTTTT" not in Sequence:
+              start_new=int(start)
+              end_new=int(end)
+              outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new , name, score, strand))
+  outBed.close()
+
+if __name__ == "__main__":
+    import sys
+    inFile = sys.argv[1]
+    fileNoPath=inFile.split("/")[-1]
+    sampleName=fileNoPath.split(".")[1]
+    outFile="/project2/gilad/briana/threeprimeseq/data/Replicates_nuc_10up_CleanReads/TenBaseUP." + sampleName + ".CleanReads.bed"
+    main(inFile, outFile)
+```
+
+
+run_filterMissprimingInNuc10_rep.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_filterMissprimingInNuc10_rep
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=run_filterMissprimingInNuc10_rep.out
+#SBATCH --error=c
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/Replicates_nuc_10up/*);do
+    python filterMissprimingInNuc10.py $i  
+done 
+```
+
+
+filterSortBedbyCleanedBed_rep.R
+```{r, eval=F}
+#!/bin/rscripts
+
+# usage: Rscirpt --vanilla  filterSortBedbyCleanedBed.R identifier
+
+#this script takes in the sorted bed file and the clean reads, it will clean the bed file   
+
+
+library(dplyr)
+library(tidyr)
+library(data.table)
+
+
+args = commandArgs(trailingOnly=TRUE)
+identifier=args[1]
+
+
+sortBedName= paste("/project2/gilad/briana/threeprimeseq/data/Replicates_mergedBed/YL-SP-", identifier, "-mergedReps-combined-sort.bed", sep="")
+
+CleanName= paste("/project2/gilad/briana/threeprimeseq/data/Replicates_nuc_10up_CleanReads/TenBaseUP.", identifier, ".CleanReads.bed", sep="")
+
+outFile= paste("/project2/gilad/briana/threeprimeseq/data/Replicates_bed_sort_CleanedMP/YL-SP-", identifier, "-combined-sort.clean.bed", sep="")  
+
+bedFile=fread(sortBedName, col.names = c("Chrom", "start", "end", "name", "score", "strand"))
+
+cleanFile=fread(CleanName, col.names = c("Chrom", "start", "end", "name", "score", "strand"))
+
+intersection=bedFile %>% semi_join(cleanFile, by="name")
+
+fwrite(intersection, file=outFile,quote = F, col.names = F, row.names = F, sep="\t")
+```
+
+
+run_filterSortBedbyCleanedBed_replicates.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_filterSortBedbyCleanedBed
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=run_filterSortBedbyCleanedBed.out
+#SBATCH --error=run_filterSortBedbyCleanedBed.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/Replicates_nuc_10up_CleanReads/*);do
+   describer=$(echo ${i} | sed -e 's/.*TenBaseUP.//' | sed -e "s/.CleanReads.bed//")
+   Rscript --vanilla  filterSortBedbyCleanedBed_rep.R  ${describer}
+done 
+
+```
+sort_filterSortBedbyCleanedBed_rep.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=sort_filterSortBedbyCleanedBed_rep
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=sort_filterSortBedbyCleanedBed_rep.out
+#SBATCH --error=sort_filterSortBedbyCleanedBed_rep.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/Replicates_bed_sort_CleanedMP/*);do
+  describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/-combined-sort.clean.bed//")
+  bedtools sort -faidx /project2/gilad/briana/threeprimeseq/code/chromOrder.num.txt -i  /project2/gilad/briana/threeprimeseq/data/Replicates_bed_sort_CleanedMP/YL-SP-${describer}-combined-sort.clean.bed > /project2/gilad/briana/threeprimeseq/data/Replicates_bed_sort_CleanedMP/YL-SP-${describer}-combined-sort.clean.sorted.bed
+done
+```
+
+
+filterBamforMP.pysam2_rep.py
+```{bash,eval=F}
+#!/usr/bin/env python
+
+
+"""
+Usage: python filterBamforMP.pysam2_rep.py <describer>
+"""
+
+
+def main(Bin, Bamin, out):
+    okRead={}
+    for ln in open(Bin, "r"):
+        chrom, start_new , end_new , name, score, strand = ln.split()
+        okRead[name] = ""
+    #pysam to read in bam allignments
+    bamfile = pysam.AlignmentFile(Bamin, "rb")
+    finalBam =  pysam.AlignmentFile(out, "wb", template=bamfile)
+    #read name is the first col in each bam file
+    n=0
+    for read in bamfile.fetch():
+        read_name=read.query_name
+        #if statement about name  
+        if read_name in okRead.keys():
+            finalBam.write(read)
+        if n % 1000==0 : print(n)
+        n+=1 
+    bamfile.close()
+    finalBam.close()
+
+    
+if __name__ == "__main__":
+    import sys, pysam
+    describer = sys.argv[1]
+    inBed= "/project2/gilad/briana/threeprimeseq/data/Replicates_bed_sort_CleanedMP/YL-SP-" + describer + "-combined-sort.clean.sorted.bed"
+    inBam="/project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam/YL-SP-" + describer + "-mergedReps-combined-sort.bam"
+    outBam="/project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam_NoMP/YL-SP-" + describer + "-combined-MergedReps_sort.noMP.bam"
+    main(inBed, inBam, outBam)
+```
+
+wrap_filterBamforMP.pysam2_rep.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=wrap_filterBamforMP.pysam2_rep
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=wrap_filterBamforMP.pysam2_rep.out
+#SBATCH --error=wrap_filterBamforMP.pysam2_rep.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=32G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env  
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/Replicates_bed_sort_CleanedMP/*sort.clean.sorted.bed);do
+   describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/-combined-sort.clean.sorted.bed//")
+   python filterBamforMP.pysam2_rep.py ${describer}
+done
+```
+
+Read counts after cleaning:  
+18499N-12417636
+18499T-17359225
+18912N-11020463
+18912T-21554082
+19093N-13089487
+19093T-24167003  
+19140N- 14668172
+19140T- 23520072
+
+
+
+SortIndexBam_noMP_rep.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=SortIndexBam_noMP_rep
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=SortIndexBam_noMP_rep.out
+#SBATCH --error=SortIndexBam_noMP_rep.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+#module load Anaconda3
+#source activate three-prime-env 
+
+module load samtools 
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam_NoMP/*);do
+ describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/-combined-MergedReps_sort.noMP.bam//")
+  samtools sort /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam_NoMP/YL-SP-${describer}-combined-MergedReps_sort.noMP.bam >  /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam_NoMP/YL-SP-${describer}-combined-MergedReps_sort.noMP.sort.bam 
+  samtools index /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam_NoMP/YL-SP-${describer}-combined-MergedReps_sort.noMP.sort.bam 
+done  
+```
+
+
+
+
+Run feature counts on the peaks  
+GeneLocAnno_fc_TN_noMP_rep.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=GeneLocAnno_fc_TN_noMP_rep
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=GeneLocAnno_fc_TN_noMP_rep.out
+#SBATCH --error=GeneLocAnno_fc_TN_noMP_rep.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fc /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam_NoMP/*T*.sort.bam -s 1
+
+featureCounts -O -a /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.SAF -F SAF -o /project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fc /project2/gilad/briana/threeprimeseq/data/Replicates_mergedBam_NoMP/*N*.sort.bam -s 1
+
+```
+
+
+Fix header:  
+
+
+fix_head_fc_geneLoc_tot_noMP_rep.py
+
+```{bash,eval=F}
+infile= open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fc", "r")
+fout = open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+```
+
+fix_head_fc_geneLoc_nuc_noMP_rep.py
+
+```{bash,eval=F}
+infile= open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fc", "r")
+fout = open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc",'w')
+for line, i in enumerate(infile):
+    if line == 1:
+        i_list=i.split()
+        libraries=i_list[:6]
+        for sample in i_list[6:]:
+            full = sample.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            libraries.append(samp_st)
+        first_line= "\t".join(libraries)
+        fout.write(first_line + '\n')
+    else :
+        fout.write(i)
+fout.close()
+```
+
+
+Make phenotype:  
+create_fileid_geneLocAnno_nuclear_rep.py
+```{bash,eval=F}
+fout = open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_file_id_mapping_nuclear_Transcript_head.txt",'w')
+infile= open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc", "r")
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + "\t" + samp_st
+            fout.write(outLine + "\n")
+fout.close()
+```
+
+create_fileid_geneLocAnno_Total_rep.py
+```{bash,eval=F}
+fout = open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_file_id_mapping_total_Transcript_head.txt",'w')
+infile= open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc", "r")
+for line, i in enumerate(infile):
+    if line == 0:
+        i_list=i.split()
+        files= i_list[10:-2]
+        for each in files:
+            full = each.split("/")[7]
+            samp= full.split("-")[2:4]
+            lim="_"
+            samp_st=lim.join(samp)
+            outLine= full[:-1] + "\t" + samp_st
+            fout.write(outLine + "\n")
+fout.close()
+```
+
+makePhenoRefSeqPeaks_GeneLoc_Total_noMP_rep.py
+```{bash,eval=F}
+#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_file_id_mapping_total_Transcript_head.txt"):
+    bam, IND = ln.split("\t")
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#gene start and end dictionaries: 
+dic_geneS = {}
+dic_geneE = {}
+for ln in open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_endAllGenes.sort.bed"):
+    chrom, start, end, geneID, score, strand = ln.split('\t')
+    gene= geneID.split(":")[1]
+#    if "-" in gene:
+ #       gene=gene.split("-")[0]
+    if gene not in dic_geneS:
+        dic_geneS[gene]=int(start)
+        dic_geneE[gene]=int(end)
+        
+
+
+#list of genes   
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc", "r")
+genes=[]
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc", "r")
+for line, i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open("/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc","w")
+peak=["chrom"]
+inds_noL=[]
+for each in inds:
+    indsNA= "NA" + each[:-2]
+    inds_noL.append(indsNA) 
+fout.write(" ".join(peak + inds_noL) + '\n' )
+
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc", "r")
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        #start=dic_geneS[id_list[5]]
+        start=int(id_list[2])
+        #end=dic_geneE[id_list[5]]
+        end=int(id_list[3])
+        buff=[]
+        buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append("%d/%d"%(t,b))
+        fout.write(" ".join(buff)+ '\n')
+        
+fout.close()
+```
+
+makePhenoRefSeqPeaks_GeneLoc_Nuclear_noMP_rep.py
+```{bash,eval=F}
+#PYTHON 3
+
+dic_IND = {}
+dic_BAM = {}
+
+for ln in open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_file_id_mapping_nuclear_Transcript_head.txt"):
+    bam, IND = ln.split("\t")
+    IND = IND.strip()
+    dic_IND[bam] = IND
+    if IND not in dic_BAM:
+        dic_BAM[IND] = []
+    dic_BAM[IND].append(bam)
+
+
+#now I have ind dic with keys as the bam and ind as the values
+#I also have a bam dic with ind as the keys and bam as the values  
+    
+inds=list(dic_BAM.keys()) #list of ind libraries  
+
+#gene start and end dictionaries: 
+dic_geneS = {}
+dic_geneE = {}
+for ln in open("/project2/gilad/briana/genome_anotation_data/RefSeq_annotations/ncbiRefSeq_endAllGenes.sort.bed"):
+    chrom, start, end, geneID, score, strand = ln.split('\t')
+    gene= geneID.split(":")[1]
+#    if "-" in gene:
+ #       gene=gene.split("-")[0]
+    if gene not in dic_geneS:
+        dic_geneS[gene]=int(start)
+        dic_geneE[gene]=int(end)
+        
+
+
+#list of genes   
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc", "r")
+genes=[]
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        if gene not in genes:
+            genes.append(gene)
+            
+#make the ind and gene dic  
+dic_dub={}
+for g in genes:
+    dic_dub[g]={}
+    for i in inds:
+        dic_dub[g][i]=0
+
+
+#populate the dictionary  
+count_file=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc", "r")
+for line, i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        g= id_list[5]
+        values=list(i_list[6:])
+        list_list=[]
+        for ind,val in zip(inds, values):
+            list_list.append([ind, val])
+        for num, name in enumerate(list_list):
+            dic_dub[g][list_list[num][0]] += int(list_list[num][1])
+        
+
+#write the file by acessing the dictionary and putting values in the table ver the value in the dic 
+        
+
+fout=open("/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc","w")
+peak=["chrom"]
+inds_noL=[]
+for each in inds:
+    indsNA= "NA" + each[:-2]
+    inds_noL.append(indsNA) 
+fout.write(" ".join(peak + inds_noL) + '\n' )
+
+
+count_file=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc", "r")
+for line , i in enumerate(count_file):
+    if line > 1:
+        i_list=i.split()
+        id=i_list[0]
+        id_list=id.split(":")
+        gene=id_list[5]
+        #start=dic_geneS[id_list[5]]
+        start=int(id_list[2])
+        #end=dic_geneE[id_list[5]]
+        end=int(id_list[3])
+        buff=[]
+        buff.append("chr%s:%d:%d:%s_%s_%s"%(id_list[1], start, end, id_list[5], id_list[4], id_list[0]))
+        for x,y in zip(i_list[6:], inds):
+            b=int(dic_dub[gene][y])
+            t=int(x)
+            buff.append("%d/%d"%(t,b))
+        fout.write(" ".join(buff)+ '\n')
+        
+fout.close()
+```
+
+run_makePhen_sep_GeneLocAnno_noMP_rep.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_makePhen_sep_GeneLocAnno_noMP_rep
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_makePhen_sep_GeneLocAnno_noMP_rep.out
+#SBATCH --error=run_makePhen_sep_GeneLocAnno_noMP_rep.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python makePhenoRefSeqPeaks_GeneLoc_Total_noMP_rep.py  
+
+python makePhenoRefSeqPeaks_GeneLoc_Nuclear_noMP_rep.py  
+```
+
+
+Next filter 5% peaks (5% from full sample analysis)
+
+filterPheno_bothFraction_GeneLocAnno_5perc_rep.py
+```{bash,eval=F}
+#python  
+
+totalokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt"
+
+totalokPeaks5perc={}
+for ln in open(totalokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    totalokPeaks5perc[peakname]=""
+
+
+nuclearokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt"
+nuclearokPeaks5perc={}
+for ln in open(nuclearokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    nuclearokPeaks5perc[peakname]=""
+    
+    
+totalPhenoBefore=open("/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.fc","r")
+totalPhenoAfter=open("/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc", "w")
+for num, ln in enumerate(totalPhenoBefore):
+    if num ==0:
+        totalPhenoAfter.write(ln)
+    else:  
+        id=ln.split()[0].split(":")[3].split("_")[2]
+        if id in totalokPeaks5perc.keys():
+            totalPhenoAfter.write(ln)
+totalPhenoAfter.close()  
+
+nuclearPhenoBefore=open("/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno.fc","r")
+nuclearPhenoAfter=open("/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc", "w")
+for num, ln in enumerate(nuclearPhenoBefore):
+    if num ==0:
+        nuclearPhenoAfter.write(ln)
+    else:  
+        id=ln.split()[0].split(":")[3].split("_")[2]
+        if id in nuclearokPeaks5perc.keys():
+            nuclearPhenoAfter.write(ln)
+nuclearPhenoAfter.close() 
+```
+
+Filter the count file for good peaks:  
+
+filterCountsReplicates.py
+```{bash,eval=F}
+nucCountIn=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.fc","r")
+nucCountOut=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.5perc.fc","w")
+totCountIn=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.fc","r")
+totCountOut=open("/project2/gilad/briana/threeprimeseq/data/Replicates_filtPeakOppstrand_cov_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc","w")
+
+totalokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt"
+
+totalokPeaks5perc={}
+for ln in open(totalokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    totalokPeaks5perc[peakname]=""
+
+nuclearokPeaks5perc_file="/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt"
+nuclearokPeaks5perc={}
+for ln in open(nuclearokPeaks5perc_file,"r"):
+    peakname=ln.split()[5]
+    nuclearokPeaks5perc[peakname]=""
+    
+for num, ln in enumerate(totCountIn):
+    if num ==0:
+        continue
+    elif num==1:
+        totCountOut.write(ln)
+    else:  
+        id=ln.split()[0].split(":")[0]
+        if id in totalokPeaks5perc.keys():
+            totCountOut.write(ln)
+totCountOut.close()     
+
+for num, ln in enumerate(nucCountIn):
+    if num ==0:
+        continue
+    elif num==1:
+        nucCountOut.write(ln)
+    else:  
+        id=ln.split()[0].split(":")[0]
+        if id in totalokPeaks5perc.keys():
+            nucCountOut.write(ln)
+nucCountOut.close()     
+
+```
+
+Convert to usage:  
+
+This takes just counts:  
+
+```{bash,eval=F}
+less /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc | cut -f1 -d" " --complement | sed '1d' > /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc_counts
+
+less /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc | cut -f1 -d" " --complement | sed '1d' > /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc_counts
+```
+
+
+convertReplicates2Usage.py
+```{bash,eval=F}
+def convert(infile, outfile):
+  final=open(outfile, "w")
+  for ln in open(infile, "r"):
+    line_list=ln.split()
+    new_list=[]
+    for i in line_list:
+      num, dem = i.split("/")
+      if dem == "0":
+        perc = "0.00"
+      else:
+        perc = int(num)/int(dem)
+        perc=round(perc,2)
+        perc= str(perc)
+      new_list.append(perc)
+    final.write("\t".join(new_list)+ '\n')
+  final.close()
+  
+convert("/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc_counts","/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc_numeric.fc")
+
+  
+convert("/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc_counts","/project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc_numeric.fc")
+
+```
+
+Add back names: 
+
+```{bash,eval=F}
+less /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc | cut -f1 -d" " | sed '1d' > /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/PeakIDs_Nuc.txt
+
+less /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc | cut -f1 -d" " | sed '1d' > /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/PeakIDs_Tot.txt
+
+```
+
+Merge back to numeri:  
+```{bash,eval=F}
+paste /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/PeakIDs_Nuc.txt /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc_numeric.fc > /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc_numeric.named.fc
+
+
+paste /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/PeakIDs_Tot.txt /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc_numeric.fc > /project2/gilad/briana/threeprimeseq/data/Replicates_phenotypes_filtPeakTranscript_noMP_GeneLocAnno/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc_numeric.named.fc
+```
+
+
+##Compare usage accross individual  
+
+This analysis will mirror the analysis I did in [this analysis](IndPeakUsageDiff.html)
+
+```{r}
+usageTot=read.table("../data/Replicates_usage/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc_numeric.named.fc", header=F, stringsAsFactors = F, col.names = c("chrom", "NA18499", "NA18912", "NA19093", "NA19140"))
+
+usageTot_2peak= usageTot  %>% separate(chrom, into=c("chr", "start", "end", "geneInf"), sep =":") %>% separate(geneInf, into=c("gene", "strand", "peak"), sep="_") %>% group_by(gene) %>% mutate(nPeak=n()) %>% filter(nPeak==2) %>% select(-chr, -start, -end, -strand, -peak, -nPeak) %>% ungroup()
+```
+
+
+```{r}
+TotalCounts_allInd=read.table("../data/Replicates_usage/replicates_filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", header=T, stringsAsFactors = F) %>% separate(Geneid, into =c('peak', 'chr', 'start', 'end', 'strand', 'gene'), sep = ":") %>% select(-peak, -chr, -start, -end, -strand, -Chr, -Start, -End, -Strand, -Length) %>% group_by(gene) %>% mutate(PeakCount=n()) %>% filter(PeakCount==2) %>% select(-PeakCount) %>% ungroup()
+colnames(TotalCounts_allInd)=colnames(usageTot_2peak)
+```
+
+Function for difference based on counts: 
+
+```{r}
+perIndDiffUsage=function(ind, counts=TotalCounts_allInd, usage=usageTot_2peak){
+  ind=enquo(ind)
+  #compute usage stats
+  #seperate usage
+  usage_ind=usage %>% select(gene, !!ind) 
+  usage_other = usage %>% select(-gene,-!!ind) %>% rowMeans()
+  usage_indVal=as.data.frame(cbind(usage_ind,usage_other))
+  usage_indVal$val=abs(usage_indVal[,2] - usage_indVal[,3])
+  usage_indVal2= usage_indVal%>% group_by(gene) %>% select(gene, val) %>% distinct(gene, .keep_all=T) 
+  #seperate genes by percentile for this ind
+  count_ind= counts %>% select(gene, !!ind)
+  colnames(count_ind)=c("gene", "count")
+  count_ind = count_ind %>%  group_by(gene) %>% summarize(Exp=sum(count)) %>% filter(Exp >0)  %>% mutate(Percentile = percent_rank(Exp)) 
+  count_ind_perc10= count_ind %>% filter(Percentile<.1)
+  count_ind_perc20= count_ind %>% filter(Percentile<.2, Percentile>.1)
+  count_ind_perc30= count_ind %>% filter(Percentile<.3, Percentile>.2)
+  count_ind_perc40= count_ind %>% filter(Percentile<.4, Percentile>.3)
+  count_ind_perc50= count_ind %>% filter(Percentile<.5, Percentile>.4)
+  count_ind_perc60= count_ind %>% filter(Percentile<.6, Percentile>.5)
+  count_ind_perc70= count_ind %>% filter(Percentile<.7, Percentile>.6)
+  count_ind_perc80= count_ind %>% filter(Percentile<.8, Percentile>.7)
+  count_ind_perc90= count_ind %>% filter(Percentile<.9, Percentile>.8)
+  count_ind_perc100= count_ind %>% filter(Percentile<1, Percentile>.9)
+  #subset and sum usage 
+  out10_df= usage_indVal2 %>% inner_join(count_ind_perc10, by="gene")
+  out20_df= usage_indVal2 %>% inner_join(count_ind_perc20, by="gene")
+  out30_df= usage_indVal2 %>% inner_join(count_ind_perc30, by="gene")
+  out40_df= usage_indVal2 %>% inner_join(count_ind_perc40, by="gene")
+  out50_df= usage_indVal2 %>% inner_join(count_ind_perc50, by="gene")
+  out60_df= usage_indVal2 %>% inner_join(count_ind_perc60, by="gene")
+  out70_df= usage_indVal2 %>% inner_join(count_ind_perc70, by="gene")
+  out80_df= usage_indVal2 %>% inner_join(count_ind_perc80, by="gene")
+  out90_df= usage_indVal2 %>% inner_join(count_ind_perc90, by="gene")
+  out100_df= usage_indVal2 %>% inner_join(count_ind_perc100, by="gene")
+  #output list of 10 values
+  out= c((sum(out10_df$val)/nrow(out10_df)), (sum(out20_df$val)/nrow(out20_df)), (sum(out30_df$val)/nrow(out30_df)), (sum(out40_df$val)/nrow(out40_df)), (sum(out50_df$val)/nrow(out50_df)), (sum(out60_df$val)/nrow(out60_df)), (sum(out70_df$val)/nrow(out70_df)), (sum(out80_df$val)/nrow(out80_df)), (sum(out90_df$val)/nrow(out90_df)), (sum(out100_df$val)/nrow(out100_df)))
+  return(out)
+}
+```
+
+Run this: 
+
+```{r}
+Inds=colnames(TotalCounts_allInd)[2:ncol(TotalCounts_allInd)]
+Percentile=c(10,20,30,40,50,60,70,80,90,100)
+for (i in Inds){
+  x= perIndDiffUsage(i)
+  Percentile=cbind(Percentile, x)
+}
+colnames(Percentile)=c("Percentile", Inds)
+```
+
+
+```{r}
+#order the 
+Percentile_df=as.data.frame(Percentile) 
+Percentile_melt=melt(Percentile_df, id.vars=c("Percentile"))
+colnames(Percentile_melt)=c("Percentile", "Individual", "AvgUsageDiff")
+```
+
+```{r}
+ggplot(Percentile_melt, aes(x=Percentile, y=Individual, fill=AvgUsageDiff)) + geom_tile() + labs(title="Average peak usage difference for individaul vs. others") + scale_fill_gradientn(colours = c("white", "red", "black"))
+```
+
