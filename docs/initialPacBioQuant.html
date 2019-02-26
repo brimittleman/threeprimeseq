@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreec5dfa4b1e09eeaac050b5d96cb41ff66eef6f255targetblankc5dfa4ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c5dfa4b1e09eeaac050b5d96cb41ff66eef6f255" target="_blank">c5dfa4b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree6637b213a6d3ec1d5a99a7d2adad2e6a17da87eftargetblank6637b21a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6637b213a6d3ec1d5a99a7d2adad2e6a17da87ef" target="_blank">6637b21</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreec5dfa4b1e09eeaac050b5d96cb41ff66eef6f255targetblankc5dfa4ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree6637b213a6d3ec1d5a99a7d2adad2e6a17da87eftargetblank6637b21a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -560,6 +560,7 @@ Untracked files:
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
+    Untracked:  data/LocusZoom_Unexp/
     Untracked:  data/LocusZoom_proc/
     Untracked:  data/MatchedSnps/
     Untracked:  data/NuclearApaQTLs.txt
@@ -727,6 +728,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6637b213a6d3ec1d5a99a7d2adad2e6a17da87ef/analysis/initialPacBioQuant.Rmd" target="_blank">6637b21</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-26
+</td>
+<td>
+add avg total usage
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b27ba8659b45d2453d47ae75413834a7b7330548/docs/initialPacBioQuant.html" target="_blank">b27ba86</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c5dfa4b1e09eeaac050b5d96cb41ff66eef6f255/analysis/initialPacBioQuant.Rmd" target="_blank">c5dfa4b</a>
 </td>
 <td>
@@ -749,7 +784,7 @@ fix file for ankeeta
 <p>Ankeeta has been working with 3 pac bio libraries for whole LCLs. The meged bam file has 4,164,259 reads. I want to look at how many of these reads cover my peaks. It would be best to know how many reads ends</p>
 <p>I need to fix the strand for my peaks and give them to her.</p>
 <p>fixPeaks4Ankeeta.py</p>
-<pre class="bash"><code>In=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF&quot;,&quot;r&quot;)
+<pre class="bash"><code>In=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_withAnno.SAF&quot;,&quot;r&quot;)
 Out=&quot;/project2/yangili1/PAPeaks_STARMap_GeneLocAnno.bed&quot;
 
 def fix_strand(Fin,Fout):
@@ -779,6 +814,20 @@ def fix_strand(Fin,Fout):
     
     
 fix_strand(In, Out)</code></pre>
+<p>Add average usage to this:</p>
+<p>use similar code to filter_5percUsagePeaks.R</p>
+<p>counts only numeric are in /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt I will take the mean for each row of this and use it as the score in the bed file.</p>
+<p>Run this interactively</p>
+<pre class="r"><code>library(dplyr)
+totUsage=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt&quot;, header=F)
+peakBed=read.table(&quot;/project2/yangili1/PAPeaks_STARMap_GeneLocAnno.bed&quot;, header=F, col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;ID&quot;, &quot;score&quot;, &quot;strand&quot;), stringsAsFactors = F)
+
+
+MeanUsage=rowMeans(totUsage)
+
+outBed=as.data.frame(cbind(peakBed, MeanUsage)) %&gt;% select(chr, start, end, ID, MeanUsage, strand)
+
+write.table(outBed,file=&quot;/project2/yangili1/PAPeaks_STARMap_GeneLocAnno_withMeanUsage.bed&quot;, row.names=F, col.names=F, quote = F, sep=&quot;\t&quot;)  </code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
