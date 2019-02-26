@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r}
+library(qvalue)
+library(tidyverse)
+library(cowplot)
+library(workflowr)
+```
+
 One original goal for this project was too see if APA qtls could explain a number of the unexplianed eQTLs Yang found in the integrated molQTL science paper. He has provided me a list of explained eQTLs (chromatin associatated) and unexplained eQTLs. As a first pass, I want to look at the loci/gene associations in my QTL data. If there is significant sharing I expect lower pvalues for the apa associatiations at these loci. I will start with all peaks in the e genes.
 
 
@@ -25,6 +33,8 @@ sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/unexplai
 
 ```
 
+
+##Look for sharing in associations  
 Take some of this code from [this analysis](ProtandRNApvals.html)
 
 
@@ -107,18 +117,79 @@ python APApval4eQTL.py Nuclear unexplained
 
 
 Genes not in the switch gene name file:  
-ENSG00000136653
-ENSG00000116957
-ENSG00000177236
-ENSG00000269963
-ENSG00000205047
-ENSG00000261317
-ENSG00000224113
-ENSG00000108278
-ENSG00000174100
-ENSG00000108292
-ENSG00000141720
-ENSG00000269545
-ENSG00000232698
-ENSG00000197146
-ENSG00000269781
+
+
+```{r}
+geneNoName=read.table("../data/eQTLs_Lietal/genesNoName_uniq.txt", stringsAsFactors = F, col.names = c("GeneID"))
+```
+
+
+Upload results:  
+```{r}
+resNames=c("SNP", "gene", "peak", "pval")
+totUn=read.table("../data/eQTLs_Lietal/NomPval_TotalApaQTLs_forunexplainedeQTLs.txt", stringsAsFactors = F, col.names = resNames)
+totEx=read.table("../data/eQTLs_Lietal/NomPval_TotalApaQTLs_forexplainedeQTLs.txt", stringsAsFactors = F, col.names = resNames)
+
+nucUn=read.table("../data/eQTLs_Lietal/NomPval_NuclearApaQTLs_forunexplainedeQTLs.txt", stringsAsFactors = F, col.names = resNames)
+nucEx=read.table("../data/eQTLs_Lietal/NomPval_NuclearApaQTLs_forexplainedeQTLs.txt", stringsAsFactors = F, col.names = resNames)
+
+
+```
+
+
+
+```{r}
+ggplot(totUn, aes(x=pval)) + geom_density(fill="blue", alpha=.5) + geom_density(data=totEx,aes(x=pval), fill="red", alpha=.5 ) + labs(title="Total APA association pval for explained and unexplained eQTLs \n red=explained, blue=unexplained")
+
+```
+
+```{r}
+ggplot(nucUn, aes(x=pval)) + geom_density(fill="blue", alpha=.5) + geom_density(data=nucEx,aes(x=pval), fill="red", alpha=.5 ) + labs(title="Nuclear APA association pval for explained and unexplained eQTLs \n red=explained, blue=unexplained")
+
+```
+
+Pi1 values:
+
+Tot Explained:
+```{r}
+TotExPi=pi0est(totEx$pval, pi0.method = "bootstrap")
+1-TotExPi$pi0
+```
+Tot unexplained: 
+
+```{r}
+TotUnPi=pi0est(totUn$pval, pi0.method = "bootstrap")
+1-TotUnPi$pi0
+```
+
+
+Nuc Explained:
+```{r}
+NucExPi=pi0est(nucEx$pval, pi0.method = "bootstrap")
+1-NucExPi$pi0
+```
+Nuc unexplained: 
+
+```{r}
+NucUnPi=pi0est(nucUn$pval, pi0.method = "bootstrap")
+1-NucUnPi$pi0
+```
+
+
+This is the naive version, I need to accont for the multiple peaks in the same gene.
+
+```{r}
+totUn_fix=totUn %>% group_by(gene) %>% mutate(nPeaks=n()) %>% ungroup()
+
+totEx_fix=totEx %>% group_by(gene) %>% mutate(nPeaks=n()) %>% ungroup()
+
+nucUn_fix=nucUn %>% group_by(gene) %>% mutate(nPeaks=n()) %>% ungroup()
+
+nucEx_fix=nucEx %>% group_by(gene) %>% mutate(nPeaks=n()) %>% ungroup()
+```
+
+
+##Direct overlap  
+
+I can use a similar LD anaylsis I used in the GWAS overlap. I will get all of the snps in LD with the eQTLs then look for overlap with my apaQTLs.  
+
