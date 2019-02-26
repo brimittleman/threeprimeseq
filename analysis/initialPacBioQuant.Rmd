@@ -16,7 +16,7 @@ I need to fix the strand for my peaks and give them to her.
 
 fixPeaks4Ankeeta.py
 ```{bash,eval=F}
-In=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF","r")
+In=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_withAnno.SAF","r")
 Out="/project2/yangili1/PAPeaks_STARMap_GeneLocAnno.bed"
 
 def fix_strand(Fin,Fout):
@@ -48,4 +48,30 @@ def fix_strand(Fin,Fout):
 fix_strand(In, Out)
 ```
 
+Add average usage to this:  
+
+
+use similar code to filter_5percUsagePeaks.R
+
+
+counts only numeric are in /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt 
+I will take the mean for each row of this and use it as the score in the bed file.  
+
+Run this interactively 
+```{r,eval=F}
+
+library(dplyr)
+totUsage=read.table("/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno.CountsOnlyNumeric.txt", header=F)
+peakBed=read.table("/project2/yangili1/PAPeaks_STARMap_GeneLocAnno.bed", header=F, col.names = c("chr", "start", "end", "ID", "score", "strand"), stringsAsFactors = F)
+
+
+MeanUsage=rowMeans(totUsage)
+
+outBed=as.data.frame(cbind(peakBed, MeanUsage)) %>% select(chr, start, end, ID, MeanUsage, strand)
+
+write.table(outBed,file="/project2/yangili1/PAPeaks_STARMap_GeneLocAnno_withMeanUsage.bed", row.names=F, col.names=F, quote = F, sep="\t")  
+
+
+
+```
 
