@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2336f876998f368497b100cdd933b2c8f4f2ab6etargetblank2336f87a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2336f876998f368497b100cdd933b2c8f4f2ab6e" target="_blank">2336f87</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed3dfe95c48c5ab965081af593fc793f22aac9132targetblankd3dfe95a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d3dfe95c48c5ab965081af593fc793f22aac9132" target="_blank">d3dfe95</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2336f876998f368497b100cdd933b2c8f4f2ab6etargetblank2336f87a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed3dfe95c48c5ab965081af593fc793f22aac9132targetblankd3dfe95a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -726,6 +726,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d3dfe95c48c5ab965081af593fc793f22aac9132/analysis/unexplainedeQTL_analysis.Rmd" target="_blank">d3dfe95</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-25
+</td>
+<td>
+look at pi1
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b74a969e73a748845e343b055aa1c987c334dc6a/docs/unexplainedeQTL_analysis.html" target="_blank">b74a969</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/2336f876998f368497b100cdd933b2c8f4f2ab6e/analysis/unexplainedeQTL_analysis.Rmd" target="_blank">2336f87</a>
 </td>
 <td>
@@ -745,6 +779,26 @@ add unexplained QTL analysis
 </div>
 </div>
 </div>
+<pre class="r"><code>library(qvalue)
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.4.0
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.2.0
+Run ?workflowr for help getting started</code></pre>
 <p>One original goal for this project was too see if APA qtls could explain a number of the unexplianed eQTLs Yang found in the integrated molQTL science paper. He has provided me a list of explained eQTLs (chromatin associatated) and unexplained eQTLs. As a first pass, I want to look at the loci/gene associations in my QTL data. If there is significant sharing I expect lower pvalues for the apa associatiations at these loci. I will start with all peaks in the e genes.</p>
 <p>These data have 1163 explained loci and 801 unexplained loci.</p>
 <p>I want to make a python script that can take either of these and the nominal results for my total or nuclear apaQTLs. It will extract any association for a peak in one of these genes.</p>
@@ -753,6 +807,8 @@ add unexplained QTL analysis
 
 sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/unexplained_FDR10.txt &gt; /project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/unexplained_FDR10.sort.txt
 </code></pre>
+<div id="look-for-sharing-in-associations" class="section level2">
+<h2>Look for sharing in associations</h2>
 <p>Take some of this code from <a href="ProtandRNApvals.html">this analysis</a></p>
 <p>APApval4eQTL.py</p>
 <pre class="bash"><code>def main(eQTL,apaQTL, outF):  
@@ -825,8 +881,49 @@ python APApval4eQTL.py Total unexplained
 python APApval4eQTL.py Nuclear explained
 python APApval4eQTL.py Nuclear unexplained
 </code></pre>
-Genes not in the switch gene name file:<br />
-ENSG00000136653 ENSG00000116957 ENSG00000177236 ENSG00000269963 ENSG00000205047 ENSG00000261317 ENSG00000224113 ENSG00000108278 ENSG00000174100 ENSG00000108292 ENSG00000141720 ENSG00000269545 ENSG00000232698 ENSG00000197146 ENSG00000269781 <br> <br>
+<p>Genes not in the switch gene name file:</p>
+<pre class="r"><code>geneNoName=read.table(&quot;../data/eQTLs_Lietal/genesNoName_uniq.txt&quot;, stringsAsFactors = F, col.names = c(&quot;GeneID&quot;))</code></pre>
+<p>Upload results:</p>
+<pre class="r"><code>resNames=c(&quot;SNP&quot;, &quot;gene&quot;, &quot;peak&quot;, &quot;pval&quot;)
+totUn=read.table(&quot;../data/eQTLs_Lietal/NomPval_TotalApaQTLs_forunexplainedeQTLs.txt&quot;, stringsAsFactors = F, col.names = resNames)
+totEx=read.table(&quot;../data/eQTLs_Lietal/NomPval_TotalApaQTLs_forexplainedeQTLs.txt&quot;, stringsAsFactors = F, col.names = resNames)
+
+nucUn=read.table(&quot;../data/eQTLs_Lietal/NomPval_NuclearApaQTLs_forunexplainedeQTLs.txt&quot;, stringsAsFactors = F, col.names = resNames)
+nucEx=read.table(&quot;../data/eQTLs_Lietal/NomPval_NuclearApaQTLs_forexplainedeQTLs.txt&quot;, stringsAsFactors = F, col.names = resNames)</code></pre>
+<pre class="r"><code>ggplot(totUn, aes(x=pval)) + geom_density(fill=&quot;blue&quot;, alpha=.5) + geom_density(data=totEx,aes(x=pval), fill=&quot;red&quot;, alpha=.5 ) + labs(title=&quot;Total APA association pval for explained and unexplained eQTLs \n red=explained, blue=unexplained&quot;)</code></pre>
+<p><img src="figure/unexplainedeQTL_analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(nucUn, aes(x=pval)) + geom_density(fill=&quot;blue&quot;, alpha=.5) + geom_density(data=nucEx,aes(x=pval), fill=&quot;red&quot;, alpha=.5 ) + labs(title=&quot;Nuclear APA association pval for explained and unexplained eQTLs \n red=explained, blue=unexplained&quot;)</code></pre>
+<p><img src="figure/unexplainedeQTL_analysis.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Pi1 values:</p>
+<p>Tot Explained:</p>
+<pre class="r"><code>TotExPi=pi0est(totEx$pval, pi0.method = &quot;bootstrap&quot;)
+1-TotExPi$pi0</code></pre>
+<pre><code>[1] 0.1386882</code></pre>
+<p>Tot unexplained:</p>
+<pre class="r"><code>TotUnPi=pi0est(totUn$pval, pi0.method = &quot;bootstrap&quot;)
+1-TotUnPi$pi0</code></pre>
+<pre><code>[1] 0.1043331</code></pre>
+<p>Nuc Explained:</p>
+<pre class="r"><code>NucExPi=pi0est(nucEx$pval, pi0.method = &quot;bootstrap&quot;)
+1-NucExPi$pi0</code></pre>
+<pre><code>[1] 0.08966862</code></pre>
+<p>Nuc unexplained:</p>
+<pre class="r"><code>NucUnPi=pi0est(nucUn$pval, pi0.method = &quot;bootstrap&quot;)
+1-NucUnPi$pi0</code></pre>
+<pre><code>[1] 0.1117647</code></pre>
+<p>This is the naive version, I need to accont for the multiple peaks in the same gene.</p>
+<pre class="r"><code>totUn_fix=totUn %&gt;% group_by(gene) %&gt;% mutate(nPeaks=n()) %&gt;% ungroup()
+
+totEx_fix=totEx %&gt;% group_by(gene) %&gt;% mutate(nPeaks=n()) %&gt;% ungroup()
+
+nucUn_fix=nucUn %&gt;% group_by(gene) %&gt;% mutate(nPeaks=n()) %&gt;% ungroup()
+
+nucEx_fix=nucEx %&gt;% group_by(gene) %&gt;% mutate(nPeaks=n()) %&gt;% ungroup()</code></pre>
+</div>
+<div id="direct-overlap" class="section level2">
+<h2>Direct overlap</h2>
+<p>I can use a similar LD anaylsis I used in the GWAS overlap. I will get all of the snps in LD with the eQTLs then look for overlap with my apaQTLs.</p>
+<br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -848,12 +945,26 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] workflowr_1.2.0 cowplot_0.9.3   forcats_0.3.0   stringr_1.4.0  
+ [5] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
+ [9] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1 qvalue_2.12.0  
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0 Rcpp_0.12.19    digest_0.6.17   rprojroot_1.3-2
- [5] backports_1.1.2 git2r_0.24.0    magrittr_1.5    evaluate_0.13  
- [9] stringi_1.2.4   fs_1.2.6        whisker_0.3-2   rmarkdown_1.11 
-[13] tools_3.5.1     stringr_1.4.0   glue_1.3.0      yaml_2.2.0     
-[17] compiler_3.5.1  htmltools_0.3.6 knitr_1.20     </code></pre>
+ [1] tidyselect_0.2.4 reshape2_1.4.3   splines_3.5.1    haven_1.1.2     
+ [5] lattice_0.20-35  colorspace_1.3-2 htmltools_0.3.6  yaml_2.2.0      
+ [9] rlang_0.2.2      pillar_1.3.0     glue_1.3.0       withr_2.1.2     
+[13] modelr_0.1.2     readxl_1.1.0     bindrcpp_0.2.2   bindr_0.1.1     
+[17] plyr_1.8.4       munsell_0.5.0    gtable_0.2.0     cellranger_1.1.0
+[21] rvest_0.3.2      evaluate_0.13    labeling_0.3     knitr_1.20      
+[25] broom_0.5.0      Rcpp_0.12.19     scales_1.0.0     backports_1.1.2 
+[29] jsonlite_1.6     fs_1.2.6         hms_0.4.2        digest_0.6.17   
+[33] stringi_1.2.4    grid_3.5.1       rprojroot_1.3-2  cli_1.0.1       
+[37] tools_3.5.1      magrittr_1.5     lazyeval_0.2.1   crayon_1.3.4    
+[41] whisker_0.3-2    pkgconfig_2.0.2  xml2_1.2.0       lubridate_1.7.4 
+[45] assertthat_0.2.0 rmarkdown_1.11   httr_1.3.1       rstudioapi_0.9.0
+[49] R6_2.3.0         nlme_3.1-137     git2r_0.24.0     compiler_3.5.1  </code></pre>
+</div>
 </div>
 
 <hr>
