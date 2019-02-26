@@ -1,0 +1,51 @@
+---
+title: "PacPio Reads in my peaks"
+author: "Briana Mittleman"
+date: "2/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Ankeeta has been working with 3 pac bio libraries for whole LCLs. The meged bam file has 4,164,259 reads. I want to look at how many of these reads cover my peaks. It would be best to know how many reads ends 
+
+I need to fix the strand for my peaks and give them to her.  
+
+
+fixPeaks4Ankeeta.py
+```{bash,eval=F}
+In=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov_withAnno.SAF","r")
+Out="/project2/yangili1/PAPeaks_STARMap_GeneLocAnno.bed"
+
+def fix_strand(Fin,Fout):
+    fout=open(Fout,"w")
+    for n, ln in enumerate(Fin):
+        if n == 0: 
+            continue
+        else: 
+            id, chrom, start, end, strand = ln.split()
+            if strand=="+":
+                chromF="chr" + chrom
+                peak=id.split(":")[0]
+                geneLoc=id.split(":")[5:]
+                geneLocF=":".join(geneLoc)
+                newID=peak + ":" + geneLocF
+                score="."
+                fout.write("%s\t%s\t%s\t%s\t%s\t-\n"%(chromF,start,end,newID,score))
+            else:
+                chromF="chr" + chrom
+                peak=id.split(":")[0]
+                geneLoc=id.split(":")[5:]
+                geneLocF=":".join(geneLoc)
+                newID=peak + ":" + geneLocF
+                score="."
+                fout.write("%s\t%s\t%s\t%s\t%s\t+\n"%(chromF,start,end,newID,score))
+    fout.close()
+    
+    
+fix_strand(In, Out)
+```
+
+
