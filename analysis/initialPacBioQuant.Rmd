@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r}
+library(workflowr)
+library(tidyverse)
+library(reshape2)
+library(cowplot)
+```
+
 Ankeeta has been working with 3 pac bio libraries for whole LCLs. The meged bam file has 4,164,259 reads. I want to look at how many of these reads cover my peaks. It would be best to know how many reads ends 
 
 I need to fix the strand for my peaks and give them to her.  
@@ -73,5 +81,194 @@ write.table(outBed,file="/project2/yangili1/PAPeaks_STARMap_GeneLocAnno_withMean
 
 
 
+```
+
+
+Result from pac bio overlap:
+
+* /project2/yangili1/ankeetashah/APA_tools/peaks/threeprime_noMP_pacbio_UTR.coverage
+* project2/yangili1/ankeetashah/APA_tools/peaks/threeprime_noMP_pacbio_intron.coverage
+
+
+Make some plots for this: Distribution of reads ending at each peak  
+
+
+```{r}
+covNames=c("chr", "start", "end", "ID", "score", "strand", "cov")
+utrCov=read.table("../data/pacbio_cov/threeprime_noMP_pacbio_UTR.coverage", stringsAsFactors = F, col.names = covNames)
+intronCov=read.table("../data/pacbio_cov/threeprime_noMP_pacbio_intron.coverage", stringsAsFactors = F,col.names = covNames) %>% separate(ID, into=c("peak", "gene","loc"), sep=":") %>% filter(loc=="intron")
+```
+
+Plot the distributions:  
+
+```{r}
+ggplot(utrCov, aes(x=log10(cov + 1))) + geom_density() + labs(title="PacBio reads ending at each UTR peak", x="log10(nReads+1)")
+```
+
+```{r}
+ggplot(intronCov, aes(x=log10(cov + 1))) + geom_density() + labs(title="PacBio reads ending at each intronic peak", x="log10(nReads+1)")
+```
+```{r}
+summary(intronCov$cov)
+summary(utrCov$cov)
+```
+
+
+Proportion of peaks with coverage 
+
+```{r}
+intronCov_0=intronCov %>% filter(cov > 0) %>% nrow()/ nrow(intronCov)
+intronCov_10=intronCov %>% filter(cov >= 10) %>% nrow()/nrow(intronCov)
+intronCov_100=intronCov %>% filter(cov >= 100) %>% nrow()/nrow(intronCov)
+intronCov_1000=intronCov %>% filter(cov >= 1000) %>% nrow()/nrow(intronCov)
+
+
+
+utrCov_0=utrCov %>% filter(cov > 0) %>% nrow() / nrow(utrCov)
+utrCov_10=utrCov %>% filter(cov >= 10) %>% nrow()/ nrow(utrCov)
+utrCov_100=utrCov %>% filter(cov >= 100) %>% nrow()/ nrow(utrCov)
+utrCov_1000=utrCov %>% filter(cov >= 1000) %>% nrow()/ nrow(utrCov)
+
+
+Reads=c("1 read", "10 reads", "100 reads", "1000 reads")
+UTR=c(utrCov_0, utrCov_10, utrCov_100, utrCov_1000)
+Intron=c(intronCov_0,intronCov_10,intronCov_100,intronCov_1000)
+
+covDF=as.data.frame(cbind(Reads,UTR,Intron))
+covDF$UTR=as.numeric(as.character(covDF$UTR))
+covDF$Intron=as.numeric(as.character(covDF$Intron))
+
+
+covDF_melt=melt(covDF, id.vars = "Reads")
+colnames(covDF_melt)=c("ReadCutoff", "Location", "Proportion" )
+
+```
+
+```{r}
+propcovbycutff=ggplot(covDF_melt, aes(x=ReadCutoff, fill=Location, y=Proportion, by=Location)) + geom_bar(position="dodge",stat="identity" ) + labs(y="Proportion of PAS covered", x="At least X reads ending at PAS", title="Proportion of PAS with PacBio read ending in it") + scale_fill_manual(values=c("blue","red")) + annotate("text", label="UTR PAS = 29,687", x="1000 reads", y=.7) + annotate("text", label="Intronic PAS = 87,733", x="1000 reads", y=.6)
+
+propcovbycutff
+
+ggsave(propcovbycutff, filename = "../output/plots/PacBioReadsEndingAtPAS.png")
+```
+
+
+Subset for peaks that passed the 5% coverage cutoff.  
+
+```{r}
+tot5Perc=read.table("../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt", stringsAsFactors = F, col.names = c("chr", "start", "end", "gene", "strand", "peak", "avgUsage"))
+nuc5Perc=read.table("../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt",col.names = c("chr", "start", "end", "gene", "strand", "peak", "avgUsage"),stringsAsFactors = F)
+```
+
+
+```{r}
+intronCov_tot5perc= intronCov %>% semi_join(tot5Perc, by="peak")
+
+intronCov_nuc5perc= intronCov %>% semi_join(nuc5Perc, by="peak")
+```
+
+
+```{r}
+intronCov_tot5perc_0= intronCov_tot5perc %>% filter(cov> 0) %>% nrow()/ nrow(intronCov_tot5perc)
+intronCov_tot5perc_10= intronCov_tot5perc %>% filter(cov>= 10) %>% nrow()/ nrow(intronCov_tot5perc)
+intronCov_tot5perc_100= intronCov_tot5perc %>% filter(cov>= 100) %>% nrow()/ nrow(intronCov_tot5perc)
+intronCov_tot5perc_1000= intronCov_tot5perc %>% filter(cov>= 1000) %>% nrow()/ nrow(intronCov_tot5perc)
+
+
+intronCov_nuc5perc_0= intronCov_nuc5perc %>% filter(cov> 0) %>% nrow()/ nrow(intronCov_nuc5perc)
+intronCov_nuc5perc_10= intronCov_nuc5perc %>% filter(cov>= 10) %>% nrow()/ nrow(intronCov_nuc5perc)
+intronCov_nuc5perc_100= intronCov_nuc5perc %>% filter(cov>= 100) %>% nrow()/ nrow(intronCov_nuc5perc)
+intronCov_nuc5perc_1000= intronCov_nuc5perc %>% filter(cov>= 1000) %>% nrow()/ nrow(intronCov_nuc5perc)
+
+Reads=c("1 read", "10 reads", "100 reads", "1000 reads")
+Total=c(intronCov_tot5perc_0, intronCov_tot5perc_10, intronCov_tot5perc_100, intronCov_tot5perc_1000)
+Nuclear=c(intronCov_nuc5perc_0,intronCov_nuc5perc_10,intronCov_nuc5perc_100,intronCov_nuc5perc_1000)
+
+cov_5perDF=as.data.frame(cbind(Reads,Total,Nuclear))
+cov_5perDF$Total=as.numeric(as.character(cov_5perDF$Total))
+cov_5perDF$Nuclear=as.numeric(as.character(cov_5perDF$Nuclear))
+
+cov_5perDF_melt=melt(cov_5perDF, id.vars = "Reads")
+colnames(cov_5perDF_melt)=c("ReadCutoff", "Fraction", "Proportion" )
+
+```
+
+
+```{r}
+ggplot(cov_5perDF_melt, aes(x=ReadCutoff, fill=Fraction, y=Proportion, by=Fraction)) + geom_bar(position="dodge",stat="identity" ) + labs(y="Proportion of PAS covered", x="At least X reads ending at PAS", title="Proportion of PAS with PacBio read ending in it \n Intron PAS with 5% mean Usage") + scale_fill_brewer(palette = "Set1") + annotate("text", label="Total PAS = 16,662", x="1000 reads", y=.28) + annotate("text", label="Nuclear PAS = 18,829", x="1000 reads", y=.25)
+```
+
+Do this for the UTR  
+
+```{r}
+UTRCov_tot5perc= utrCov %>% separate(ID, into=c("peak", "gene","loc"), sep=":") %>% semi_join(tot5Perc, by="peak")
+
+UTRCov_nuc5perc= utrCov %>% separate(ID, into=c("peak", "gene","loc"), sep=":") %>% semi_join(nuc5Perc, by="peak")
+```
+  
+
+
+```{r}
+utrCov_tot5perc_0= UTRCov_tot5perc %>% filter(cov> 0) %>% nrow()/ nrow(UTRCov_tot5perc)
+utrCov_tot5perc_10= UTRCov_tot5perc %>% filter(cov>= 10) %>% nrow()/ nrow(UTRCov_tot5perc)
+utrCov_tot5perc_100= UTRCov_tot5perc %>% filter(cov>= 100) %>% nrow()/ nrow(UTRCov_tot5perc)
+utrCov_tot5perc_1000= UTRCov_tot5perc %>% filter(cov>= 1000) %>% nrow()/ nrow(UTRCov_tot5perc)
+
+
+utrCov_nuc5perc_0= UTRCov_nuc5perc %>% filter(cov> 0) %>% nrow()/ nrow(UTRCov_nuc5perc)
+utrCov_nuc5perc_10= UTRCov_nuc5perc %>% filter(cov>= 10) %>% nrow()/ nrow(UTRCov_nuc5perc)
+utrCov_nuc5perc_100= UTRCov_nuc5perc %>% filter(cov>= 100) %>% nrow()/ nrow(UTRCov_nuc5perc)
+utrCov_nuc5perc_1000= UTRCov_nuc5perc %>% filter(cov>= 1000) %>% nrow()/ nrow(UTRCov_nuc5perc)
+
+
+Total_UTR=c(utrCov_tot5perc_0, utrCov_tot5perc_10, utrCov_tot5perc_100, utrCov_tot5perc_1000)
+Nuclear_UTR=c(utrCov_nuc5perc_0,utrCov_nuc5perc_10,utrCov_nuc5perc_100,utrCov_nuc5perc_1000)
+
+covUTR_5perDF=as.data.frame(cbind(Reads,Total=Total_UTR,Nuclear=Nuclear_UTR))
+covUTR_5perDF$Total=as.numeric(as.character(covUTR_5perDF$Total))
+covUTR_5perDF$Nuclear=as.numeric(as.character(covUTR_5perDF$Nuclear))
+
+covUTR_5perDF_melt=melt(covUTR_5perDF, id.vars = "Reads")
+colnames(covUTR_5perDF_melt)=c("ReadCutoff", "Fraction", "Proportion" )
+
+```
+
+
+```{r}
+ggplot(covUTR_5perDF_melt, aes(x=ReadCutoff, fill=Fraction, y=Proportion, by=Fraction)) + geom_bar(position="dodge",stat="identity" ) + labs(y="Proportion of PAS covered", x="At least X reads ending at PAS", title="Proportion of PAS with PacBio read ending in it \n UTR PAS with 5% mean Usage") + scale_fill_brewer(palette = "Set1") + annotate("text", label="Total PAS = 5,984", x="1000 reads", y=.7) + annotate("text", label="Nuclear PAS = 6,793", x="1000 reads", y=.6)
+```
+
+
+Make the first plot (utr v intron for the 5%) 
+Process in excel 
+
+```{r}
+allProp=read.table("../data/pacbio_cov/PacBioPropCov.txt", head=T, stringsAsFactors = F)
+allProp$Read=as.factor(allProp$Read)
+allPropPlot=ggplot(allProp, aes(x=Read, y=Proportion, by=Location, fill=Location)) + geom_bar(position="dodge",stat="identity" ) +facet_grid(~Fraction) + labs(y="Proportion of PAS covered", x="At least X reads ending at PAS", title="Proportion of PAS with PacBio read ending in it \n PAS with 5% mean Usage")+scale_fill_manual(values=c("red","blue"))
+
+allPropPlot
+
+
+ggsave(allPropPlot, filename = "../output/plots/PacBioReadsEndingAtPAS_5percCov.png")
+```
+
+
+```{r}
+UTRCov_tot5perc %>% semi_join(UTRCov_nuc5perc, by="peak") %>% nrow()
+intronCov_tot5perc %>% semi_join(intronCov_nuc5perc, by="peak") %>% nrow()
+```
+
+
+```{r}
+
+  
+tot5Perc_peaks =tot5Perc %>% select(peak)
+nuc5Perc_peaks=nuc5Perc %>% select(peak)
+nrow(tot5Perc)
+nrow(nuc5Perc)
+
+ineither=tot5Perc_peaks %>% full_join(nuc5Perc_peaks, by="peak")
+nrow(ineither)
 ```
 
