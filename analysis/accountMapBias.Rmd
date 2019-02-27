@@ -573,8 +573,11 @@ NucDist=read.table("../data/ApaQTLs/Distance2EndPeak.Nuclear.apaQTLs.txt", heade
 
 BothDist=data.frame(rbind(TotDist, NucDist))
 
-ggplot(BothDist, aes(x=Distance, by=Fraction, fill=Fraction))+geom_histogram(bins=70, alpha=.5) + scale_fill_manual(values=c("deepskyblue3","darkviolet")) + labs(title="Distance From apaQTL to End of Peak" )
+distplot=ggplot(BothDist, aes(x=Distance, by=Fraction, fill=Fraction))+geom_histogram(bins=70, alpha=.5) + scale_fill_manual(values=c("deepskyblue3","darkviolet")) + labs(title="Distance From apaQTL to End of Peak" )
+distplot
 
+
+ggsave(distplot, file="../output/plots/QTLDist2EndofPeak.png")
 ```
 
 Where are the QTLs:  
