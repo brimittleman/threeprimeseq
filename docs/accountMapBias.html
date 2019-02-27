@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-16
+<strong>Last updated:</strong> 2019-02-26
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef8c76ea9596e24e3cf8ae8994c66ebb89ae77c01targetblankf8c76eaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f8c76ea9596e24e3cf8ae8994c66ebb89ae77c01" target="_blank">f8c76ea</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree8f85cd252f6e85a40decbc7c43b6a5a9e92fc90atargetblank8f85cd2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/8f85cd252f6e85a40decbc7c43b6a5a9e92fc90a" target="_blank">8f85cd2</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef8c76ea9596e24e3cf8ae8994c66ebb89ae77c01targetblankf8c76eaa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree8f85cd252f6e85a40decbc7c43b6a5a9e92fc90atargetblank8f85cd2a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,7 +541,8 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/characterize_apaQTLs.Rmd
+    Untracked:  analysis/fixBWChromNames.Rmd
+    Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -550,13 +551,18 @@ Untracked files:
     Untracked:  code/strober_pc_pve_heatmap_func.R
     Untracked:  data/18486.genecov.txt
     Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/AllPeak_counts/
     Untracked:  data/ApaQTLs/
+    Untracked:  data/ApaQTLs_otherPhen/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
+    Untracked:  data/LocusZoom_Unexp/
+    Untracked:  data/LocusZoom_proc/
+    Untracked:  data/MatchedSnps/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
     Untracked:  data/PeakCounts_noMP_5perc/
@@ -566,8 +572,10 @@ Untracked files:
     Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/QTL_overlap/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
+    Untracked:  data/Replicates_usage/
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
@@ -576,6 +584,7 @@ Untracked files:
     Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
     Untracked:  data/YL_QTL_test/
     Untracked:  data/apaExamp/
+    Untracked:  data/apaExamp_proc/
     Untracked:  data/apaQTL_examp_noMP/
     Untracked:  data/bedgraph_peaks/
     Untracked:  data/bin200.5.T.nuccov.bed
@@ -589,6 +598,7 @@ Untracked files:
     Untracked:  data/diff_iso_GeneLocAnno/
     Untracked:  data/diff_iso_proc/
     Untracked:  data/diff_iso_trans/
+    Untracked:  data/eQTLs_Lietal/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
     Untracked:  data/explainProtVar/
@@ -642,7 +652,8 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
-    Untracked:  docs/figure/peakQCplotsSTARprocessing.Rmd/
+    Untracked:  output/LZ/
+    Untracked:  output/deeptools_plots/
     Untracked:  output/picard/
     Untracked:  output/plots/
     Untracked:  output/qual.fig2.pdf
@@ -655,6 +666,7 @@ Unstaged changes:
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diffIsoAnalysisNewMapping.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
@@ -671,6 +683,7 @@ Unstaged changes:
     Modified:   analysis/test.max2.Rmd
     Modified:   analysis/test.smash.Rmd
     Modified:   analysis/understandPeaks.Rmd
+    Modified:   analysis/unexplainedeQTL_analysis.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
@@ -710,6 +723,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/8f85cd252f6e85a40decbc7c43b6a5a9e92fc90a/analysis/accountMapBias.Rmd" target="_blank">8f85cd2</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-26
+</td>
+<td>
+save plot
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/accountMapBias.html" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -905,13 +952,13 @@ add accountmapbias
 </div>
 </div>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.4.0
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
 <pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(cowplot)</code></pre>
@@ -1372,7 +1419,8 @@ NucDist=read.table(&quot;../data/ApaQTLs/Distance2EndPeak.Nuclear.apaQTLs.txt&qu
 
 BothDist=data.frame(rbind(TotDist, NucDist))
 
-ggplot(BothDist, aes(x=Distance, by=Fraction, fill=Fraction))+geom_histogram(bins=70, alpha=.5) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Distance From apaQTL to End of Peak&quot; )</code></pre>
+distplot=ggplot(BothDist, aes(x=Distance, by=Fraction, fill=Fraction))+geom_histogram(bins=70, alpha=.5) + scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;)) + labs(title=&quot;Distance From apaQTL to End of Peak&quot; )
+distplot</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
@@ -1411,6 +1459,8 @@ Briana Mittleman
 </table>
 </div>
 </div>
+<pre class="r"><code>ggsave(distplot, file=&quot;../output/plots/QTLDist2EndofPeak.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <p>Where are the QTLs:</p>
 <p>QTLfile2Bed.py “Total” QTLfile2Bed.py “Nuclear”</p>
 <p>I will need to sort the output</p>
@@ -1505,6 +1555,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/accountMapBias.Rmd/unnamed-chunk-30-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/ab3722be53d00924b06bf6face09d22f88c17ed4/docs/figure/accountMapBias.Rmd/unnamed-chunk-30-1.png" target="_blank">ab3722b</a>
 </td>
 <td>
@@ -1521,11 +1582,85 @@ Briana Mittleman
 <p>make boxplot</p>
 <pre class="r"><code>ggplot(waspStat, aes(x=Fraction, y=log10(FilteredReads), fill=Fraction)) + geom_boxplot()</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-1">
+Past versions of unnamed-chunk-31-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/accountMapBias.Rmd/unnamed-chunk-31-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Plto barplots by fractions with error bar</p>
 <pre class="r"><code>waspStat_sem= waspStat %&gt;% group_by(Fraction) %&gt;% summarise(mean=mean(FilteredReads), sd=sd(FilteredReads))
 
 ggplot(waspStat_sem, aes(x=Fraction, y=mean, fill=Fraction)) + geom_bar(stat=&#39;identity&#39;)  + geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,) + labs(title=&quot;Reads filtered out due to WASP filter&quot;, y=&#39;Reads&#39;) +scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-32-1">
+Past versions of unnamed-chunk-32-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-32-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/accountMapBias.Rmd/unnamed-chunk-32-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Map stat plots:</p>
 <pre class="r"><code>mapStats_wasp=read.table(&quot;../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt&quot;, stringsAsFactors = F, header = T)</code></pre>
 <p>Plot mappeded reads no MP by fractions:</p>
@@ -1540,21 +1675,206 @@ seqread_plot=ggplot(mapStats_wasp_reads, aes(x=fraction, y=mean, fill=fraction))
 allmapstatplots=plot_grid(seqread_plot,mapreads_plot,propmap_plot,ncol = 3)
 allmapstatplots</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-37-1">
+Past versions of unnamed-chunk-37-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-37-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/accountMapBias.Rmd/unnamed-chunk-37-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(allmapstatplots, file=&quot;../output/plots/MapStatBarPlots.png&quot;,width=15)</code></pre>
 <pre><code>Saving 15 x 5 in image</code></pre>
 <p>Boxplot:</p>
 <pre class="r"><code>seqread_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(reads), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Sequenced Reads&quot;, y=&quot;log10(Number of sequence reads)&quot;) 
 seqread_plotbar</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-38-1">
+Past versions of unnamed-chunk-38-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-38-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/accountMapBias.Rmd/unnamed-chunk-38-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>mapreads_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=log10(Mapped_noMP), fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Mapped Reads\n filtered for misspriming&quot;, y=&quot;log10(Mapped Reads)&quot;) 
 mapreads_plotbar</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-38-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-38-2">
+Past versions of unnamed-chunk-38-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-38-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/accountMapBias.Rmd/unnamed-chunk-38-2.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>maprop_plotbar=ggplot(mapStats_wasp, aes(x=fraction, y=prop_MappedwithoutMP, fill=fraction)) + geom_boxplot()+scale_fill_manual(values=c(&quot;deepskyblue3&quot;,&quot;darkviolet&quot;))+ labs(title=&quot;Proportion Mapped Reads\n and filtered for misspriming&quot;, y=&quot;Proportion mapped post misspriming&quot;) 
 maprop_plotbar</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-38-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-38-3">
+Past versions of unnamed-chunk-38-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-38-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/accountMapBias.Rmd/unnamed-chunk-38-3.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>allmapstatboxplots=plot_grid(seqread_plotbar,mapreads_plotbar,maprop_plotbar,ncol = 3)
 allmapstatboxplots</code></pre>
 <p><img src="figure/accountMapBias.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-39-1">
+Past versions of unnamed-chunk-39-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-39-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/879be332f32f95550851f1ad6c41dcf69cb18d01/docs/figure/accountMapBias.Rmd/unnamed-chunk-39-1.png" target="_blank">879be33</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(allmapstatboxplots, file=&quot;../output/plots/MapStatBoxPlots.png&quot;,width=15)</code></pre>
 <pre><code>Saving 15 x 5 in image</code></pre>
 <br> <br>
