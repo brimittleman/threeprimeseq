@@ -338,7 +338,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-25
+<strong>Last updated:</strong> 2019-02-27
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -369,10 +369,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2336f876998f368497b100cdd933b2c8f4f2ab6etargetblank2336f87a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2336f876998f368497b100cdd933b2c8f4f2ab6e" target="_blank">2336f87</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeeb1a05c66815af97bc057d4c8c67624e66194348targetblankeb1a05ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/eb1a05c66815af97bc057d4c8c67624e66194348" target="_blank">eb1a05c</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2336f876998f368497b100cdd933b2c8f4f2ab6etargetblank2336f87a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeeb1a05c66815af97bc057d4c8c67624e66194348targetblankeb1a05ca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -411,6 +411,7 @@ Untracked files:
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
+    Untracked:  data/LocusZoom_Unexp/
     Untracked:  data/LocusZoom_proc/
     Untracked:  data/MatchedSnps/
     Untracked:  data/NuclearApaQTLs.txt
@@ -474,6 +475,7 @@ Untracked files:
     Untracked:  data/nuc_10up/
     Untracked:  data/other_qtls/
     Untracked:  data/pQTL_otherphen/
+    Untracked:  data/pacbio_cov/
     Untracked:  data/peakPerRefSeqGene/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
@@ -502,7 +504,8 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
-    Untracked:  data/~$threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
+    Untracked:  docs/figure/initialPacBioQuant.Rmd/
+    Untracked:  output/LZ/
     Untracked:  output/deeptools_plots/
     Untracked:  output/picard/
     Untracked:  output/plots/
@@ -533,6 +536,7 @@ Unstaged changes:
     Modified:   analysis/test.max2.Rmd
     Modified:   analysis/test.smash.Rmd
     Modified:   analysis/understandPeaks.Rmd
+    Modified:   analysis/unexplainedeQTL_analysis.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
@@ -572,6 +576,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/eb1a05c66815af97bc057d4c8c67624e66194348/analysis/index.Rmd" target="_blank">eb1a05c</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+<td>
+add pacbio analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/b74a969e73a748845e343b055aa1c987c334dc6a/docs/index.html" target="_blank">b74a969</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -3106,6 +3144,7 @@ Start workflowr project.
 <li><p><a href="characterize_apaQTLs.html">Characterize apaQTLs</a></p></li>
 <li><p><a href="ProtandRNApvals.html">Look at processed apaQTLs in other fractions</a></p></li>
 <li><p><a href="unexplainedeQTL_analysis.html">Can we explain non-chromatin eQTLs</a></p></li>
+<li><p><a href="initialPacBioQuant.html">Explore coverage in PAS by pacbio</a></p></li>
 </ul>
 </div>
 
