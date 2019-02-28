@@ -170,3 +170,13 @@ test=read.table("../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_all
 testN=read.table("../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt")
 ```
 
+
+
+Write out the peaks that are more used in nuclear. These have a negative delta psi  
+
+```{r}
+effectsize_dpsi_nuc=effectsize_dpsi %>% filter(deltapsi<0)
+
+write.table(effectsize_dpsi_nuc, file="../data/diff_iso_GeneLocAnno/SigPeaksHigherInNuc.txt", col.names = T, quote = F, row.names = F)
+```
+
