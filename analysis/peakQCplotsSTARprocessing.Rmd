@@ -1047,7 +1047,7 @@ computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnase
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.gz --refPointLabel "Called Intronic PAS" --plotTitle "RNAseq at Nuclear Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.png
 ```
 
-###Repetitive elements:  
+####Repetitive elements:  
 Could this be do to repetitive elements  
 
 Process: 
