@@ -153,3 +153,20 @@ ggsave(LCResplotpie, file="../output/plots/LCResBoxPie.png")
 
 ```
 
+
+Look at examples:  
+
+
+```{r}
+arrange(effectsize_dpsi,deltapsi) %>% head(n=15)
+```
+
+Stuck on visualization  
+
+peak5329- that is the QTL peak for dock7 
+
+```{r}
+test=read.table("../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt")
+testN=read.table("../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt")
+```
+
