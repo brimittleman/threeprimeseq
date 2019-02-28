@@ -9,11 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
+##apaQTLs in RNA and prot
 ```{r}
 library(workflowr)
 library(reshape2)
 library(tidyverse)
+library(cowplot)
 library(qvalue)
 ```
 
@@ -198,5 +199,136 @@ TotOverlap_melt=melt(TotOverlap, id.vars = c("SNP", "Gene", "GeneName"))
 colnames(TotOverlap_melt)=c("SNP", "Gene", "GeneName", "Pheno", "Pvalue")
 
 ggplot(TotOverlap_melt, aes(x=Pvalue, by=Pheno, fill=Pheno))+ geom_density(alpha=.5) + labs(title="RNA and Protien Pvalues for Total apaQTLs") + scale_fill_manual(values=c("yellow","blue"))
+```
+
+Look at the pi1 with bootstrapping: 
+ 
+```{r}
+
+set.seed(1)
+pi1Bootstrap= function(pval){
+    output=integer(100)
+    for (i in 1:length(output)){
+      samp=sample(pval,length(pval), replace = T)
+      Spi0=pi0est(samp, pi0.method = "bootstrap")
+      pi1=1-Spi0$pi0
+      output[i]=pi1
+    }
+    return(output)
+}
+#TotP_sim=pi1Bootstrap(TotProt$Prot_P)
+TotR_sim=pi1Bootstrap(TotRNA$RNA_P)
+NucP_sim=pi1Bootstrap(NucProt$Prot_P)
+NucR_sim=pi1Bootstrap(NucRNA$RNA_P)
+
+TotP_est=1-TotProtPi$pi0
+TotR_est=1-TotRNAPi$pi0
+NucP_est=1-NucProtPi$pi0
+NucR_est=1-NucRNAPi$pi0
+
+```
+
+```{r}
+Fraction=c("Total", "Total", "Nuclear", "Nuclear")
+Category=c("Protein", "RNA","Protein", "RNA")
+Estimate=c(TotP_est,TotR_est,NucP_est,NucR_est)
+SD=c(0, sd(TotR_sim),sd(NucP_sim), sd(NucR_sim))
+
+Pi1DF=as.data.frame(cbind(Fraction, Category,Estimate,SD))
+Pi1DF$Estimate= as.numeric(as.character(Pi1DF$Estimate))
+Pi1DF$SD= as.numeric(as.character(Pi1DF$SD))
+
+```
+
+
+```{r}
+ggplot(Pi1DF,aes(x=Category, y=Estimate, col=Category)) + geom_point() + geom_errorbar(aes(ymin=(Estimate-SD), ymax=(Estimate+SD)),width=.1) + facet_grid(~Fraction) + scale_color_manual(values=c("red", "blue")) + labs(title="Pi1 Sharing Between apaQTLs and other molQTLs")
+```
+
+##Split explained and unexplained  
+
+I want to look at genes for unexplained eQTLs. I need to  make a list of the genes with an unexplained eQTL. 
+
+
+getUnexpeQTLGenes.py
+```{bash,eval=F}
+inFile="/project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/unexplained_FDR10.txt"
+outFile=open("/project2/gilad/briana/threeprimeseq/data/eQTL_Lietal/unexplained_FDR10_genes.txt", "w")
+for ln in open(inFile, "r"):
+    if length(ln.split())==3:
+        gene=ln.split()[2]
+        outFile.write("%s\n"%(gene))
+    else: 
+       genes=ln.split()[2:]
+       for i in genes:
+           outFile.write("%s\n"%i)
+           
+outFile.close()
+```
+
+
+```{r}
+geneNames=read.table("../data/ensemble_to_genename.txt",stringsAsFactors = F, header = T, sep="\t")
+unexpGene=read.table("../data/eQTLs_Lietal/unexplained_FDR10_genes.txt", header = F, col.names = c("Gene.stable.ID"),stringsAsFactors = F) %>% inner_join(geneNames, by="Gene.stable.ID")
+
+colnames(unexpGene)=c("Gene.stable.ID", "GeneName", "Source")
+```
+
+
+Now I want to seperate the eQTL pvalue results by these gene. 
+
+Total:
+```{r}
+TotRNAun=TotRNA %>% semi_join(unexpGene,by="GeneName")
+TotRNAUnPval=TotRNAun %>% select(RNA_P) %>% mutate(Category="Unexplained")
+TotRNAEx=TotRNA %>% anti_join(unexpGene, by="GeneName")
+TotRNAExPval=TotRNAEx%>% select(RNA_P) %>% mutate(Category="Explained")
+
+#full data frame  
+AllRNAP_tot=as.data.frame(rbind(TotRNAUnPval,TotRNAExPval))
+
+totExvUn=ggplot(AllRNAP_tot, aes(by=Category, x=RNA_P, fill=Category))+ geom_density(alpha=.3) + scale_fill_manual(values=c("red", "blue")) + labs(x="eQTL association pvalue", title="Total apaQTL associations \n in eQTLs analysis")
+
+```
+
+
+
+
+Nuclear:
+
+```{r}
+NucRNAun=NucRNA %>% semi_join(unexpGene,by="GeneName")
+NucRNAUnPval=NucRNAun %>% select(RNA_P) %>% mutate(Category="Unexplained")
+NucRNAEx=NucRNA %>% anti_join(unexpGene, by="GeneName")
+NucRNAExPval=NucRNAEx%>% select(RNA_P) %>% mutate(Category="Explained")
+
+AllRNAP_nuc=as.data.frame(rbind(NucRNAUnPval,NucRNAExPval))
+
+nucExvUn=ggplot(AllRNAP_nuc, aes(by=Category, x=RNA_P, fill=Category))+ geom_density(alpha=.3) + scale_fill_manual(values=c("red", "blue")) + labs(x="eQTL association pvalue", title="Nuclear apaQTL associations \n in eQTLs analysis")
+
+```
+
+```{r}
+bothExOver=plot_grid(totExvUn,nucExvUn)
+
+bothExOver
+
+ggsave(bothExOver, file="../output/plots/apaQTLsinExplainedvUnexplainedeQTLs.png")
+```
+
+
+Try to get pi1 for these analysis:
+```{r}
+#TotRNAunpi=pi0est(TotRNAun$RNA_P, pi0.method = "bootstrap",na.rm=T)
+TotRNAExpi=pi0est(TotRNAEx$RNA_P, pi0.method = "bootstrap")
+1- TotRNAExpi$pi0
+```
+
+```{r}
+
+NucRNAunpi=pi0est(NucRNAun$RNA_P, pi0.method = "bootstrap")
+1-NucRNAunpi$pi0
+NucRNAExpi=pi0est(NucRNAEx$RNA_P, pi0.method = "bootstrap")
+1- TotRNAExpi$pi0
 ```
 
