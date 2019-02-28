@@ -287,7 +287,7 @@ TotRNAExPval=TotRNAEx%>% select(RNA_P) %>% mutate(Category="Explained")
 #full data frame  
 AllRNAP_tot=as.data.frame(rbind(TotRNAUnPval,TotRNAExPval))
 
-totExvUn=ggplot(AllRNAP_tot, aes(by=Category, x=RNA_P, fill=Category))+ geom_density(alpha=.3) + scale_fill_manual(values=c("red", "blue")) + labs(x="eQTL association pvalue", title="Total apaQTL associations \n in eQTLs analysis")
+totExvUn=ggplot(AllRNAP_tot, aes(by=Category, x=RNA_P, fill=Category))+ geom_density(alpha=.3) + scale_fill_manual(values=c("red", "blue")) + labs(x="eQTL association pvalue", title="Total apaQTL associations \n in eQTLs analysis") + annotate("text", label="P < .0001", x=.75, y=2) + annotate("text", label="***", x=.75, y=1.8)
 
 ```
 
@@ -304,7 +304,7 @@ NucRNAExPval=NucRNAEx%>% select(RNA_P) %>% mutate(Category="Explained")
 
 AllRNAP_nuc=as.data.frame(rbind(NucRNAUnPval,NucRNAExPval))
 
-nucExvUn=ggplot(AllRNAP_nuc, aes(by=Category, x=RNA_P, fill=Category))+ geom_density(alpha=.3) + scale_fill_manual(values=c("red", "blue")) + labs(x="eQTL association pvalue", title="Nuclear apaQTL associations \n in eQTLs analysis")
+nucExvUn=ggplot(AllRNAP_nuc, aes(by=Category, x=RNA_P, fill=Category))+ geom_density(alpha=.3) + scale_fill_manual(values=c("red", "blue")) + labs(x="eQTL association pvalue", title="Nuclear apaQTL associations \n in eQTLs analysis") +annotate("text", label="P < .0001", x=.75, y=1.5)+ annotate("text", label="***", x=.75, y=1.4)
 
 ```
 
@@ -330,5 +330,53 @@ NucRNAunpi=pi0est(NucRNAun$RNA_P, pi0.method = "bootstrap")
 1-NucRNAunpi$pi0
 NucRNAExpi=pi0est(NucRNAEx$RNA_P, pi0.method = "bootstrap")
 1- TotRNAExpi$pi0
+```
+
+
+Look at significance in a hypergeometric   
+
+I will put the number that are less than .1 and those that are more in each set. I will make a 2 by 2 table with exp/unexplained as cols and rows as sig vs not.  
+
+* Total  
+
+alpha=.05
+```{r}
+TotRNAUnPval_sig=TotRNAUnPval %>% filter(RNA_P <=.05) %>% nrow()
+TotRNAUnPval_Nsig=TotRNAUnPval %>% filter(RNA_P >.05) %>% nrow()
+
+TotRNAExPval_sig=TotRNAExPval %>% filter(RNA_P <=.05) %>% nrow()
+TotRNAExPval_Nsig=TotRNAExPval %>% filter(RNA_P >.05) %>% nrow()
+
+TotalSig=c(TotRNAUnPval_sig,TotRNAExPval_sig)
+TotNSig=c(TotRNAUnPval_Nsig,TotRNAExPval_Nsig)
+
+TotalMatrix=rbind(TotalSig,TotNSig )
+TotalMatrix
+
+
+```
+Lower tail is false because we are asknig if we get more sig than expected  
+```{r}
+phyper(18,35,204,63, lower.tail = F)
+```
+
+* Nuclear
+```{r}
+NucRNAUnPval_sig=NucRNAUnPval %>% filter(RNA_P <=.1) %>% nrow()
+NucRNAUnPval_Nsig=NucRNAUnPval %>% filter(RNA_P >.1) %>% nrow()
+
+NucRNAExPval_sig=NucRNAExPval %>% filter(RNA_P <=.1) %>% nrow()
+NucRNAExPval_Nsig=NucRNAExPval %>% filter(RNA_P >.1) %>% nrow()
+
+NucSig=c(NucRNAUnPval_sig,NucRNAExPval_sig)
+NucNSig=c(NucRNAUnPval_Nsig,NucRNAExPval_Nsig)
+
+NucMatrix=rbind(NucSig,NucNSig )
+NucMatrix
+
+```
+
+```{r}
+phyper(31,69,458,141, lower.tail = F)
 ```
 
