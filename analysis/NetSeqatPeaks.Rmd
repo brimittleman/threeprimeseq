@@ -1,0 +1,283 @@
+---
+title: "NetSeq at PAS"
+author: "Briana Mittleman"
+date: "2/27/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(workflowr)
+```
+
+
+merge net seq data:  
+
+
+/project2/gilad/briana/Net-seq/Net-seq3/data/sort/*-sort.bam  
+
+/project2/gilad/briana/Net-seq/Net-seq3/data/sort/mergeAndMakeBWnet3.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeAndMakeBWnet3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeAndMakeBWnet3.out
+#SBATCH --error=mergeAndMakeBWnet3.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+samtools merge /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.bam /project2/gilad/briana/Net-seq/Net-seq3/data/sort/*-sort.bam  
+samtools sort /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.bam > /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bam
+samtools index /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bam
+
+bamCoverage -b  /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bam -o  /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw
+```
+
+
+Look 3kb on each side  
+
+NetseqDTPlotmyPeaks_noMPFilt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NetseqDTPlotmyPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NetseqDTPlotmyPeaks_noMPFilt.out
+#SBATCH --error=NetseqDTPlotmyPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myPeaksNompfilt.png
+```
+
+
+Do this for intronic peaks  
+
+NetseqDTPlotmyIntronPeaks_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NetseqDTPlotmyIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NetseqDTPlotmyIntronPeaks_noMPFilt.out
+#SBATCH --error=NetseqDTPlotmyIntronPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON.bed -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myIntronPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myIntronPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Intronic Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myIntronPeaksNompfilt.png
+```
+
+Top used intronic in nuclear  
+NetseqDTPlotmyToptIntronPeaks_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NetseqDTPlotmyToptIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NetseqDTPlotmyTopIntronPeaks_noMPFilt.out
+#SBATCH --error=NetseqDTPlotmyTopIntronPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.Nuclear.sort.bed -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myTopIntronPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myTopIntronPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Top Nuclear Intronic Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myTotIntronPeaksNompfilt.png
+```
+
+
+/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.sort.bed
+NetseqDTPlotmyTopTotIntronPeaks_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NetseqDTPlotmyTopTotIntronPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NetseqDTPlotmyTopTotIntronPeaks_noMPFilt.out
+#SBATCH --error=NetseqDTPlotmyTopTotIntronTotPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.sort.bed -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myTopTotIntronPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myTopTotIntronPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Top Total Intronic Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myTopTotIntronPeaksNompfilt.png
+```
+
+UTR peaks  
+
+NetseqDTPlotmyUTRPeaks_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NetseqDTPlotmyUTRPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NetseqDTPlotmyUTRPeaks_noMPFilt.out
+#SBATCH --error=NetseqDTPlotmyUTRPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5perc_FixedStrand_3UTR.bed -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myUTRPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myUTRPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at 3' UTR Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_myUTRPeaksNompfilt.png
+```
+
+
+I want to look at the peaks used more often in the nucelear fraction and see if we have enrichment at these. 
+
+
+```{r}
+NucPeaks=read.table("../data/diff_iso_GeneLocAnno/SigPeaksHigherInNuc.txt", header=T, stringsAsFactors = F) %>% separate(intron, into=c("Chr2", "Start", "End", "gene"), sep=":")
+NucPeaks$Start=as.numeric(NucPeaks$Start)
+NucPeaks$End=as.numeric(NucPeaks$End)
+```
+
+Now I want to pull in the corrected strand peaks.  
+
+```{r}
+DTPeaks=read.table("../data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed",header = F, col.names = c("Chr", "Start", "End","Name", "Score", "Strand" )) %>% mutate(Chr2=paste("chr", Chr, sep=""))
+
+DTPeaks_filt=DTPeaks %>% semi_join(NucPeaks, by=c("Chr2", "Start", "End")) %>% select(-Chr2)
+
+
+#write it  
+write.table(DTPeaks_filt, "../data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed", col.names = F, row.names = F, quote=F, sep="\t")
+
+```
+
+
+NetseqDTPlot_NucDiffUsedPeaks_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NetseqDTPlot_NucDiffUsedPeaks_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NetseqDTPlot_NucDiffUsedPeaks_noMPFilt.out
+#SBATCH --error=NetseqDTPlot_NucDiffUsedPeaks_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Nuclear Specific PAS" --heatmapHeight 7 --colorMap YlGnBu  --averageTypeSummaryPlot "mean" -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt.png
+```
+
+
+There are a few peaks driving the signal. I can split these up into 5 peak files  
+
+```{r}
+DTPeaks_filt_1= DTPeaks_filt %>% slice(1:150)
+DTPeaks_filt_2= DTPeaks_filt %>% slice(151:300)
+DTPeaks_filt_3= DTPeaks_filt %>% slice(301:450)
+DTPeaks_filt_4= DTPeaks_filt %>% slice(451:600)
+DTPeaks_filt_5= DTPeaks_filt %>% slice(601:762)
+
+write.table(DTPeaks_filt_1, "../data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_1.bed", col.names = F, row.names = F, quote=F, sep="\t")
+write.table(DTPeaks_filt_2, "../data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_2.bed", col.names = F, row.names = F, quote=F, sep="\t")
+write.table(DTPeaks_filt_3, "../data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_3.bed", col.names = F, row.names = F, quote=F, sep="\t")
+write.table(DTPeaks_filt_4, "../data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_4.bed", col.names = F, row.names = F, quote=F, sep="\t")
+write.table(DTPeaks_filt_5, "../data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_5.bed", col.names = F, row.names = F, quote=F, sep="\t")
+
+
+```
+
+
+NetseqDTPlot_NucDiffUsedPeaks_noMPFilt_5plots.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=NetseqDTPlot_NucDiffUsedPeaks_noMPFilt_5plots
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=NetseqDTPlot_NucDiffUsedPeaks_noMPFilt_5plots.out
+#SBATCH --error=NetseqDTPlot_NucDiffUsedPeaks_noMPFilt_5plots.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+#1
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_1.bed  -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt1.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt1.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Nuclear Specific PAS" --heatmapHeight 7 --colorMap YlGnBu  --averageTypeSummaryPlot "mean" -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt1.png
+
+#2
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_2.bed  -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt2.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt2.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Nuclear Specific PAS" --heatmapHeight 7 --colorMap YlGnBu  --averageTypeSummaryPlot "mean" -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt2.png
+
+#3
+
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_3.bed  -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt3.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt3.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Nuclear Specific PAS" --heatmapHeight 7 --colorMap YlGnBu  --averageTypeSummaryPlot "mean" -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt3.png
+
+
+#4
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_4.bed  -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt4.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt4.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Nuclear Specific PAS" --heatmapHeight 7 --colorMap YlGnBu  --averageTypeSummaryPlot "mean" -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt4.png
+
+
+#5
+
+computeMatrix reference-point -S /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_5.bed  -b 3000 -a 3000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt5.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt5.gz --refPointLabel "Called PAS" --plotTitle "Combined NetSeq at Nuclear Specific PAS" --heatmapHeight 7 --colorMap YlGnBu  --averageTypeSummaryPlot "mean" -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/Netseq_NucDiffUsedPeaksNompfilt5.png
+
+```
+
+
+
+Data are a bit too noisy to say anything here.  
