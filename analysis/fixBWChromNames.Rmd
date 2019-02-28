@@ -1,0 +1,98 @@
+---
+title: "Fix BW for Genome Browser"
+author: "Briana Mittleman"
+date: "2/23/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+Convert chromosome names: 
+
+https://gist.github.com/dpryan79/39c70b4429dd4559d88fb079b8669721#file-convertbigwigchroms-py
+
+convertBigWigChroms.py  
+
+```{bash,eval=F}
+#!/usr/bin/env python
+import argparse
+import pyBigWig
+
+parser = argparse.ArgumentParser(description="Convert the chromosome names of a bigWig file.")
+parser.add_argument("conv", metavar="conversion.txt", help="Text file with two columns, the first a chromosome name and the second the converted chromosome name.")
+parser.add_argument("input", metavar="input.bigWig", help="Input bigWig file")
+parser.add_argument("output", metavar="output.bigWig", help="Output bigWig file name")
+args = parser.parse_args()
+
+# read in the name map
+d = {}
+f = open(args.conv)
+for line in f:
+    cols = line.strip().split()
+    if len(cols) < 2 or cols[1] == "":
+         continue
+    d[cols[0]] = cols[1]
+f.close()
+
+bw = pyBigWig.open(args.input)
+# Make a new header
+hdr = [(d[chrom], length) for chrom, length in bw.chroms().items() if chrom in d]
+bwOutput = pyBigWig.open(args.output, "w")
+bwOutput.addHeader(hdr)
+for chrom, length in bw.chroms().items():
+    ints = bw.intervals(chrom, 0, length)
+    if len(ints):
+        bwOutput.addEntries([d[chrom]] * len(ints),
+                            [x[0] for x in ints],
+                            ends=[x[1] for x in ints],
+                            values=[x[2] for x in ints])
+bw.close()
+bwOutput.close()
+```
+
+
+Convert Text file:
+
+/project2/gilad/briana/threeprimeseq/data/BW_fixedChr/ChromConvert.txt 
+```{bash,eval=F}
+1 chr1
+2 chr2
+3 chr3
+4 chr4
+5 chr5
+6 chr6
+7 chr7
+8 chr8
+9 chr9
+10  chr10
+11  chr11
+12  chr12
+13  chr13
+14  chr14
+15  chr15
+16  chr16
+17  chr17
+18  chr18
+19  chr19
+20  chr20
+21  chr21
+22  chr22
+MT  chrM
+X chrX
+Y chrY  
+```
+
+```{bash,eval=F}
+python convertBigWigChroms.py /project2/gilad/briana/threeprimeseq/data/BW_fixedChr/ChromConvert.txt /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/BW_fixedChr/Total_MergedBamCoverage_fixed.bw
+
+python convertBigWigChroms.py /project2/gilad/briana/threeprimeseq/data/BW_fixedChr/ChromConvert.txt /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/BW_fixedChr/Nuclear_MergedBamCoverage_fixed.bw
+
+
+python convertBigWigChroms.py /project2/gilad/briana/threeprimeseq/data/BW_fixedChr/ChromConvert.txt /project2/gilad/briana/Net-seq/Net-seq3/data/sort/Merged.Net3.sort.bw /project2/gilad/briana/threeprimeseq/data/BW_fixedChr/Merged.Net3.sort.fixed.bw
+
+```
+
