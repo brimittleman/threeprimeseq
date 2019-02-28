@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-20
+<strong>Last updated:</strong> 2019-02-28
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed7fbab23771af20990cb29e8c326c13a41cd1404targetblankd7fbab2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d7fbab23771af20990cb29e8c326c13a41cd1404" target="_blank">d7fbab2</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree1fb4ca653023864c81755e892febfdcbd4e952ectargetblank1fb4ca6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/1fb4ca653023864c81755e892febfdcbd4e952ec" target="_blank">1fb4ca6</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed7fbab23771af20990cb29e8c326c13a41cd1404targetblankd7fbab2a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree1fb4ca653023864c81755e892febfdcbd4e952ectargetblank1fb4ca6a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,6 +541,7 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
+    Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
     Untracked:  analysis/verifyBAM.Rmd
@@ -558,6 +559,7 @@ Untracked files:
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
+    Untracked:  data/LocusZoom_Unexp/
     Untracked:  data/LocusZoom_proc/
     Untracked:  data/MatchedSnps/
     Untracked:  data/NuclearApaQTLs.txt
@@ -572,6 +574,7 @@ Untracked files:
     Untracked:  data/QTL_overlap/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
+    Untracked:  data/Replicates_usage/
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
@@ -594,6 +597,7 @@ Untracked files:
     Untracked:  data/diff_iso_GeneLocAnno/
     Untracked:  data/diff_iso_proc/
     Untracked:  data/diff_iso_trans/
+    Untracked:  data/eQTLs_Lietal/
     Untracked:  data/ensemble_to_genename.txt
     Untracked:  data/example_gene_peakQuant/
     Untracked:  data/explainProtVar/
@@ -619,7 +623,9 @@ Untracked files:
     Untracked:  data/nuc_10up/
     Untracked:  data/other_qtls/
     Untracked:  data/pQTL_otherphen/
+    Untracked:  data/pacbio_cov/
     Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/peaks4DT/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
@@ -647,6 +653,7 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
+    Untracked:  output/LZ/
     Untracked:  output/deeptools_plots/
     Untracked:  output/picard/
     Untracked:  output/plots/
@@ -656,15 +663,14 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
-    Modified:   analysis/ProtandRNApvals.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
-    Modified:   analysis/diffIsoAnalysisNewMapping.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/fixBWChromNames.Rmd
     Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
@@ -679,6 +685,7 @@ Unstaged changes:
     Modified:   analysis/test.max2.Rmd
     Modified:   analysis/test.smash.Rmd
     Modified:   analysis/understandPeaks.Rmd
+    Modified:   analysis/unexplainedeQTL_analysis.Rmd
     Modified:   code/Snakefile
 
 </code></pre>
@@ -718,6 +725,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/1fb4ca653023864c81755e892febfdcbd4e952ec/analysis/characterize_apaQTLs.Rmd" target="_blank">1fb4ca6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-28
+</td>
+<td>
+add significance
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/87e1a4898d619ed8fc1ddacbbd30e8560b911338/docs/characterize_apaQTLs.html" target="_blank">87e1a48</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2389,6 +2430,43 @@ colnames(bothFracMatchedHMM_melt)=c(&quot;Region&quot;, &quot;Fraction&quot;, &q
 apaMatchedChromregion=ggplot(bothFracMatchedHMM_melt, aes(x=Region, y=NQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + labs(title=&quot;Matched SNPS by chromatin region&quot;)
 apaMatchedChromregion</code></pre>
 <p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-59-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-59-1">
+Past versions of unnamed-chunk-59-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-59-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/87e1a4898d619ed8fc1ddacbbd30e8560b911338/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-59-1.png" target="_blank">87e1a48</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Get proportions:</p>
 <pre class="r"><code>bothFracMatchedHMM_prop= bothFracMatchedHMM %&gt;% mutate(Total_prop=Total/254) %&gt;% mutate(Nuclear_prop=Nuclear/527) %&gt;% select(-Total,-Nuclear) 
 
@@ -2399,6 +2477,43 @@ colnames(bothFracMatchedHMM_prop_melt)=c(&quot;Region&quot;, &quot;Fraction&quot
 propapaQTLsMatchedChromregion=ggplot(bothFracMatchedHMM_prop_melt, aes(x=Region, y=PropQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + labs(y=&quot;Proportion of apaQTLs&quot;, title=&quot;Proportion of matched SNPs by chromatin region&quot;)
 propapaQTLsMatchedChromregion</code></pre>
 <p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-60-1">
+Past versions of unnamed-chunk-60-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-60-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/87e1a4898d619ed8fc1ddacbbd30e8560b911338/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-60-1.png" target="_blank">87e1a48</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Look at the difference between matched and actual QTLs:</p>
 <pre class="r"><code>PropHMM_QTLandMatch= bothFracMatchedHMM_prop %&gt;% inner_join(bothFracHMM_prop, by=&quot;name&quot;)
 colnames(PropHMM_QTLandMatch)=c(&quot;name&quot;, &quot;Total_Matched&quot;, &quot;Nuclear_Matched&quot;, &quot;Total_QTL&quot;, &quot;Nuclear_QTL&quot;)
@@ -2409,9 +2524,46 @@ colnames(PropHMM_QTLandMatch_diff)= c(&quot;name&quot;,&quot;Total&quot;, &quot;
 
 PropHMM_QTLandMatch_diff_melt=melt(PropHMM_QTLandMatch_diff, id.vars=&quot;name&quot;)
 colnames(PropHMM_QTLandMatch_diff_melt)= c(&quot;Region&quot;, &quot;Fraction&quot;, &quot;Difference&quot;)</code></pre>
-<pre class="r"><code>diffPropPlot=ggplot(PropHMM_QTLandMatch_diff_melt, aes(x=Region, y=Difference, by=Fraction, fill=Fraction))+ geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))+labs(y=&quot;Difference in proportion of SNPs&quot;, title=&quot;Enrichment of QTLs compared to \nmatched SNPs by chromatin region&quot;)
+<pre class="r"><code>diffPropPlot=ggplot(PropHMM_QTLandMatch_diff_melt, aes(x=Region, y=Difference, by=Fraction, fill=Fraction))+ geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))+labs(y=&quot;Difference in proportion of SNPs&quot;, title=&quot;Enrichment of QTLs compared to \nmatched SNPs by chromatin region&quot;) 
 diffPropPlot</code></pre>
 <p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-62-1">
+Past versions of unnamed-chunk-62-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-62-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/87e1a4898d619ed8fc1ddacbbd30e8560b911338/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-62-1.png" target="_blank">87e1a48</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(diffPropPlot, filename =&quot;../output/plots/DiffPropChromHMM.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <pre class="r"><code>PropHMM_QTLandMatch_melt=melt(PropHMM_QTLandMatch, id.vars=&quot;name&quot;) %&gt;% separate(variable,sep=&quot;_&quot;, into=c(&quot;Fraction&quot;, &quot;Set&quot;))
@@ -2419,6 +2571,86 @@ diffPropPlot</code></pre>
 colnames(PropHMM_QTLandMatch_melt)=c(&quot;Region&quot;, &quot;Fraction&quot;, &quot;Set&quot;, &quot;Proportion&quot;)</code></pre>
 <pre class="r"><code>ggplot(PropHMM_QTLandMatch_melt, aes(x=Region, by=Set, y=Proportion, fill=Set)) + geom_bar(stat=&quot;identity&quot;, position=&quot;dodge&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +facet_grid(~Fraction) + scale_fill_manual(values=c(&quot;grey&quot;, &quot;blue&quot;))</code></pre>
 <p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-64-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-64-1">
+Past versions of unnamed-chunk-64-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-64-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/87e1a4898d619ed8fc1ddacbbd30e8560b911338/docs/figure/characterize_apaQTLs.Rmd/unnamed-chunk-64-1.png" target="_blank">87e1a48</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="enrichment-by-hypergeometric-dist" class="section level3">
+<h3>Enrichment by hypergeometric dist:</h3>
+<pre class="r"><code>TotalQTLandMAtch=bothFracHMM %&gt;% select(-Nuclear) %&gt;% full_join(bothFracMatchedHMM, by=&quot;name&quot;) %&gt;% select(-Nuclear)
+colnames(TotalQTLandMAtch)=c(&quot;Name&quot;, &quot;QTL&quot;, &quot;Matched&quot;)
+
+
+TotalQTLandMAtch$Matched= TotalQTLandMAtch$Matched %&gt;% replace_na(0)
+
+
+TotalQTLandMAtch= TotalQTLandMAtch %&gt;% mutate(TotalQTL= sum(TotalQTLandMAtch$QTL), TotalMatched= sum(TotalQTLandMAtch$Matched), Chosen=QTL +Matched) %&gt;% mutate(hyper=phyper(QTL, TotalQTL, TotalMatched, Chosen, lower.tail = F)) %&gt;% mutate(sig=ifelse(hyper&lt;.05, &quot;yes&quot;, &quot;no&quot;))
+
+TotalQTLandMAtch %&gt;% filter(sig==&quot;yes&quot;)</code></pre>
+<pre><code># A tibble: 3 x 8
+  Name             QTL Matched TotalQTL TotalMatched Chosen   hyper sig  
+  &lt;chr&gt;          &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;        &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;
+1 Repetitive/CNV     1       0      291          254      1 0       yes  
+2 Txn_Elongation    93      56      291          254    149 0.00349 yes  
+3 Weak_Txn          86      58      291          254    144 0.0303  yes  </code></pre>
+<p>Do this for nuclear:</p>
+<pre class="r"><code>NuclearQTLandMAtch=bothFracHMM %&gt;% select(-Total) %&gt;% full_join(bothFracMatchedHMM, by=&quot;name&quot;) %&gt;% select(-Total)
+colnames(NuclearQTLandMAtch)=c(&quot;Name&quot;, &quot;QTL&quot;, &quot;Matched&quot;)
+
+
+NuclearQTLandMAtch$Matched= NuclearQTLandMAtch$Matched %&gt;% replace_na(0)
+
+
+NuclearQTLandMAtch= NuclearQTLandMAtch %&gt;% mutate(NuclearQTL= sum(NuclearQTLandMAtch$QTL), NuclearMatched= sum(NuclearQTLandMAtch$Matched), Chosen=QTL +Matched) %&gt;% mutate(hyper=phyper(QTL, NuclearQTL, NuclearMatched, Chosen, lower.tail = F)) %&gt;% mutate(sig=ifelse(hyper&lt;.05, &quot;yes&quot;, &quot;no&quot;))
+
+NuclearQTLandMAtch %&gt;% filter(sig==&quot;yes&quot;)</code></pre>
+<pre><code># A tibble: 3 x 8
+  Name          QTL Matched NuclearQTL NuclearMatched Chosen   hyper sig  
+  &lt;chr&gt;       &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;
+1 Repetitive…     0       0        615            527      0 0.      yes  
+2 Strong_Enh…    33      17        615            527     50 2.72e-2 yes  
+3 Txn_Elonga…   182     112        615            527    294 4.91e-4 yes  </code></pre>
+<p>Add to plot</p>
+<pre class="r"><code>apaQTLsChromregion_sig=ggplot(bothFracHMM_melt, aes(x=Region, y=NQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat=&quot;identity&quot;, position = &quot;dodge&quot;)+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c(&quot;darkviolet&quot;,&quot;deepskyblue3&quot;))  + labs(title=&quot;apaQTLs by chromatin region&quot;)  + annotate(&quot;text&quot;, label=&quot;p &lt;.05&quot;, x=&quot;Weak_Txn&quot;, y=210) +  annotate(&quot;text&quot;, label=&quot;p &lt; .005&quot;, x=&quot;Txn_Elongation&quot;, y=210) + annotate(&quot;text&quot;, label=&quot;*&quot;, x=&quot;Weak_Txn&quot;, y=190) +  annotate(&quot;text&quot;, label=&quot;**&quot;, x=&quot;Txn_Elongation&quot;, y=190)
+
+
+apaQTLsChromregion_sig</code></pre>
+<p><img src="figure/characterize_apaQTLs.Rmd/unnamed-chunk-67-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(apaQTLsChromregion_sig, file=&quot;../output/plots/apaQTLsChromRegionWithSig.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2466,6 +2698,7 @@ loaded via a namespace (and not attached):
 [46] assertthat_0.2.0   rmarkdown_1.11     httr_1.3.1        
 [49] rstudioapi_0.9.0   R6_2.3.0           nlme_3.1-137      
 [52] git2r_0.24.0       compiler_3.5.1    </code></pre>
+</div>
 </div>
 </div>
 
