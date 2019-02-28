@@ -1098,7 +1098,7 @@ colnames(PropHMM_QTLandMatch_diff_melt)= c("Region", "Fraction", "Difference")
 
 
 ```{r}
-diffPropPlot=ggplot(PropHMM_QTLandMatch_diff_melt, aes(x=Region, y=Difference, by=Fraction, fill=Fraction))+ geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))+labs(y="Difference in proportion of SNPs", title="Enrichment of QTLs compared to \nmatched SNPs by chromatin region")
+diffPropPlot=ggplot(PropHMM_QTLandMatch_diff_melt, aes(x=Region, y=Difference, by=Fraction, fill=Fraction))+ geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))+labs(y="Difference in proportion of SNPs", title="Enrichment of QTLs compared to \nmatched SNPs by chromatin region") 
 diffPropPlot
 
 ggsave(diffPropPlot, filename ="../output/plots/DiffPropChromHMM.png")
@@ -1114,5 +1114,57 @@ colnames(PropHMM_QTLandMatch_melt)=c("Region", "Fraction", "Set", "Proportion")
 
 ```{r}
 ggplot(PropHMM_QTLandMatch_melt, aes(x=Region, by=Set, y=Proportion, fill=Set)) + geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +facet_grid(~Fraction) + scale_fill_manual(values=c("grey", "blue"))
+```
+
+###Enrichment by hypergeometric dist:  
+
+
+
+
+```{r}
+
+
+TotalQTLandMAtch=bothFracHMM %>% select(-Nuclear) %>% full_join(bothFracMatchedHMM, by="name") %>% select(-Nuclear)
+colnames(TotalQTLandMAtch)=c("Name", "QTL", "Matched")
+
+
+TotalQTLandMAtch$Matched= TotalQTLandMAtch$Matched %>% replace_na(0)
+
+
+TotalQTLandMAtch= TotalQTLandMAtch %>% mutate(TotalQTL= sum(TotalQTLandMAtch$QTL), TotalMatched= sum(TotalQTLandMAtch$Matched), Chosen=QTL +Matched) %>% mutate(hyper=phyper(QTL, TotalQTL, TotalMatched, Chosen, lower.tail = F)) %>% mutate(sig=ifelse(hyper<.05, "yes", "no"))
+
+TotalQTLandMAtch %>% filter(sig=="yes")
+```
+
+Do this for nuclear:  
+```{r}
+
+
+NuclearQTLandMAtch=bothFracHMM %>% select(-Total) %>% full_join(bothFracMatchedHMM, by="name") %>% select(-Total)
+colnames(NuclearQTLandMAtch)=c("Name", "QTL", "Matched")
+
+
+NuclearQTLandMAtch$Matched= NuclearQTLandMAtch$Matched %>% replace_na(0)
+
+
+NuclearQTLandMAtch= NuclearQTLandMAtch %>% mutate(NuclearQTL= sum(NuclearQTLandMAtch$QTL), NuclearMatched= sum(NuclearQTLandMAtch$Matched), Chosen=QTL +Matched) %>% mutate(hyper=phyper(QTL, NuclearQTL, NuclearMatched, Chosen, lower.tail = F)) %>% mutate(sig=ifelse(hyper<.05, "yes", "no"))
+
+NuclearQTLandMAtch %>% filter(sig=="yes")
+```
+
+
+
+Add to plot 
+
+```{r}
+
+
+apaQTLsChromregion_sig=ggplot(bothFracHMM_melt, aes(x=Region, y=NQTLs, by=Fraction, fill=Fraction)) + geom_bar(stat="identity", position = "dodge")+ theme(axis.text.x = element_text(angle = 90, hjust = 1)) +scale_fill_manual(values=c("darkviolet","deepskyblue3"))  + labs(title="apaQTLs by chromatin region")  + annotate("text", label="p <.05", x="Weak_Txn", y=210) +  annotate("text", label="p < .005", x="Txn_Elongation", y=210) + annotate("text", label="*", x="Weak_Txn", y=190) +  annotate("text", label="**", x="Txn_Elongation", y=190)
+
+
+apaQTLsChromregion_sig
+
+
+ggsave(apaQTLsChromregion_sig, file="../output/plots/apaQTLsChromRegionWithSig.png")
 ```
 
