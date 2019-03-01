@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-27
+<strong>Last updated:</strong> 2019-03-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeeb1a05c66815af97bc057d4c8c67624e66194348targetblankeb1a05ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/eb1a05c66815af97bc057d4c8c67624e66194348" target="_blank">eb1a05c</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree15d73efe7a1e98ef3988a03f334e9defa70148b3targetblank15d73efa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/15d73efe7a1e98ef3988a03f334e9defa70148b3" target="_blank">15d73ef</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeeb1a05c66815af97bc057d4c8c67624e66194348targetblankeb1a05ca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree15d73efe7a1e98ef3988a03f334e9defa70148b3targetblank15d73efa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,7 +541,6 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/fixBWChromNames.Rmd
     Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -626,6 +625,7 @@ Untracked files:
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/pacbio_cov/
     Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/peaks4DT/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
@@ -667,10 +667,10 @@ Unstaged changes:
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
-    Modified:   analysis/diffIsoAnalysisNewMapping.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/fixBWChromNames.Rmd
     Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
@@ -678,6 +678,7 @@ Unstaged changes:
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/peakQCPPlots.Rmd
+    Modified:   analysis/peakQCplotsSTARprocessing.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
@@ -724,6 +725,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/15d73efe7a1e98ef3988a03f334e9defa70148b3/analysis/initialPacBioQuant.Rmd" target="_blank">15d73ef</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-01
+</td>
+<td>
+pick lines
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/a259bd93bd6de74279295ee615ac6442108514c4/docs/initialPacBioQuant.html" target="_blank">a259bd9</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -816,17 +851,19 @@ fix file for ankeeta
 </div>
 </div>
 </div>
+<div id="look-at-published-pacbio" class="section level2">
+<h2>Look at published pacbio</h2>
 <pre class="r"><code>library(workflowr)</code></pre>
 <pre><code>This is workflowr version 1.2.0
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.4.0
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
 <pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
-<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
@@ -900,8 +937,82 @@ intronCov=read.table(&quot;../data/pacbio_cov/threeprime_noMP_pacbio_intron.cove
 <p>Plot the distributions:</p>
 <pre class="r"><code>ggplot(utrCov, aes(x=log10(cov + 1))) + geom_density() + labs(title=&quot;PacBio reads ending at each UTR peak&quot;, x=&quot;log10(nReads+1)&quot;)</code></pre>
 <p><img src="figure/initialPacBioQuant.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a259bd93bd6de74279295ee615ac6442108514c4/docs/figure/initialPacBioQuant.Rmd/unnamed-chunk-5-1.png" target="_blank">a259bd9</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(intronCov, aes(x=log10(cov + 1))) + geom_density() + labs(title=&quot;PacBio reads ending at each intronic peak&quot;, x=&quot;log10(nReads+1)&quot;)</code></pre>
 <p><img src="figure/initialPacBioQuant.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a259bd93bd6de74279295ee615ac6442108514c4/docs/figure/initialPacBioQuant.Rmd/unnamed-chunk-6-1.png" target="_blank">a259bd9</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(intronCov$cov)</code></pre>
 <pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
    0.000    0.000    0.000    0.611    0.000 4145.000 </code></pre>
@@ -937,6 +1048,43 @@ colnames(covDF_melt)=c(&quot;ReadCutoff&quot;, &quot;Location&quot;, &quot;Propo
 
 propcovbycutff</code></pre>
 <p><img src="figure/initialPacBioQuant.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a259bd93bd6de74279295ee615ac6442108514c4/docs/figure/initialPacBioQuant.Rmd/unnamed-chunk-9-1.png" target="_blank">a259bd9</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(propcovbycutff, filename = &quot;../output/plots/PacBioReadsEndingAtPAS.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <p>Subset for peaks that passed the 5% coverage cutoff.</p>
@@ -968,6 +1116,43 @@ cov_5perDF_melt=melt(cov_5perDF, id.vars = &quot;Reads&quot;)
 colnames(cov_5perDF_melt)=c(&quot;ReadCutoff&quot;, &quot;Fraction&quot;, &quot;Proportion&quot; )</code></pre>
 <pre class="r"><code>ggplot(cov_5perDF_melt, aes(x=ReadCutoff, fill=Fraction, y=Proportion, by=Fraction)) + geom_bar(position=&quot;dodge&quot;,stat=&quot;identity&quot; ) + labs(y=&quot;Proportion of PAS covered&quot;, x=&quot;At least X reads ending at PAS&quot;, title=&quot;Proportion of PAS with PacBio read ending in it \n Intron PAS with 5% mean Usage&quot;) + scale_fill_brewer(palette = &quot;Set1&quot;) + annotate(&quot;text&quot;, label=&quot;Total PAS = 16,662&quot;, x=&quot;1000 reads&quot;, y=.28) + annotate(&quot;text&quot;, label=&quot;Nuclear PAS = 18,829&quot;, x=&quot;1000 reads&quot;, y=.25)</code></pre>
 <p><img src="figure/initialPacBioQuant.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a259bd93bd6de74279295ee615ac6442108514c4/docs/figure/initialPacBioQuant.Rmd/unnamed-chunk-13-1.png" target="_blank">a259bd9</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Do this for the UTR</p>
 <pre class="r"><code>UTRCov_tot5perc= utrCov %&gt;% separate(ID, into=c(&quot;peak&quot;, &quot;gene&quot;,&quot;loc&quot;), sep=&quot;:&quot;) %&gt;% semi_join(tot5Perc, by=&quot;peak&quot;)
 
@@ -995,6 +1180,43 @@ covUTR_5perDF_melt=melt(covUTR_5perDF, id.vars = &quot;Reads&quot;)
 colnames(covUTR_5perDF_melt)=c(&quot;ReadCutoff&quot;, &quot;Fraction&quot;, &quot;Proportion&quot; )</code></pre>
 <pre class="r"><code>ggplot(covUTR_5perDF_melt, aes(x=ReadCutoff, fill=Fraction, y=Proportion, by=Fraction)) + geom_bar(position=&quot;dodge&quot;,stat=&quot;identity&quot; ) + labs(y=&quot;Proportion of PAS covered&quot;, x=&quot;At least X reads ending at PAS&quot;, title=&quot;Proportion of PAS with PacBio read ending in it \n UTR PAS with 5% mean Usage&quot;) + scale_fill_brewer(palette = &quot;Set1&quot;) + annotate(&quot;text&quot;, label=&quot;Total PAS = 5,984&quot;, x=&quot;1000 reads&quot;, y=.7) + annotate(&quot;text&quot;, label=&quot;Nuclear PAS = 6,793&quot;, x=&quot;1000 reads&quot;, y=.6)</code></pre>
 <p><img src="figure/initialPacBioQuant.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a259bd93bd6de74279295ee615ac6442108514c4/docs/figure/initialPacBioQuant.Rmd/unnamed-chunk-16-1.png" target="_blank">a259bd9</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Make the first plot (utr v intron for the 5%) Process in excel</p>
 <pre class="r"><code>allProp=read.table(&quot;../data/pacbio_cov/PacBioPropCov.txt&quot;, head=T, stringsAsFactors = F)
 allProp$Read=as.factor(allProp$Read)
@@ -1002,6 +1224,43 @@ allPropPlot=ggplot(allProp, aes(x=Read, y=Proportion, by=Location, fill=Location
 
 allPropPlot</code></pre>
 <p><img src="figure/initialPacBioQuant.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/a259bd93bd6de74279295ee615ac6442108514c4/docs/figure/initialPacBioQuant.Rmd/unnamed-chunk-17-1.png" target="_blank">a259bd9</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(allPropPlot, filename = &quot;../output/plots/PacBioReadsEndingAtPAS_5percCov.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <pre class="r"><code>UTRCov_tot5perc %&gt;% semi_join(UTRCov_nuc5perc, by=&quot;peak&quot;) %&gt;% nrow()</code></pre>
@@ -1017,6 +1276,94 @@ nrow(tot5Perc)</code></pre>
 <pre class="r"><code>ineither=tot5Perc_peaks %&gt;% full_join(nuc5Perc_peaks, by=&quot;peak&quot;)
 nrow(ineither)</code></pre>
 <pre><code>[1] 40066</code></pre>
+</div>
+<div id="pick-lines-for-ours" class="section level2">
+<h2>Pick lines for ours</h2>
+<p>I need to look at the top nuclear specific QTLs and chose individuals with both homozygous alleles.</p>
+<pre class="r"><code>totQTL=read.table(&quot;../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;, head=F,stringsAsFactors = F, col.names = c(&#39;pid&#39;, &#39;nvar&#39;, &#39;shape1&#39;, &#39;shape2&#39; ,&#39;dummy&#39; ,&#39;sid&#39; ,&#39;dist&#39;, &#39;npval&#39;, &#39;slope&#39;, &#39;ppval&#39;, &#39;bpval&#39; ,&#39;bh&#39;)) %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneID&quot;), sep=&quot;:&quot;) %&gt;% separate(geneID, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;),sep=&quot;_&quot;) 
+
+NucQTL=read.table(&quot;../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;, head=F,stringsAsFactors = F, col.names = c(&#39;pid&#39;, &#39;nvar&#39;, &#39;shape1&#39;, &#39;shape2&#39; ,&#39;dummy&#39; ,&#39;sid&#39; ,&#39;dist&#39;, &#39;npval&#39;, &#39;slope&#39;, &#39;ppval&#39;, &#39;bpval&#39; ,&#39;bh&#39;)) %&gt;% separate(pid, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;geneID&quot;), sep=&quot;:&quot;) %&gt;% separate(geneID, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;),sep=&quot;_&quot;) </code></pre>
+<p>Filter out the genes with a total qtl from the nuclear qlts genes:</p>
+<pre class="r"><code>NucOnlyQTL= NucQTL %&gt;% anti_join(totQTL, by=&quot;gene&quot;) %&gt;% arrange(slope) 
+
+head(NucOnlyQTL)</code></pre>
+<pre><code>  chr     start       end      gene strand       peak nvar   shape1
+1   1 149585233 149585320 LINC00869      -   peak9493   40 1.066010
+2   1 249211696 249211944     PGBD2      -  peak16578  142 0.991565
+3   6  32519163  32519261  HLA-DRB6      + peak138621 2701 1.003040
+4   1 113667733 113667823     LRIG2      -   peak8001  123 0.947699
+5   6 109765267 109765350    MICAL1      + peak142627  122 0.886992
+6  19   6535487   6535939    TNFSF9      -  peak77427  219 0.986695
+    shape2   dummy         sid   dist       npval     slope       ppval
+1  6.36770 48.4641 1:149601043  15809 3.31180e-04 -13.63700 0.000999001
+2 27.35320 40.7121 1:249232758  21061 4.94006e-08  -7.46381 0.000999001
+3  6.50355 35.2570  6:32505477 -13687 1.34996e-06  -2.94929 0.000999001
+4 15.94130 42.7219 1:113678884  11150 3.66278e-09  -2.40161 0.000999001
+5 15.36680 46.6074 6:109754433 -10835 1.03391e-05  -2.10134 0.001998000
+6 34.27590 39.0277  19:6551945  16457 2.70575e-07  -2.05682 0.000999001
+        bpval           bh
+1 1.48525e-03 0.0949692158
+2 2.05616e-05 0.0036973232
+3 2.71955e-04 0.0297604242
+4 1.27763e-06 0.0003351679
+5 6.94153e-04 0.0569309509
+6 1.76541e-04 0.0210644761</code></pre>
+<p>See if any of these are also nuclear enriched from diff iso:</p>
+<pre class="r"><code>nucMoreUsed=read.table(&quot;../data/diff_iso_GeneLocAnno/SigPeaksHigherInNuc.txt&quot;, header = T) %&gt;% separate(intron, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;gene&quot;),sep=&quot;:&quot;)</code></pre>
+<p>Join the nuc only by these peaks:</p>
+<pre class="r"><code>NucOnlyQTL_diff=NucOnlyQTL %&gt;% inner_join(nucMoreUsed, by=c(&quot;start&quot;, &quot;end&quot;, &quot;gene&quot;))%&gt;% arrange(abs(slope))   %&gt;% select(gene, peak, sid, slope,deltapsi )
+
+NucOnlyQTL_diff</code></pre>
+<pre><code>           gene       peak         sid     slope   deltapsi
+1        IFNGR2 peak101664 21:34785672  0.460097 -0.2277754
+2         RCSD1  peak11626 1:167610743  0.524358 -0.2000519
+3          STX8  peak66383  17:9481747 -0.542269 -0.2115276
+4         ZNRD1 peak138165  6:30017632 -0.774940 -0.2165452
+5       FAM207A peak102641 21:46396659  0.923893 -0.2533298
+6         DOCK7   peak5329  1:63018852  0.935357 -0.2357179
+7        SMURF2  peak71606 17:62663377  1.102180 -0.3116123
+8     LINC00476 peak167478  9:98613783 -1.105940 -0.2108329
+9         ACTR2  peak86635  2:65478371 -1.112100 -0.2392005
+10        FOXN2  peak85407  2:48547443 -1.192880 -0.2458012
+11         DPF2  peak28278 11:65109233 -1.198550 -0.2090628
+12        CDC42   peak1782  1:22435723  1.279150 -0.2717837
+13       ZNF738  peak79187 19:21543803  1.489360 -0.2156677
+14 LOC101927151  peak79354 19:28291331 -1.685500 -0.2078720
+15       RPUSD2  peak53419 15:40861040 -1.716780 -0.2243680
+16         NFIC  peak77091  19:3383733 -1.885840 -0.2067161</code></pre>
+<p>Look at these and the snps:</p>
+<p>RPUSD2: 15:40861040<br />
+ACTR2 2:65478371 SMURF2 17:62663377 ZNF738 19:21543803</p>
+<p>Pull in the genotypes for these:</p>
+<pre class="r"><code>headerGeno=read.table(&quot;../data/pacbio_cov/indiv.geno.header.txt&quot;, stringsAsFactors = F) %&gt;% t() 
+
+headerGeno= as.vector(headerGeno)</code></pre>
+<div id="section" class="section level3">
+<h3>15:40861040</h3>
+<pre class="r"><code>RPUSD2_gene=read.table(&quot;../data/pacbio_cov/geno_15:408610.txt&quot;, stringsAsFactors = F, col.names  =headerGeno)</code></pre>
+<p>No homo</p>
+</div>
+<div id="section-1" class="section level3">
+<h3>2:65478371</h3>
+<pre class="r"><code>ACTR2_gene=read.table(&quot;../data/pacbio_cov/geno_2:65478371.txt&quot;, stringsAsFactors = F, col.names  =headerGeno)</code></pre>
+<p>1|1: 19144,18486</p>
+<p>0|0 : 18498, 18501, 18504, 18507, 18511, 18519, 18520, 18522, 18523, 18859, 18861, 18868, 18870, 18873, 18874, 18910, 18912, 18913, 18923, 18924, 19093, 19099, 19101, 19108, 19121, 19127, 19128, 19129, 19131, 19140, 19149, 19160, 19172,19189, 19190, 19214, 19223, 19225, 19235, 19238, 19239, 19248, 19256</p>
+</div>
+<div id="section-2" class="section level3">
+<h3>19:21543803</h3>
+<pre class="r"><code>ZNF738_geno=read.table(&quot;../data/pacbio_cov/geno_19:21543803.txt&quot;, stringsAsFactors = F, col.names  =headerGeno )</code></pre>
+<p>1|1: 18486, 18487, 18488, 19498, 18502, 18507,18508, 18517, 18520, 18522, 18523, 18852, 18856, 18858, 18859, 18862, 18867, 18868, 18870, 18871, 18873, 18874, 18907, 18909, 18912, 18913, 18916, 18917, 18933,18934, 19093, 19096, 10900, 19107, 19108, 19113, 19114, 19116, 19177, 19118, 19119, 19121, 19122, 19128, 19130, 19131, 19137, 19138, 19140, 19141, 19146, 19153, 19159, 19160, 19175, 19176, 19185, 19189, 19190, 19197, 19200, 19203,19204, 19206, 19207, 19222, 19225, 19236, 19248, 19256, 19257</p>
+<p>0|0: 18498, 18504, 18511, 18519, 19127, 19143, 19147, 19210, 19226, 19239</p>
+</div>
+<div id="section-3" class="section level3">
+<h3>17:62663377</h3>
+<pre class="r"><code>SMURF2_geno=read.table(&quot;../data/pacbio_cov/geno_17:62663377.txt&quot;, stringsAsFactors = F, col.names  =headerGeno )</code></pre>
+<p>1|1- 18501, 18868, 18871, 19171, 19226, 19235</p>
+<p>0|0- 18498, 18499, 18504, 18505, 18508, 18516, 18517, 18519, 18522, 18523, 18852, 18853, 18855, 18856, 18859, 18861,18862, 18870, 18874, 18907, 18909, 18933, 18934, 19096, 19102, 19113, 19116, 19117, 19119, 19122, 19129, 19130, 19131, 19137, 19140, 19141, 19143, 19147, 19149, 19152, 19153, 19160, 19175, 19176, 19184, 19190, 19198, 19200, 19206, 19207, 19210, 19213, 19124, 19222, 19223, 19225, 19236, 19248, 19256</p>
+</div>
+<div id="to-use" class="section level3">
+<h3>TO use:</h3>
+19144,18486,18504,19239,18501<br />
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1063,6 +1410,8 @@ loaded via a namespace (and not attached):
 [43] assertthat_0.2.0   rmarkdown_1.11     httr_1.3.1        
 [46] rstudioapi_0.9.0   R6_2.3.0           nlme_3.1-137      
 [49] git2r_0.24.0       compiler_3.5.1    </code></pre>
+</div>
+</div>
 </div>
 
 <hr>
