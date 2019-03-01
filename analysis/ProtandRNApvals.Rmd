@@ -311,9 +311,10 @@ nucExvUn=ggplot(AllRNAP_nuc, aes(by=Category, x=RNA_P, fill=Category))+ geom_den
 ```{r}
 bothExOver=plot_grid(totExvUn,nucExvUn)
 
+
 bothExOver
 
-ggsave(bothExOver, file="../output/plots/apaQTLsinExplainedvUnexplainedeQTLs.png")
+ggsave(bothExOver, file="../output/plots/apaQTLsinExplainedvUnexplainedeQTLs.png", height = 5, width = 10)
 ```
 
 
