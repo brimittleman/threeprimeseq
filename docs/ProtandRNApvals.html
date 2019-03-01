@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-28
+<strong>Last updated:</strong> 2019-03-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed91ac3d01c6ebdd72e7b82808dec47af8211ad89targetblankd91ac3da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d91ac3d01c6ebdd72e7b82808dec47af8211ad89" target="_blank">d91ac3d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree4fbbff754a18f2bea0783576e95d744b97137a76targetblank4fbbff7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4fbbff754a18f2bea0783576e95d744b97137a76" target="_blank">4fbbff7</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed91ac3d01c6ebdd72e7b82808dec47af8211ad89targetblankd91ac3da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree4fbbff754a18f2bea0783576e95d744b97137a76targetblank4fbbff7a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -540,9 +540,7 @@ Untracked files:
     Untracked:  analysis/4suDataIGV.Rmd
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
-    Untracked:  analysis/NetSeqatPeaks.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/fixBWChromNames.Rmd
     Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -627,6 +625,7 @@ Untracked files:
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/pacbio_cov/
     Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/peaks4DT/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
@@ -671,6 +670,7 @@ Unstaged changes:
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/fixBWChromNames.Rmd
     Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
@@ -725,6 +725,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4fbbff754a18f2bea0783576e95d744b97137a76/analysis/ProtandRNApvals.Rmd" target="_blank">4fbbff7</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-01
+</td>
+<td>
+fix dim
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/9fb796b66e505232cd93d9d2ad90e7a8b80e90a4/docs/ProtandRNApvals.html" target="_blank">9fb796b</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1267,6 +1301,7 @@ AllRNAP_nuc=as.data.frame(rbind(NucRNAUnPval,NucRNAExPval))
 nucExvUn=ggplot(AllRNAP_nuc, aes(by=Category, x=RNA_P, fill=Category))+ geom_density(alpha=.3) + scale_fill_manual(values=c(&quot;red&quot;, &quot;blue&quot;)) + labs(x=&quot;eQTL association pvalue&quot;, title=&quot;Nuclear apaQTL associations \n in eQTLs analysis&quot;) +annotate(&quot;text&quot;, label=&quot;P &lt; .0001&quot;, x=.75, y=1.5)+ annotate(&quot;text&quot;, label=&quot;***&quot;, x=.75, y=1.4)</code></pre>
 <pre class="r"><code>bothExOver=plot_grid(totExvUn,nucExvUn)
 
+
 bothExOver</code></pre>
 <p><img src="figure/ProtandRNApvals.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1293,6 +1328,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/9fb796b66e505232cd93d9d2ad90e7a8b80e90a4/docs/figure/ProtandRNApvals.Rmd/unnamed-chunk-19-1.png" target="_blank">9fb796b</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/c7cc40f72584445617cb20aef8e644fe6b539fe7/docs/figure/ProtandRNApvals.Rmd/unnamed-chunk-19-1.png" target="_blank">c7cc40f</a>
 </td>
 <td>
@@ -1306,8 +1352,7 @@ Briana Mittleman
 </table>
 </div>
 </div>
-<pre class="r"><code>ggsave(bothExOver, file=&quot;../output/plots/apaQTLsinExplainedvUnexplainedeQTLs.png&quot;)</code></pre>
-<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>ggsave(bothExOver, file=&quot;../output/plots/apaQTLsinExplainedvUnexplainedeQTLs.png&quot;, height = 5, width = 10)</code></pre>
 <p>Try to get pi1 for these analysis:</p>
 <pre class="r"><code>#TotRNAunpi=pi0est(TotRNAun$RNA_P, pi0.method = &quot;bootstrap&quot;,na.rm=T)
 TotRNAExpi=pi0est(TotRNAEx$RNA_P, pi0.method = &quot;bootstrap&quot;)
