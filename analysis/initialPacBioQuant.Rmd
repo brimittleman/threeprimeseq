@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+##Look at published pacbio
 
 ```{r}
 library(workflowr)
@@ -271,4 +272,103 @@ nrow(nuc5Perc)
 ineither=tot5Perc_peaks %>% full_join(nuc5Perc_peaks, by="peak")
 nrow(ineither)
 ```
+##Pick lines for ours 
 
+I need to look at the top nuclear specific QTLs and chose individuals with both homozygous alleles. 
+
+```{r}
+totQTL=read.table("../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", head=F,stringsAsFactors = F, col.names = c('pid', 'nvar', 'shape1', 'shape2' ,'dummy' ,'sid' ,'dist', 'npval', 'slope', 'ppval', 'bpval' ,'bh')) %>% separate(pid, into=c("chr", "start", "end", "geneID"), sep=":") %>% separate(geneID, into=c("gene", "strand", "peak"),sep="_") 
+
+NucQTL=read.table("../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", head=F,stringsAsFactors = F, col.names = c('pid', 'nvar', 'shape1', 'shape2' ,'dummy' ,'sid' ,'dist', 'npval', 'slope', 'ppval', 'bpval' ,'bh')) %>% separate(pid, into=c("chr", "start", "end", "geneID"), sep=":") %>% separate(geneID, into=c("gene", "strand", "peak"),sep="_") 
+```
+
+
+
+Filter out the genes with a total qtl from the nuclear qlts genes:    
+
+
+```{r}
+NucOnlyQTL= NucQTL %>% anti_join(totQTL, by="gene") %>% arrange(slope) 
+
+head(NucOnlyQTL)
+```
+
+
+See if any of these are also nuclear enriched from diff iso: 
+
+```{r}
+nucMoreUsed=read.table("../data/diff_iso_GeneLocAnno/SigPeaksHigherInNuc.txt", header = T) %>% separate(intron, into=c("chr", "start", "end", "gene"),sep=":")
+```
+
+
+Join the nuc only by these peaks:  
+
+```{r}
+NucOnlyQTL_diff=NucOnlyQTL %>% inner_join(nucMoreUsed, by=c("start", "end", "gene"))%>% arrange(abs(slope))   %>% select(gene, peak, sid, slope,deltapsi )
+
+NucOnlyQTL_diff
+```
+
+
+Look at these and the snps:  
+
+
+RPUSD2: 15:40861040  
+ACTR2 2:65478371
+SMURF2 17:62663377
+ZNF738  19:21543803
+
+
+Pull in the genotypes for these:  
+
+```{r}
+headerGeno=read.table("../data/pacbio_cov/indiv.geno.header.txt", stringsAsFactors = F) %>% t() 
+
+headerGeno= as.vector(headerGeno)
+```
+
+### 15:40861040    
+
+```{r}
+RPUSD2_gene=read.table("../data/pacbio_cov/geno_15:408610.txt", stringsAsFactors = F, col.names  =headerGeno)
+```
+
+No homo  
+
+
+###2:65478371  
+
+```{r}
+ACTR2_gene=read.table("../data/pacbio_cov/geno_2:65478371.txt", stringsAsFactors = F, col.names  =headerGeno)
+```
+
+1|1: 19144,18486
+
+0|0 : 18498, 18501, 18504, 18507, 18511, 18519, 18520, 18522, 18523, 18859, 18861, 18868, 18870, 18873, 18874, 18910, 18912, 18913, 18923, 18924, 19093, 19099, 19101, 19108, 19121, 19127, 19128, 19129, 19131, 19140, 19149, 19160, 19172,19189, 19190, 19214, 19223, 19225, 19235, 19238, 19239, 19248, 19256
+
+
+### 19:21543803  
+```{r}
+ZNF738_geno=read.table("../data/pacbio_cov/geno_19:21543803.txt", stringsAsFactors = F, col.names  =headerGeno )
+```
+
+
+1|1: 18486, 18487, 18488, 19498, 18502, 18507,18508, 18517, 18520, 18522, 18523, 18852, 18856, 18858, 18859, 18862, 18867, 18868, 18870, 18871, 18873, 18874, 18907, 18909, 18912, 18913, 18916, 18917, 18933,18934, 19093, 19096, 10900, 19107, 19108, 19113, 19114, 19116, 19177, 19118, 19119, 19121, 19122, 19128, 19130, 19131, 19137, 19138, 19140, 19141, 19146, 19153, 19159, 19160, 19175, 19176, 19185, 19189, 19190, 19197, 19200, 19203,19204, 19206, 19207, 19222, 19225, 19236, 19248, 19256, 19257
+
+0|0: 18498, 18504, 18511, 18519, 19127, 19143, 19147, 19210, 19226, 19239  
+
+
+### 17:62663377
+
+```{r}
+SMURF2_geno=read.table("../data/pacbio_cov/geno_17:62663377.txt", stringsAsFactors = F, col.names  =headerGeno )
+```
+
+1|1- 18501, 18868, 18871, 19171, 19226, 19235
+
+0|0- 18498, 18499, 18504, 18505, 18508, 18516, 18517, 18519, 18522, 18523, 18852, 18853, 18855, 18856, 18859, 18861,18862, 18870, 18874, 18907, 18909, 18933, 18934, 19096, 19102, 19113, 19116, 19117, 19119, 19122, 19129, 19130, 19131, 19137, 19140, 19141, 19143, 19147, 19149, 19152, 19153, 19160, 19175, 19176, 19184, 19190, 19198, 19200, 19206, 19207, 19210, 19213, 19124, 19222, 19223, 19225, 19236, 19248, 19256
+
+
+###TO use:  
+
+19144,18486,18504,19239,18501  
