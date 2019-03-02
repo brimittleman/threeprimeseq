@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310884/ (50bp up)
 
-
+##Singal site in peak
 I will use homer to look for enriched signals in my signal sites.  
 
 Intall homer in my enironment with
@@ -116,6 +116,49 @@ signalSiteEnrich.sh
 source deactivate three-prime-env
 module unload Anaconda3
 
-findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_APAPeaks_5percCov_fixedStrand.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich/ -size given -h -bg  /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_shuffled_FilterPeaks.sort.bed 
+findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich/ -size -300,100 -h -bg  /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed -len 6
 ```
+
+Try this with the actual peaks and change the size 
+
+##Signal site in qtls  
+
+/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed
+/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed
+
+
+```{bash,eval=F}
+cat /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed | sort -k1,1 -k2,2n > /project2/gilad/briana/threeprimeseq/data/ApaQTLs/All.apaQTLs.sort.bed
+```
+
+
+
+```{bash,eval=F}
+cat /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps_sort.bed /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps_sort.bed  | sort -k1,1 -k2,2n > /project2/gilad/briana/threeprimeseq/data/MatchedSnp/All_matched_snps_sort.bed
+```
+
+
+
+
+signalSiteEnrich_QTLs.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=signalSiteEnrich_QTL
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=signalSiteEnrich_QTL.out
+#SBATCH --error=signalSiteEnrich_QTL.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+#source deactivate three-prime-env
+#module unload Anaconda3
+
+findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/ApaQTLs/All.apaQTLs.sort.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich_QTL/ -size 50 -h -bg  /project2/gilad/briana/threeprimeseq/data/MatchedSnp/All_matched_snps_sort.bed -len 6
+```
+
+
+results dont mean much at the moment  
 
