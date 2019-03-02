@@ -9,6 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(workflowr)
+library(tidyverse)
+library(cowplot)
+library(reshape2)
+```
 
 ##Repetitive elements:  
 Could this be do to repetitive elements  
@@ -257,6 +263,106 @@ All peak rep:52965
 Filt peak rep: 9542  
 
  
+For Repetitive seq. I can pull this in here and look at the proportion in each type.  
+
+```{r}
+repEl=read.table("../data/FeatureoverlapPeaks/FilteredPeak_overRepElements.txt", col.names = c("repCHR", "repStart", "repEnd", "Type", "length", "repStrand", "peakChr", "peakStart", "peakEnd", "peak", "score", "peakStrand"),stringsAsFactors = F)
+
+repEl_sum= repEl %>% group_by(Type) %>% summarise(NperType=n()) %>% mutate(Proppertype=NperType/nrow(repEl))
+```
+
+```{r}
+ggplot(repEl_sum, aes(x=Type,y=Proppertype) ) + geom_bar(stat="identity") +  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+```{r}
+summary(repEl_sum$Proppertype)
+
+
+```
+
+
+To get an expectation for this I will shuffle my peaks around the genome and overlap again.  
+
+Do this interactively  
+```{bash,eval=F}
+import pybedtools 
+peaks= pybedtools.BedTool("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed")
+peaks_shuf=peaks.shuffle(genome='hg19')
+peaks_shuf.saveas("/project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.bed")
+
+```
+
+
+```{bash,eval=F}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.bed | sed 's/^chr//'  > /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed
+```
+
+
+overlapWShuffledPeaks.py
+```{bash,eval=F}
+def main(infile, outfile):
+    peak_file=open("/project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed","r")
+    peak=pybedtools.BedTool(peak_file)
+    elementFile=open(infile, "r")
+    for i,ln in enumerate(elementFile):
+       if i == 0:
+           if len(ln.split()) > 3:
+               strand= "yes"
+           else:
+               strand= "no"
+       else:
+          break
+    print(strand)
+    elements=pybedtools.BedTool(elementFile)
+    if strand== "yes": 
+        elemOverpeak=elements.intersect(peak, wa=True,wb=True, s=True)
+    else:
+        elemOverpeak=elements.intersect(peak, wa=True,wb=True)
+    elemOverpeak.saveas(outfile)
+
+if __name__ == "__main__":
+    import sys
+    import pybedtools
+    infile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(infile, outfile)
+```
+
+```{bash,eval=F}
+python overlapWShuffledPeaks.py /project2/gilad/briana/genome_anotation_data/RepeatMask.bed /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/ShuffledPeak_overRepElements.txt  
+```
+
+```{r}
+repEl_shuf=read.table("../data/FeatureoverlapPeaks/ShuffledPeak_overRepElements.txt", col.names = c("repCHR", "repStart", "repEnd", "Type", "length", "repStrand", "peakChr", "peakStart", "peakEnd", "peak", "score", "peakStrand"),stringsAsFactors = F)
+
+repEl_shuf_sum= repEl_shuf %>% group_by(Type) %>% summarise(NperType_shuf=n()) %>% mutate(Proppertype_shuf=NperType_shuf/nrow(repEl_shuf)) 
+```
+
+Join both:  
+
+```{r}
+repEl_both=repEl_sum %>% full_join(repEl_shuf_sum, by="Type")
+
+#fill NAs with 0  
+
+repEl_both$Proppertype= repEl_both$Proppertype %>% replace_na(0)
+repEl_both$NperType= repEl_both$NperType %>% replace_na(0)
+repEl_both$Proppertype_shuf= repEl_both$Proppertype_shuf %>% replace_na(0)
+repEl_both$NperType_shuf= repEl_both$NperType_shuf %>% replace_na(0)
+```
+
+
+
+Hyper geometric:  
+
+```{r}
+repEl_both_sig= repEl_both %>% mutate(Peak=sum(repEl_both$NperType), Peak_Shuf=sum(repEl_both$NperType_shuf), Chosen=NperType+NperType_shuf) %>% mutate(hyper=phyper(NperType, Peak, Peak_Shuf, Chosen, lower.tail = F)) %>% mutate(sig=ifelse(hyper<.05, "yes", "no")) %>% filter(sig=="yes") %>% arrange(desc(Proppertype))
+
+
+repEl_both_sig
+
+write.table(repEl_both_sig, "../data/FeatureoverlapPeaks/RepElementsWShuf.txt", col.names = T, row.names = F, quote=F)
+```
 
 
 
