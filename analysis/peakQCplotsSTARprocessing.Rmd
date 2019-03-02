@@ -697,7 +697,7 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/ncbiRefSeq_TESAllGenes_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TES_Nompfilt.gz
+computeMatrix scale-regionst -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/ncbiRefSeq_TESAllGenes_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TES_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TES_Nompfilt.gz --refPointLabel "Called TES" --plotTitle "Combined Reads at TES" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TES_Nompfilt.png
 ```
@@ -969,7 +969,6 @@ Sort these files to use in DT:
 
 ```{bash,eval=F}
 
-sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.bed > /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.sort.bed
 
 sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.bed > /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.Nuclear.sort.bed
 ```
@@ -1046,42 +1045,3 @@ computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnase
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.gz --refPointLabel "Called Intronic PAS" --plotTitle "RNAseq at Nuclear Intronic PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.png
 ```
-
-####Repetitive elements:  
-Could this be do to repetitive elements  
-
-Process: 
-/project2/gilad/briana/genome_anotation_data/RepeatMask.dms  
-
-I just need to cut the chr to make the chroms the same as mine  
-
-
-```{bash,eval=F}
-sed 's/^chr//'  /project2/gilad/briana/genome_anotation_data/RepeatMask.dms   > /project2/gilad/briana/genome_anotation_data/RepeatMask.bed
-
-```
-
-
-
-BothFracDTPlotRepeats_noMPFilt.sh
-```{bash,eval=F}
-#!/bin/bash
-
-#SBATCH --job-name=BothFracDTPlotRepeats_noMPFilt
-#SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
-#SBATCH --output=BothFracDTPlotRepeats_noMPFilt.out
-#SBATCH --error=BothFracDTPlotRepeats_noMPFilt.err
-#SBATCH --partition=bigmem2
-#SBATCH --mem=100G
-#SBATCH --mail-type=END
-
-module load Anaconda3
-source activate three-prime-env
-
-
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/RepeatMask.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.gz
-
-plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.gz --refPointLabel "Repetitive Regions" --plotTitle "Combined Reads at Repetitive Regions" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.png
-```
-
