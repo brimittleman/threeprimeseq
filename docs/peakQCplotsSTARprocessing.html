@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-27
+<strong>Last updated:</strong> 2019-03-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree286ce70bd5f87e8d4ae6dda4d597aa860de0df42targetblank286ce70a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/286ce70bd5f87e8d4ae6dda4d597aa860de0df42" target="_blank">286ce70</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree499ddb189a6b95775e962673d95784b2ff153c5dtargetblank499ddb1a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/499ddb189a6b95775e962673d95784b2ff153c5d" target="_blank">499ddb1</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree286ce70bd5f87e8d4ae6dda4d597aa860de0df42targetblank286ce70a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree499ddb189a6b95775e962673d95784b2ff153c5dtargetblank499ddb1a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -540,9 +540,8 @@ Untracked files:
     Untracked:  analysis/4suDataIGV.Rmd
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
-    Untracked:  analysis/NetSeqatPeaks.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/fixBWChromNames.Rmd
+    Untracked:  analysis/eRNAandRepElements.Rmd
     Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -627,6 +626,7 @@ Untracked files:
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/pacbio_cov/
     Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/peaks4DT/
     Untracked:  data/perm_QTL/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
     Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
@@ -664,7 +664,6 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
-    Modified:   analysis/ProtandRNApvals.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -672,6 +671,7 @@ Unstaged changes:
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/fixBWChromNames.Rmd
     Modified:   analysis/flash2mash.Rmd
     Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
@@ -725,6 +725,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/499ddb189a6b95775e962673d95784b2ff153c5d/analysis/peakQCplotsSTARprocessing.Rmd" target="_blank">499ddb1</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-01
+</td>
+<td>
+move erna and rep elements analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/68a10c1715673fc1f5c3182a12cafc0924fa4b02/docs/peakQCplotsSTARprocessing.html" target="_blank">68a10c1</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1059,13 +1093,13 @@ move peak QC plots
 <pre><code>This is workflowr version 1.2.0
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ✔ tidyr   0.8.1     ✔ stringr 1.4.0
 ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
 <pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
@@ -1882,7 +1916,7 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/ncbiRefSeq_TESAllGenes_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TES_Nompfilt.gz
+computeMatrix scale-regionst -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/ncbiRefSeq_TESAllGenes_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TES_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TES_Nompfilt.gz --refPointLabel &quot;Called TES&quot; --plotTitle &quot;Combined Reads at TES&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_TES_Nompfilt.png</code></pre>
 <p>/project2/gilad/briana/genome_anotation_data/ncbiRefSeq.mRNA.transcriptTSS.bed</p>
@@ -2100,7 +2134,6 @@ intron_usage= intron %&gt;% inner_join(TotalPeakUSMean, by=c(&quot;chr&quot;,&qu
 write.table(intron_usage, file=&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.bed&quot;, quote=F, row.names = F, col.names = F, sep=&quot;\t&quot;)</code></pre>
 <p>Sort these files to use in DT:</p>
 <pre class="bash"><code>
-sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.bed &gt; /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage_Total.sort.bed
 
 sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.bed &gt; /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.Nuclear.sort.bed</code></pre>
 <p>NucRNADTPlotmyIntronPeaks_Top200Nuc_noMPFilt_150.sh</p>
@@ -2161,33 +2194,6 @@ source activate three-prime-env
 computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON_top200Usage.Nuclear.sort.bed -b 300 -a 300  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.gz --refPointLabel &quot;Called Intronic PAS&quot; --plotTitle &quot;RNAseq at Nuclear Intronic PAS&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/RNA_myPeaksIntron_Top200Nuc_Nompfilt150.png</code></pre>
-</div>
-<div id="repetitive-elements" class="section level4">
-<h4>Repetitive elements:</h4>
-<p>Could this be do to repetitive elements</p>
-<p>Process: /project2/gilad/briana/genome_anotation_data/RepeatMask.dms</p>
-<p>I just need to cut the chr to make the chroms the same as mine</p>
-<pre class="bash"><code>sed &#39;s/^chr//&#39;  /project2/gilad/briana/genome_anotation_data/RepeatMask.dms   &gt; /project2/gilad/briana/genome_anotation_data/RepeatMask.bed
-</code></pre>
-<p>BothFracDTPlotRepeats_noMPFilt.sh</p>
-<pre class="bash"><code>#!/bin/bash
-
-#SBATCH --job-name=BothFracDTPlotRepeats_noMPFilt
-#SBATCH --account=pi-yangili1
-#SBATCH --time=24:00:00
-#SBATCH --output=BothFracDTPlotRepeats_noMPFilt.out
-#SBATCH --error=BothFracDTPlotRepeats_noMPFilt.err
-#SBATCH --partition=bigmem2
-#SBATCH --mem=100G
-#SBATCH --mail-type=END
-
-module load Anaconda3
-source activate three-prime-env
-
-
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/RepeatMask.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.gz
-
-plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.gz --refPointLabel &quot;Repetitive Regions&quot; --plotTitle &quot;Combined Reads at Repetitive Regions&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.png</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
