@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef812272be3782d6f215df58f3e1326ad704a313btargetblankf812272a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f812272be3782d6f215df58f3e1326ad704a313b" target="_blank">f812272</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree121b0230c893f593bbca246b9d8baecc7e332fe5targetblank121b023a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/121b0230c893f593bbca246b9d8baecc7e332fe5" target="_blank">121b023</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef812272be3782d6f215df58f3e1326ad704a313btargetblankf812272a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree121b0230c893f593bbca246b9d8baecc7e332fe5targetblank121b023a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -555,6 +555,7 @@ Untracked files:
     Untracked:  data/ApaQTLs_otherPhen/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
+    Untracked:  data/FeatureoverlapPeaks/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
     Untracked:  data/LianoglouLCL/
@@ -729,6 +730,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/121b0230c893f593bbca246b9d8baecc7e332fe5/analysis/eRNAandRepElements.Rmd" target="_blank">121b023</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-01
+</td>
+<td>
+enrichment in rep classes
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/19ad929e25eada8de76cf98b9834a7e6bd4c38dc/docs/eRNAandRepElements.html" target="_blank">19ad929</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/f812272be3782d6f215df58f3e1326ad704a313b/analysis/eRNAandRepElements.Rmd" target="_blank">f812272</a>
 </td>
 <td>
@@ -748,6 +783,31 @@ add erna and rep element analysis
 </div>
 </div>
 </div>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.2.0
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.6
+✔ tidyr   0.8.1     ✔ stringr 1.4.0
+✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>
+Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    smiths</code></pre>
 <div id="repetitive-elements" class="section level2">
 <h2>Repetitive elements:</h2>
 <p>Could this be do to repetitive elements</p>
@@ -927,6 +987,84 @@ python overlapWAllPeaks.py /project2/gilad/briana/genome_anotation_data/RepeatMa
 <p>How long are each of these</p>
 <p>Full eRNA file: 1167 All peak eRNA: 128 Filt peak eRNA: 14</p>
 <p>Full rep file: 5298130 All peak rep:52965 Filt peak rep: 9542</p>
+<p>For Repetitive seq. I can pull this in here and look at the proportion in each type.</p>
+<pre class="r"><code>repEl=read.table(&quot;../data/FeatureoverlapPeaks/FilteredPeak_overRepElements.txt&quot;, col.names = c(&quot;repCHR&quot;, &quot;repStart&quot;, &quot;repEnd&quot;, &quot;Type&quot;, &quot;length&quot;, &quot;repStrand&quot;, &quot;peakChr&quot;, &quot;peakStart&quot;, &quot;peakEnd&quot;, &quot;peak&quot;, &quot;score&quot;, &quot;peakStrand&quot;),stringsAsFactors = F)
+
+repEl_sum= repEl %&gt;% group_by(Type) %&gt;% summarise(NperType=n()) %&gt;% mutate(Proppertype=NperType/nrow(repEl))</code></pre>
+<pre class="r"><code>ggplot(repEl_sum, aes(x=Type,y=Proppertype) ) + geom_bar(stat=&quot;identity&quot;) +  theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="figure/eRNAandRepElements.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(repEl_sum$Proppertype)</code></pre>
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+0.0001048 0.0001048 0.0003144 0.0014025 0.0008384 0.0552295 </code></pre>
+<p>To get an expectation for this I will shuffle my peaks around the genome and overlap again.</p>
+<p>Do this interactively</p>
+<pre class="bash"><code>import pybedtools 
+peaks= pybedtools.BedTool(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed&quot;)
+peaks_shuf=peaks.shuffle(genome=&#39;hg19&#39;)
+peaks_shuf.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.bed&quot;)
+</code></pre>
+<pre class="bash"><code>sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.bed | sed &#39;s/^chr//&#39;  &gt; /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed</code></pre>
+<p>overlapWShuffledPeaks.py</p>
+<pre class="bash"><code>def main(infile, outfile):
+    peak_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed&quot;,&quot;r&quot;)
+    peak=pybedtools.BedTool(peak_file)
+    elementFile=open(infile, &quot;r&quot;)
+    for i,ln in enumerate(elementFile):
+       if i == 0:
+           if len(ln.split()) &gt; 3:
+               strand= &quot;yes&quot;
+           else:
+               strand= &quot;no&quot;
+       else:
+          break
+    print(strand)
+    elements=pybedtools.BedTool(elementFile)
+    if strand== &quot;yes&quot;: 
+        elemOverpeak=elements.intersect(peak, wa=True,wb=True, s=True)
+    else:
+        elemOverpeak=elements.intersect(peak, wa=True,wb=True)
+    elemOverpeak.saveas(outfile)
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import pybedtools
+    infile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(infile, outfile)</code></pre>
+<pre class="bash"><code>python overlapWShuffledPeaks.py /project2/gilad/briana/genome_anotation_data/RepeatMask.bed /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/ShuffledPeak_overRepElements.txt  </code></pre>
+<pre class="r"><code>repEl_shuf=read.table(&quot;../data/FeatureoverlapPeaks/ShuffledPeak_overRepElements.txt&quot;, col.names = c(&quot;repCHR&quot;, &quot;repStart&quot;, &quot;repEnd&quot;, &quot;Type&quot;, &quot;length&quot;, &quot;repStrand&quot;, &quot;peakChr&quot;, &quot;peakStart&quot;, &quot;peakEnd&quot;, &quot;peak&quot;, &quot;score&quot;, &quot;peakStrand&quot;),stringsAsFactors = F)
+
+repEl_shuf_sum= repEl_shuf %&gt;% group_by(Type) %&gt;% summarise(NperType_shuf=n()) %&gt;% mutate(Proppertype_shuf=NperType_shuf/nrow(repEl_shuf)) </code></pre>
+<p>Join both:</p>
+<pre class="r"><code>repEl_both=repEl_sum %&gt;% full_join(repEl_shuf_sum, by=&quot;Type&quot;)
+
+#fill NAs with 0  
+
+repEl_both$Proppertype= repEl_both$Proppertype %&gt;% replace_na(0)
+repEl_both$NperType= repEl_both$NperType %&gt;% replace_na(0)
+repEl_both$Proppertype_shuf= repEl_both$Proppertype_shuf %&gt;% replace_na(0)
+repEl_both$NperType_shuf= repEl_both$NperType_shuf %&gt;% replace_na(0)</code></pre>
+<p>Hyper geometric:</p>
+<pre class="r"><code>repEl_both_sig= repEl_both %&gt;% mutate(Peak=sum(repEl_both$NperType), Peak_Shuf=sum(repEl_both$NperType_shuf), Chosen=NperType+NperType_shuf) %&gt;% mutate(hyper=phyper(NperType, Peak, Peak_Shuf, Chosen, lower.tail = F)) %&gt;% mutate(sig=ifelse(hyper&lt;.05, &quot;yes&quot;, &quot;no&quot;)) %&gt;% filter(sig==&quot;yes&quot;) %&gt;% arrange(desc(Proppertype))
+
+
+repEl_both_sig</code></pre>
+<pre><code># A tibble: 227 x 10
+   Type  NperType Proppertype NperType_shuf Proppertype_shuf  Peak
+   &lt;chr&gt;    &lt;dbl&gt;       &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt; &lt;dbl&gt;
+ 1 AT_r…      527      0.0552           278          0.0191   9542
+ 2 AluY       396      0.0415           345          0.0237   9542
+ 3 AluJb      348      0.0365           323          0.0222   9542
+ 4 AluJr      245      0.0257           186          0.0128   9542
+ 5 AluJo      188      0.0197           185          0.0127   9542
+ 6 MIRc       148      0.0155           165          0.0113   9542
+ 7 L1PA4      132      0.0138           154          0.0106   9542
+ 8 GA-r…      117      0.0123            24          0.00165  9542
+ 9 L1PA5      117      0.0123           130          0.00892  9542
+10 L1PA3      116      0.0122           138          0.00946  9542
+# ... with 217 more rows, and 4 more variables: Peak_Shuf &lt;dbl&gt;,
+#   Chosen &lt;dbl&gt;, hyper &lt;dbl&gt;, sig &lt;chr&gt;</code></pre>
+<pre class="r"><code>write.table(repEl_both_sig, &quot;../data/FeatureoverlapPeaks/RepElementsWShuf.txt&quot;, col.names = T, row.names = F, quote=F)</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -949,12 +1087,26 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] bindrcpp_0.2.2  reshape2_1.4.3  cowplot_0.9.3   forcats_0.3.0  
+ [5] stringr_1.4.0   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
+ [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+[13] workflowr_1.2.0
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0 Rcpp_0.12.19    digest_0.6.17   rprojroot_1.3-2
- [5] backports_1.1.2 git2r_0.24.0    magrittr_1.5    evaluate_0.13  
- [9] stringi_1.2.4   fs_1.2.6        whisker_0.3-2   rmarkdown_1.11 
-[13] tools_3.5.1     stringr_1.4.0   glue_1.3.0      yaml_2.2.0     
-[17] compiler_3.5.1  htmltools_0.3.6 knitr_1.20     </code></pre>
+ [1] tidyselect_0.2.4 haven_1.1.2      lattice_0.20-35  colorspace_1.3-2
+ [5] htmltools_0.3.6  yaml_2.2.0       utf8_1.1.4       rlang_0.2.2     
+ [9] pillar_1.3.0     glue_1.3.0       withr_2.1.2      modelr_0.1.2    
+[13] readxl_1.1.0     bindr_0.1.1      plyr_1.8.4       munsell_0.5.0   
+[17] gtable_0.2.0     cellranger_1.1.0 rvest_0.3.2      evaluate_0.13   
+[21] labeling_0.3     knitr_1.20       fansi_0.4.0      broom_0.5.0     
+[25] Rcpp_0.12.19     scales_1.0.0     backports_1.1.2  jsonlite_1.6    
+[29] fs_1.2.6         hms_0.4.2        digest_0.6.17    stringi_1.2.4   
+[33] grid_3.5.1       rprojroot_1.3-2  cli_1.0.1        tools_3.5.1     
+[37] magrittr_1.5     lazyeval_0.2.1   crayon_1.3.4     whisker_0.3-2   
+[41] pkgconfig_2.0.2  xml2_1.2.0       lubridate_1.7.4  assertthat_0.2.0
+[45] rmarkdown_1.11   httr_1.3.1       rstudioapi_0.9.0 R6_2.3.0        
+[49] nlme_3.1-137     git2r_0.24.0     compiler_3.5.1  </code></pre>
 </div>
 </div>
 </div>
