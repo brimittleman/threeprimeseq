@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreea96297c66918b1ba972743ba7124344cf76da185targetblanka96297ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a96297c66918b1ba972743ba7124344cf76da185" target="_blank">a96297c</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree49f21df1c03feacb18ba0f241469d47ff1c9a775targetblank49f21dfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/49f21df1c03feacb18ba0f241469d47ff1c9a775" target="_blank">49f21df</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreea96297c66918b1ba972743ba7124344cf76da185targetblanka96297ca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree49f21df1c03feacb18ba0f241469d47ff1c9a775targetblank49f21dfa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -730,6 +730,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/49f21df1c03feacb18ba0f241469d47ff1c9a775/analysis/SignalSiteEnrich.Rmd" target="_blank">49f21df</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-02
+</td>
+<td>
+modify analysis for len 6 add qtl match
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/901e191f5be2e2a853f754ae6274042cf49111c3/docs/SignalSiteEnrich.html" target="_blank">901e191</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/a96297c66918b1ba972743ba7124344cf76da185/analysis/SignalSiteEnrich.Rmd" target="_blank">a96297c</a>
 </td>
 <td>
@@ -750,6 +784,8 @@ add signal site enrich analysis
 </div>
 </div>
 <p><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310884/" class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310884/</a> (50bp up)</p>
+<div id="singal-site-in-peak" class="section level2">
+<h2>Singal site in peak</h2>
 <p>I will use homer to look for enriched signals in my signal sites.</p>
 <p>Intall homer in my enironment with</p>
 <pre class="bash"><code>conda install wget samtools r-essentials bioconductor-deseq2 bioconductor-edger</code></pre>
@@ -826,7 +862,31 @@ python Upstream50Bases.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APA
 source deactivate three-prime-env
 module unload Anaconda3
 
-findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_APAPeaks_5percCov_fixedStrand.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich/ -size given -h -bg  /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_shuffled_FilterPeaks.sort.bed </code></pre>
+findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich/ -size -300,100 -h -bg  /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed -len 6</code></pre>
+<p>Try this with the actual peaks and change the size</p>
+</div>
+<div id="signal-site-in-qtls" class="section level2">
+<h2>Signal site in qtls</h2>
+<p>/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed</p>
+<pre class="bash"><code>cat /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed /project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed | sort -k1,1 -k2,2n &gt; /project2/gilad/briana/threeprimeseq/data/ApaQTLs/All.apaQTLs.sort.bed</code></pre>
+<pre class="bash"><code>cat /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps_sort.bed /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps_sort.bed  | sort -k1,1 -k2,2n &gt; /project2/gilad/briana/threeprimeseq/data/MatchedSnp/All_matched_snps_sort.bed</code></pre>
+<p>signalSiteEnrich_QTLs.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=signalSiteEnrich_QTL
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=signalSiteEnrich_QTL.out
+#SBATCH --error=signalSiteEnrich_QTL.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+#source deactivate three-prime-env
+#module unload Anaconda3
+
+findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/ApaQTLs/All.apaQTLs.sort.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich_QTL/ -size 50 -h -bg  /project2/gilad/briana/threeprimeseq/data/MatchedSnp/All_matched_snps_sort.bed -len 6</code></pre>
+<p>results dont mean much at the moment</p>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -856,6 +916,7 @@ loaded via a namespace (and not attached):
 [13] fs_1.2.6        whisker_0.3-2   Matrix_1.2-14   reticulate_1.10
 [17] rmarkdown_1.11  tools_3.5.1     stringr_1.4.0   glue_1.3.0     
 [21] yaml_2.2.0      compiler_3.5.1  htmltools_0.3.6 knitr_1.20     </code></pre>
+</div>
 </div>
 
 <hr>
