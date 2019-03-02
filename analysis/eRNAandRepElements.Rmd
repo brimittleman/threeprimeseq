@@ -1,0 +1,262 @@
+---
+title: "eRNAs and Repetitive elements"
+author: "Briana Mittleman"
+date: "3/1/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+##Repetitive elements:  
+Could this be do to repetitive elements  
+
+Process: 
+/project2/gilad/briana/genome_anotation_data/RepeatMask.dms  
+
+I just need to cut the chr to make the chroms the same as mine  
+
+
+```{bash,eval=F}
+sed 's/^chr//'  /project2/gilad/briana/genome_anotation_data/RepeatMask.dms   > /project2/gilad/briana/genome_anotation_data/RepeatMask.bed
+
+```
+
+
+
+BothFracDTPlotRepeats_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPlotRepeats_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=BothFracDTPlotRepeats_noMPFilt.out
+#SBATCH --error=BothFracDTPlotRepeats_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/RepeatMask.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.gz --refPointLabel "Repetitive Regions" --plotTitle "Combined Reads at Repetitive Regions" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_Repetitive_Nompfilt.png
+```
+
+
+##eRNA 
+
+download LCL eRNAs from phantom  
+
+http://enhancer.binf.ku.dk/presets/  
+
+process this file 
+
+/project2/gilad/briana/genome_anotation_data/0000945_lymphocyte_of_B_lineage_differentially_expressed_enhancers.bed
+
+
+interactively in python
+```{bash,eval=F}
+inFile=open("/project2/gilad/briana/genome_anotation_data/CL:0000945_lymphocyte_of_B_lineage_differentially_expressed_enhancers.bed", "r")
+outBed=open("/project2/gilad/briana/genome_anotation_data/LCLenhancerRNA.bed","w")
+
+for ln in inFile:
+    chrom=ln.split()[0]
+    chromnoch=chrom[3:]
+    start=int(ln.split()[1])
+    end=int(ln.split()[2])  
+    outBed.write("%s\t%d\t%d\n"%(chromnoch, start,end))
+outBed.close()
+```
+
+
+
+Look at this in total and nuclear three prime seq BW  
+
+BothFracDTPloteRNA_noMPFilt.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPloteRNA_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=BothFracDTPloteRNA_noMPFilt.out
+#SBATCH --error=BothFracDTPloteRNA_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/LCLenhancerRNA.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_eRNA_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_eRNA_Nompfilt.gz --refPointLabel "eRNA Regions" --plotTitle "Combined Reads at eRNA" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_eRNA_Nompfilt.png
+```
+
+
+
+Do this as region rather than reference point  
+BothFracDTPloteRNA_noMPFilt_region.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=BothFracDTPloteRNA_noMPFilt_region
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=BothFracDTPloteRNA_noMPFilt_region.out
+#SBATCH --error=BothFracDTPloteRNA_noMPFilt_region.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix scale-regions -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/genome_anotation_data/LCLenhancerRNA.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_eRNA_Nompfilt_regions.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_eRNA_Nompfilt_regions.gz --refPointLabel "eRNA Regions" --plotTitle "Combined Reads at eRNA" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/LianoglouDeepTools/BothFrac_eRNA_Nompfilt_regions.png
+```
+
+###overlap potential drivers of extra peaks  
+Does not look like there are a strong driver. I will see if any of these overlap with our peaks.I will need to look at the opposite strand overlap or use the fixed strand peaks. I will ask how many of these eRNAs or rep elements overlap a peak.  
+
+
+I want to run the overlap in all of the peaks as well as those that have been filtered 5%  
+
+
+/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed
+
+/project2/gilad/briana/threeprimeseq/data/peaks4DT/Peaks_5percCov_fixedStrand.bed  
+
+fix strand for nonfiltered:  
+
+fixStrand4DTplots_allpeaks.py
+
+```{bash,eval=F}
+peaksIn="/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLoc.bed"
+PeakOut="/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_allPeaks_fixedStrand.bed"
+
+
+def fix_strand(Fin,Fout):
+    fout=open(Fout,"w")
+    for ln in open(Fin, "r"):
+        chrom, start, end, name, score, strand, score2, pos = ln.split()
+        if strand=="+":
+            nameF="peak" + name + ":" + pos
+            fout.write("%s\t%s\t%s\t%s\t%s\t-\n"%(chrom,start,end,nameF,score))
+        else:
+            nameF="peak" + name + ":" + pos
+            fout.write("%s\t%s\t%s\t%s\t%s\t+\n"%(chrom,start,end,nameF,score))
+    fout.close()
+    
+    
+fix_strand(peaksIn, PeakOut)
+
+```
+
+ernas: /project2/gilad/briana/genome_anotation_data/LCLenhancerRNA.bed 
+repetitive elements: /project2/gilad/briana/genome_anotation_data/RepeatMask.bed
+
+make a python script with pybedtools that will take any bed file and overlap it 
+
+overlapWFilteredPeaks.py
+```{bash,eval=F}
+def main(infile, outfile):
+    peak_file=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed","r")
+    peak=pybedtools.BedTool(peak_file)
+    elementFile=open(infile, "r")
+    for i,ln in enumerate(elementFile):
+       if i == 0:
+           if len(ln.split()) > 3:
+               strand= "yes"
+           else:
+               strand= "no"
+       else:
+          break
+    print(strand)
+    elements=pybedtools.BedTool(elementFile)
+    if strand== "yes": 
+        elemOverpeak=elements.intersect(peak, wa=True,wb=True, s=True)
+    else:
+        elemOverpeak=elements.intersect(peak, wa=True,wb=True)
+    elemOverpeak.saveas(outfile)
+
+if __name__ == "__main__":
+    import sys
+    import pybedtools
+    infile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(infile, outfile)
+```
+
+run:  
+
+```{bash,eval=F}
+python overlapWFilteredPeaks.py /project2/gilad/briana/genome_anotation_data/LCLenhancerRNA.bed  /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/FilteredPeak_overeRNA.txt  
+
+python overlapWFilteredPeaks.py /project2/gilad/briana/genome_anotation_data/RepeatMask.bed /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/FilteredPeak_overRepElements.txt  
+```
+
+
+overlapWAllPeaks.py
+```{bash,eval=F}
+def main(infile, outfile):
+    peak_file=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_allPeaks_fixedStrand.bed","r")
+    peak=pybedtools.BedTool(peak_file)
+    elementFile=open(infile, "r")
+    for i,ln in enumerate(elementFile):
+       if i == 0:
+           if len(ln.split()) > 3:
+               strand= "yes"
+           else:
+               strand= "no"
+       else:
+          break
+    print(strand)
+    elements=pybedtools.BedTool(elementFile)
+    if strand== "yes": 
+        elemOverpeak=elements.intersect(peak, wa=True,wb=True, s=True)
+    else:
+        elemOverpeak=elements.intersect(peak, wa=True,wb=True)
+    elemOverpeak.saveas(outfile)
+
+if __name__ == "__main__":
+    import sys
+    import pybedtools
+    infile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(infile, outfile)
+    
+```
+
+run:  
+
+```{bash,eval=F}
+python overlapWAllPeaks.py /project2/gilad/briana/genome_anotation_data/LCLenhancerRNA.bed  /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/AllPeak_overeRNA.txt  
+
+python overlapWAllPeaks.py /project2/gilad/briana/genome_anotation_data/RepeatMask.bed /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/AllPeak_overRepElements.txt  
+```
+
+
+How long are each of these
+
+Full eRNA file:  1167
+All peak eRNA: 128 
+Filt peak eRNA: 14  
+
+Full rep file: 5298130
+All peak rep:52965
+Filt peak rep: 9542  
+
+ 
+
+
+

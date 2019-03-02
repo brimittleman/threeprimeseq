@@ -168,3 +168,5 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Explore coverage in PAS by pacbio](initialPacBioQuant.html)
 
+* [Ask if nuclear peaks are due to eRNA or rep elements](eRNAandRepElements.html)
+
