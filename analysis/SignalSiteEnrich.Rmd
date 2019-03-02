@@ -1,0 +1,121 @@
+---
+title: "Signal Site enrichment"
+author: "Briana Mittleman"
+date: "3/2/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310884/ (50bp up)
+
+
+I will use homer to look for enriched signals in my signal sites.  
+
+Intall homer in my enironment with
+
+```{bash,eval=F}
+conda install wget samtools r-essentials bioconductor-deseq2 bioconductor-edger
+```
+
+
+
+
+I need to get the 50 base pairs upstream of my peaks and the shuffled peaks. This should encompase the signal site. This is similar to the 10 bp upstream script I used to identify evidence of mispriming. I want it to take any peak file and conver the bed to the 50bp uptream.  
+
+
+Upstream50Bases.py
+```{python, eval=F}
+#python  
+def main(Fin, Fout):
+  outBed=open(Fout, "w")
+  chrom_lengths=open("/project2/gilad/briana/genome_anotation_data/chrom_lengths2.sort.bed","r")
+  #make a dictionary with chrom lengths
+  length_dic={}
+  for i in chrom_lengths:
+    chrom, start, end = i.split()
+    length_dic[str(chrom)]=int(end)  
+
+#write file 
+  for ln in open(Fin):
+    chrom, start, end, name, score, strand = ln.split()
+    chrom=str(chrom)
+    if strand=="+":
+      start_new=int(start)-50
+      if start_new <= 1:
+        start_new = 0 
+      end_new= int(start)
+      if end_new == 0:
+        end_new=1
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+    if strand == "-":
+      start_new=int(end)
+      end_new=int(end) + 50
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+  outBed.close()  
+
+if __name__ == "__main__":
+    import sys
+    inFile = sys.argv[1]
+    outFile=sy.argv[2] 
+    main(inFile, outFile)
+```
+
+RUn this for both the peak and shuff file with the fixed peak strands:  
+
+* /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed
+
+* /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed
+
+
+run_get50up.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_get50up
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_get50upt.out
+#SBATCH --error=run_get50up.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python Upstream50Bases.py /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_shuffled_FilterPeaks.sort.bed 
+
+python Upstream50Bases.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_APAPeaks_5percCov_fixedStrand.bed
+```
+
+
+
+
+Run homer enrichement
+
+-h hypergeometic enrichment  
+
+run it in downloaded version for now- will fix when environment solves and this is in anaconda env.  
+
+signalSiteEnrich.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=signalSiteEnrich
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=signalSiteEnrich.out
+#SBATCH --error=signalSiteEnrich.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+source deactivate three-prime-env
+module unload Anaconda3
+
+findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_APAPeaks_5percCov_fixedStrand.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich/ -size given -h -bg  /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_shuffled_FilterPeaks.sort.bed 
+```
+
