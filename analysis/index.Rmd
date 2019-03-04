@@ -172,5 +172,7 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Signal site enrichment](SignalSiteEnrich.html)  
 
+* [Genes with 1 peak analysis](OnePeakGeneAnalysis.html)
+
 
 

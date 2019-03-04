@@ -1,0 +1,42 @@
+---
+title: "Explore 1 Peak genes"
+author: "Briana Mittleman"
+date: "3/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to explore the genes we only found 1 peak in. I want to ask if this is due to low expression or only one PAS.  
+
+
+```{r}
+library(tidyverse)
+library(cowplot)
+library(reshape2)
+library(workflowr)
+```
+
+These are all of the peaks with 1 peak after accounts for 5% usage filter. This means there are many and they are rarely used. 
+
+
+```{r}
+allPeaks_1peak=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", stringsAsFactors = F, col.names = c("chr", 'start','end', 'id', 'score', 'strand')) %>% separate(id, into=c("gene", "peak"), sep=":")%>% group_by(gene) %>% mutate(nPeaks=n()) %>% filter(nPeaks==1)
+OnePeak_genes=allPeaks_1peak$gene
+
+allPeaks_not1peak=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", stringsAsFactors = F, col.names = c("chr", 'start','end', 'id', 'score', 'strand')) %>% separate(id, into=c("gene", "peak"), sep=":")%>% group_by(gene) %>% mutate(nPeaks=n()) %>% filter(nPeaks != 1)
+MultPeak_genes=allPeaks_not1peak$gene %>% unique()
+
+```
+
+Now I need to look at the coverage for these peaks.  
+
+This is the feature counts I performed in the [diff iso analysis](dif.iso.usage.leafcutter.html) and has the total and nuclear libraries. I can just get the mean accross all libraries and compare.  
+
+
+```{r}
+
+```
+
