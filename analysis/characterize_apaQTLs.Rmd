@@ -1168,3 +1168,27 @@ apaQTLsChromregion_sig
 ggsave(apaQTLsChromregion_sig, file="../output/plots/apaQTLsChromRegionWithSig.png")
 ```
 
+This figure is bad: redo 
+
+want to plot total vs. random and nuclear vs. random as seperate plots 
+
+
+```{r}
+PropMatched_total=PropHMM_QTLandMatch_melt %>% filter(Fraction=="Total")
+PropMatched_nuclear=PropHMM_QTLandMatch_melt %>% filter(Fraction=="Nuclear")
+```
+
+
+```{r}
+propMatchTotalPlot=ggplot(PropMatched_total, aes(x=Region, by=Set, y=Proportion, fill=Set))+geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1))+ scale_fill_manual(values=c("grey", "darkviolet")) + annotate("text", label="p < .005", x="Txn_Elongation", y=.4) + annotate("text", label="*", x="Weak_Txn", y=.35) +  annotate("text", label="**", x="Txn_Elongation", y=.35) + annotate("text", label="p <.05", x="Weak_Txn", y=.4) + labs(title="Total apaQTLs by chromatin region")
+propMatchTotalPlot
+ggsave(propMatchTotalPlot, file="../output/plots/Total_apaQTLsChromRegionWithSig.png")
+
+
+
+propMatchNuclearPlot=ggplot(PropMatched_nuclear, aes(x=Region, by=Set, y=Proportion, fill=Set))+geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1))+ scale_fill_manual(values=c("grey", "deepskyblue3")) + annotate("text", label="p < .005", x="Txn_Elongation", y=.4) + annotate("text", label="*", x="Weak_Txn", y=.35) +  annotate("text", label="**", x="Txn_Elongation", y=.35) + annotate("text", label="p <.05", x="Weak_Txn", y=.4)+ labs(title="Nuclear apaQTLs by chromatin region")
+ggsave(propMatchNuclearPlot, file="../output/plots/Nuclear_apaQTLsChromRegionWithSig.png")
+```
+
+
+
