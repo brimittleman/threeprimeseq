@@ -29,14 +29,201 @@ OnePeak_genes=allPeaks_1peak$gene
 allPeaks_not1peak=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", stringsAsFactors = F, col.names = c("chr", 'start','end', 'id', 'score', 'strand')) %>% separate(id, into=c("gene", "peak"), sep=":")%>% group_by(gene) %>% mutate(nPeaks=n()) %>% filter(nPeaks != 1)
 MultPeak_genes=allPeaks_not1peak$gene %>% unique()
 
+#dataframe with yes/no 
+allPeak=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", stringsAsFactors = F, col.names = c("chr", 'start','end', 'id', 'score', 'strand')) %>% separate(id, into=c("gene", "peak"), sep=":")%>% group_by(gene) %>% summarise(nPeaks=n()) %>% mutate(PeakVar=ifelse(nPeaks==1, "1 Peak", "more peaks"))
 ```
 
 Now I need to look at the coverage for these peaks.  
 
-This is the feature counts I performed in the [diff iso analysis](dif.iso.usage.leafcutter.html) and has the total and nuclear libraries. I can just get the mean accross all libraries and compare.  
+This is the feature counts I performed in the [diff iso analysis](dif.iso.usage.leafcutter.html) and has the total and nuclear libraries. I can just get the mean accross all libraries per peak then add these up.   
+
+Get row means:
+```{r}
+counts=read.table("../data/PeakCounts_noMP_genelocanno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc",header = T, stringsAsFactors = F) %>% select(-Geneid, -Chr, -Start, -End, -Strand, -Length)
+counts_mean=rowMeans(counts)
+anno=read.table("../data/PeakCounts_noMP_genelocanno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc",header = T, stringsAsFactors = F) %>% select(Geneid, Chr, Start, End, Strand, Length) 
+
+countsWAnno=as.data.frame(cbind(anno,counts_mean)) %>% select(-Chr, -Start, -End,-Strand, -Length) %>% separate(Geneid, into=c("peak", "chr", "start", "end ", "strand", "gene"), sep=":") %>% group_by(gene) %>% summarise(geneCount=sum(counts_mean))
+```
+
+I can join this with the number of peaks:  
+
+```{r}
+allPeak_wGeneCount=allPeak %>% inner_join(countsWAnno, by="gene")
+```
+
+
+
+First plot the number of peaks vs the counts. then i can look at the difference between genes with one peak vs multiple  
+
+```{r}
+
+allPeak_wGeneCount$nPeaks=as.numeric(allPeak_wGeneCount$nPeaks)
+
+
+ggplot(allPeak_wGeneCount, aes(x=nPeaks,y=log(geneCount))) + geom_point()
+```
+
+
+```{r}
+ggplot(allPeak_wGeneCount, aes(x=PeakVar, y=log(geneCount),by=PeakVar)) + geom_violin()
+```
+Look at the distributions:
+
+```{r}
+ggplot(allPeak_wGeneCount, aes(x=log(geneCount),by=PeakVar,fill=PeakVar)) + geom_density(alpha=.3) + labs(title="Gene sum of mean peak read counts\n separated by genes with 1 vs. mult PAS")
+```
+
+This is interesting. It shows a bimodal distribution for the genes with 1 peak. The first peak is most likely genes that we do not have enough coverage to know if there are more than one PAS and the second peak in the distribution is genes that actually only have 1 PAS.  
+
+
+historgram will help me understand more about the number in each group.   
+
+```{r}
+ggplot(allPeak_wGeneCount, aes(x=log10(geneCount),by=PeakVar,fill=PeakVar)) + geom_histogram(alpha=.3,bins=100) + labs(y="Number of Genes",title="Historgram of gene sum of mean peak read counts\n separated by genes with 1 vs. mult PAS")
+```
+
+
+how many in each group:
+
+```{r}
+allPeak_wGeneCount %>% filter(PeakVar=="1 Peak") %>% nrow
+
+allPeak_wGeneCount %>% filter(PeakVar=="more peaks") %>% nrow
+```
+
+
+I can look at the PAS database annotation for n peaks. The data comes from the PolyA_DB.
+
+http://polyasite.unibas.ch
+
+problem: data is not a nice dataframe. 
+```{r}
+#DataBasePolyA=read.table("../data/PolyA_DB/clusters_withTissueInfo.bed", header = F, stringsAsFactors = F, sep="\t")
+```
+
+I need to parse this for the sites in LCLs.  annotation for this is B_LCL_cells in the 9th column.
+
+
+Do this interactivly  
+
+
+```{bash,eval=F}
+#python  
+
+inAnno="/project2/gilad/briana/threeprimeseq/data/PolyA_DB/clusters_withTissueInfo.bed"
+outAnno=open("/project2/gilad/briana/threeprimeseq/data/PolyA_DB/clusters_LCL.bed","w")
+
+
+for ln in open(inAnno, "r"):
+    geneList=ln.split()[8].split(";")
+    if "B_LCL_cells" in geneList:
+        outAnno.write(ln)
+        
+outAnno.close()
+```
+
+
+```{r}
+DataBasePolyA_LCL=read.table("../data/PolyA_DB/clusters_LCL.bed", header = F, stringsAsFactors = F, sep="\t", col.names =c("chr", "start", "end", "id", "score", "strand", "signal", "gene", "tissues")) %>% group_by(gene) %>% summarise(nPeaksinDB=n())
+```
+
+Join this with my data:  
+
+```{r}
+allPeak_wGeneCount_withDB=allPeak_wGeneCount %>% inner_join(DataBasePolyA_LCL, by="gene")
+```
+
+Only overlap 10498 of my 15219 genes.  
+
+Explore the relationship:
+
+```{r}
+ggplot(allPeak_wGeneCount_withDB, aes(x=nPeaks, y=nPeaksinDB)) + geom_point()
+```
+```{r}
+
+summary(lm(data=allPeak_wGeneCount_withDB, nPeaks~nPeaksinDB))
+```
+
+It doesnt look like the overlap here is great but ill subset for genes in my file with only 1 peak  
+
+```{r}
+allPeak_wGeneCount_withDB_1peak=allPeak_wGeneCount_withDB %>% filter(nPeaks==1)
+
+
+nrow(allPeak_wGeneCount_withDB_1peak)
+```
+There are only 2612 genes in both.  
+
+
+```{r}
+allPeak_wGeneCount_withDB= allPeak_wGeneCount_withDB %>% mutate(PeakVarDB=ifelse(nPeaksinDB==1, "1 Peak", "more peaks"))
+```
+
+```{r}
+ggplot(allPeak_wGeneCount_withDB,aes(x=log(geneCount),by=PeakVarDB,fill=PeakVarDB))+ geom_density(alpha=.3) 
+
+#+ facet_grid(~PeakVarDB)
+```
+
+
+I want to know 1 peak in both  
+
+```{r}
+allPeak_wGeneCount_withDB_onpeakboth=allPeak_wGeneCount_withDB %>% filter(nPeaks==1) %>% mutate(OneBoth=ifelse(nPeaksinDB==1, "1 Both", "More in DB"))
+```
+
+
+```{r}
+ggplot(allPeak_wGeneCount_withDB_onpeakboth,aes(x=log(geneCount),by=OneBoth,fill=OneBoth))+ geom_density(alpha=.3) + labs(title="Gene count for genes with 1 PAS in our data \n by peaks in DB") 
+```
+Do this as boxplots. I can see gene count for number in db.
+
+```{r}
+ggplot(allPeak_wGeneCount_withDB_onpeakboth,aes(y=log(geneCount),group=nPeaksinDB, x=nPeaksinDB, fill=OneBoth))+ geom_boxplot() +labs(title="Gene count for genes with 1 PAS in our data \n by peaks in DB")  
+```
+
+
+Could it be 1 peaks because the peaks are lot longer.  (meaning we have multiple peaks called as 1) 
 
 
 ```{r}
 
+allPeaks_withLength=allPeak=read.table("../data/PeaksUsed_noMP_5percCov/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed.5percCov.bed", stringsAsFactors = F, col.names = c("chr", 'start','end', 'id', 'score', 'strand')) %>% separate(id, into=c("gene", "peak"), sep=":")%>% group_by(gene) %>% mutate(nPeaks=n(), lengthPeak=abs(end-start)) 
 ```
+
+Plot this: 
+
+
+```{r}
+ggplot(allPeaks_withLength, aes(group=nPeaks,x=nPeaks, y=log10(lengthPeak))) + geom_boxplot()
+```
+
+Lets make sure the genes with 1 peak and high coverage are not the long peaks. Ill join the length wuth the counts  
+
+```{r}
+allPeaks_withLength_sm= allPeaks_withLength %>% filter(nPeaks==1) %>% select(gene, lengthPeak) 
+
+allPeak_wGeneCount_1gene_length= allPeak_wGeneCount %>% filter(nPeaks==1) %>% inner_join(allPeaks_withLength_sm, by=c("gene"))
+
+
+
+```
+
+
+DOes gene count correlate with length of the peak
+```{r}
+ggplot(allPeak_wGeneCount_1gene_length, aes(x=log10(lengthPeak), y=log10(geneCount))) + geom_point()
+```
+
+```{r}
+summary(lm(data=allPeak_wGeneCount_1gene_length, log10(lengthPeak) ~ log10(geneCount)))
+```
+
+Ok it does not look like the length of the peak is driving this.  
+
+
+
+Maybe in the future we can use this analysis to get a credible set for genes with 1 PAS and explore them (are they housekeeping genes?, ect)  
 
