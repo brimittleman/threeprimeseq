@@ -15,14 +15,6 @@ https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310884/ (50bp up)
 ##Singal site in peak
 I will use homer to look for enriched signals in my signal sites.  
 
-Intall homer in my enironment with
-
-```{bash,eval=F}
-conda install wget samtools r-essentials bioconductor-deseq2 bioconductor-edger
-```
-
-
-
 
 I need to get the 50 base pairs upstream of my peaks and the shuffled peaks. This should encompase the signal site. This is similar to the 10 bp upstream script I used to identify evidence of mispriming. I want it to take any peak file and conver the bed to the 50bp uptream.  
 
@@ -92,7 +84,7 @@ python Upstream50Bases.py /project2/gilad/briana/threeprimeseq/data/Featureoverl
 python Upstream50Bases.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_APAPeaks_5percCov_fixedStrand.bed
 ```
 
-
+pabp (signal site) is top known 
 
 
 Run homer enrichement
@@ -119,7 +111,169 @@ module unload Anaconda3
 findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich/ -size -300,100 -h -bg  /project2/gilad/briana/threeprimeseq/data/FeatureoverlapPeaks/shuffled_FilterPeaks.sort.bed -len 6
 ```
 
-Try this with the actual peaks and change the size 
+I see the correct enrichment but I want to understand where the enrichment is compared to the peaks. Iam worried the peaks are really close to eachother and maybe the enrichment was from a signal site of another peak. 
+
+Homer gives some results:
+
+Tpos: average position of motif in target sequences (0 = start of sequences)
+
+This result is only there for the new res. THe known res arnt there. I can run homer specfically looking for the motifs in the https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310884/ paper.  
+
+
+I need to decide on a:
+Log odds detection threshold, used to determine bound vs. unbound sites (mandatory) example: 8.059752 
+
+
+I cau use the seq2profile.pl for this (here I can say allow 0 mismatch )
+
+Motif file: 
+
+/project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/
+
+makeMotifFiles.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=makeMotifFiles
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=makeMotifFiles.out
+#SBATCH --error=makeMotifFiles.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+source ~/.bash_profile
+
+ ~/homer/bin/seq2profile.pl AATAAA AATAAA-Sig1 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AATAAA-Sig1.motif
+ ~/homer/bin/seq2profile.pl ATTAAA ATTAAA-Sig2 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/ATTAAA-Sig2.motif
+ ~/homer/bin/seq2profile.pl AGTAAA AGTAAA-Sig3 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AGTAAA-Sig3.motif
+ ~/homer/bin/seq2profile.pl TATAAA TATAAA-Sig4 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/TATAAA-Sig4.motif  
+ ~/homer/bin/seq2profile.pl CATAAA CATAAA-Sig5 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/CATAAA-Sig5.motif 
+ ~/homer/bin/seq2profile.pl GATAAA GATAAA-Sig6 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/GATAAA-Sig6.motif 
+ ~/homer/bin/seq2profile.pl AATATA AATATA-Sig7 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AATATA-Sig7.motif 
+ ~/homer/bin/seq2profile.pl AATACA AATACA-Sig8 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AATACA-Sig8.motif
+ ~/homer/bin/seq2profile.pl AATAGA AATAGA-Sig9 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AATAGA-Sig9.motif
+ ~/homer/bin/seq2profile.pl AAAAAG AAAAAG-Sig10 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AAAAAG-Sig10.motif
+ ~/homer/bin/seq2profile.pl ACTAAA ACTAAA-Sig11 > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/ACTAAA-Sig11.motif
+
+
+```
+
+
+I can then run the motif finding on these 
+
+
+I want to find inidivdual matches for these with http://meme-suite.org/doc/fimo.html  
+
+I need to convert these with motif2meme
+
+
+```{r,eval=F}
+#R 
+source("/project2/gilad/briana/Motif2Meme/motif2meme.R")
+motif2meme("/project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AATAAA-Sig1.motif")
+
+```
+Read 7 items
+Error in index.start:index.end : NA/NaN argument
+
+
+Try to make my own: 
+/project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AATAAA_meme.motif
+```{bash, eval=F}
+MEME version 4
+
+ALPHABET= ACGT
+
+
+strands: +
+
+
+Background letter frequencies (from
+A 0.303 C 0.183 G 0.209 T 0.306 
+
+MOTIF AATAAA 
+letter-probability matrix: alength= 4 w= 6 nsites= 6 E= 0
+0.997	0.001	0.001	0.001
+0.001	0.997	0.001	0.001
+0.001	0.001	0.001	0.997
+0.997	0.001	0.001	0.001
+0.997	0.001	0.001	0.001
+0.997	0.001	0.001	0.001
+
+```
+
+
+I also need to make a fasta formated file for the regions.  (start with the 50 upstream)  
+
+
+takes the bedtools nuc res and makes a fasta 
+
+
+interactively 
+```{bash,eval=F}
+#example
+# >peakid
+#seq  
+
+
+inFile=open("/project2/gilad/briana/threeprimeseq/data/SignalEnrich/Seq_fiftyup_APAPeaks_5percCov_fixedStrand.bed", "r")
+outFile=open("/project2/gilad/briana/threeprimeseq/data/SignalEnrich/Seq_fiftyup_APAPeaks_5percCov_fixedStrand.fasta", "w")  
+
+for i, ln in enumerate(inFile):
+    if i >0:
+        id=ln.split()[3]
+        seq=ln.split()[15]
+        outFile.write(">%s\n%s\n"%(id, seq))
+outFile.close()
+
+```
+
+add this to conda environment "meme" 
+Test this one the one motif: 
+
+```{bash,eval=F}
+fimo --o /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/ /project2/gilad/briana/threeprimeseq/data/SignalEnrich_MyMotifs/AATAAA_meme.motif /project2/gilad/briana/threeprimeseq/data/SignalEnrich/Seq_fiftyup_APAPeaks_5percCov_fixedStrand.fasta
+```
+
+If this doesnt work I will write my own python script to look for the motifs in the sequences. I can then look through the sequences and see if any of those are there and if so which. I can look for each in an heiarchical way. I can then find the location of the signal. I can use the .find command for this in python. It will give me the first index if findes the string. 
+
+I can make a second dictionary with the resuts. Anytime a signal is found,  Ican add the location of the signal to a list in the value for the dictionary. 
+
+
+**change region I am looking at before I do this - move to new analysis and try a new method for this analysis**  
+
+```{bash,eval=F}
+
+sigsite=['AATAAA', 'ATTAAA' ,'AGTAAA' ,'TATAAA'  ,'CATAAA' ,'GATAAA' ,'AATATA' ,'AATACA' ,'AATAGA' ,'AAAAAG','ACTAAA'] 
+
+
+#start results dic, key is site, value is empty list  
+Res_dic={}
+for i in sigsite:
+    Res_dic[i]=[]
+
+
+upstreamSeq=open("/project2/gilad/briana/threeprimeseq/data/SignalEnrich/Seq_fiftyup_APAPeaks_5percCov_fixedStrand.fasta", "r")
+
+for i,ln in enumerate(upstreamSeq):
+    if i % 2 ==0: 
+        if sigsite[0] in ln:
+        if sigsite[1] in ln:
+        if sigsite[2] in ln:
+        if sigsite[3] in ln:
+        if sigsite[4] in ln:
+        if sigsite[5] in ln:
+        if sigsite[6] in ln:
+        if sigsite[7] in ln:
+        if sigsite[8] in ln:
+        if sigsite[9] in ln:
+        if sigsite[10] in ln:
+#not finished code
+```
+
 
 ##Signal site in qtls  
 
@@ -156,9 +310,150 @@ signalSiteEnrich_QTLs.sh
 #source deactivate three-prime-env
 #module unload Anaconda3
 
-findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/ApaQTLs/All.apaQTLs.sort.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich_QTL/ -size 50 -h -bg  /project2/gilad/briana/threeprimeseq/data/MatchedSnp/All_matched_snps_sort.bed -len 6
+ ~/homer/bin/findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/ApaQTLs/All.apaQTLs.sort.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich_QTL/ -size 100 -h -bg  /project2/gilad/briana/threeprimeseq/data/MatchedSnp/All_matched_snps_sort.bed -len 6
 ```
 
 
 results dont mean much at the moment  
+
+
+##Signal enrichment nuc spec  
+
+
+/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed
+
+
+Make a shuffled file of this for background:  
+
+Do this interactively  
+```{bash,eval=F}
+import pybedtools 
+peaks= pybedtools.BedTool("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed")
+peaks_shuf=peaks.shuffle(genome='hg19')
+peaks_shuf.saveas("/project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpec/shuffled_MoreSigUsageNuclear.bed")
+
+```
+
+```{bash,eval=F}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpec/shuffled_MoreSigUsageNuclear.bed | sed 's/^chr//'  > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpec/shuffled_MoreSigUsageNuclear.sort.bed
+```
+
+
+signalSiteEnrich_nucSpec.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=signalSiteEnrich_nucSpec
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=signalSiteEnrich_nucSpec.out
+#SBATCH --error=signalSiteEnrich_nucSpec.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+source deactivate three-prime-env
+module unload Anaconda3
+
+findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpec/ -size -300,100 -h -bg  /project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpec/shuffled_MoreSigUsageNuclear.sort.bed -len 6
+```
+
+
+Subset these by those in introns:  
+
+/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_withAnno.SAF
+
+I want to subset only those in the /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed  file that have an intron annoations:  
+
+
+SigUsageNuc_subsetInron.py
+```{bash,eval=F}
+anno=open("/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_withAnno.SAF","r")
+inbed="/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed"
+outBed=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed","w")  
+
+#make dic with intron peaks 
+intron={}
+for i,ln in enumerate(anno):
+    if i >0:
+        peak=ln.split()[0].split(":")[0]
+        loc=ln.split()[0].split(":")[-1]
+        if loc == "intron":
+            intron[peak]=""
+        
+
+
+for ln in open(inbed, "r"):
+    peak=ln.split()[3].split(":")[1]
+    if peak in intron.keys():
+        outBed.write(ln)
+        
+outBed.close()
+    
+```
+
+
+Of these 519 are intron. I now need to do the shuff on these:  
+
+Do this interactively  
+```{bash,eval=F}
+import pybedtools 
+peaks= pybedtools.BedTool("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed")
+peaks_shuf=peaks.shuffle(genome='hg19')
+peaks_shuf.saveas("/project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpecIntron/shuffled_MoreSigUsageNuclear_intron.bed")
+
+```
+
+
+```{bash,eval=F}
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpecIntron/shuffled_MoreSigUsageNuclear_intron.bed | sed 's/^chr//'  > /project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpecIntron/shuffled_MoreSigUsageNuclear_intron.sort.bed
+```
+
+signalSiteEnrich_nucSpec_intron.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=signalSiteEnrich_nucSpec_intron
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=signalSiteEnrich_nucSpec_intron.out
+#SBATCH --error=signalSiteEnrich_nucSpec_intron.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+source ~/.bash_profile
+
+ ~/homer/bin/findMotifsGenome.pl /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa /project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpecIntron/ -size -300,100 -h -bg  /project2/gilad/briana/threeprimeseq/data/SignalEnrich_nucSpecIntron/shuffled_MoreSigUsageNuclear_intron.sort.bed -len 6
+```
+
+
+
+##Upstream sequences  
+
+
+I saw enrichment but now I need to work on location of the enrichment. I have the 50bp upstream of the PAS from earlier in this analysis. I can use bedtools nuc to get the actual sequences for these regions.
+
+
+nuc50upPeaks.sh
+
+```{bas,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nuc50upPeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=nuc50upPeaks.out
+#SBATCH --error=nuc50upPeaks.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools nuc -s -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/SignalEnrich/fiftyup_APAPeaks_5percCov_fixedStrand.bed > /project2/gilad/briana/threeprimeseq/data/SignalEnrich/Seq_fiftyup_APAPeaks_5percCov_fixedStrand.bed   
+
+```
+
+
+
 
