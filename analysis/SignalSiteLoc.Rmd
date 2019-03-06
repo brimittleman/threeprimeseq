@@ -10,7 +10,141 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 In the [Signal Site enrichment analysis](SignalSiteEnrich.html) I looked at the peaks to see if signal sites are enriched upstream of my peaks. I found this is true but now I want to see where the signal sites are in comparison to my peaks. I am going to use the biostrings package tool matchPWM for this analysis.
+```{r}
+library(workflowr)
+library(tidyverse)
+library(Biostrings)
+library(BSgenome)
+library(genomation)
 
+```
 ##Make location file
 I need to get the coordinates for the regions I care about. I want to look at the peak and 150bp upstream. This is probably larger than I will need  to look at but it will be good to have an inclusive look first.  
+
+
+I want to use the peak file and make a file that is the peak and upstream 150:  
+
+
+Upstream150Bases.py
+```{python, eval=F}
+#python  
+def main(Fin, Fout):
+  outBed=open(Fout, "w")
+  chrom_lengths=open("/project2/gilad/briana/genome_anotation_data/chrom_lengths2.sort.bed","r")
+  #make a dictionary with chrom lengths
+  length_dic={}
+  for i in chrom_lengths:
+    chrom, start, end = i.split()
+    length_dic[str(chrom)]=int(end)  
+
+#write file 
+  for ln in open(Fin):
+    chrom, start, end, name, score, strand = ln.split()
+    chrom=str(chrom)
+    if strand=="+":
+      start_new=int(start)-150
+      if start_new <= 1:
+        start_new = 0 
+      end_new= int(end)
+      if end_new == 0:
+        end_new=1
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+    if strand == "-":
+      start_new=int(start)
+      end_new=int(end) + 150
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+  outBed.close()  
+
+if __name__ == "__main__":
+    import sys
+    inFile = sys.argv[1]
+    outFile=sys.argv[2] 
+    main(inFile, outFile)
+```
+
+
+
+run_get150up.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_get150up
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_get150upt.out
+#SBATCH --error=run_get150up.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+python Upstream150Bases.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed  /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_peakand150up.bed 
+```
+
+##Get subject (reads)
+
+Input the regions: 
+
+
+Fix chromosomes: 
+```{r}
+PeakRegions=read.table("../data/Signal_Loc/APAPeaks_5percCov_fixedStrand_peakand150up.bed", header=F,col.names = c("chr","start", "end", "peak", "score", "strand")) %>% mutate(Chrom=paste("chr", chr, sep="")) %>% select(Chrom, start,end,peak,score,strand)
+write.table(PeakRegions, file="../data/Signal_Loc/APAPeaks_5percCov_fixedStrand_peakand150up_fixedChr.bed", quote=F, col.names = F, row.names = F, sep="\t")
+
+
+```
+
+
+
+```{r}
+#convert to reads 
+
+reads.GR= readGeneric(file="../data/Signal_Loc/APAPeaks_5percCov_fixedStrand_peakand150up_fixedChr.bed",chr =1, start = 2, end =3,  meta.cols =4, header=F, zero.based=TRUE)
+
+
+```
+
+I need to overlap these positions with the genome
+
+###Make motifs  
+
+```{r}
+AATAAA= PWM("AATAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+ATTAAA= PWM("ATTAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+AGTAAA= PWM("AGTAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+TATAAA= PWM("TATAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+CATAAA= PWM("CATAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+GATAAA= PWM("GATAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+AATATA= PWM("AATATA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+AATACA= PWM("AATACA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+AATAGA= PWM("AATAGA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+AAAAAG= PWM("AAAAAG", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+ACTAAA= PWM("ACTAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+```
+
+
+
+###find the mathes  
+
+```{r}
+genome.hg19 <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19")
+
+
+DNAstringSetPeaks=getSeq(genome.hg19, reads.GR)
+
+```
+
+
+
+
+Get all hits for this first motif 
+```{r}
+
+#hits <- matchPWM(AATAAA,DNAstringSetPeaks) 
+
+
+
+```
 
