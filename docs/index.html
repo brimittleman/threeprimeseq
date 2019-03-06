@@ -338,7 +338,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-04
+<strong>Last updated:</strong> 2019-03-06
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -369,10 +369,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed5d08090e3553d1e536665adcdb6846f551af58ctargetblankd5d0809a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d5d08090e3553d1e536665adcdb6846f551af58c" target="_blank">d5d0809</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreec200503cbf5505dd25e7f30321019a5758f6e9b4targetblankc200503a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c200503cbf5505dd25e7f30321019a5758f6e9b4" target="_blank">c200503</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed5d08090e3553d1e536665adcdb6846f551af58ctargetblankd5d0809a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreec200503cbf5505dd25e7f30321019a5758f6e9b4targetblankc200503a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -424,6 +424,7 @@ Untracked files:
     Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/PolyA_DB/
     Untracked:  data/QTL_overlap/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
@@ -516,7 +517,6 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
-    Modified:   analysis/SignalSiteEnrich.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
@@ -578,6 +578,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c200503cbf5505dd25e7f30321019a5758f6e9b4/analysis/index.Rmd" target="_blank">c200503</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-06
+</td>
+<td>
+add signal site loc analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/08ca500a0c5718df214c6d722375b53bbc200210/docs/index.html" target="_blank">08ca500</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -3251,6 +3285,7 @@ Start workflowr project.
 <li><p><a href="initialPacBioQuant.html">Explore coverage in PAS by pacbio</a></p></li>
 <li><p><a href="eRNAandRepElements.html">Ask if nuclear peaks are due to eRNA or rep elements</a></p></li>
 <li><p><a href="SignalSiteEnrich.html">Signal site enrichment</a></p></li>
+<li><p><a href="SignalSiteLoc.html">Signal Site Location</a></p></li>
 <li><p><a href="OnePeakGeneAnalysis.html">Genes with 1 peak analysis</a></p></li>
 </ul>
 </div>
