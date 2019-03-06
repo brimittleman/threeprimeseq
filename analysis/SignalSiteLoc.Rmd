@@ -1,0 +1,16 @@
+---
+title: "Location of Signal Site"
+author: "Briana Mittleman"
+date: "3/6/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In the [Signal Site enrichment analysis](SignalSiteEnrich.html) I looked at the peaks to see if signal sites are enriched upstream of my peaks. I found this is true but now I want to see where the signal sites are in comparison to my peaks. I am going to use the biostrings package tool matchPWM for this analysis.
+
+##Make location file
+I need to get the coordinates for the regions I care about. I want to look at the peak and 150bp upstream. This is probably larger than I will need  to look at but it will be good to have an inclusive look first.  
+
