@@ -101,7 +101,7 @@ write.table(PeakRegions, file="../data/Signal_Loc/APAPeaks_5percCov_fixedStrand_
 ```{r}
 #convert to reads 
 
-reads.GR= readGeneric(file="../data/Signal_Loc/APAPeaks_5percCov_fixedStrand_peakand150up_fixedChr.bed",chr =1, start = 2, end =3,  meta.cols =4, header=F, zero.based=TRUE)
+reads.GR= readGeneric(file="../data/Signal_Loc/APAPeaks_5percCov_fixedStrand_peakand150up_fixedChr.bed",chr =1, start = 2, end =3,  meta.cols =4, header=F, zero.based=TRUE,strand=6)
 
 
 ```
@@ -130,6 +130,8 @@ ACTAAA= PWM("ACTAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25
 
 ```{r}
 genome.hg19 <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19")
+
+#matches <- matchPWM(pwm=AATAAA, subject = genome.hg19) %>% keepStandardChromosomes(., species= "Homo sapiens")
 
 
 DNAstringSetPeaks=data.frame(seq=getSeq(genome.hg19, reads.GR))
@@ -161,12 +163,14 @@ Get out the start positions:
 ```{r}
 starts_AATAAA=c()
 nsig=c()
-first_oc_AATAAA=c()
+last_oc_AATAAA=c()
 for (i in list_AATAAA_res){
   nsig=c(nsig, length(start(i)))
   starts_AATAAA=c(starts_AATAAA, start(i))
-  first_oc_AATAAA=c(first_oc_AATAAA, min(start(i)))
-  
+  #print(length(start(i)))
+  if (length(start(i)) != 0 ){
+    last_oc_AATAAA=c(last_oc_AATAAA, max(start(i),na.rm =T))
+  }
 }
    
 ```
@@ -184,6 +188,7 @@ hist(starts_AATAAA,breaks=10000)
 ```{r}
 summary(nsig)
 sum(nsig==0)
+sum(nsig==1)
 
 hist(nsig,breaks=100)
 ```
@@ -191,7 +196,8 @@ hist(nsig,breaks=100)
 Look at the first occurence:  
 
 ```{r}
-summary(nsig)
-hist(first_oc_AATAAA,breaks=1000)
+summary(last_oc_AATAAA)
+hist(last_oc_AATAAA,breaks=1000)
 ```
 
+I want to get the closest occurance of the 
