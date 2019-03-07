@@ -201,3 +201,160 @@ hist(last_oc_AATAAA,breaks=1000)
 ```
 
 I want to get the closest occurance of the 
+
+
+##Change analysis: 
+
+
+I want to start at the end of the peak (most downstream) and look for the signal sites. For confidence a peak is one PAS,  I will look only at peaks less than 100bp long. I will extend the peak upstream 100 basepairs. I will look from the downstream end for the sites.  
+
+
+###Subset peaks less than 200bp  
+
+
+filterPeaks100length.py
+```{bash,eval=F}
+peaks=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed", "r")
+
+outPeaks=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length.bed", "w")
+
+nNotOk=0
+for ln in peaks:
+    start= int(ln.split()[1])
+    end=int(ln.split()[2])
+    length=end - start 
+    if length <= 100:
+        outPeaks.write(ln)
+    else:
+        nNotOk +=1
+        
+print(nNotOk)
+outPeaks.close()
+      
+```
+
+This filters 12105 peaks.  
+
+###Get sequence for peaks and 100 upstream
+
+
+Upstream100Bases_filteredpeaks.py
+```{bash,eval=F}
+#python  
+def main(Fin, Fout):
+  outBed=open(Fout, "w")
+  chrom_lengths=open("/project2/gilad/briana/genome_anotation_data/chrom_lengths2.sort.bed","r")
+  #make a dictionary with chrom lengths
+  length_dic={}
+  for i in chrom_lengths:
+    chrom, start, end = i.split()
+    length_dic[str(chrom)]=int(end)  
+
+#write file 
+  for ln in open(Fin):
+    chrom, start, end, name, score, strand = ln.split()
+    chrom=str(chrom)
+    if strand=="+":
+      start_new=int(start)-100
+      if start_new <= 1:
+        start_new = 0 
+      end_new= int(end)
+      if end_new == 0:
+        end_new=1
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+    if strand == "-":
+      start_new=int(start)
+      end_new=int(end) + 100
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+  outBed.close()  
+
+if __name__ == "__main__":
+    import sys
+    inFile = sys.argv[1]
+    outFile=sys.argv[2] 
+    main(inFile, outFile)
+```
+
+
+Run this:  
+
+```{bash,eval=F}
+python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length.bed  /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100.bed 
+```
+
+Run bedtools nuc for this to get the sequences:  
+
+Here I will not use the strand specific sequence -s. Then i will use the signal site and the reverse compliments of the signal sites. 
+
+
+nucpeaksand100up.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nucpeaksand100up
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=nucpeaksand100up.out
+#SBATCH --error=nucpeaksand100up.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100.bed  > /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq.bed  
+```
+
+nucpeaksand100up_withStrand.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nucpeaksand100up_withStrand
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=nucpeaksand100up_withStrand.out
+#SBATCH --error=nucpeaksand100up_withStrand.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools nuc -seq -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100.bed  > /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq_withSTrand.bed  
+```
+
+
+###find distance to peaks
+**change region I am looking at before I do this - move to new analysis and try a new method for this analysis**  
+
+```{bash,eval=F}
+
+sigsite=['AATAAA', 'ATTAAA' ,'AGTAAA' ,'TATAAA'  ,'CATAAA' ,'GATAAA' ,'AATATA' ,'AATACA' ,'AATAGA' ,'AAAAAG','ACTAAA'] 
+
+
+#start results dic, key is site, value is empty list  
+Res_dic={}
+for i in sigsite:
+    Res_dic[i]=[]
+
+
+upstreamSeq=open("/project2/gilad/briana/threeprimeseq/data/SignalEnrich/Seq_fiftyup_APAPeaks_5percCov_fixedStrand.fasta", "r")
+
+for i,ln in enumerate(upstreamSeq):
+    if i % 2 ==0: 
+        if sigsite[0] in ln:
+        if sigsite[1] in ln:
+        if sigsite[2] in ln:
+        if sigsite[3] in ln:
+        if sigsite[4] in ln:
+        if sigsite[5] in ln:
+        if sigsite[6] in ln:
+        if sigsite[7] in ln:
+        if sigsite[8] in ln:
+        if sigsite[9] in ln:
+        if sigsite[10] in ln:
+#not finished code
+```
+
