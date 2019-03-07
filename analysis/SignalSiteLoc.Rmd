@@ -132,19 +132,66 @@ ACTAAA= PWM("ACTAAA", type = c("log2probratio", "prob"), prior.params = c(A=0.25
 genome.hg19 <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19")
 
 
-DNAstringSetPeaks=getSeq(genome.hg19, reads.GR)
+DNAstringSetPeaks=data.frame(seq=getSeq(genome.hg19, reads.GR))
 
+x=DNAString(DNAstringSetPeaks[1,1])
+
+hits <- matchPWM(AATAAA,x,with.score=T) 
+
+
+start(hits)
+```
+
+
+
+Look over and make hits file for all 
+
+```{r}
+list_AATAAA_res=c()
+for (i in 1:nrow(DNAstringSetPeaks)){
+  x=DNAString(DNAstringSetPeaks[i,1])
+  list_AATAAA_res=c(list_AATAAA_res,matchPWM(AATAAA,x,with.score=T))
+}
+```
+
+
+Get out the start positions: 
+
+
+```{r}
+starts_AATAAA=c()
+nsig=c()
+first_oc_AATAAA=c()
+for (i in list_AATAAA_res){
+  nsig=c(nsig, length(start(i)))
+  starts_AATAAA=c(starts_AATAAA, start(i))
+  first_oc_AATAAA=c(first_oc_AATAAA, min(start(i)))
+  
+}
+   
 ```
 
 
 
 
-Get all hits for this first motif 
+Histogram of results:
+
 ```{r}
+summary(starts_AATAAA)
+hist(starts_AATAAA,breaks=10000)
+```
 
-#hits <- matchPWM(AATAAA,DNAstringSetPeaks) 
+```{r}
+summary(nsig)
+sum(nsig==0)
 
+hist(nsig,breaks=100)
+```
 
+Look at the first occurence:  
 
+```{r}
+summary(nsig)
+hist(first_oc_AATAAA,breaks=1000)
 ```
 
