@@ -284,7 +284,6 @@ python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/da
 
 Run bedtools nuc for this to get the sequences:  
 
-Here I will not use the strand specific sequence -s. Then i will use the signal site and the reverse compliments of the signal sites. 
 
 
 nucpeaksand100up.sh
@@ -306,15 +305,374 @@ source activate three-prime-env
 bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100.bed  > /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq.bed  
 ```
 
-nucpeaksand100up_withStrand.sh
+
+This is looking at the positive strand left to right always. I need to go from the right and look at the reverse signal sites. I can look into ways to flip a string in python 
+
+'a string'[::-1]  
+
+
+
+
+###find distance to peaks
+**change region I am looking at before I do this - move to new analysis and try a new method for this analysis**  
+
+
+DistPAS2Sig.py
+```{bash,eval=F}
+def main(Insite, out):
+  sigsite=[Insite]
+  
+  inBed=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq.bed", "r")
+  outRes=open(out, "w")
+  
+  #function for reverse compliments  
+  
+  def ReverseComplement1(seq):
+      seq_dict = {'A':'T','T':'A','G':'C','C':'G', 'a':'t', 't':'a', 'g':'c', 'c':'g'}
+      bases=[seq_dict[base] for base in seq]
+      bases=reversed(bases)
+      return("".join(bases))
+  
+  
+  #reverse comp each signal site 
+  sigsite_revComp=[]
+  for i in sigsite:
+      sigsite_revComp.append(ReverseComplement1(i))
+      
+  #want a dictionary for each of the sites and its reverse compliment:
+  sigsites_dic={}
+  for i in range(len(sigsite)):
+      sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+      
+  
+  #function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+  
+  #make 2 of these, this is for the pos strand
+  def getOccurance(sigsite, seq):
+      if sigsite in seq:
+          length=len(seq)
+          pos= seq.rfind(sigsite)
+          posF=length-pos
+          return(posF)
+      else:
+          return(-9)
+          
+  #negative strand occurance function:
+  
+  def getOccurance_neg(sigsite, seq):
+      sigsite=sigsites_dic[sigsite]
+      if sigsite in seq:
+          pos= seq.find(sigsite)
+          return(pos + 6)
+      else:
+          return(-9)
+  
+  #i can only addpend the value if the function does not return -9
+      
+  
+  #function i can run on each signal site  
+  
+  
+  #loop through peaks and check for every site, first ask stand and do the rev  
+  def loop41site(site):
+      resList=[]
+      for ln in inBed:
+          strand=ln.split()[5]
+          seq= ln.split()[15]
+          if strand == "+":
+              loc= getOccurance(site, seq)
+              if loc !=-9:
+                  resList.append(loc)
+          else: 
+              loc=getOccurance_neg(site,seq)
+              if loc !=-9:
+                  resList.append(loc)
+      return(resList)
+          
+  
+  #run this for each sig site
+  res_dic={}
+  for i in sigsite:
+      res_dic[i]=[]
+  for i in sigsite:
+      reslist=loop41site(i)
+      res_dic[i]=reslist
+  
+  
+  outRes.write("%s\n"%(sigsite[0]))
+  for i in reslist:
+      outRes.write("%d\n"%(i))
+      
+  
+  
+  outRes.close()
+      
+    
+if __name__ == "__main__":
+    import sys
+    Site_in = sys.argv[1]
+    outFile= "/project2/gilad/briana/threeprimeseq/data/Signal_Loc/Loc_%s_Distance2end.txt"%(Site_in)
+    main(Site_in, outFile)
+
+```
+
+
+make a test with just 1 site: 
+
+
+test_DistPAS2Sig.py
+```{bash,eval=F}
+
+sigsite=['ATTAAA'] 
+
+inBed=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq.bed", "r")
+outRes=open('/project2/gilad/briana/threeprimeseq/data/Signal_Loc/test.text', "w")
+
+#function for reverse compliments  
+
+def ReverseComplement1(seq):
+    seq_dict = {'A':'T','T':'A','G':'C','C':'G', 'a':'t', 't':'a', 'g':'c', 'c':'g'}
+    bases=[seq_dict[base] for base in seq]
+    bases=reversed(bases)
+    return("".join(bases))
+
+
+#reverse comp each signal site 
+sigsite_revComp=[]
+for i in sigsite:
+    sigsite_revComp.append(ReverseComplement1(i))
+    
+#want a dictionary for each of the sites and its reverse compliment:
+sigsites_dic={}
+for i in range(len(sigsite)):
+    sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+    
+
+#function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+
+#make 2 of these, this is for the pos strand
+def getOccurance(sigsite, seq):
+    if sigsite in seq:
+        print(sigsite)
+        print(seq)
+        pos= seq.rfind(sigsite)
+        return(pos)
+    else:
+        return(-9)
+        
+#negative strand occurance function:
+
+def getOccurance_neg(sigsite, seq):
+    sigsite=sigsites_dic[sigsite]
+    if sigsite in seq:
+        pos= seq.find(sigsite)
+        return(pos + 6)
+    else:
+        return(-9)
+
+#i can only addpend the value if the function does not return -9
+    
+
+#function i can run on each signal site  
+
+
+#loop through peaks and check for every site, first ask stand and do the rev  
+def loop41site(site):
+    resList=[]
+    for ln in inBed:
+        strand=ln.split()[5]
+        seq= ln.split()[15]
+        if strand == "+":
+            loc= getOccurance(site, seq)
+            print(loc)
+            if loc !=-9:
+                resList.append(str(loc))
+        else: 
+            loc=getOccurance_neg(site,seq)
+            if loc !=-9:
+                resList.append(str(loc))
+    return(resList)
+        
+
+#run this for each sig site
+res_dic={}
+for i in sigsite:
+    res_dic[i]=[]
+for i in sigsite:
+    reslist=loop41site(i)
+    res_dic[i]=reslist
+    
+for key, value in res_dic.items():
+    valString=":".join(value)
+    outRes.write("%s\t%s\n"%(key, valString))
+
+
+outRes.close()
+   
+   
+   
+```
+
+
+
+run_DistPAS2Sig.sh
+
 ```{bash,eval=F}
 #!/bin/bash
 
-#SBATCH --job-name=nucpeaksand100up_withStrand
+#SBATCH --job-name=run_DistPAS2Sig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_DistPAS2Sig.out
+#SBATCH --error=run_DistPAS2Sig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python DistPAS2Sig.py AATAAA
+python DistPAS2Sig.py ATTAAA
+python DistPAS2Sig.py AGTAAA
+python DistPAS2Sig.py TATAAA
+python DistPAS2Sig.py CATAAA
+python DistPAS2Sig.py GATAAA
+python DistPAS2Sig.py AATATA
+python DistPAS2Sig.py AATACA
+python DistPAS2Sig.py AATAGA
+python DistPAS2Sig.py AAAAAG
+python DistPAS2Sig.py ACTAAA
+```
+
+###Make histograms:
+
+```{r}
+Loc_AATAAA= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end.txt", header=T)
+nrow(Loc_AATAAA)
+
+Loc_AAAAAG= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end.txt", header=T)
+
+
+Loc_AATACA= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end.txt", header=T)
+
+
+Loc_AATAGA= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end.txt", header=T)
+
+
+Loc_AATATA= read.table("../data/Signal_Loc/Loc_AATATA_Distance2end.txt", header=T)
+
+
+Loc_ACTAAA= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end.txt", header=T)
+
+
+Loc_AGTAAA= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end.txt", header=T)
+
+
+
+Loc_ATTAAA= read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end.txt", header=T)
+
+Loc_CATAAA= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end.txt", header=T)
+
+Loc_GATAAA= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end.txt", header=T)
+
+Loc_TATAAA= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end.txt", header=T)
+
+
+```
+
+
+```{r}
+dist_Loc= ggplot(Loc_AATAAA, aes(x=AATAAA)) + 
+  geom_histogram(bins=100, fill="red", alpha=.3) + 
+  labs(title="Distance from PAS", x="Number of PAS", y="N basepair from PAS") +
+  geom_histogram(bins=100,data=Loc_AAAAAG, aes(x=AAAAAG), fill="orange", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATACA, aes(x=AATACA), fill="yellow", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATAGA, aes(x=AATAGA), fill="green", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATATA, aes(x=AATATA), fill="blue", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_ACTAAA, aes(x=ACTAAA), fill="purple", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA, aes(x=AGTAAA), fill="firebrick3", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA, aes(x=AGTAAA), fill="darksalmon", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_CATAAA, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_GATAAA, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_TATAAA, aes(x=TATAAA), fill="lightcyan1", alpha=.3) 
+  
+  
+dist_Loc
+
+```
+###Run for nuclear specific PAS:  
+
+
+*Used more in NUclear* 
+*  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed
+
+*Used more in nucelar, in intron* 
+* /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed
+
+
+Filter out ones that are too long:  
+
+filterPeaks100length_nuc.py
+```{bash,eval=F}
+peaks=open(" /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed", "r")
+
+outPeaks=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length.bed", "w")
+
+nNotOk=0
+for ln in peaks:
+    start= int(ln.split()[1])
+    end=int(ln.split()[2])
+    length=end - start 
+    if length <= 100:
+        outPeaks.write(ln)
+    else:
+        nNotOk +=1
+        
+print(nNotOk)
+outPeaks.close()
+      
+```
+
+filterPeaks100length_nucintron.py
+```{bash,eval=F}
+peaks=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed", "r")
+
+outPeaks=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length.bed", "w")
+
+nNotOk=0
+for ln in peaks:
+    start= int(ln.split()[1])
+    end=int(ln.split()[2])
+    length=end - start 
+    if length <= 100:
+        outPeaks.write(ln)
+    else:
+        nNotOk +=1
+        
+print(nNotOk)
+outPeaks.close()
+      
+```
+
+```{bash,eval=F}
+python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length.bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length_upstream100.bed
+
+python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length.bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length_upstream100.bed
+
+```
+
+
+nucpeaksand100up_nuc.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nucpeaksand100up
 #SBATCH --account=pi-yangili1
 #SBATCH --time=8:00:00
-#SBATCH --output=nucpeaksand100up_withStrand.out
-#SBATCH --error=nucpeaksand100up_withStrand.err
+#SBATCH --output=nucpeaksand100up.out
+#SBATCH --error=nucpeaksand100up.err
 #SBATCH --partition=broadwl
 #SBATCH --mem=36G
 #SBATCH --mail-type=END
@@ -322,39 +680,612 @@ nucpeaksand100up_withStrand.sh
 module load Anaconda3
 source activate three-prime-env
 
-bedtools nuc -seq -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100.bed  > /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq_withSTrand.bed  
+bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length_upstream100.bed  > /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length_upstream100_seq.bed
+
+bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length_upstream100.bed  > /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length_upstream100_seq.bed
+
+
+
 ```
 
 
-###find distance to peaks
-**change region I am looking at before I do this - move to new analysis and try a new method for this analysis**  
+
+DistPAS2Sig_nuclear.py
+```{bash,eval=F}
+def main(Insite, out):
+  sigsite=[Insite]
+  
+  inBed=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length_upstream100_seq.bed", "r")
+  outRes=open(out, "w")
+  
+  #function for reverse compliments  
+  
+  def ReverseComplement1(seq):
+      seq_dict = {'A':'T','T':'A','G':'C','C':'G', 'a':'t', 't':'a', 'g':'c', 'c':'g'}
+      bases=[seq_dict[base] for base in seq]
+      bases=reversed(bases)
+      return("".join(bases))
+  
+  
+  #reverse comp each signal site 
+  sigsite_revComp=[]
+  for i in sigsite:
+      sigsite_revComp.append(ReverseComplement1(i))
+      
+  #want a dictionary for each of the sites and its reverse compliment:
+  sigsites_dic={}
+  for i in range(len(sigsite)):
+      sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+      
+  
+  #function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+  
+  #make 2 of these, this is for the pos strand
+  def getOccurance(sigsite, seq):
+      if sigsite in seq:
+          length=len(seq)
+          pos= seq.rfind(sigsite)
+          posF=length-pos
+          return(posF)
+      else:
+          return(-9)
+          
+  #negative strand occurance function:
+  
+  def getOccurance_neg(sigsite, seq):
+      sigsite=sigsites_dic[sigsite]
+      if sigsite in seq:
+          pos= seq.find(sigsite)
+          return(pos + 6)
+      else:
+          return(-9)
+  
+  #i can only addpend the value if the function does not return -9
+      
+  
+  #function i can run on each signal site  
+  
+  
+  #loop through peaks and check for every site, first ask stand and do the rev  
+  def loop41site(site):
+      resList=[]
+      for ln in inBed:
+          strand=ln.split()[5]
+          seq= ln.split()[15]
+          if strand == "+":
+              loc= getOccurance(site, seq)
+              if loc !=-9:
+                  resList.append(loc)
+          else: 
+              loc=getOccurance_neg(site,seq)
+              if loc !=-9:
+                  resList.append(loc)
+      return(resList)
+          
+  
+  #run this for each sig site
+  res_dic={}
+  for i in sigsite:
+      res_dic[i]=[]
+  for i in sigsite:
+      reslist=loop41site(i)
+      res_dic[i]=reslist
+  
+  
+  outRes.write("%s\n"%(sigsite[0]))
+  for i in reslist:
+      outRes.write("%d\n"%(i))
+      
+  
+  
+  outRes.close()
+      
+    
+if __name__ == "__main__":
+    import sys
+    Site_in = sys.argv[1]
+    outFile= "/project2/gilad/briana/threeprimeseq/data/Signal_Loc/Loc_%s_Distance2end_nuclear.txt"%(Site_in)
+    main(Site_in, outFile)
+
+```
+
+
+DistPAS2Sig_nucIntron.py
+```{bash,eval=F}
+def main(Insite, out):
+  sigsite=[Insite]
+  
+  inBed=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length_upstream100_seq.bed", "r")
+  outRes=open(out, "w")
+  
+  #function for reverse compliments  
+  
+  def ReverseComplement1(seq):
+      seq_dict = {'A':'T','T':'A','G':'C','C':'G', 'a':'t', 't':'a', 'g':'c', 'c':'g'}
+      bases=[seq_dict[base] for base in seq]
+      bases=reversed(bases)
+      return("".join(bases))
+  
+  
+  #reverse comp each signal site 
+  sigsite_revComp=[]
+  for i in sigsite:
+      sigsite_revComp.append(ReverseComplement1(i))
+      
+  #want a dictionary for each of the sites and its reverse compliment:
+  sigsites_dic={}
+  for i in range(len(sigsite)):
+      sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+      
+  
+  #function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+  
+  #make 2 of these, this is for the pos strand
+  def getOccurance(sigsite, seq):
+      if sigsite in seq:
+          length=len(seq)
+          pos= seq.rfind(sigsite)
+          posF=length-pos
+          return(posF)
+      else:
+          return(-9)
+          
+  #negative strand occurance function:
+  
+  def getOccurance_neg(sigsite, seq):
+      sigsite=sigsites_dic[sigsite]
+      if sigsite in seq:
+          pos= seq.find(sigsite)
+          return(pos + 6)
+      else:
+          return(-9)
+  
+  #i can only addpend the value if the function does not return -9
+      
+  
+  #function i can run on each signal site  
+  
+  
+  #loop through peaks and check for every site, first ask stand and do the rev  
+  def loop41site(site):
+      resList=[]
+      for ln in inBed:
+          strand=ln.split()[5]
+          seq= ln.split()[15]
+          if strand == "+":
+              loc= getOccurance(site, seq)
+              if loc !=-9:
+                  resList.append(loc)
+          else: 
+              loc=getOccurance_neg(site,seq)
+              if loc !=-9:
+                  resList.append(loc)
+      return(resList)
+          
+  
+  #run this for each sig site
+  res_dic={}
+  for i in sigsite:
+      res_dic[i]=[]
+  for i in sigsite:
+      reslist=loop41site(i)
+      res_dic[i]=reslist
+  
+  
+  outRes.write("%s\n"%(sigsite[0]))
+  for i in reslist:
+      outRes.write("%d\n"%(i))
+      
+  
+  
+  outRes.close()
+      
+    
+if __name__ == "__main__":
+    import sys
+    Site_in = sys.argv[1]
+    outFile= "/project2/gilad/briana/threeprimeseq/data/Signal_Loc/Loc_%s_Distance2end_nuclearIntron.txt"%(Site_in)
+    main(Site_in, outFile)
+
+```
+
+Run both of these:    
+run_DistPAS2Sig_nuc.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_DistPAS2Sig_nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=un_DistPAS2Sig_nuc.out
+#SBATCH --error=un_DistPAS2Sig_nuc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python DistPAS2Sig_nucIntron.py AATAAA
+python DistPAS2Sig_nucIntron.py ATTAAA
+python DistPAS2Sig_nucIntron.py AGTAAA
+python DistPAS2Sig_nucIntron.py TATAAA
+python DistPAS2Sig_nucIntron.py CATAAA
+python DistPAS2Sig_nucIntron.py GATAAA
+python DistPAS2Sig_nucIntron.py AATATA
+python DistPAS2Sig_nucIntron.py AATACA
+python DistPAS2Sig_nucIntron.py AATAGA
+python DistPAS2Sig_nucIntron.py AAAAAG
+python DistPAS2Sig_nucIntron.py ACTAAA
+
+
+python DistPAS2Sig_nuclear.py AATAAA
+python DistPAS2Sig_nuclear.py ATTAAA
+python DistPAS2Sig_nuclear.py AGTAAA
+python DistPAS2Sig_nuclear.py TATAAA
+python DistPAS2Sig_nuclear.py CATAAA
+python DistPAS2Sig_nuclear.py GATAAA
+python DistPAS2Sig_nuclear.py AATATA
+python DistPAS2Sig_nuclear.py AATACA
+python DistPAS2Sig_nuclear.py AATAGA
+python DistPAS2Sig_nuclear.py AAAAAG
+python DistPAS2Sig_nuclear.py ACTAAA
+
+```
+
+
+```{r}
+Loc_AATAAA_Nuc= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclear.txt", header=T)
+
+
+Loc_AAAAAG_Nuc= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_nuclear.txt", header=T)
+
+
+Loc_AATACA_Nuc= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_nuclear.txt", header=T)
+
+
+Loc_AATAGA_Nuc= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_nuclear.txt", header=T)
+
+
+Loc_AATATA_Nuc =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_nuclear.txt", header=T)
+
+
+Loc_ACTAAA_Nuc= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_nuclear.txt", header=T)
+
+
+Loc_AGTAAA_Nuc= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_nuclear.txt", header=T)
+
+
+
+Loc_ATTAAA_Nuc=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_nuclear.txt", header=T)
+
+Loc_CATAAA_Nuc= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclear.txt", header=T)
+
+Loc_GATAAA_Nuc= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclear.txt", header=T)
+
+Loc_TATAAA_Nuc= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclear.txt", header=T)
+
+
+
+dist_Loc_Nuc= ggplot(Loc_AATAAA_Nuc, aes(x=AATAAA)) + 
+  geom_histogram(bins=100, fill="red", alpha=.3) + 
+  labs(title="Distance from PAS in Nuclear Used peaks", x="Number of PAS", y="N basepair from PAS") +
+  geom_histogram(bins=100,data=Loc_AAAAAG_Nuc, aes(x=AAAAAG), fill="orange", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATACA_Nuc, aes(x=AATACA), fill="yellow", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATAGA_Nuc, aes(x=AATAGA), fill="green", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATATA_Nuc, aes(x=AATATA), fill="blue", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_ACTAAA_Nuc, aes(x=ACTAAA), fill="purple", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_Nuc, aes(x=AGTAAA), fill="firebrick3", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_Nuc, aes(x=AGTAAA), fill="darksalmon", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_CATAAA_Nuc, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_GATAAA_Nuc, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_TATAAA_Nuc, aes(x=TATAAA), fill="lightcyan1", alpha=.3) 
+  
+  
+dist_Loc_Nuc
+
+
+
+```
+
+
+
+```{r}
+Loc_AATAAA_Int= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclearIntron.txt", header=T)
+
+
+Loc_AAAAAG_Int= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_nuclearIntron.txt", header=T)
+
+
+Loc_AATACA_Int= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_nuclearIntron.txt", header=T)
+
+
+Loc_AATAGA_Int= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_nuclearIntron.txt", header=T)
+
+
+Loc_AATATA_Int =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_nuclearIntron.txt", header=T)
+
+
+Loc_ACTAAA_Int= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_nuclearIntron.txt", header=T)
+
+
+Loc_AGTAAA_Int= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_nuclearIntron.txt", header=T)
+
+
+
+Loc_ATTAAA_Int=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_nuclearIntron.txt", header=T)
+
+Loc_CATAAA_Int= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclearIntron.txt", header=T)
+
+Loc_GATAAA_Int= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclearIntron.txt", header=T)
+
+Loc_TATAAA_Int= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclearIntron.txt", header=T)
+
+
+
+dist_Loc_Int= ggplot(Loc_AATAAA_Int, aes(x=AATAAA)) + 
+  geom_histogram(bins=100, fill="red", alpha=.3) + 
+  labs(title="Distance from PAS in Intronic Nuclear Used peaks", x="Number of PAS", y="N basepair from PAS") +
+  geom_histogram(bins=100,data=Loc_AAAAAG_Int, aes(x=AAAAAG), fill="orange", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATACA_Int, aes(x=AATACA), fill="yellow", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATAGA_Int, aes(x=AATAGA), fill="green", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATATA_Int, aes(x=AATATA), fill="blue", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_ACTAAA_Int, aes(x=ACTAAA), fill="purple", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_Int, aes(x=AGTAAA), fill="firebrick3", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_Int, aes(x=AGTAAA), fill="darksalmon", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_CATAAA_Int, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_GATAAA_Int, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_TATAAA_Int, aes(x=TATAAA), fill="lightcyan1", alpha=.3) 
+  
+  
+dist_Loc_Int
+
+
+
+```
+
+
+###All intronic peaks:  
+
+*/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON.bed  (17854)
+
+
+filterPeaks100length_Intron.py
+```{bash,eval=F}
+peaks=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON.bed", "r")
+
+outPeaks=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length.bed", "w")
+
+nNotOk=0
+for ln in peaks:
+    start= int(ln.split()[1])
+    end=int(ln.split()[2])
+    length=end - start 
+    if length <= 100:
+        outPeaks.write(ln)
+    else:
+        nNotOk +=1
+        
+print(nNotOk)
+outPeaks.close()
+      
+```
+
+12250 peaks  
+
 
 ```{bash,eval=F}
-
-sigsite=['AATAAA', 'ATTAAA' ,'AGTAAA' ,'TATAAA'  ,'CATAAA' ,'GATAAA' ,'AATATA' ,'AATACA' ,'AATAGA' ,'AAAAAG','ACTAAA'] 
-
-
-#start results dic, key is site, value is empty list  
-Res_dic={}
-for i in sigsite:
-    Res_dic[i]=[]
-
-
-upstreamSeq=open("/project2/gilad/briana/threeprimeseq/data/SignalEnrich/Seq_fiftyup_APAPeaks_5percCov_fixedStrand.fasta", "r")
-
-for i,ln in enumerate(upstreamSeq):
-    if i % 2 ==0: 
-        if sigsite[0] in ln:
-        if sigsite[1] in ln:
-        if sigsite[2] in ln:
-        if sigsite[3] in ln:
-        if sigsite[4] in ln:
-        if sigsite[5] in ln:
-        if sigsite[6] in ln:
-        if sigsite[7] in ln:
-        if sigsite[8] in ln:
-        if sigsite[9] in ln:
-        if sigsite[10] in ln:
-#not finished code
+python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length.bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length_upstream100.bed
 ```
 
+
+nucpeaksand100up_intron.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=nucpeaksand100up_intron
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=nucpeaksand100up_intron.out
+#SBATCH --error=nucpeaksand100up_intron.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length_upstream100.bed > /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length_upstream100_seq.bed
+
+
+```
+
+DistPAS2Sig_Intron.py
+```{bash,eval=F}
+def main(Insite, out):
+  sigsite=[Insite]
+  
+  inBed=open("/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length_upstream100_seq.bed", "r")
+  outRes=open(out, "w")
+  
+  #function for reverse compliments  
+  
+  def ReverseComplement1(seq):
+      seq_dict = {'A':'T','T':'A','G':'C','C':'G', 'a':'t', 't':'a', 'g':'c', 'c':'g'}
+      bases=[seq_dict[base] for base in seq]
+      bases=reversed(bases)
+      return("".join(bases))
+  
+  
+  #reverse comp each signal site 
+  sigsite_revComp=[]
+  for i in sigsite:
+      sigsite_revComp.append(ReverseComplement1(i))
+      
+  #want a dictionary for each of the sites and its reverse compliment:
+  sigsites_dic={}
+  for i in range(len(sigsite)):
+      sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+      
+  
+  #function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+  
+  #make 2 of these, this is for the pos strand
+  def getOccurance(sigsite, seq):
+      if sigsite in seq:
+          length=len(seq)
+          pos= seq.rfind(sigsite)
+          posF=length-pos
+          return(posF)
+      else:
+          return(-9)
+          
+  #negative strand occurance function:
+  
+  def getOccurance_neg(sigsite, seq):
+      sigsite=sigsites_dic[sigsite]
+      if sigsite in seq:
+          pos= seq.find(sigsite)
+          return(pos + 6)
+      else:
+          return(-9)
+  
+  #i can only addpend the value if the function does not return -9
+      
+  
+  #function i can run on each signal site  
+  
+  
+  #loop through peaks and check for every site, first ask stand and do the rev  
+  def loop41site(site):
+      resList=[]
+      for ln in inBed:
+          strand=ln.split()[5]
+          seq= ln.split()[15]
+          if strand == "+":
+              loc= getOccurance(site, seq)
+              if loc !=-9:
+                  resList.append(loc)
+          else: 
+              loc=getOccurance_neg(site,seq)
+              if loc !=-9:
+                  resList.append(loc)
+      return(resList)
+          
+  
+  #run this for each sig site
+  res_dic={}
+  for i in sigsite:
+      res_dic[i]=[]
+  for i in sigsite:
+      reslist=loop41site(i)
+      res_dic[i]=reslist
+  
+  
+  outRes.write("%s\n"%(sigsite[0]))
+  for i in reslist:
+      outRes.write("%d\n"%(i))
+      
+  
+  
+  outRes.close()
+      
+    
+if __name__ == "__main__":
+    import sys
+    Site_in = sys.argv[1]
+    outFile= "/project2/gilad/briana/threeprimeseq/data/Signal_Loc/Loc_%s_Distance2end_Intronic.txt"%(Site_in)
+    main(Site_in, outFile)
+
+```
+
+
+run_DistPAS2Sig_Intron.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_DistPAS2Sig_Intronc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_DistPAS2Sig_Intron.out
+#SBATCH --error=run_DistPAS2Sig_Intron.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python DistPAS2Sig_Intron.py AATAAA
+python DistPAS2Sig_Intron.py ATTAAA
+python DistPAS2Sig_Intron.py AGTAAA
+python DistPAS2Sig_Intron.py TATAAA
+python DistPAS2Sig_Intron.py CATAAA
+python DistPAS2Sig_Intron.py GATAAA
+python DistPAS2Sig_Intron.py AATATA
+python DistPAS2Sig_Intron.py AATACA
+python DistPAS2Sig_Intron.py AATAGA
+python DistPAS2Sig_Intron.py AAAAAG
+python DistPAS2Sig_Intron.py ACTAAA
+```
+
+
+
+
+
+
+```{r}
+Loc_AATAAA_AllInt= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_Intronic.txt", header=T)
+
+
+Loc_AAAAAG_AllInt= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_Intronic.txt", header=T)
+
+
+Loc_AATACA_AllInt= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_Intronic.txt", header=T)
+
+
+Loc_AATAGA_AllInt= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_Intronic.txt", header=T)
+
+
+Loc_AATATA_AllInt =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_Intronic.txt", header=T)
+
+
+Loc_ACTAAA_AllInt= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_Intronic.txt", header=T)
+
+
+Loc_AGTAAA_AllInt= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_Intronic.txt", header=T)
+
+
+
+Loc_ATTAAA_AllInt=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_Intronic.txt", header=T)
+
+Loc_CATAAA_AllInt= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_Intronic.txt", header=T)
+
+Loc_GATAAA_AllInt= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_Intronic.txt", header=T)
+
+Loc_TATAAA_AllInt= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_Intronic.txt", header=T)
+
+
+
+dist_Loc_AllInt= ggplot(Loc_AATAAA_AllInt, aes(x=AATAAA)) + 
+  geom_histogram(bins=100, fill="red", alpha=.3) + 
+  labs(title="Distance from PAS in Intronic peaks", x="Number of PAS", y="N basepair from PAS") +
+  geom_histogram(bins=100,data=Loc_AAAAAG_AllInt, aes(x=AAAAAG), fill="orange", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATACA_AllInt, aes(x=AATACA), fill="yellow", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATAGA_AllInt, aes(x=AATAGA), fill="green", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATATA_AllInt, aes(x=AATATA), fill="blue", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_ACTAAA_AllInt, aes(x=ACTAAA), fill="purple", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_AllInt, aes(x=AGTAAA), fill="firebrick3", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_AllInt, aes(x=AGTAAA), fill="darksalmon", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_CATAAA_AllInt, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_GATAAA_AllInt, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_TATAAA_AllInt, aes(x=TATAAA), fill="lightcyan1", alpha=.3) 
+  
+  
+dist_Loc_AllInt
+
+
+
+```
