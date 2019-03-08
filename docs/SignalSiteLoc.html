@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-07
+<strong>Last updated:</strong> 2019-03-08
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree52e7514c85b1d53cf84c23529b70b2d0f22b3fd7targetblank52e7514a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/52e7514c85b1d53cf84c23529b70b2d0f22b3fd7" target="_blank">52e7514</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree64fe413faa3780f1108a322dde565e73f98d56b1targetblank64fe413a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/64fe413faa3780f1108a322dde565e73f98d56b1" target="_blank">64fe413</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree52e7514c85b1d53cf84c23529b70b2d0f22b3fd7targetblank52e7514a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree64fe413faa3780f1108a322dde565e73f98d56b1targetblank64fe413a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -729,6 +729,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/64fe413faa3780f1108a322dde565e73f98d56b1/analysis/SignalSiteLoc.Rmd" target="_blank">64fe413</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-08
+</td>
+<td>
+add signal site loc hist
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/ffb0e845598e99c4ef5309787ec42ef86ee7652b/docs/SignalSiteLoc.html" target="_blank">ffb0e84</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1321,7 +1355,6 @@ if __name__ == &quot;__main__&quot;:
 <p>Run this:</p>
 <pre class="bash"><code>python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length.bed  /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100.bed </code></pre>
 <p>Run bedtools nuc for this to get the sequences:</p>
-<p>Here I will not use the strand specific sequence -s. Then i will use the signal site and the reverse compliments of the signal sites.</p>
 <p>nucpeaksand100up.sh</p>
 <pre class="bash"><code>#!/bin/bash
 
@@ -1338,14 +1371,326 @@ module load Anaconda3
 source activate three-prime-env
 
 bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100.bed  &gt; /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq.bed  </code></pre>
-<p>nucpeaksand100up_withStrand.sh</p>
+<p>This is looking at the positive strand left to right always. I need to go from the right and look at the reverse signal sites. I can look into ways to flip a string in python</p>
+<p>‘a string’[::-1]</p>
+</div>
+<div id="find-distance-to-peaks" class="section level3">
+<h3>find distance to peaks</h3>
+<p><strong>change region I am looking at before I do this - move to new analysis and try a new method for this analysis</strong></p>
+<p>DistPAS2Sig.py</p>
+<pre class="bash"><code>def main(Insite, out):
+  sigsite=[Insite]
+  
+  inBed=open(&quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq.bed&quot;, &quot;r&quot;)
+  outRes=open(out, &quot;w&quot;)
+  
+  #function for reverse compliments  
+  
+  def ReverseComplement1(seq):
+      seq_dict = {&#39;A&#39;:&#39;T&#39;,&#39;T&#39;:&#39;A&#39;,&#39;G&#39;:&#39;C&#39;,&#39;C&#39;:&#39;G&#39;, &#39;a&#39;:&#39;t&#39;, &#39;t&#39;:&#39;a&#39;, &#39;g&#39;:&#39;c&#39;, &#39;c&#39;:&#39;g&#39;}
+      bases=[seq_dict[base] for base in seq]
+      bases=reversed(bases)
+      return(&quot;&quot;.join(bases))
+  
+  
+  #reverse comp each signal site 
+  sigsite_revComp=[]
+  for i in sigsite:
+      sigsite_revComp.append(ReverseComplement1(i))
+      
+  #want a dictionary for each of the sites and its reverse compliment:
+  sigsites_dic={}
+  for i in range(len(sigsite)):
+      sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+      
+  
+  #function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+  
+  #make 2 of these, this is for the pos strand
+  def getOccurance(sigsite, seq):
+      if sigsite in seq:
+          length=len(seq)
+          pos= seq.rfind(sigsite)
+          posF=length-pos
+          return(posF)
+      else:
+          return(-9)
+          
+  #negative strand occurance function:
+  
+  def getOccurance_neg(sigsite, seq):
+      sigsite=sigsites_dic[sigsite]
+      if sigsite in seq:
+          pos= seq.find(sigsite)
+          return(pos + 6)
+      else:
+          return(-9)
+  
+  #i can only addpend the value if the function does not return -9
+      
+  
+  #function i can run on each signal site  
+  
+  
+  #loop through peaks and check for every site, first ask stand and do the rev  
+  def loop41site(site):
+      resList=[]
+      for ln in inBed:
+          strand=ln.split()[5]
+          seq= ln.split()[15]
+          if strand == &quot;+&quot;:
+              loc= getOccurance(site, seq)
+              if loc !=-9:
+                  resList.append(loc)
+          else: 
+              loc=getOccurance_neg(site,seq)
+              if loc !=-9:
+                  resList.append(loc)
+      return(resList)
+          
+  
+  #run this for each sig site
+  res_dic={}
+  for i in sigsite:
+      res_dic[i]=[]
+  for i in sigsite:
+      reslist=loop41site(i)
+      res_dic[i]=reslist
+  
+  
+  outRes.write(&quot;%s\n&quot;%(sigsite[0]))
+  for i in reslist:
+      outRes.write(&quot;%d\n&quot;%(i))
+      
+  
+  
+  outRes.close()
+      
+    
+if __name__ == &quot;__main__&quot;:
+    import sys
+    Site_in = sys.argv[1]
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/Loc_%s_Distance2end.txt&quot;%(Site_in)
+    main(Site_in, outFile)
+</code></pre>
+<p>make a test with just 1 site:</p>
+<p>test_DistPAS2Sig.py</p>
+<pre class="bash"><code>
+sigsite=[&#39;ATTAAA&#39;] 
+
+inBed=open(&quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq.bed&quot;, &quot;r&quot;)
+outRes=open(&#39;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/test.text&#39;, &quot;w&quot;)
+
+#function for reverse compliments  
+
+def ReverseComplement1(seq):
+    seq_dict = {&#39;A&#39;:&#39;T&#39;,&#39;T&#39;:&#39;A&#39;,&#39;G&#39;:&#39;C&#39;,&#39;C&#39;:&#39;G&#39;, &#39;a&#39;:&#39;t&#39;, &#39;t&#39;:&#39;a&#39;, &#39;g&#39;:&#39;c&#39;, &#39;c&#39;:&#39;g&#39;}
+    bases=[seq_dict[base] for base in seq]
+    bases=reversed(bases)
+    return(&quot;&quot;.join(bases))
+
+
+#reverse comp each signal site 
+sigsite_revComp=[]
+for i in sigsite:
+    sigsite_revComp.append(ReverseComplement1(i))
+    
+#want a dictionary for each of the sites and its reverse compliment:
+sigsites_dic={}
+for i in range(len(sigsite)):
+    sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+    
+
+#function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+
+#make 2 of these, this is for the pos strand
+def getOccurance(sigsite, seq):
+    if sigsite in seq:
+        print(sigsite)
+        print(seq)
+        pos= seq.rfind(sigsite)
+        return(pos)
+    else:
+        return(-9)
+        
+#negative strand occurance function:
+
+def getOccurance_neg(sigsite, seq):
+    sigsite=sigsites_dic[sigsite]
+    if sigsite in seq:
+        pos= seq.find(sigsite)
+        return(pos + 6)
+    else:
+        return(-9)
+
+#i can only addpend the value if the function does not return -9
+    
+
+#function i can run on each signal site  
+
+
+#loop through peaks and check for every site, first ask stand and do the rev  
+def loop41site(site):
+    resList=[]
+    for ln in inBed:
+        strand=ln.split()[5]
+        seq= ln.split()[15]
+        if strand == &quot;+&quot;:
+            loc= getOccurance(site, seq)
+            print(loc)
+            if loc !=-9:
+                resList.append(str(loc))
+        else: 
+            loc=getOccurance_neg(site,seq)
+            if loc !=-9:
+                resList.append(str(loc))
+    return(resList)
+        
+
+#run this for each sig site
+res_dic={}
+for i in sigsite:
+    res_dic[i]=[]
+for i in sigsite:
+    reslist=loop41site(i)
+    res_dic[i]=reslist
+    
+for key, value in res_dic.items():
+    valString=&quot;:&quot;.join(value)
+    outRes.write(&quot;%s\t%s\n&quot;%(key, valString))
+
+
+outRes.close()
+   
+   
+   </code></pre>
+<p>run_DistPAS2Sig.sh</p>
 <pre class="bash"><code>#!/bin/bash
 
-#SBATCH --job-name=nucpeaksand100up_withStrand
+#SBATCH --job-name=run_DistPAS2Sig
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_DistPAS2Sig.out
+#SBATCH --error=run_DistPAS2Sig.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python DistPAS2Sig.py AATAAA
+python DistPAS2Sig.py ATTAAA
+python DistPAS2Sig.py AGTAAA
+python DistPAS2Sig.py TATAAA
+python DistPAS2Sig.py CATAAA
+python DistPAS2Sig.py GATAAA
+python DistPAS2Sig.py AATATA
+python DistPAS2Sig.py AATACA
+python DistPAS2Sig.py AATAGA
+python DistPAS2Sig.py AAAAAG
+python DistPAS2Sig.py ACTAAA</code></pre>
+</div>
+<div id="make-histograms" class="section level3">
+<h3>Make histograms:</h3>
+<pre class="r"><code>Loc_AATAAA= read.table(&quot;../data/Signal_Loc/Loc_AATAAA_Distance2end.txt&quot;, header=T)
+nrow(Loc_AATAAA)</code></pre>
+<pre><code>[1] 11809</code></pre>
+<pre class="r"><code>Loc_AAAAAG= read.table(&quot;../data/Signal_Loc/Loc_AAAAAG_Distance2end.txt&quot;, header=T)
+
+
+Loc_AATACA= read.table(&quot;../data/Signal_Loc/Loc_AATACA_Distance2end.txt&quot;, header=T)
+
+
+Loc_AATAGA= read.table(&quot;../data/Signal_Loc/Loc_AATAGA_Distance2end.txt&quot;, header=T)
+
+
+Loc_AATATA= read.table(&quot;../data/Signal_Loc/Loc_AATATA_Distance2end.txt&quot;, header=T)
+
+
+Loc_ACTAAA= read.table(&quot;../data/Signal_Loc/Loc_ACTAAA_Distance2end.txt&quot;, header=T)
+
+
+Loc_AGTAAA= read.table(&quot;../data/Signal_Loc/Loc_AGTAAA_Distance2end.txt&quot;, header=T)
+
+
+
+Loc_ATTAAA= read.table(&quot;../data/Signal_Loc/Loc_ATTAAA_Distance2end.txt&quot;, header=T)
+
+Loc_CATAAA= read.table(&quot;../data/Signal_Loc/Loc_CATAAA_Distance2end.txt&quot;, header=T)
+
+Loc_GATAAA= read.table(&quot;../data/Signal_Loc/Loc_GATAAA_Distance2end.txt&quot;, header=T)
+
+Loc_TATAAA= read.table(&quot;../data/Signal_Loc/Loc_TATAAA_Distance2end.txt&quot;, header=T)</code></pre>
+<pre class="r"><code>dist_Loc= ggplot(Loc_AATAAA, aes(x=AATAAA)) + 
+  geom_histogram(bins=100, fill=&quot;red&quot;, alpha=.3) + 
+  labs(title=&quot;Distance from PAS&quot;, x=&quot;Number of PAS&quot;, y=&quot;N basepair from PAS&quot;) +
+  geom_histogram(bins=100,data=Loc_AAAAAG, aes(x=AAAAAG), fill=&quot;orange&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATACA, aes(x=AATACA), fill=&quot;yellow&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATAGA, aes(x=AATAGA), fill=&quot;green&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATATA, aes(x=AATATA), fill=&quot;blue&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_ACTAAA, aes(x=ACTAAA), fill=&quot;purple&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA, aes(x=AGTAAA), fill=&quot;firebrick3&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA, aes(x=AGTAAA), fill=&quot;darksalmon&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_CATAAA, aes(x=CATAAA), fill=&quot;darkslategray&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_GATAAA, aes(x=GATAAA), fill=&quot;deeppink1&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_TATAAA, aes(x=TATAAA), fill=&quot;lightcyan1&quot;, alpha=.3) 
+  
+  
+dist_Loc</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /> ###Run for nuclear specific PAS:</p>
+<p><em>Used more in NUclear</em> * /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed</p>
+<p><em>Used more in nucelar, in intron</em> * /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed</p>
+<p>Filter out ones that are too long:</p>
+<p>filterPeaks100length_nuc.py</p>
+<pre class="bash"><code>peaks=open(&quot; /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed&quot;, &quot;r&quot;)
+
+outPeaks=open(&quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length.bed&quot;, &quot;w&quot;)
+
+nNotOk=0
+for ln in peaks:
+    start= int(ln.split()[1])
+    end=int(ln.split()[2])
+    length=end - start 
+    if length &lt;= 100:
+        outPeaks.write(ln)
+    else:
+        nNotOk +=1
+        
+print(nNotOk)
+outPeaks.close()
+      </code></pre>
+<p>filterPeaks100length_nucintron.py</p>
+<pre class="bash"><code>peaks=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed&quot;, &quot;r&quot;)
+
+outPeaks=open(&quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length.bed&quot;, &quot;w&quot;)
+
+nNotOk=0
+for ln in peaks:
+    start= int(ln.split()[1])
+    end=int(ln.split()[2])
+    length=end - start 
+    if length &lt;= 100:
+        outPeaks.write(ln)
+    else:
+        nNotOk +=1
+        
+print(nNotOk)
+outPeaks.close()
+      </code></pre>
+<pre class="bash"><code>python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length.bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length_upstream100.bed
+
+python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length.bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length_upstream100.bed
+</code></pre>
+<p>nucpeaksand100up_nuc.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nucpeaksand100up
 #SBATCH --account=pi-yangili1
 #SBATCH --time=8:00:00
-#SBATCH --output=nucpeaksand100up_withStrand.out
-#SBATCH --error=nucpeaksand100up_withStrand.err
+#SBATCH --output=nucpeaksand100up.out
+#SBATCH --error=nucpeaksand100up.err
 #SBATCH --partition=broadwl
 #SBATCH --mem=36G
 #SBATCH --mail-type=END
@@ -1353,38 +1698,558 @@ bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_s
 module load Anaconda3
 source activate three-prime-env
 
-bedtools nuc -seq -s -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100.bed  &gt; /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_filter4length_upstream100_Seq_withSTrand.bed  </code></pre>
+bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length_upstream100.bed  &gt; /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length_upstream100_seq.bed
+
+bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length_upstream100.bed  &gt; /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length_upstream100_seq.bed
+
+
+</code></pre>
+<p>DistPAS2Sig_nuclear.py</p>
+<pre class="bash"><code>def main(Insite, out):
+  sigsite=[Insite]
+  
+  inBed=open(&quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_filter4length_upstream100_seq.bed&quot;, &quot;r&quot;)
+  outRes=open(out, &quot;w&quot;)
+  
+  #function for reverse compliments  
+  
+  def ReverseComplement1(seq):
+      seq_dict = {&#39;A&#39;:&#39;T&#39;,&#39;T&#39;:&#39;A&#39;,&#39;G&#39;:&#39;C&#39;,&#39;C&#39;:&#39;G&#39;, &#39;a&#39;:&#39;t&#39;, &#39;t&#39;:&#39;a&#39;, &#39;g&#39;:&#39;c&#39;, &#39;c&#39;:&#39;g&#39;}
+      bases=[seq_dict[base] for base in seq]
+      bases=reversed(bases)
+      return(&quot;&quot;.join(bases))
+  
+  
+  #reverse comp each signal site 
+  sigsite_revComp=[]
+  for i in sigsite:
+      sigsite_revComp.append(ReverseComplement1(i))
+      
+  #want a dictionary for each of the sites and its reverse compliment:
+  sigsites_dic={}
+  for i in range(len(sigsite)):
+      sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+      
+  
+  #function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+  
+  #make 2 of these, this is for the pos strand
+  def getOccurance(sigsite, seq):
+      if sigsite in seq:
+          length=len(seq)
+          pos= seq.rfind(sigsite)
+          posF=length-pos
+          return(posF)
+      else:
+          return(-9)
+          
+  #negative strand occurance function:
+  
+  def getOccurance_neg(sigsite, seq):
+      sigsite=sigsites_dic[sigsite]
+      if sigsite in seq:
+          pos= seq.find(sigsite)
+          return(pos + 6)
+      else:
+          return(-9)
+  
+  #i can only addpend the value if the function does not return -9
+      
+  
+  #function i can run on each signal site  
+  
+  
+  #loop through peaks and check for every site, first ask stand and do the rev  
+  def loop41site(site):
+      resList=[]
+      for ln in inBed:
+          strand=ln.split()[5]
+          seq= ln.split()[15]
+          if strand == &quot;+&quot;:
+              loc= getOccurance(site, seq)
+              if loc !=-9:
+                  resList.append(loc)
+          else: 
+              loc=getOccurance_neg(site,seq)
+              if loc !=-9:
+                  resList.append(loc)
+      return(resList)
+          
+  
+  #run this for each sig site
+  res_dic={}
+  for i in sigsite:
+      res_dic[i]=[]
+  for i in sigsite:
+      reslist=loop41site(i)
+      res_dic[i]=reslist
+  
+  
+  outRes.write(&quot;%s\n&quot;%(sigsite[0]))
+  for i in reslist:
+      outRes.write(&quot;%d\n&quot;%(i))
+      
+  
+  
+  outRes.close()
+      
+    
+if __name__ == &quot;__main__&quot;:
+    import sys
+    Site_in = sys.argv[1]
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/Loc_%s_Distance2end_nuclear.txt&quot;%(Site_in)
+    main(Site_in, outFile)
+</code></pre>
+<p>DistPAS2Sig_nucIntron.py</p>
+<pre class="bash"><code>def main(Insite, out):
+  sigsite=[Insite]
+  
+  inBed=open(&quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron_filter4length_upstream100_seq.bed&quot;, &quot;r&quot;)
+  outRes=open(out, &quot;w&quot;)
+  
+  #function for reverse compliments  
+  
+  def ReverseComplement1(seq):
+      seq_dict = {&#39;A&#39;:&#39;T&#39;,&#39;T&#39;:&#39;A&#39;,&#39;G&#39;:&#39;C&#39;,&#39;C&#39;:&#39;G&#39;, &#39;a&#39;:&#39;t&#39;, &#39;t&#39;:&#39;a&#39;, &#39;g&#39;:&#39;c&#39;, &#39;c&#39;:&#39;g&#39;}
+      bases=[seq_dict[base] for base in seq]
+      bases=reversed(bases)
+      return(&quot;&quot;.join(bases))
+  
+  
+  #reverse comp each signal site 
+  sigsite_revComp=[]
+  for i in sigsite:
+      sigsite_revComp.append(ReverseComplement1(i))
+      
+  #want a dictionary for each of the sites and its reverse compliment:
+  sigsites_dic={}
+  for i in range(len(sigsite)):
+      sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+      
+  
+  #function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+  
+  #make 2 of these, this is for the pos strand
+  def getOccurance(sigsite, seq):
+      if sigsite in seq:
+          length=len(seq)
+          pos= seq.rfind(sigsite)
+          posF=length-pos
+          return(posF)
+      else:
+          return(-9)
+          
+  #negative strand occurance function:
+  
+  def getOccurance_neg(sigsite, seq):
+      sigsite=sigsites_dic[sigsite]
+      if sigsite in seq:
+          pos= seq.find(sigsite)
+          return(pos + 6)
+      else:
+          return(-9)
+  
+  #i can only addpend the value if the function does not return -9
+      
+  
+  #function i can run on each signal site  
+  
+  
+  #loop through peaks and check for every site, first ask stand and do the rev  
+  def loop41site(site):
+      resList=[]
+      for ln in inBed:
+          strand=ln.split()[5]
+          seq= ln.split()[15]
+          if strand == &quot;+&quot;:
+              loc= getOccurance(site, seq)
+              if loc !=-9:
+                  resList.append(loc)
+          else: 
+              loc=getOccurance_neg(site,seq)
+              if loc !=-9:
+                  resList.append(loc)
+      return(resList)
+          
+  
+  #run this for each sig site
+  res_dic={}
+  for i in sigsite:
+      res_dic[i]=[]
+  for i in sigsite:
+      reslist=loop41site(i)
+      res_dic[i]=reslist
+  
+  
+  outRes.write(&quot;%s\n&quot;%(sigsite[0]))
+  for i in reslist:
+      outRes.write(&quot;%d\n&quot;%(i))
+      
+  
+  
+  outRes.close()
+      
+    
+if __name__ == &quot;__main__&quot;:
+    import sys
+    Site_in = sys.argv[1]
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/Loc_%s_Distance2end_nuclearIntron.txt&quot;%(Site_in)
+    main(Site_in, outFile)
+</code></pre>
+<p>Run both of these:<br />
+run_DistPAS2Sig_nuc.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_DistPAS2Sig_nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=un_DistPAS2Sig_nuc.out
+#SBATCH --error=un_DistPAS2Sig_nuc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python DistPAS2Sig_nucIntron.py AATAAA
+python DistPAS2Sig_nucIntron.py ATTAAA
+python DistPAS2Sig_nucIntron.py AGTAAA
+python DistPAS2Sig_nucIntron.py TATAAA
+python DistPAS2Sig_nucIntron.py CATAAA
+python DistPAS2Sig_nucIntron.py GATAAA
+python DistPAS2Sig_nucIntron.py AATATA
+python DistPAS2Sig_nucIntron.py AATACA
+python DistPAS2Sig_nucIntron.py AATAGA
+python DistPAS2Sig_nucIntron.py AAAAAG
+python DistPAS2Sig_nucIntron.py ACTAAA
+
+
+python DistPAS2Sig_nuclear.py AATAAA
+python DistPAS2Sig_nuclear.py ATTAAA
+python DistPAS2Sig_nuclear.py AGTAAA
+python DistPAS2Sig_nuclear.py TATAAA
+python DistPAS2Sig_nuclear.py CATAAA
+python DistPAS2Sig_nuclear.py GATAAA
+python DistPAS2Sig_nuclear.py AATATA
+python DistPAS2Sig_nuclear.py AATACA
+python DistPAS2Sig_nuclear.py AATAGA
+python DistPAS2Sig_nuclear.py AAAAAG
+python DistPAS2Sig_nuclear.py ACTAAA
+</code></pre>
+<pre class="r"><code>Loc_AATAAA_Nuc= read.table(&quot;../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclear.txt&quot;, header=T)
+
+
+Loc_AAAAAG_Nuc= read.table(&quot;../data/Signal_Loc/Loc_AAAAAG_Distance2end_nuclear.txt&quot;, header=T)
+
+
+Loc_AATACA_Nuc= read.table(&quot;../data/Signal_Loc/Loc_AATACA_Distance2end_nuclear.txt&quot;, header=T)
+
+
+Loc_AATAGA_Nuc= read.table(&quot;../data/Signal_Loc/Loc_AATAGA_Distance2end_nuclear.txt&quot;, header=T)
+
+
+Loc_AATATA_Nuc =read.table(&quot;../data/Signal_Loc/Loc_AATATA_Distance2end_nuclear.txt&quot;, header=T)
+
+
+Loc_ACTAAA_Nuc= read.table(&quot;../data/Signal_Loc/Loc_ACTAAA_Distance2end_nuclear.txt&quot;, header=T)
+
+
+Loc_AGTAAA_Nuc= read.table(&quot;../data/Signal_Loc/Loc_AGTAAA_Distance2end_nuclear.txt&quot;, header=T)
+
+
+
+Loc_ATTAAA_Nuc=read.table(&quot;../data/Signal_Loc/Loc_ATTAAA_Distance2end_nuclear.txt&quot;, header=T)
+
+Loc_CATAAA_Nuc= read.table(&quot;../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclear.txt&quot;, header=T)
+
+Loc_GATAAA_Nuc= read.table(&quot;../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclear.txt&quot;, header=T)
+
+Loc_TATAAA_Nuc= read.table(&quot;../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclear.txt&quot;, header=T)
+
+
+
+dist_Loc_Nuc= ggplot(Loc_AATAAA_Nuc, aes(x=AATAAA)) + 
+  geom_histogram(bins=100, fill=&quot;red&quot;, alpha=.3) + 
+  labs(title=&quot;Distance from PAS in Nuclear Used peaks&quot;, x=&quot;Number of PAS&quot;, y=&quot;N basepair from PAS&quot;) +
+  geom_histogram(bins=100,data=Loc_AAAAAG_Nuc, aes(x=AAAAAG), fill=&quot;orange&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATACA_Nuc, aes(x=AATACA), fill=&quot;yellow&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATAGA_Nuc, aes(x=AATAGA), fill=&quot;green&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATATA_Nuc, aes(x=AATATA), fill=&quot;blue&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_ACTAAA_Nuc, aes(x=ACTAAA), fill=&quot;purple&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_Nuc, aes(x=AGTAAA), fill=&quot;firebrick3&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_Nuc, aes(x=AGTAAA), fill=&quot;darksalmon&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_CATAAA_Nuc, aes(x=CATAAA), fill=&quot;darkslategray&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_GATAAA_Nuc, aes(x=GATAAA), fill=&quot;deeppink1&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_TATAAA_Nuc, aes(x=TATAAA), fill=&quot;lightcyan1&quot;, alpha=.3) 
+  
+  
+dist_Loc_Nuc</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Loc_AATAAA_Int= read.table(&quot;../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+
+Loc_AAAAAG_Int= read.table(&quot;../data/Signal_Loc/Loc_AAAAAG_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+
+Loc_AATACA_Int= read.table(&quot;../data/Signal_Loc/Loc_AATACA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+
+Loc_AATAGA_Int= read.table(&quot;../data/Signal_Loc/Loc_AATAGA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+
+Loc_AATATA_Int =read.table(&quot;../data/Signal_Loc/Loc_AATATA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+
+Loc_ACTAAA_Int= read.table(&quot;../data/Signal_Loc/Loc_ACTAAA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+
+Loc_AGTAAA_Int= read.table(&quot;../data/Signal_Loc/Loc_AGTAAA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+
+
+Loc_ATTAAA_Int=read.table(&quot;../data/Signal_Loc/Loc_ATTAAA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+Loc_CATAAA_Int= read.table(&quot;../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+Loc_GATAAA_Int= read.table(&quot;../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+Loc_TATAAA_Int= read.table(&quot;../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclearIntron.txt&quot;, header=T)
+
+
+
+dist_Loc_Int= ggplot(Loc_AATAAA_Int, aes(x=AATAAA)) + 
+  geom_histogram(bins=100, fill=&quot;red&quot;, alpha=.3) + 
+  labs(title=&quot;Distance from PAS in Intronic Nuclear Used peaks&quot;, x=&quot;Number of PAS&quot;, y=&quot;N basepair from PAS&quot;) +
+  geom_histogram(bins=100,data=Loc_AAAAAG_Int, aes(x=AAAAAG), fill=&quot;orange&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATACA_Int, aes(x=AATACA), fill=&quot;yellow&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATAGA_Int, aes(x=AATAGA), fill=&quot;green&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATATA_Int, aes(x=AATATA), fill=&quot;blue&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_ACTAAA_Int, aes(x=ACTAAA), fill=&quot;purple&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_Int, aes(x=AGTAAA), fill=&quot;firebrick3&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_Int, aes(x=AGTAAA), fill=&quot;darksalmon&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_CATAAA_Int, aes(x=CATAAA), fill=&quot;darkslategray&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_GATAAA_Int, aes(x=GATAAA), fill=&quot;deeppink1&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_TATAAA_Int, aes(x=TATAAA), fill=&quot;lightcyan1&quot;, alpha=.3) 
+  
+  
+dist_Loc_Int</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="find-distance-to-peaks" class="section level3">
-<h3>find distance to peaks</h3>
-<p><strong>change region I am looking at before I do this - move to new analysis and try a new method for this analysis</strong></p>
-<pre class="bash"><code>
-sigsite=[&#39;AATAAA&#39;, &#39;ATTAAA&#39; ,&#39;AGTAAA&#39; ,&#39;TATAAA&#39;  ,&#39;CATAAA&#39; ,&#39;GATAAA&#39; ,&#39;AATATA&#39; ,&#39;AATACA&#39; ,&#39;AATAGA&#39; ,&#39;AAAAAG&#39;,&#39;ACTAAA&#39;] 
+<div id="all-intronic-peaks" class="section level3">
+<h3>All intronic peaks:</h3>
+<p>*/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON.bed (17854)</p>
+<p>filterPeaks100length_Intron.py</p>
+<pre class="bash"><code>peaks=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON.bed&quot;, &quot;r&quot;)
+
+outPeaks=open(&quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length.bed&quot;, &quot;w&quot;)
+
+nNotOk=0
+for ln in peaks:
+    start= int(ln.split()[1])
+    end=int(ln.split()[2])
+    length=end - start 
+    if length &lt;= 100:
+        outPeaks.write(ln)
+    else:
+        nNotOk +=1
+        
+print(nNotOk)
+outPeaks.close()
+      </code></pre>
+<p>12250 peaks</p>
+<pre class="bash"><code>python Upstream100Bases_filteredpeaks.py /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length.bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length_upstream100.bed</code></pre>
+<p>nucpeaksand100up_intron.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=nucpeaksand100up_intron
+#SBATCH --account=pi-yangili1
+#SBATCH --time=8:00:00
+#SBATCH --output=nucpeaksand100up_intron.out
+#SBATCH --error=nucpeaksand100up_intron.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+bedtools nuc -seq -fi /project2/gilad/briana/genome_anotation_data/genome/Homo_sapiens.GRCh37.75.dna_sm.all.fa -bed /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length_upstream100.bed &gt; /project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length_upstream100_seq.bed
+
+</code></pre>
+<p>DistPAS2Sig_Intron.py</p>
+<pre class="bash"><code>def main(Insite, out):
+  sigsite=[Insite]
+  
+  inBed=open(&quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/APAPeaks_5percCov_fixedStrand_INTRON_filter4length_upstream100_seq.bed&quot;, &quot;r&quot;)
+  outRes=open(out, &quot;w&quot;)
+  
+  #function for reverse compliments  
+  
+  def ReverseComplement1(seq):
+      seq_dict = {&#39;A&#39;:&#39;T&#39;,&#39;T&#39;:&#39;A&#39;,&#39;G&#39;:&#39;C&#39;,&#39;C&#39;:&#39;G&#39;, &#39;a&#39;:&#39;t&#39;, &#39;t&#39;:&#39;a&#39;, &#39;g&#39;:&#39;c&#39;, &#39;c&#39;:&#39;g&#39;}
+      bases=[seq_dict[base] for base in seq]
+      bases=reversed(bases)
+      return(&quot;&quot;.join(bases))
+  
+  
+  #reverse comp each signal site 
+  sigsite_revComp=[]
+  for i in sigsite:
+      sigsite_revComp.append(ReverseComplement1(i))
+      
+  #want a dictionary for each of the sites and its reverse compliment:
+  sigsites_dic={}
+  for i in range(len(sigsite)):
+      sigsites_dic[sigsite[i]]=sigsite_revComp[i]    
+      
+  
+  #function to get occurance: takes in sig site and sequence (give it the correct stranded stuff)
+  
+  #make 2 of these, this is for the pos strand
+  def getOccurance(sigsite, seq):
+      if sigsite in seq:
+          length=len(seq)
+          pos= seq.rfind(sigsite)
+          posF=length-pos
+          return(posF)
+      else:
+          return(-9)
+          
+  #negative strand occurance function:
+  
+  def getOccurance_neg(sigsite, seq):
+      sigsite=sigsites_dic[sigsite]
+      if sigsite in seq:
+          pos= seq.find(sigsite)
+          return(pos + 6)
+      else:
+          return(-9)
+  
+  #i can only addpend the value if the function does not return -9
+      
+  
+  #function i can run on each signal site  
+  
+  
+  #loop through peaks and check for every site, first ask stand and do the rev  
+  def loop41site(site):
+      resList=[]
+      for ln in inBed:
+          strand=ln.split()[5]
+          seq= ln.split()[15]
+          if strand == &quot;+&quot;:
+              loc= getOccurance(site, seq)
+              if loc !=-9:
+                  resList.append(loc)
+          else: 
+              loc=getOccurance_neg(site,seq)
+              if loc !=-9:
+                  resList.append(loc)
+      return(resList)
+          
+  
+  #run this for each sig site
+  res_dic={}
+  for i in sigsite:
+      res_dic[i]=[]
+  for i in sigsite:
+      reslist=loop41site(i)
+      res_dic[i]=reslist
+  
+  
+  outRes.write(&quot;%s\n&quot;%(sigsite[0]))
+  for i in reslist:
+      outRes.write(&quot;%d\n&quot;%(i))
+      
+  
+  
+  outRes.close()
+      
+    
+if __name__ == &quot;__main__&quot;:
+    import sys
+    Site_in = sys.argv[1]
+    outFile= &quot;/project2/gilad/briana/threeprimeseq/data/Signal_Loc/Loc_%s_Distance2end_Intronic.txt&quot;%(Site_in)
+    main(Site_in, outFile)
+</code></pre>
+<p>run_DistPAS2Sig_Intron.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_DistPAS2Sig_Intronc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_DistPAS2Sig_Intron.out
+#SBATCH --error=run_DistPAS2Sig_Intron.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=16G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
 
 
-#start results dic, key is site, value is empty list  
-Res_dic={}
-for i in sigsite:
-    Res_dic[i]=[]
+python DistPAS2Sig_Intron.py AATAAA
+python DistPAS2Sig_Intron.py ATTAAA
+python DistPAS2Sig_Intron.py AGTAAA
+python DistPAS2Sig_Intron.py TATAAA
+python DistPAS2Sig_Intron.py CATAAA
+python DistPAS2Sig_Intron.py GATAAA
+python DistPAS2Sig_Intron.py AATATA
+python DistPAS2Sig_Intron.py AATACA
+python DistPAS2Sig_Intron.py AATAGA
+python DistPAS2Sig_Intron.py AAAAAG
+python DistPAS2Sig_Intron.py ACTAAA</code></pre>
+<pre class="r"><code>Loc_AATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATAAA_Distance2end_Intronic.txt&quot;, header=T)
 
 
-upstreamSeq=open(&quot;/project2/gilad/briana/threeprimeseq/data/SignalEnrich/Seq_fiftyup_APAPeaks_5percCov_fixedStrand.fasta&quot;, &quot;r&quot;)
+Loc_AAAAAG_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AAAAAG_Distance2end_Intronic.txt&quot;, header=T)
 
-for i,ln in enumerate(upstreamSeq):
-    if i % 2 ==0: 
-        if sigsite[0] in ln:
-        if sigsite[1] in ln:
-        if sigsite[2] in ln:
-        if sigsite[3] in ln:
-        if sigsite[4] in ln:
-        if sigsite[5] in ln:
-        if sigsite[6] in ln:
-        if sigsite[7] in ln:
-        if sigsite[8] in ln:
-        if sigsite[9] in ln:
-        if sigsite[10] in ln:
-#not finished code</code></pre>
-<br> <br>
+
+Loc_AATACA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATACA_Distance2end_Intronic.txt&quot;, header=T)
+
+
+Loc_AATAGA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATAGA_Distance2end_Intronic.txt&quot;, header=T)
+
+
+Loc_AATATA_AllInt =read.table(&quot;../data/Signal_Loc/Loc_AATATA_Distance2end_Intronic.txt&quot;, header=T)
+
+
+Loc_ACTAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_ACTAAA_Distance2end_Intronic.txt&quot;, header=T)
+
+
+Loc_AGTAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AGTAAA_Distance2end_Intronic.txt&quot;, header=T)
+
+
+
+Loc_ATTAAA_AllInt=read.table(&quot;../data/Signal_Loc/Loc_ATTAAA_Distance2end_Intronic.txt&quot;, header=T)
+
+Loc_CATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_CATAAA_Distance2end_Intronic.txt&quot;, header=T)
+
+Loc_GATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_GATAAA_Distance2end_Intronic.txt&quot;, header=T)
+
+Loc_TATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_TATAAA_Distance2end_Intronic.txt&quot;, header=T)
+
+
+
+dist_Loc_AllInt= ggplot(Loc_AATAAA_AllInt, aes(x=AATAAA)) + 
+  geom_histogram(bins=100, fill=&quot;red&quot;, alpha=.3) + 
+  labs(title=&quot;Distance from PAS in Intronic peaks&quot;, x=&quot;Number of PAS&quot;, y=&quot;N basepair from PAS&quot;) +
+  geom_histogram(bins=100,data=Loc_AAAAAG_AllInt, aes(x=AAAAAG), fill=&quot;orange&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATACA_AllInt, aes(x=AATACA), fill=&quot;yellow&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATAGA_AllInt, aes(x=AATAGA), fill=&quot;green&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AATATA_AllInt, aes(x=AATATA), fill=&quot;blue&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_ACTAAA_AllInt, aes(x=ACTAAA), fill=&quot;purple&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_AllInt, aes(x=AGTAAA), fill=&quot;firebrick3&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AGTAAA_AllInt, aes(x=AGTAAA), fill=&quot;darksalmon&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_CATAAA_AllInt, aes(x=CATAAA), fill=&quot;darkslategray&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_GATAAA_AllInt, aes(x=GATAAA), fill=&quot;deeppink1&quot;, alpha=.3) +
+  geom_histogram(bins=100,data=Loc_TATAAA_AllInt, aes(x=TATAAA), fill=&quot;lightcyan1&quot;, alpha=.3) 
+  
+  
+dist_Loc_AllInt</code></pre>
+<img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /> <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -1432,30 +2297,30 @@ loaded via a namespace (and not attached):
 [17] compiler_3.5.1              git2r_0.24.0               
 [19] cli_1.0.1                   rvest_0.3.2                
 [21] Biobase_2.42.0              xml2_1.2.0                 
-[23] DelayedArray_0.8.0          scales_1.0.0               
-[25] digest_0.6.18               Rsamtools_1.34.1           
-[27] rmarkdown_1.11              pkgconfig_2.0.2            
-[29] htmltools_0.3.6             plotrix_3.7-4              
-[31] rlang_0.3.1                 readxl_1.3.0               
-[33] rstudioapi_0.9.0            impute_1.56.0              
-[35] generics_0.0.2              jsonlite_1.6               
-[37] BiocParallel_1.16.6         RCurl_1.95-4.12            
-[39] magrittr_1.5                GenomeInfoDbData_1.2.0     
-[41] Matrix_1.2-15               Rcpp_1.0.0                 
-[43] munsell_0.5.0               reticulate_1.11.1          
-[45] stringi_1.3.1               whisker_0.3-2              
-[47] yaml_2.2.0                  SummarizedExperiment_1.12.0
-[49] zlibbioc_1.28.0             plyr_1.8.4                 
-[51] crayon_1.3.4                lattice_0.20-38            
-[53] haven_2.1.0                 hms_0.4.2                  
-[55] knitr_1.21                  pillar_1.3.1               
-[57] reshape2_1.4.3              XML_3.98-1.19              
-[59] glue_1.3.0                  evaluate_0.13              
-[61] data.table_1.12.0           modelr_0.1.4               
-[63] cellranger_1.1.0            gtable_0.2.0               
-[65] assertthat_0.2.0            xfun_0.5                   
-[67] gridBase_0.4-7              broom_0.5.1                
-[69] GenomicAlignments_1.18.1   </code></pre>
+[23] DelayedArray_0.8.0          labeling_0.3               
+[25] scales_1.0.0                digest_0.6.18              
+[27] Rsamtools_1.34.1            rmarkdown_1.11             
+[29] pkgconfig_2.0.2             htmltools_0.3.6            
+[31] plotrix_3.7-4               rlang_0.3.1                
+[33] readxl_1.3.0                rstudioapi_0.9.0           
+[35] impute_1.56.0               generics_0.0.2             
+[37] jsonlite_1.6                BiocParallel_1.16.6        
+[39] RCurl_1.95-4.12             magrittr_1.5               
+[41] GenomeInfoDbData_1.2.0      Matrix_1.2-15              
+[43] Rcpp_1.0.0                  munsell_0.5.0              
+[45] reticulate_1.11.1           stringi_1.3.1              
+[47] whisker_0.3-2               yaml_2.2.0                 
+[49] SummarizedExperiment_1.12.0 zlibbioc_1.28.0            
+[51] plyr_1.8.4                  crayon_1.3.4               
+[53] lattice_0.20-38             haven_2.1.0                
+[55] hms_0.4.2                   knitr_1.21                 
+[57] pillar_1.3.1                reshape2_1.4.3             
+[59] XML_3.98-1.19               glue_1.3.0                 
+[61] evaluate_0.13               data.table_1.12.0          
+[63] modelr_0.1.4                cellranger_1.1.0           
+[65] gtable_0.2.0                assertthat_0.2.0           
+[67] xfun_0.5                    gridBase_0.4-7             
+[69] broom_0.5.1                 GenomicAlignments_1.18.1   </code></pre>
 </div>
 </div>
 </div>
