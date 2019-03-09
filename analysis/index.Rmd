@@ -176,6 +176,7 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Genes with 1 peak analysis](OnePeakGeneAnalysis.html)
 
+* [Redo GWAS overlap with full catelog](OverlapFullGWASCatelog.html)  
 
 
 

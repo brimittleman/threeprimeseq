@@ -1,0 +1,88 @@
+---
+title: "Overlap with Full GWAS Catelog"
+author: "Briana Mittleman"
+date: "3/8/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+Full GWAS catelog from the table browser. There are 56248699 lines in this file:  
+
+
+/project2/gilad/briana/genome_anotation_data/hg19.GWASCatelog.allsnps 
+
+
+First I want to subset this to a bed file to use. I also want to subset only to SNPs. 
+
+Columns: bin	chrom	chromStart	chromEnd	name	score	strand	refNCBI	refUCSC	observed	molType	class	valid	avHet	avHetSE	func	locType	weight	exceptions	submitterCount	submitters	alleleFreqCount	alleles	alleleNs	alleleFreqs	bitfields
+
+
+
+
+```{bash,eval=F}
+sed 's/^chr//' /project2/gilad/briana/genome_anotation_data/hg19.GWASCatelog.allsnps  > /project2/gilad/briana/genome_anotation_data/hg19.GWASCatelog.allsnps.bed
+```
+
+
+
+overlapSNPsGWAS_fixed.py
+
+```{bash,eval=F}
+def main(infile, outfile):
+    gwas_file=open("/project2/gilad/briana/genome_anotation_data/hg19.GWASCatelog.allsnps.bed","r")
+    gwas=pybedtools.BedTool(gwas_file)
+    snps_file=open(infile, "r")
+    snps=pybedtools.BedTool(snps_file)
+    snpOverGWAS=snps.intersect(gwas, wa=True,wb=True)
+    snpOverGWAS.saveas(outfile)
+
+if __name__ == "__main__":
+    import sys
+    import pybedtools
+    infile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(infile, outfile) 
+```
+
+
+
+
+run_overlapSNPsGWASFixed_proc.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_overlapSNPsGWASFixed_proc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=run_overlapSNPsGWASFixed_proc.out
+#SBATCH --error=run_overlapSNPsGWASFixed_proc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python overlapSNPsGWAS_fixed.py  "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllOverlapSnps.bed" "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/GWASoverlapped_AllOverlapSnps.bed"
+
+
+
+```
+
+
+This analysis gives 9k overlaps with 7k uniq snps.  
+
+This makes more sense. 
+
+I want to only look at relevent GWAS for LCLs  
+ 
+I can take all of the snps from the overlap and subset the all tables data:  
+
