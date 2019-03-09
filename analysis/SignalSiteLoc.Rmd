@@ -1103,35 +1103,34 @@ ggsave(annoationPAS_NucpeakProphist, file="../output/plots/annoationPAS_NucpeakP
 
 
 ```{r}
-Loc_AATAAA_Int= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclearIntron.txt", header=T)
+Loc_AATAAA_Int= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="AATAAA")
 
 
-Loc_AAAAAG_Int= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_nuclearIntron.txt", header=T)
+Loc_AAAAAG_Int= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="AAAAAG")
 
 
-Loc_AATACA_Int= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_nuclearIntron.txt", header=T)
+Loc_AATACA_Int= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="AATACA")
 
 
-Loc_AATAGA_Int= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_nuclearIntron.txt", header=T)
+Loc_AATAGA_Int= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="ATAGA")
 
 
-Loc_AATATA_Int =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_nuclearIntron.txt", header=T)
+Loc_AATATA_Int =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="AATATA")
+
+Loc_ACTAAA_Int= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="ACTAAA")
 
 
-Loc_ACTAAA_Int= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_nuclearIntron.txt", header=T)
-
-
-Loc_AGTAAA_Int= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_nuclearIntron.txt", header=T)
+Loc_AGTAAA_Int= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="AGTAAA")
 
 
 
-Loc_ATTAAA_Int=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_nuclearIntron.txt", header=T)
+Loc_ATTAAA_Int=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="ATTAAA")
 
-Loc_CATAAA_Int= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclearIntron.txt", header=T)
+Loc_CATAAA_Int= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="CATAAA")
 
-Loc_GATAAA_Int= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclearIntron.txt", header=T)
+Loc_GATAAA_Int= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="GATAAA")
 
-Loc_TATAAA_Int= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclearIntron.txt", header=T)
+Loc_TATAAA_Int= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="TATAAA")
 
 
 
@@ -1155,7 +1154,60 @@ dist_Loc_Int
 
 
 ```
+Make a long dataframe for all of this to make it easier to manipulate.  
 
+```{r}
+colnames(Loc_AATAAA_Int)=c("Count", "Site")
+colnames(Loc_AAAAAG_Int)=c("Count", "Site")
+colnames(Loc_AATACA_Int)=c("Count", "Site")
+colnames(Loc_AATAGA_Int)=c("Count", "Site")
+colnames(Loc_AATATA_Int)=c("Count", "Site")
+colnames(Loc_ACTAAA_Int)=c("Count", "Site")
+colnames(Loc_AGTAAA_Int)=c("Count", "Site")
+colnames(Loc_CATAAA_Int)=c("Count", "Site")
+colnames(Loc_ATTAAA_Int)=c("Count", "Site")
+colnames(Loc_GATAAA_Int)=c("Count", "Site")
+colnames(Loc_TATAAA_Int)=c("Count", "Site")
+
+
+
+AllsiteDF_NucInt=as.data.frame(rbind(Loc_AATAAA_Int,Loc_AAAAAG_Int,Loc_AATACA_Int,Loc_AATAGA_Int,Loc_AATATA_Int,Loc_ACTAAA_Int,Loc_AGTAAA_Int,Loc_ATTAAA_Int, Loc_GATAAA_Int,Loc_TATAAA_Int,Loc_CATAAA_Int)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
+
+
+ AllsiteDF_to100_NucInt= AllsiteDF_NucInt %>% filter(Count < 100)
+
+```
+
+
+plot: 
+
+```{r}
+ggplot(AllsiteDF_to100_NucInt, aes(group=Site, x=NegCount, fill=Site)) + geom_histogram(position="stack",bins=50 ) + labs(x="Distance from PAS", y="N annotated Sites", title="Location of annotated signal sites- Intronic Used more in Nuclear")  
+```
+
+
+Do this as proportion: 
+
+```{r}
+AllsiteDF_to100_prop_NucInt=AllsiteDF_to100_NucInt %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+#%>% ungroup() %>% group_by(Site) %>% mutate(nType=sum(Count), prop=CountperPos/nType)
+```
+
+
+```{r}
+annoationPAS_NucIntpeak=ggplot(AllsiteDF_to100_prop_NucInt, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat="identity") + facet_wrap(~Site) + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites for Intronic PAS used more in Nuclear")
+
+annoationPAS_NucIntpeak
+
+ggsave(annoationPAS_NucIntpeak, file="../output/plots/annoationPAS_NuclearIntronicpeaksPropLocFacet.png")
+```
+
+```{r}
+annoationPAS_NucIntpeakProphist=ggplot(AllsiteDF_to100_prop_NucInt, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat="identity", position="stack") + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites Intronic PAS used more in Nuclear")
+annoationPAS_NucIntpeakProphist
+ggsave(annoationPAS_NucIntpeakProphist, file="../output/plots/annoationPAS_NucIntronicpeakPropLocStackHist.png")
+```
 
 ###All intronic peaks:  
 
