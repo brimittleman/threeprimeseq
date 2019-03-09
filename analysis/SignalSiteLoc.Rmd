@@ -549,35 +549,35 @@ python DistPAS2Sig.py ACTAAA
 ###Make histograms:
 
 ```{r}
-Loc_AATAAA= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end.txt", header=T)
+Loc_AATAAA= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end.txt", header=T) %>% mutate(Site="AATAAA")
 nrow(Loc_AATAAA)
 
-Loc_AAAAAG= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end.txt", header=T)
+Loc_AAAAAG= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end.txt", header=T) %>% mutate(Site="AAAAAG")
 
 
-Loc_AATACA= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end.txt", header=T)
+Loc_AATACA= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end.txt", header=T) %>% mutate(Site="AATACA")
 
 
-Loc_AATAGA= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end.txt", header=T)
+Loc_AATAGA= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end.txt", header=T) %>% mutate(Site="AATAGA")
 
 
-Loc_AATATA= read.table("../data/Signal_Loc/Loc_AATATA_Distance2end.txt", header=T)
+Loc_AATATA= read.table("../data/Signal_Loc/Loc_AATATA_Distance2end.txt", header=T) %>% mutate(Site="AATATA")
 
 
-Loc_ACTAAA= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end.txt", header=T)
+Loc_ACTAAA= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end.txt", header=T) %>% mutate(Site="ACTAAA")
 
 
-Loc_AGTAAA= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end.txt", header=T)
+Loc_AGTAAA= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end.txt", header=T) %>% mutate(Site="AGTAAA")
 
 
 
-Loc_ATTAAA= read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end.txt", header=T)
+Loc_ATTAAA= read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end.txt", header=T) %>% mutate(Site="ATTAAA")
 
-Loc_CATAAA= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end.txt", header=T)
+Loc_CATAAA= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end.txt", header=T) %>% mutate(Site="CATAAA")
 
-Loc_GATAAA= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end.txt", header=T)
+Loc_GATAAA= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end.txt", header=T) %>% mutate(Site="GATAAA")
 
-Loc_TATAAA= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end.txt", header=T)
+Loc_TATAAA= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end.txt", header=T) %>% mutate(Site="TATAAA")
 
 
 ```
@@ -602,6 +602,63 @@ dist_Loc= ggplot(Loc_AATAAA, aes(x=AATAAA)) +
 dist_Loc
 
 ```
+ 
+Make a long dataframe for all of this to make it easier to manipulate.  
+
+```{r}
+colnames(Loc_AATAAA)=c("Count", "Site")
+colnames(Loc_AAAAAG)=c("Count", "Site")
+colnames(Loc_AATACA)=c("Count", "Site")
+colnames(Loc_AATAGA)=c("Count", "Site")
+colnames(Loc_AATATA)=c("Count", "Site")
+colnames(Loc_ACTAAA)=c("Count", "Site")
+colnames(Loc_AGTAAA)=c("Count", "Site")
+colnames(Loc_CATAAA)=c("Count", "Site")
+colnames(Loc_ATTAAA)=c("Count", "Site")
+colnames(Loc_GATAAA)=c("Count", "Site")
+colnames(Loc_TATAAA)=c("Count", "Site")
+
+
+
+AllsiteDF=as.data.frame(rbind(Loc_AATAAA,Loc_AAAAAG,Loc_AATACA,Loc_AATAGA,Loc_AATATA,Loc_ACTAAA,Loc_AGTAAA,Loc_ATTAAA, Loc_GATAAA,Loc_TATAAA,Loc_CATAAA)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
+
+
+ AllsiteDF_to100= AllsiteDF %>% filter(Count < 100)
+
+```
+
+
+plot: 
+
+```{r}
+ggplot(AllsiteDF_to100, aes(group=Site, x=NegCount, fill=Site)) + geom_histogram(position="stack",bins=50 ) + labs(x="Distance from PAS", y="N annotated Sites", title="Location of annotated signal sites")  
+```
+
+
+Do this as proportion: 
+
+```{r}
+AllsiteDF_to100_prop=AllsiteDF_to100 %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+#%>% ungroup() %>% group_by(Site) %>% mutate(nType=sum(Count), prop=CountperPos/nType)
+```
+
+
+```{r}
+annoationPAS_allpeak=ggplot(AllsiteDF_to100_prop, aes(fill=Site, y=prop, x=NegCount)) + geom_density(stat="identity") + facet_wrap(~Site) + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites")
+
+annoationPAS_allpeak
+
+ggsave(annoationPAS_allpeak, file="../output/plots/annoationPAS_allpeakPropLocFacet.png")
+```
+
+```{r}
+annoationPAS_allpeakProphist=ggplot(AllsiteDF_to100_prop, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat="identity", position="stack") + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites")
+annoationPAS_allpeakProphist
+ggsave(annoationPAS_allpeakProphist, file="../output/plots/annoationPAS_allpeakPropLocStackHist.png")
+```
+
+
 ###Run for nuclear specific PAS:  
 
 
@@ -936,35 +993,35 @@ python DistPAS2Sig_nuclear.py ACTAAA
 
 
 ```{r}
-Loc_AATAAA_Nuc= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclear.txt", header=T)
+Loc_AATAAA_Nuc= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="AATAAA")
 
 
-Loc_AAAAAG_Nuc= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_nuclear.txt", header=T)
+Loc_AAAAAG_Nuc= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_nuclear.txt", header=T) %>% mutate(Site="AAAAAG")
 
 
-Loc_AATACA_Nuc= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_nuclear.txt", header=T)
+Loc_AATACA_Nuc= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="AATACA")
 
 
-Loc_AATAGA_Nuc= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_nuclear.txt", header=T)
+Loc_AATAGA_Nuc= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="AATAGA")
 
 
-Loc_AATATA_Nuc =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_nuclear.txt", header=T)
+Loc_AATATA_Nuc =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="AATATA")
 
 
-Loc_ACTAAA_Nuc= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_nuclear.txt", header=T)
+Loc_ACTAAA_Nuc= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="ACTAAA")
 
 
-Loc_AGTAAA_Nuc= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_nuclear.txt", header=T)
+Loc_AGTAAA_Nuc= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="AGTAAA")
 
 
 
-Loc_ATTAAA_Nuc=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_nuclear.txt", header=T)
+Loc_ATTAAA_Nuc=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="ATTAAA")
 
-Loc_CATAAA_Nuc= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclear.txt", header=T)
+Loc_CATAAA_Nuc= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="CATAAA")
 
-Loc_GATAAA_Nuc= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclear.txt", header=T)
+Loc_GATAAA_Nuc= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="GATAAA")
 
-Loc_TATAAA_Nuc= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclear.txt", header=T)
+Loc_TATAAA_Nuc= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="TATAAA")
 
 
 
@@ -989,6 +1046,60 @@ dist_Loc_Nuc
 
 ```
 
+Make a long dataframe for all of this to make it easier to manipulate.  
+
+```{r}
+colnames(Loc_AATAAA_Nuc)=c("Count", "Site")
+colnames(Loc_AAAAAG_Nuc)=c("Count", "Site")
+colnames(Loc_AATACA_Nuc)=c("Count", "Site")
+colnames(Loc_AATAGA_Nuc)=c("Count", "Site")
+colnames(Loc_AATATA_Nuc)=c("Count", "Site")
+colnames(Loc_ACTAAA_Nuc)=c("Count", "Site")
+colnames(Loc_AGTAAA_Nuc)=c("Count", "Site")
+colnames(Loc_CATAAA_Nuc)=c("Count", "Site")
+colnames(Loc_ATTAAA_Nuc)=c("Count", "Site")
+colnames(Loc_GATAAA_Nuc)=c("Count", "Site")
+colnames(Loc_TATAAA_Nuc)=c("Count", "Site")
+
+
+
+AllsiteDF_Nuc=as.data.frame(rbind(Loc_AATAAA_Nuc,Loc_AAAAAG_Nuc,Loc_AATACA_Nuc,Loc_AATAGA_Nuc,Loc_AATATA_Nuc,Loc_ACTAAA_Nuc,Loc_AGTAAA_Nuc,Loc_ATTAAA_Nuc, Loc_GATAAA_Nuc,Loc_TATAAA_Nuc,Loc_CATAAA_Nuc)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
+
+
+ AllsiteDF_to100_Nuc= AllsiteDF_Nuc %>% filter(Count < 100)
+
+```
+
+
+plot: 
+
+```{r}
+ggplot(AllsiteDF_to100_Nuc, aes(group=Site, x=NegCount, fill=Site)) + geom_histogram(position="stack",bins=50 ) + labs(x="Distance from PAS", y="N annotated Sites", title="Location of annotated signal sites- Used more in Nuclear")  
+```
+
+
+Do this as proportion: 
+
+```{r}
+AllsiteDF_to100_prop_Nuc=AllsiteDF_to100_Nuc %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+#%>% ungroup() %>% group_by(Site) %>% mutate(nType=sum(Count), prop=CountperPos/nType)
+```
+
+
+```{r}
+annoationPAS_Nucpeak=ggplot(AllsiteDF_to100_prop_Nuc, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat="identity") + facet_wrap(~Site) + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites for PAS used more in Nuclear")
+
+annoationPAS_Nucpeak
+
+ggsave(annoationPAS_Nucpeak, file="../output/plots/annoationPAS_NuclearpeaksPropLocFacet.png")
+```
+
+```{r}
+annoationPAS_NucpeakProphist=ggplot(AllsiteDF_to100_prop_Nuc, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat="identity", position="stack") + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites used more in Nuc")
+annoationPAS_NucpeakProphist
+ggsave(annoationPAS_NucpeakProphist, file="../output/plots/annoationPAS_NucpeakPropLocStackHist.png")
+```
 
 
 ```{r}
@@ -1281,7 +1392,7 @@ dist_Loc_AllInt= ggplot(Loc_AATAAA_AllInt, aes(x=AATAAA)) +
   geom_histogram(bins=100,data=Loc_AGTAAA_AllInt, aes(x=AGTAAA), fill="darksalmon", alpha=.3) +
   geom_histogram(bins=100,data=Loc_CATAAA_AllInt, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
   geom_histogram(bins=100,data=Loc_GATAAA_AllInt, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
-  geom_histogram(bins=100,data=Loc_TATAAA_AllInt, aes(x=TATAAA), fill="lightcyan1", alpha=.3) 
+  geom_histogram(bins=100,data=Loc_TATAAA_AllInt, aes(x=TATAAA), fill="lightcyan1", alpha=.3)
   
   
 dist_Loc_AllInt
@@ -1289,3 +1400,6 @@ dist_Loc_AllInt
 
 
 ```
+
+
+
