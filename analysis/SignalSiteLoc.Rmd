@@ -1402,4 +1402,24 @@ dist_Loc_AllInt
 ```
 
 
+###Compare cononical vs other:  
+
+```{r}
+AllsiteDF_to100_con=AllsiteDF_to100 %>% group_by(NegCount,Cononical) %>% summarise(PerSite=n()) %>% ungroup() %>% group_by(Cononical) %>% mutate(NCon=sum(PerSite), PropPerSite=PerSite/NCon)
+
+
+ggplot(AllsiteDF_to100_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat="identity", alpha=.5,bins=50) 
+
+#+ facet_grid(~Cononical)
+```
+Look in nuclear 
+
+
+```{r}
+AllsiteDF_to100_Nuc_con=AllsiteDF_to100_Nuc %>% group_by(NegCount,Cononical) %>% summarise(PerSite=n()) %>% ungroup() %>% group_by(Cononical) %>% mutate(NCon=sum(PerSite), PropPerSite=PerSite/NCon)
+
+
+ggplot(AllsiteDF_to100_Nuc_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat="identity",alpha=.5,bins=50)
+```
+
 
