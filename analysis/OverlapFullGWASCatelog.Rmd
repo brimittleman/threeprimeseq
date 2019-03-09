@@ -78,11 +78,11 @@ python overlapSNPsGWAS_fixed.py  "/project2/gilad/briana/threeprimeseq/data/GWAS
 ```
 
 
-This analysis gives 9k overlaps with 7k uniq snps.  
+This analysis gives 9k overlaps with 7k uniq snps.  of (53135726 uniq snps)
 
 This makes more sense. 
 
 I want to only look at relevent GWAS for LCLs  
  
-I can take all of the snps from the overlap and subset the all tables data:  
+I will also need to compare to random snps. (i can use my matched snps/find those in LD)
 
