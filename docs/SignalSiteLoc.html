@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2d022d64d775a0c67e61626558a51aa47bd24a37targetblank2d022d6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2d022d64d775a0c67e61626558a51aa47bd24a37" target="_blank">2d022d6</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreec9aeecfca90ddfc592e1ffecb84ee122e19fff38targetblankc9aeecfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c9aeecfca90ddfc592e1ffecb84ee122e19fff38" target="_blank">c9aeecf</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2d022d64d775a0c67e61626558a51aa47bd24a37targetblank2d022d6a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreec9aeecfca90ddfc592e1ffecb84ee122e19fff38targetblankc9aeecfa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,7 +541,7 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EmpDistforOverlaps.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
-    Untracked:  analysis/OverlapFullGWASCatelog.Rmd
+    Untracked:  analysis/NuclearSpecQTL.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
@@ -730,6 +730,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c9aeecfca90ddfc592e1ffecb84ee122e19fff38/analysis/SignalSiteLoc.Rmd" target="_blank">c9aeecf</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+<td>
+add cononical vs not plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/SignalSiteLoc.html" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1734,6 +1768,43 @@ AllsiteDF=as.data.frame(rbind(Loc_AATAAA,Loc_AAAAAG,Loc_AATACA,Loc_AATAGA,Loc_AA
 <p>plot:</p>
 <pre class="r"><code>ggplot(AllsiteDF_to100, aes(group=Site, x=NegCount, fill=Site)) + geom_histogram(position=&quot;stack&quot;,bins=50 ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;N annotated Sites&quot;, title=&quot;Location of annotated signal sites&quot;)  </code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-23-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Do this as proportion:</p>
 <pre class="r"><code>AllsiteDF_to100_prop=AllsiteDF_to100 %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
 
@@ -1742,12 +1813,86 @@ AllsiteDF=as.data.frame(rbind(Loc_AATAAA,Loc_AAAAAG,Loc_AATACA,Loc_AATAGA,Loc_AA
 
 annoationPAS_allpeak</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
+Past versions of unnamed-chunk-25-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-25-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_allpeak, file=&quot;../output/plots/annoationPAS_allpeakPropLocFacet.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <pre class="r"><code>annoationPAS_allpeakProphist=ggplot(AllsiteDF_to100_prop, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;, position=&quot;stack&quot;) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>annoationPAS_allpeakProphist</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-26-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_allpeakProphist, file=&quot;../output/plots/annoationPAS_allpeakPropLocStackHist.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
@@ -2100,6 +2245,43 @@ dist_Loc_Nuc= ggplot(Loc_AATAAA_Nuc, aes(x=AATAAA)) +
   
 dist_Loc_Nuc</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-34-1">
+Past versions of unnamed-chunk-34-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-34-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-34-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Make a long dataframe for all of this to make it easier to manipulate.</p>
 <pre class="r"><code>colnames(Loc_AATAAA_Nuc)=c(&quot;Count&quot;, &quot;Site&quot;)
 colnames(Loc_AAAAAG_Nuc)=c(&quot;Count&quot;, &quot;Site&quot;)
@@ -2146,6 +2328,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-36-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/ca1a9f465d3821e9ca286c5f5b2feba428df179f/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-36-1.png" target="_blank">ca1a9f4</a>
 </td>
 <td>
@@ -2167,12 +2360,86 @@ Briana Mittleman
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>annoationPAS_Nucpeak</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-38-1">
+Past versions of unnamed-chunk-38-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-38-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-38-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_Nucpeak, file=&quot;../output/plots/annoationPAS_NuclearpeaksPropLocFacet.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <pre class="r"><code>annoationPAS_NucpeakProphist=ggplot(AllsiteDF_to100_prop_Nuc, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;, position=&quot;stack&quot;) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites used more in Nuc&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>annoationPAS_NucpeakProphist</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-39-1">
+Past versions of unnamed-chunk-39-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-39-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-39-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_NucpeakProphist, file=&quot;../output/plots/annoationPAS_NucpeakPropLocStackHist.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <pre class="r"><code>Loc_AATAAA_Int= read.table(&quot;../data/Signal_Loc/Loc_AATAAA_Distance2end_nuclearIntron.txt&quot;, header=T)
@@ -2224,6 +2491,43 @@ dist_Loc_Int= ggplot(Loc_AATAAA_Int, aes(x=AATAAA)) +
   
 dist_Loc_Int</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-40-1">
+Past versions of unnamed-chunk-40-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-40-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-40-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="all-intronic-peaks" class="section level3">
 <h3>All intronic peaks:</h3>
@@ -2438,6 +2742,60 @@ dist_Loc_AllInt= ggplot(Loc_AATAAA_AllInt, aes(x=AATAAA)) +
   
 dist_Loc_AllInt</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-46-1">
+Past versions of unnamed-chunk-46-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-46-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-46-1.png" target="_blank">0917c2a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="compare-cononical-vs-other" class="section level3">
+<h3>Compare cononical vs other:</h3>
+<pre class="r"><code>AllsiteDF_to100_con=AllsiteDF_to100 %&gt;% group_by(NegCount,Cononical) %&gt;% summarise(PerSite=n()) %&gt;% ungroup() %&gt;% group_by(Cononical) %&gt;% mutate(NCon=sum(PerSite), PropPerSite=PerSite/NCon)
+
+
+ggplot(AllsiteDF_to100_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat=&quot;identity&quot;, alpha=.5,bins=50) </code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#+ facet_grid(~Cononical)</code></pre>
+<p>Look in nuclear</p>
+<pre class="r"><code>AllsiteDF_to100_Nuc_con=AllsiteDF_to100_Nuc %&gt;% group_by(NegCount,Cononical) %&gt;% summarise(PerSite=n()) %&gt;% ungroup() %&gt;% group_by(Cononical) %&gt;% mutate(NCon=sum(PerSite), PropPerSite=PerSite/NCon)
+
+
+ggplot(AllsiteDF_to100_Nuc_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat=&quot;identity&quot;,alpha=.5,bins=50)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
