@@ -1,0 +1,229 @@
+---
+title: "Peaks to X% Usage"
+author: "Briana Mittleman"
+date: "3/11/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(workflowr)
+library(tidyverse)
+library(reshape2)
+library(cowplot)
+```
+
+I want to collect the peaks up to X% usage and show the total/nuclear 3' seq and RNA seq read buildup at these peaks.
+
+To do this I need all of the peaks, i can group by mean usage and look at cumulative sum. I will have to think about the + and - peaks.  
+
+I will do this based on the nuclear mean usage. 
+```{r}
+NucMeanPeakUsage=read.table("../data/PeakUsage_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt",stringsAsFactors = F, col.names = c("chr", "start","end", "gene", "strand", "peak", "meanUsage"))
+
+NucMeanPeakUsage_neg=NucMeanPeakUsage %>% filter(strand=="-")
+NucMeanPeakUsage_pos=NucMeanPeakUsage %>% filter(strand=="+")
+```
+
+
+Do the positive strand first:
+
+I should only do this for genes with at least 2 peaks 
+
+```{r}
+NucMeanPeakUsage_pos_10perc=NucMeanPeakUsage_pos %>% group_by(gene) %>% mutate(CumMean=cumsum(meanUsage), nPeaks=n()) %>%
+ filter(nPeaks>1) %>% filter(CumMean < .1)
+
+
+NucMeanPeakUsage_pos_50perc=NucMeanPeakUsage_pos %>% group_by(gene) %>% mutate(CumMean=cumsum(meanUsage), nPeaks=n()) %>%
+ filter(nPeaks>1) %>% filter(CumMean < .5)
+   
+```
+
+
+For the negative strand:
+
+```{r}
+NucMeanPeakUsage_neg_10perc=NucMeanPeakUsage_neg %>% group_by(gene) %>% mutate(CumMean=rev(cumsum(rev(meanUsage))), nPeaks=n()) %>% filter(nPeaks>1)  %>% filter(CumMean < .1)
+
+NucMeanPeakUsage_neg_50perc=NucMeanPeakUsage_neg %>% group_by(gene) %>% mutate(CumMean=rev(cumsum(rev(meanUsage))), nPeaks=n()) %>% filter(nPeaks>1)  %>% filter(CumMean < .5)
+
+
+```
+
+
+I will plot the up to 50% peaks first:
+
+Join pos and neg
+
+```{r}
+NucMeanPeakUsage_50perc =as.data.frame(rbind(NucMeanPeakUsage_neg_50perc, NucMeanPeakUsage_pos_50perc))
+
+
+NucMeanPeakUsage_10perc =as.data.frame(rbind(NucMeanPeakUsage_neg_10perc, NucMeanPeakUsage_pos_10perc))
+
+
+
+
+#write.table(NucMeanPeakUsage_50perc, file="../data/PeakUsage_noMP_GeneLocAnno/NucPeaksTo50perc.txt", sep="\t", row.names = F, col.names = F,quote=F)
+#write.table(NucMeanPeakUsage_10perc, file="../data/PeakUsage_noMP_GeneLocAnno/NucPeaksTo10perc.txt", sep="\t", row.names = F, col.names = F,quote=F)
+```
+
+
+I want to filter the deep tools peaks on these:  
+
+/project2/gilad/briana/threeprimeseq/data/peaks4DT/NucPeaksTo50perc.txt 
+
+/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_allPeaks_fixedStrand.bed
+
+subsetPeak_uptoXper.py
+```{bash,eval=F}
+def main(filterFile, outfile):
+  inBed=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_allPeaks_fixedStrand.bed", "r")
+  outF=open(outfile, "w")
+  filt=open(filterFile,"r")
+  okDic={}
+  for ln in filt: 
+    peak=ln.split()[5]
+    okDic[peak]=""
+  for ln in inBed: 
+    peak=ln.split()[3].split(":")[0]
+    if peak in okDic.keys():
+        outF.write(ln)
+  outF.close()    
+
+
+if __name__ == "__main__":
+    import sys
+    import pybedtools
+    filterFile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(filterFile, outfile) 
+```
+
+
+
+Run this with the 50% and 10% peaks  
+
+```{bash,eval=F}
+python subsetPeak_uptoXper.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/NucPeaksTo50perc.txt /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto50perc_fixedStrand.bed
+```
+
+```{bash,eval=F}
+python subsetPeak_uptoXper.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/NucPeaksTo10perc.txt /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_fixedStrand.bed
+```
+
+
+
+Run the deeptools plots
+
+DTPlot_Nuc50percCov.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=DTPlot_Nuc50percCov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=DTPlot_Nuc50percCov.out
+#SBATCH --error=DTPlot_Nuc50percCov.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto50perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.gz --refPointLabel "PAS" --plotTitle "Combined Reads at PAS up to 50%" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto50perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.gz --refPointLabel "PAS" --plotTitle "RNA seq at PAS up to 50%" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.png
+
+
+```
+
+
+DTPlot_Nuc10percCov.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=DTPlot_Nuc10percCov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=DTPlot_Nuc10percCov.out
+#SBATCH --error=DTPlot_Nuc10percCov.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.gz --refPointLabel "PAS" --plotTitle "Combined Reads at PAS up to 10%" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.gz --refPointLabel "PAS" --plotTitle "RNA seq at PAS up to 10%" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.png
+
+
+```
+
+
+Top ten (>90)  
+
+```{r}
+NucMeanPeakUsage_neg_top10perc=NucMeanPeakUsage_neg %>% group_by(gene) %>% mutate(CumMean=rev(cumsum(rev(meanUsage))), nPeaks=n()) %>% filter(nPeaks>1)  %>% filter(CumMean > .9)
+
+NucMeanPeakUsage_pos_top10perc=NucMeanPeakUsage_pos %>% group_by(gene) %>% mutate(CumMean=cumsum(meanUsage), nPeaks=n()) %>%
+ filter(nPeaks>1) %>% filter(CumMean <.9)
+
+
+NucMeanPeakUsage_top10perc =as.data.frame(rbind(NucMeanPeakUsage_neg_top10perc, NucMeanPeakUsage_pos_top10perc))
+
+write.table(NucMeanPeakUsage_top10perc, file="../data/PeakUsage_noMP_GeneLocAnno/NucPeaksTOP10perc.txt", sep="\t", row.names = F, col.names = F,quote=F)
+
+```
+
+
+```{bash,eval=F}
+python subsetPeak_uptoXper.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/NucPeaksTOP10perc.txt /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakTOP10perc_fixedStrand.bed
+```
+
+
+DTPlot_NucTop10percCov.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=DTPlot_NucTop10percCov
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=DTPlot_NucTop10percCov.out
+#SBATCH --error=DTPlot_NucTop10percCov.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakTOP10perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.gz --refPointLabel "PAS" --plotTitle "Combined Reads at PAS up to 10%" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakTOP10perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.gz --refPointLabel "PAS" --plotTitle "RNA seq at PAS up to 10%" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.png
+
+
+```
