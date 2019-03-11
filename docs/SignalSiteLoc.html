@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-09
+<strong>Last updated:</strong> 2019-03-10
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeb78e201846e0fb17474323e66acfe3410305ffd5targetblankb78e201a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/b78e201846e0fb17474323e66acfe3410305ffd5" target="_blank">b78e201</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2ae4d1e4186b28938474c24a00f5ad3864137afdtargetblank2ae4d1ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2ae4d1e4186b28938474c24a00f5ad3864137afd" target="_blank">2ae4d1e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeb78e201846e0fb17474323e66acfe3410305ffd5targetblankb78e201a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2ae4d1e4186b28938474c24a00f5ad3864137afdtargetblank2ae4d1ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -565,6 +565,7 @@ Untracked files:
     Untracked:  data/LocusZoom_Unexp/
     Untracked:  data/LocusZoom_proc/
     Untracked:  data/MatchedSnps/
+    Untracked:  data/NucSpecQTL/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
     Untracked:  data/PeakCounts_noMP_5perc/
@@ -668,6 +669,7 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
+    Modified:   analysis/OverlapFullGWASCatelog.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/characterize_apaQTLs.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
@@ -678,6 +680,7 @@ Unstaged changes:
     Modified:   analysis/explore.filters.Rmd
     Modified:   analysis/fixBWChromNames.Rmd
     Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/initialPacBioQuant.Rmd
     Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
     Modified:   analysis/overlapMolQTL.opposite.Rmd
@@ -730,6 +733,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/2ae4d1e4186b28938474c24a00f5ad3864137afd/analysis/SignalSiteLoc.Rmd" target="_blank">2ae4d1e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+<td>
+add new prop plot
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/SignalSiteLoc.html" target="_blank">04987b5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1111,6 +1148,13 @@ Attaching package: &#39;Biostrings&#39;</code></pre>
 <pre><code>Loading required package: GenomicRanges</code></pre>
 <pre><code>Loading required package: rtracklayer</code></pre>
 <pre><code>Warning: package &#39;rtracklayer&#39; was built under R version 3.5.2</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>Warning: package &#39;cowplot&#39; was built under R version 3.5.2</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
 <pre class="r"><code>library(genomation)</code></pre>
 <pre><code>Loading required package: grid</code></pre>
 <div id="make-location-file" class="section level2">
@@ -2583,6 +2627,43 @@ AllsiteDF_NucInt=as.data.frame(rbind(Loc_AATAAA_Int,Loc_AAAAAG_Int,Loc_AATACA_In
 <p>plot:</p>
 <pre class="r"><code>ggplot(AllsiteDF_to100_NucInt, aes(group=Site, x=NegCount, fill=Site)) + geom_histogram(position=&quot;stack&quot;,bins=50 ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;N annotated Sites&quot;, title=&quot;Location of annotated signal sites- Intronic Used more in Nuclear&quot;)  </code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-42-1">
+Past versions of unnamed-chunk-42-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-42-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-42-1.png" target="_blank">04987b5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Do this as proportion:</p>
 <pre class="r"><code>AllsiteDF_to100_prop_NucInt=AllsiteDF_to100_NucInt %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
 
@@ -2591,12 +2672,86 @@ AllsiteDF_NucInt=as.data.frame(rbind(Loc_AATAAA_Int,Loc_AAAAAG_Int,Loc_AATACA_In
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>annoationPAS_NucIntpeak</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-44-1">
+Past versions of unnamed-chunk-44-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-44-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-44-1.png" target="_blank">04987b5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_NucIntpeak, file=&quot;../output/plots/annoationPAS_NuclearIntronicpeaksPropLocFacet.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <pre class="r"><code>annoationPAS_NucIntpeakProphist=ggplot(AllsiteDF_to100_prop_NucInt, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;, position=&quot;stack&quot;) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites Intronic PAS used more in Nuclear&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>annoationPAS_NucIntpeakProphist</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-45-1">
+Past versions of unnamed-chunk-45-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-45-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-45-1.png" target="_blank">04987b5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_NucIntpeakProphist, file=&quot;../output/plots/annoationPAS_NucIntronicpeakPropLocStackHist.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
@@ -2764,35 +2919,35 @@ python DistPAS2Sig_Intron.py AATACA
 python DistPAS2Sig_Intron.py AATAGA
 python DistPAS2Sig_Intron.py AAAAAG
 python DistPAS2Sig_Intron.py ACTAAA</code></pre>
-<pre class="r"><code>Loc_AATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATAAA_Distance2end_Intronic.txt&quot;, header=T)
+<pre class="r"><code>Loc_AATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATAAA_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;AATAAA&quot;)
 
 
-Loc_AAAAAG_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AAAAAG_Distance2end_Intronic.txt&quot;, header=T)
+Loc_AAAAAG_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AAAAAG_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;AAAAAG&quot;)
 
 
-Loc_AATACA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATACA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_AATACA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATACA_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;AATACA&quot;)
 
 
-Loc_AATAGA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATAGA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_AATAGA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AATAGA_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;AATAGA&quot;)
 
 
-Loc_AATATA_AllInt =read.table(&quot;../data/Signal_Loc/Loc_AATATA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_AATATA_AllInt =read.table(&quot;../data/Signal_Loc/Loc_AATATA_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;AATATA&quot;)
 
 
-Loc_ACTAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_ACTAAA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_ACTAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_ACTAAA_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;ACTAAA&quot;)
 
 
-Loc_AGTAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AGTAAA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_AGTAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_AGTAAA_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;AGTAAA&quot;)
 
 
 
-Loc_ATTAAA_AllInt=read.table(&quot;../data/Signal_Loc/Loc_ATTAAA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_ATTAAA_AllInt=read.table(&quot;../data/Signal_Loc/Loc_ATTAAA_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;ATTAAA&quot;)
 
-Loc_CATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_CATAAA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_CATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_CATAAA_Distance2end_Intronic.txt&quot;, header=T) %&gt;% mutate(Site=&quot;CATAAA&quot;)
 
-Loc_GATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_GATAAA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_GATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_GATAAA_Distance2end_Intronic.txt&quot;, header=T)%&gt;% mutate(Site=&quot;GATAAA&quot;)
 
-Loc_TATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_TATAAA_Distance2end_Intronic.txt&quot;, header=T)
+Loc_TATAAA_AllInt= read.table(&quot;../data/Signal_Loc/Loc_TATAAA_Distance2end_Intronic.txt&quot;, header=T)%&gt;% mutate(Site=&quot;TATAAA&quot;)
 
 
 
@@ -2813,6 +2968,132 @@ dist_Loc_AllInt= ggplot(Loc_AATAAA_AllInt, aes(x=AATAAA)) +
   
 dist_Loc_AllInt</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-51-1">
+Past versions of unnamed-chunk-51-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-51-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-51-1.png" target="_blank">04987b5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Make a long dataframe for all of this to make it easier to manipulate.</p>
+<pre class="r"><code>colnames(Loc_AATAAA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_AAAAAG_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_AATACA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_AATAGA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_AATATA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_ACTAAA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_AGTAAA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_CATAAA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_ATTAAA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_GATAAA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+colnames(Loc_TATAAA_AllInt)=c(&quot;Count&quot;, &quot;Site&quot;)
+
+
+
+AllsiteDF_NucAllInt=as.data.frame(rbind(Loc_AATAAA_AllInt,Loc_AAAAAG_AllInt,Loc_AATACA_AllInt,Loc_AATAGA_AllInt,Loc_AATATA_AllInt,Loc_ACTAAA_AllInt,Loc_AGTAAA_AllInt,Loc_ATTAAA_AllInt, Loc_GATAAA_AllInt,Loc_TATAAA_AllInt,Loc_CATAAA_AllInt)) %&gt;% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site==&quot;AATAAA&quot;, &quot;Yes&quot;,&quot;No&quot;))
+
+
+ AllsiteDF_to100_NucAllInt= AllsiteDF_NucAllInt %&gt;% filter(Count &lt; 100)</code></pre>
+<p>plot:</p>
+<pre class="r"><code>ggplot(AllsiteDF_to100_NucAllInt, aes(group=Site, x=NegCount, fill=Site)) + geom_histogram(position=&quot;stack&quot;,bins=50 ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;N annotated Sites&quot;, title=&quot;Location of annotated signal sites- Intronic PAS&quot;)  </code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-53-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-53-1">
+Past versions of unnamed-chunk-53-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-53-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-53-1.png" target="_blank">04987b5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Do this as proportion:</p>
+<pre class="r"><code>AllsiteDF_to100_prop_NucAllInt=AllsiteDF_to100_NucAllInt %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+#%&gt;% ungroup() %&gt;% group_by(Site) %&gt;% mutate(nType=sum(Count), prop=CountperPos/nType)</code></pre>
+<pre class="r"><code>annoationPAS_NucAllIntpeak=ggplot(AllsiteDF_to100_prop_NucAllInt, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;) + facet_wrap(~Site) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites for all Intronic PAS&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>annoationPAS_NucAllIntpeak</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(annoationPAS_NucAllIntpeak, file=&quot;../output/plots/annoationPAS_AllIntronicpeaksPropLocFacet.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>annoationPAS_NucAllIntpeakProphist=ggplot(AllsiteDF_to100_prop_NucAllInt, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;, position=&quot;stack&quot;) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites for all Intronic PAS&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>annoationPAS_NucAllIntpeakProphist</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(annoationPAS_NucAllIntpeakProphist, file=&quot;../output/plots/annoationPAS_AllIntronicpeakPropLocStackHist.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<p>Subsample from AllsiteDF_NucAllInt and look at it in comparison to the nuclear specific peaks:</p>
+<p>subsample 220</p>
+<pre class="r"><code>AllsiteDF_to100_NucAllInt_sampl= AllsiteDF_to100_NucAllInt %&gt;% sample_n(138)
+
+
+AllsiteDF_to100_prop_NucAllInt_samp=AllsiteDF_to100_NucAllInt_sampl %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+
+annoationPAS_NucAllIntpeak_samp=ggplot(AllsiteDF_to100_prop_NucAllInt_samp, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;) + facet_wrap(~Site) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites for sample of Intronic PAS&quot;)</code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>annoationPAS_NucAllIntpeak_samp</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-57-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(annoationPAS_NucAllIntpeak_samp, file=&quot;../output/plots/annoationPAS_SampleofIntronicpeaksPropLocFacet.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div id="compare-cononical-vs-other" class="section level3">
 <h3>Compare cononical vs other:</h3>
@@ -2821,7 +3102,7 @@ dist_Loc_AllInt</code></pre>
 
 ggplot(AllsiteDF_to100_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat=&quot;identity&quot;, alpha=.5,bins=50) </code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
-<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#+ facet_grid(~Cononical)</code></pre>
 <p>Look in nuclear</p>
 <pre class="r"><code>AllsiteDF_to100_Nuc_con=AllsiteDF_to100_Nuc %&gt;% group_by(NegCount,Cononical) %&gt;% summarise(PerSite=n()) %&gt;% ungroup() %&gt;% group_by(Cononical) %&gt;% mutate(NCon=sum(PerSite), PropPerSite=PerSite/NCon)
@@ -2829,7 +3110,27 @@ ggplot(AllsiteDF_to100_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropP
 
 ggplot(AllsiteDF_to100_Nuc_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat=&quot;identity&quot;,alpha=.5,bins=50)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
-<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-53-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-59-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="make-plots-with-all-sites-as-demoniator" class="section level3">
+<h3>Make plots with all sites as demoniator</h3>
+<p>I want to look at percentages but for all sites:</p>
+<pre class="r"><code>AllsiteDF_to100_fuklprop=AllsiteDF_to100  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100),prop=CountperPos/TotCount)</code></pre>
+<pre class="r"><code>allSite=ggplot(AllsiteDF_to100_fuklprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat=&quot;identity&quot;,position=&quot;stack&quot; ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of all annotated sites&quot;, title=&quot;Location of annotated signal sites&quot;) </code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>AllsiteDF_to100_nuc_fullprop=AllsiteDF_to100_Nuc  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_Nuc),prop=CountperPos/TotCount)</code></pre>
+<pre class="r"><code>nucSite=ggplot(AllsiteDF_to100_nuc_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat=&quot;identity&quot;,position=&quot;stack&quot; ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of all annotated sites&quot;, title=&quot;Location of annotated signal sites- Nuclear&quot;) </code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>AllsiteDF_to100_nucInt_fullprop=AllsiteDF_to100_NucInt  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_NucInt),prop=CountperPos/TotCount)</code></pre>
+<pre class="r"><code>nucIntsite=ggplot(AllsiteDF_to100_nucInt_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat=&quot;identity&quot;,position=&quot;stack&quot; ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of all annotated sites&quot;, title=&quot;Location of annotated signal sites- Nuclear Intronic&quot;) </code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<p>AllsiteDF_to100_prop_NucAllInt</p>
+<pre class="r"><code>AllsiteDF_to100_nucAllInt_fullprop=AllsiteDF_to100_NucAllInt  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_NucAllInt),prop=CountperPos/TotCount)</code></pre>
+<pre class="r"><code>AllIntsite=ggplot(AllsiteDF_to100_nucAllInt_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat=&quot;identity&quot;,position=&quot;stack&quot; ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of all annotated sites&quot;, title=&quot;Location of annotated signal sites- All Intronic&quot;) </code></pre>
+<pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code>PropSignalSite_ofall=plot_grid(allSite, AllIntsite, nucSite,nucIntsite)</code></pre>
+<pre class="r"><code>ggsave(PropSignalSite_ofall, file=&quot;../output/plots/PropofAllSigSite_bySet.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2855,16 +3156,16 @@ attached base packages:
 
 other attached packages:
  [1] BSgenome.Hsapiens.UCSC.hg19_1.4.0 genomation_1.14.0                
- [3] BSgenome_1.50.0                   rtracklayer_1.42.2               
- [5] GenomicRanges_1.34.0              GenomeInfoDb_1.18.2              
- [7] Biostrings_2.50.2                 XVector_0.22.0                   
- [9] IRanges_2.16.0                    S4Vectors_0.20.1                 
-[11] BiocGenerics_0.28.0               forcats_0.4.0                    
-[13] stringr_1.4.0                     dplyr_0.8.0.1                    
-[15] purrr_0.3.1                       readr_1.3.1                      
-[17] tidyr_0.8.3                       tibble_2.0.1                     
-[19] ggplot2_3.1.0                     tidyverse_1.2.1                  
-[21] workflowr_1.2.0                  
+ [3] cowplot_0.9.4                     BSgenome_1.50.0                  
+ [5] rtracklayer_1.42.2                GenomicRanges_1.34.0             
+ [7] GenomeInfoDb_1.18.2               Biostrings_2.50.2                
+ [9] XVector_0.22.0                    IRanges_2.16.0                   
+[11] S4Vectors_0.20.1                  BiocGenerics_0.28.0              
+[13] forcats_0.4.0                     stringr_1.4.0                    
+[15] dplyr_0.8.0.1                     purrr_0.3.1                      
+[17] readr_1.3.1                       tidyr_0.8.3                      
+[19] tibble_2.0.1                      ggplot2_3.1.0                    
+[21] tidyverse_1.2.1                   workflowr_1.2.0                  
 
 loaded via a namespace (and not attached):
  [1] nlme_3.1-137                bitops_1.0-6               
