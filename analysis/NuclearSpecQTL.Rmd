@@ -1,0 +1,239 @@
+---
+title: "Nuclear vs Total nominal associations"
+author: "Briana Mittleman"
+date: "3/9/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Look for the snps that are QTLs in the nuclear fraction but not the total fraction. To do this I want to plot the association in the total fraction vs. the association in the nuclear fraction. I can look for snps that fall off the 1:1 line towards the nuclear fraction.  
+
+I need to look for the snps tested in both fractions. The nominal results are in:
+
+* /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt   
+* /project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt  
+
+This will not include the 18982867 more assocaitions in nucelar. I can only look at those that are tested in both analyses. 
+
+Format of file: 
+* peakID
+* snp
+* dist 
+* pval
+* slope (effect size)  
+
+I can make a dictionary with gene:snp:peak as the keys and a dictionary for the values- the inner dictionary will have the fraction as the key and the pvalue as the value  
+
+
+
+totalandnuclear_commonassociation.py
+```{bash,eval=F}
+totRes=open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt","r")
+nucRes=open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt", "r")  
+
+
+outfile=open("/project2/gilad/briana/threeprimeseq/data/NucSpecQTL/TotNucRes_overlapassociations.txt", "w")
+
+resDict={}
+for ln in totRes:
+    gene=ln.split()[0].split(":")[-1].split("_")[0]
+    peak=ln.split()[0].split(":")[-1].split("_")[-1]
+    snp=ln.split()[1]
+    id=gene + ":" + peak + ":" + snp
+    pval=ln.split()[3]
+    resDict[id]={}
+    resDict[id]["Total"]=pval
+
+for ln in nucRes:
+    gene=ln.split()[0].split(":")[-1].split("_")[0]
+    peak=ln.split()[0].split(":")[-1].split("_")[-1]
+    snp=ln.split()[1]
+    id=gene + ":" + peak + ":" + snp
+    pval=ln.split()[3]
+    if id in resDict.keys():
+        resDict[id]["Nuclear"]=pval
+    else:
+        continue   
+        
+#now i have a double dictionary. i need to write it out. i want id, the total pval, then the nuc pval  
+for outer, inner in resDict.items():
+    id=outer
+    outPval=[]
+    for key in inner:
+        outPval.append(inner[key])
+    print(outPval)
+    if(len(outPval))==2:
+         outfile.write("%s\t%s\t%s\n"%(id, outPval[0], outPval[1]))
+
+
+outfile.close()        
+        
+
+```
+
+
+run it: 
+run_totalandnuclear_commonassociation.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_totalandnuclear_commonassociation
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=run_totalandnuclear_commonassociation.out
+#SBATCH --error=run_totalandnuclear_commonassociation.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python totalandnuclear_commonassociation.py
+
+```
+
+Tot assoc:     105456802
+nuclear assoc: 124439669
+common:        94176434
+This means 41 percent are common. This means in the make phenotpye step, different genes and peaks are removed. 
+Results: /project2/gilad/briana/threeprimeseq/data/NucSpecQTL/TotNucRes_overlapassociations.txt  
+
+
+makeTotalNucAssocPlot.R
+```{r, eval=F}
+library(tidyverse)
+library(data.table)
+
+file=fread("../data/NucSpecQTL/TotNucRes_overlapassociations.txt", col.names =c("ID","Total", "Nuclear"))
+
+cor_plot=ggplot(file, aes(x=-log10(Total), y=-log10(Nuclear))) + geom_point() + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + labs(title="Common Peak/Snp/ID associations Total and Nuclear", x="-log10(Total Pval)", y="-log10(Nuclear Pval)") + geom_smooth(aes(x=-log10(Total),y=-log10(Nuclear)),method = "lm")
+
+
+#print(summary(lm(data=file, -log10(Total) ~ -log10(Nuclear))))
+
+#cor_plot
+
+#ggsave(plot, "/project2/gilad/briana/threeprimeseq/output/TotalvNucPavalCommonAssoc.png")  
+
+
+
+```
+in python with pyplotlib:
+
+
+```{bash,eval=F}
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+inF=open("/project2/gilad/briana/threeprimeseq/data/NucSpecQTL/TotNucRes_overlapassociations.txt", "r")
+
+
+total=[]
+nuclear=[]
+for ln in inF:
+  loca, tot, nuc = ln.split()
+  total.append(float(tot))
+  nuclear.append(float(nuc))
+
+  
+np.asarray(total)
+np.asarray(nuclear)
+diff =np.subtract(total, nuclear)
+
+plt.plot(total,nuclear)
+plt.savefig("/project2/gilad/briana/threeprimeseq/output/TotalvNucPavalCommonAssoc.png")
+```
+
+
+
+run_makeTotalNucAssocPlot.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_makeTotalNucAssocPlot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=run_makeTotalNucAssocPlot.out
+#SBATCH --error=run_makeTotalNucAssocPlot.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+Rscript makeTotalNucAssocPlot.R
+```
+
+
+These are too many values: I need to use the permuted. this will jsut be the pvalue for the same peak:gene combo  
+
+##try with perm
+totalandnuclear_commonassociationPerm.py
+```{bash,eval=F}
+totRes=open("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permRes.txt","r")
+nucRes=open("/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permRes.txt", "r")  
+
+
+outfile=open("/project2/gilad/briana/threeprimeseq/data/NucSpecQTL/TotNucRes_Permoverlapassociations.txt", "w")
+
+resDict={}
+for ln in totRes:
+    gene=ln.split()[0].split(":")[-1].split("_")[0]
+    peak=ln.split()[0].split(":")[-1].split("_")[-1]
+    id=gene + ":" + peak 
+    pval=ln.split()[-2]
+    resDict[id]={}
+    resDict[id]["Total"]=pval
+
+for ln in nucRes:
+    gene=ln.split()[0].split(":")[-1].split("_")[0]
+    peak=ln.split()[0].split(":")[-1].split("_")[-1]
+    id=gene + ":" + peak
+    pval=ln.split()[-2]
+    if id in resDict.keys():
+        resDict[id]["Nuclear"]=pval
+    else:
+        continue   
+        
+#now i have a double dictionary. i need to write it out. i want id, the total pval, then the nuc pval  
+for outer, inner in resDict.items():
+    id=outer
+    outPval=[]
+    for key in inner:
+        outPval.append(inner[key])
+    print(outPval)
+    if(len(outPval))==2:
+         outfile.write("%s\t%s\t%s\n"%(id, outPval[0], outPval[1]))
+
+
+outfile.close()        
+        
+
+```
+
+
+```{r}
+library(tidyverse)
+library(data.table)
+
+file=fread("../data/NucSpecQTL/TotNucRes_Permoverlapassociations.txt", col.names =c("ID","Total", "Nuclear"))
+
+cor_plot=ggplot(file, aes(x=Total, y=Nuclear)) + geom_point() + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + labs(title="Common Peak associations Total and Nuclear") 
+
+cor_plot
+
+```
+This is similar to what was happening in the nominal case.  
+
+
+I think I need to plot just the total in nuclaer and nuclear in total. this way i can see the outliers. 
