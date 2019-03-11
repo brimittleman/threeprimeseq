@@ -9,7 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(workflowr)
+library(tidyverse)
+library(data.table)
 
+```
+
+##QTLs
 
 Full GWAS catelog from the table browser. There are 56248699 lines in this file:  
 
@@ -33,6 +40,8 @@ sed 's/^chr//' /project2/gilad/briana/genome_anotation_data/hg19.GWASCatelog.all
 overlapSNPsGWAS_fixed.py
 
 ```{bash,eval=F}
+import pybedtools as pybedtools
+
 def main(infile, outfile):
     gwas_file=open("/project2/gilad/briana/genome_anotation_data/hg19.GWASCatelog.allsnps.bed","r")
     gwas=pybedtools.BedTool(gwas_file)
@@ -83,6 +92,237 @@ This analysis gives 9k overlaps with 7k uniq snps.  of (53135726 uniq snps)
 This makes more sense. 
 
 I want to only look at relevent GWAS for LCLs  
+
+
+```{r}
+QTLOverlap=fread("../data/GWAS_overlap/GWASoverlapped_AllOverlapSnps.bed", header=F, col.names = c("chromSnp", "startSnp", "endSnp", "Set", "chromGwas", "startGWAS", "endGWAS", "rsID", "score", "strand"))
+```
+
+```{r}
+QTL_overlap_Total=QTLOverlap %>% filter(grepl("Total",Set))
+
+QTL_overlap_Nuclear=QTLOverlap %>% filter(grepl("Nuclear",Set))
+```
+
+
+##MAtched snps 
  
 I will also need to compare to random snps. (i can use my matched snps/find those in LD)
+
+
+* /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps_sort.bed
+* /project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps_sort.bed
+
+
+Switch to format: snp_10_3154947
+
+ fixMatchedFormat.py
+```{bash,eval=F}
+def fix_format(inbed,outf):
+    bed=open(inbed, "r")
+    outF=open(outf, "w")
+    for ln in bed:
+        chrom, start, end = ln.split()
+        outF.write("snp_%s_%s\n"%(chrom, end))
+    outF.close()
+
+
+fix_format("/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps_sort.bed", "/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps_GEUFormat.txt") 
+
+fix_format("/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps_sort.bed", "/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps_GEUFormat.txt") 
+```
+ 
+subset_plink4Matched_proc.py
+
+```{bash,eval=F}
+def main(genFile, qtlFile, outFile):
+  #convert snp file to a list: 
+  def file_to_list(file):
+    snp_list=[]
+    for ln in file:
+      snp=ln.strip()
+      snp_list.append(snp)
+    return(snp_list)
+
+  gen=open(genFile,"r")
+  fout=open(outFile, "w")
+  qtls=open(qtlFile, "r")
+  qtl_list=file_to_list(qtls)
+  for ln in gen:
+      snp=ln.split()[2]
+      if snp in qtl_list:
+          fout.write(ln)
+  fout.close()
+    
+
+if __name__ == "__main__":
+    import sys
+    chrom=sys.argv[1]
+    fraction=sys.argv[2]
+    genFile = "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap/geu_plinkYRI_LDchr%s.ld"%(chrom)
+    outFile= "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_matched/%sApaMatch_LD/chr%s.%sMatch.LD.geno.ld"%(fraction,chrom,fraction)
+    qtlFile= "/project2/gilad/briana/threeprimeseq/data/MatchedSnp/%s_matched_snps_GEUFormat.txt"%(fraction)
+    main(genFile, qtlFile, outFile) 
+```
+ 
+run_subset_plink4Matched_proc.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_subset_plink4Matched_proc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=subset_plink4Matched_proc.out
+#SBATCH --error=subset_plink4Matched_proc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=30G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i  in {1..22};
+do
+python subset_plink4Matched_proc.py ${i} "Total"
+done
+
+for i  in {1..22};
+do
+python subset_plink4Matched_proc.py ${i} "Nuclear"
+done
+```
+
+Cat and remove indels:  
+/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_matched/FractionApaMatch_LD/
+```{bash,eval=F}
+cat chr* > allChr.TotalMatch.LD.geno.ld
+grep -v indel allChr.TotalMatch.LD.geno.ld > allChr.TotalMatch.LD.geno.ld_noIndel
+
+cat chr* > allChr.NuclearMatch.LD.geno.ld
+grep -v indel allChr.NuclearMatch.LD.geno.ld > allChr.NuclearMatch.LD.geno.ld_noIndel
+```
+
+
+make into bed files:  
+
+makeAlloverlapbed_Matched.py
+```{bash,eval=F}
+
+#load files:  
+
+QTL_total=open("/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Total_matched_snps_GEUFormat.txt", "r")
+QTL_nuclear=open("/project2/gilad/briana/threeprimeseq/data/MatchedSnp/Nuclear_matched_snps_GEUFormat.txt", "r")
+LD_total=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_matched/TotalApaMatch_LD/allChr.TotalMatch.LD.geno.ld_noIndel", "r")
+LD_nuclear=open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_matched/NuclearApaMatch_LD/allChr.NuclearMatch.LD.geno.ld_noIndel", "r")
+outFile= open("/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_matched/AllOverlapMatchSnps.bed", "w")
+
+#function for qtl to bed format
+def qtl2bed(fqtl, fraction, fout=outFile):
+    for ln in fqtl:
+        snp, chrom, pos = ln.split("_")
+        start=int(pos)-1
+        end= int(pos)
+        fout.write("%s\t%d\t%d\tQTL_%s\n"%(chrom, start, end,fraction))
+
+#function for ld to bed format 
+def ld2bed(fLD, fraction, fout=outFile):
+    for ln in fLD:
+        snpID=ln.split()[5]
+        snp, chrom, pos= snpID.split("_")
+        start=int(pos)-1
+        end=int(pos)
+        fout.write("%s\t%d\t%d\tLD_%s\n"%(chrom, start, end,fraction))
+
+
+#I will run each of these for both fractions to get all of the snps in the out file. 
+
+
+qtl2bed(QTL_nuclear, "Nuclear")
+qtl2bed(QTL_total, "Total")
+ld2bed(LD_nuclear, "Nuclear")
+ld2bed(LD_total, "Total")
+
+
+outFile.close()
+```
+
+
+
+Run the gwas ovelap:
+
+run_overlapSNPsGWASFixed_match.sh  
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_overlapSNPsGWASFixed_match
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=run_overlapSNPsGWASFixed_match.out
+#SBATCH --error=run_overlapSNPsGWASFixed_match.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python overlapSNPsGWAS_fixed.py  "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_matched/AllOverlapMatchSnps.bed" "/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_matched/GWASOverlap_AllOverlapMatchSnps.bed"
+```
+
+
+```{r}
+MatchOverlap=fread("../data/GWAS_overlap/GWASOverlap_AllOverlapMatchSnps.bed", header=F, col.names = c("chromSnp", "startSnp", "endSnp", "Set", "chromGwas", "startGWAS", "endGWAS", "rsID", "score", "strand"))
+```
+
+```{r}
+MatchOverlap_Total=MatchOverlap %>% filter(grepl("Total",Set))
+
+MatchOverlap_Nuclear=MatchOverlap %>% filter(grepl("Nuclear",Set))
+```
+
+
+##Compare:
+
+```{r} 
+MatchTot= MatchOverlap_Total %>% select(rsID) %>% unique() %>% nrow()
+MatchNuc= MatchOverlap_Nuclear  %>% select(rsID) %>% unique() %>% nrow()
+QTL_tot=QTL_overlap_Total %>% select(rsID) %>% unique() %>% nrow()
+QTL_nuc= QTL_overlap_Nuclear %>% select(rsID) %>% unique() %>% nrow()
+```
+
+
+Number of uniq snps in GWAS catelog
+
+```{r}
+GWAS_snp=53135726
+
+totpval= phyper(QTL_tot, GWAS_snp, GWAS_snp,MatchTot+QTL_tot, lower.tail = F )
+
+nucpval= phyper(QTL_nuc, GWAS_snp, GWAS_snp,MatchNuc+QTL_nuc ,lower.tail = F)
+```
+
+
+
+```{r}
+GWASdf=as.data.frame(cbind(Fraction=c("Total", "Total", "Nuclear", "Nuclear"),Type=c("QTL", "Match", "QTL", "Match"),Value=c(QTL_tot,MatchTot, QTL_nuc, MatchNuc)))
+GWASdf$Value=as.numeric(as.character(GWASdf$Value))
+
+
+anno_df=data.frame(Type="QTL",Value=6300,
+                      Fraction = factor("Nuclear",levels = c("Nuclear","Total")))
+anno_df2=data.frame(Type="QTL",Value=6000,
+                      Fraction = factor("Nuclear",levels = c("Nuclear","Total")))
+
+GwasOverlap=ggplot(GWASdf, aes(x=Type, by=Type, fill=Type, y=Value)) + geom_bar(position="dodge", stat="identity") + facet_grid(~Fraction) + labs(y="N overlap snps",title="apaQTLs overlap with GWAS catelog")+ geom_text(data = anno_df,aes(label="P < .0001")) + scale_fill_manual(values= c("Grey", "Blue")) + geom_text(data = anno_df2,aes(label="***"))
+GwasOverlap
+
+ggsave(GwasOverlap, file="../output/plots/apaQTLsoverlapGWASCatelog.png")
+```
+
 
