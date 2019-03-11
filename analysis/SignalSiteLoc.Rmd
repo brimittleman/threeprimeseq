@@ -15,6 +15,7 @@ library(workflowr)
 library(tidyverse)
 library(Biostrings)
 library(BSgenome)
+library(cowplot)
 library(genomation)
 
 ```
@@ -1400,35 +1401,35 @@ python DistPAS2Sig_Intron.py ACTAAA
 
 
 ```{r}
-Loc_AATAAA_AllInt= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_Intronic.txt", header=T)
+Loc_AATAAA_AllInt= read.table("../data/Signal_Loc/Loc_AATAAA_Distance2end_Intronic.txt", header=T) %>% mutate(Site="AATAAA")
 
 
-Loc_AAAAAG_AllInt= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_Intronic.txt", header=T)
+Loc_AAAAAG_AllInt= read.table("../data/Signal_Loc/Loc_AAAAAG_Distance2end_Intronic.txt", header=T) %>% mutate(Site="AAAAAG")
 
 
-Loc_AATACA_AllInt= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_Intronic.txt", header=T)
+Loc_AATACA_AllInt= read.table("../data/Signal_Loc/Loc_AATACA_Distance2end_Intronic.txt", header=T) %>% mutate(Site="AATACA")
 
 
-Loc_AATAGA_AllInt= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_Intronic.txt", header=T)
+Loc_AATAGA_AllInt= read.table("../data/Signal_Loc/Loc_AATAGA_Distance2end_Intronic.txt", header=T) %>% mutate(Site="AATAGA")
 
 
-Loc_AATATA_AllInt =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_Intronic.txt", header=T)
+Loc_AATATA_AllInt =read.table("../data/Signal_Loc/Loc_AATATA_Distance2end_Intronic.txt", header=T) %>% mutate(Site="AATATA")
 
 
-Loc_ACTAAA_AllInt= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_Intronic.txt", header=T)
+Loc_ACTAAA_AllInt= read.table("../data/Signal_Loc/Loc_ACTAAA_Distance2end_Intronic.txt", header=T) %>% mutate(Site="ACTAAA")
 
 
-Loc_AGTAAA_AllInt= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_Intronic.txt", header=T)
+Loc_AGTAAA_AllInt= read.table("../data/Signal_Loc/Loc_AGTAAA_Distance2end_Intronic.txt", header=T) %>% mutate(Site="AGTAAA")
 
 
 
-Loc_ATTAAA_AllInt=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_Intronic.txt", header=T)
+Loc_ATTAAA_AllInt=read.table("../data/Signal_Loc/Loc_ATTAAA_Distance2end_Intronic.txt", header=T) %>% mutate(Site="ATTAAA")
 
-Loc_CATAAA_AllInt= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_Intronic.txt", header=T)
+Loc_CATAAA_AllInt= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_Intronic.txt", header=T) %>% mutate(Site="CATAAA")
 
-Loc_GATAAA_AllInt= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_Intronic.txt", header=T)
+Loc_GATAAA_AllInt= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_Intronic.txt", header=T)%>% mutate(Site="GATAAA")
 
-Loc_TATAAA_AllInt= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_Intronic.txt", header=T)
+Loc_TATAAA_AllInt= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_Intronic.txt", header=T)%>% mutate(Site="TATAAA")
 
 
 
@@ -1454,6 +1455,83 @@ dist_Loc_AllInt
 ```
 
 
+Make a long dataframe for all of this to make it easier to manipulate.  
+
+```{r}
+colnames(Loc_AATAAA_AllInt)=c("Count", "Site")
+colnames(Loc_AAAAAG_AllInt)=c("Count", "Site")
+colnames(Loc_AATACA_AllInt)=c("Count", "Site")
+colnames(Loc_AATAGA_AllInt)=c("Count", "Site")
+colnames(Loc_AATATA_AllInt)=c("Count", "Site")
+colnames(Loc_ACTAAA_AllInt)=c("Count", "Site")
+colnames(Loc_AGTAAA_AllInt)=c("Count", "Site")
+colnames(Loc_CATAAA_AllInt)=c("Count", "Site")
+colnames(Loc_ATTAAA_AllInt)=c("Count", "Site")
+colnames(Loc_GATAAA_AllInt)=c("Count", "Site")
+colnames(Loc_TATAAA_AllInt)=c("Count", "Site")
+
+
+
+AllsiteDF_NucAllInt=as.data.frame(rbind(Loc_AATAAA_AllInt,Loc_AAAAAG_AllInt,Loc_AATACA_AllInt,Loc_AATAGA_AllInt,Loc_AATATA_AllInt,Loc_ACTAAA_AllInt,Loc_AGTAAA_AllInt,Loc_ATTAAA_AllInt, Loc_GATAAA_AllInt,Loc_TATAAA_AllInt,Loc_CATAAA_AllInt)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
+
+
+ AllsiteDF_to100_NucAllInt= AllsiteDF_NucAllInt %>% filter(Count < 100)
+
+```
+
+
+plot: 
+
+```{r}
+ggplot(AllsiteDF_to100_NucAllInt, aes(group=Site, x=NegCount, fill=Site)) + geom_histogram(position="stack",bins=50 ) + labs(x="Distance from PAS", y="N annotated Sites", title="Location of annotated signal sites- Intronic PAS")  
+```
+
+
+Do this as proportion: 
+
+```{r}
+AllsiteDF_to100_prop_NucAllInt=AllsiteDF_to100_NucAllInt %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+#%>% ungroup() %>% group_by(Site) %>% mutate(nType=sum(Count), prop=CountperPos/nType)
+```
+
+
+```{r}
+annoationPAS_NucAllIntpeak=ggplot(AllsiteDF_to100_prop_NucAllInt, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat="identity") + facet_wrap(~Site) + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites for all Intronic PAS")
+
+annoationPAS_NucAllIntpeak
+
+ggsave(annoationPAS_NucAllIntpeak, file="../output/plots/annoationPAS_AllIntronicpeaksPropLocFacet.png")
+```
+
+
+```{r}
+annoationPAS_NucAllIntpeakProphist=ggplot(AllsiteDF_to100_prop_NucAllInt, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat="identity", position="stack") + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites for all Intronic PAS")
+annoationPAS_NucAllIntpeakProphist
+ggsave(annoationPAS_NucAllIntpeakProphist, file="../output/plots/annoationPAS_AllIntronicpeakPropLocStackHist.png")
+```
+
+
+Subsample from AllsiteDF_NucAllInt and look at it in comparison to the nuclear specific peaks:  
+
+subsample 220
+
+
+```{r}
+AllsiteDF_to100_NucAllInt_sampl= AllsiteDF_to100_NucAllInt %>% sample_n(138)
+
+
+AllsiteDF_to100_prop_NucAllInt_samp=AllsiteDF_to100_NucAllInt_sampl %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+
+annoationPAS_NucAllIntpeak_samp=ggplot(AllsiteDF_to100_prop_NucAllInt_samp, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat="identity") + facet_wrap(~Site) + labs(x="Distance from PAS", y="Proportion of Signal Site", title="Location of annotated signal sites for sample of Intronic PAS")
+
+annoationPAS_NucAllIntpeak_samp
+
+ggsave(annoationPAS_NucAllIntpeak_samp, file="../output/plots/annoationPAS_SampleofIntronicpeaksPropLocFacet.png")
+```
+
+
 ###Compare cononical vs other:  
 
 ```{r}
@@ -1461,6 +1539,8 @@ AllsiteDF_to100_con=AllsiteDF_to100 %>% group_by(NegCount,Cononical) %>% summari
 
 
 ggplot(AllsiteDF_to100_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat="identity", alpha=.5,bins=50) 
+
+
 
 #+ facet_grid(~Cononical)
 ```
@@ -1474,4 +1554,59 @@ AllsiteDF_to100_Nuc_con=AllsiteDF_to100_Nuc %>% group_by(NegCount,Cononical) %>%
 ggplot(AllsiteDF_to100_Nuc_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat="identity",alpha=.5,bins=50)
 ```
 
+
+###Make plots with all sites as demoniator
+
+I want to look at percentages but for all sites: 
+
+
+```{r}
+AllsiteDF_to100_fuklprop=AllsiteDF_to100  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100),prop=CountperPos/TotCount)
+```
+
+
+```{r}
+allSite=ggplot(AllsiteDF_to100_fuklprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat="identity",position="stack" ) + labs(x="Distance from PAS", y="Proportion of all annotated sites", title="Location of annotated signal sites") 
+```
+
+
+```{r}
+AllsiteDF_to100_nuc_fullprop=AllsiteDF_to100_Nuc  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_Nuc),prop=CountperPos/TotCount)
+```
+
+
+```{r}
+nucSite=ggplot(AllsiteDF_to100_nuc_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat="identity",position="stack" ) + labs(x="Distance from PAS", y="Proportion of all annotated sites", title="Location of annotated signal sites- Nuclear") 
+```
+
+
+
+```{r}
+AllsiteDF_to100_nucInt_fullprop=AllsiteDF_to100_NucInt  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_NucInt),prop=CountperPos/TotCount)
+```
+
+
+```{r}
+nucIntsite=ggplot(AllsiteDF_to100_nucInt_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat="identity",position="stack" ) + labs(x="Distance from PAS", y="Proportion of all annotated sites", title="Location of annotated signal sites- Nuclear Intronic") 
+```
+AllsiteDF_to100_prop_NucAllInt
+
+```{r}
+AllsiteDF_to100_nucAllInt_fullprop=AllsiteDF_to100_NucAllInt  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_NucAllInt),prop=CountperPos/TotCount)
+```
+
+
+```{r}
+AllIntsite=ggplot(AllsiteDF_to100_nucAllInt_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat="identity",position="stack" ) + labs(x="Distance from PAS", y="Proportion of all annotated sites", title="Location of annotated signal sites- All Intronic") 
+```
+
+
+```{r}
+PropSignalSite_ofall=plot_grid(allSite, AllIntsite, nucSite,nucIntsite)
+```
+
+
+```{r}
+ggsave(PropSignalSite_ofall, file="../output/plots/PropofAllSigSite_bySet.png")
+```
 
