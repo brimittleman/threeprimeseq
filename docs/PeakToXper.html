@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree8871122719aceb2b378022b813b069f09fd6225dtargetblank8871122a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/8871122719aceb2b378022b813b069f09fd6225d" target="_blank">8871122</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree90eefa736a9ab93cc739c217ef0ca6039b8f4eb4targetblank90eefa7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/90eefa736a9ab93cc739c217ef0ca6039b8f4eb4" target="_blank">90eefa7</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree8871122719aceb2b378022b813b069f09fd6225dtargetblank8871122a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree90eefa736a9ab93cc739c217ef0ca6039b8f4eb4targetblank90eefa7a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,7 +541,6 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EmpDistforOverlaps.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
-    Untracked:  analysis/NuclearSpecQTL.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
@@ -670,6 +669,7 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
+    Modified:   analysis/NuclearSpecQTL.Rmd
     Modified:   analysis/SignalSiteLoc.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/characterize_apaQTLs.Rmd
@@ -734,6 +734,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/90eefa736a9ab93cc739c217ef0ca6039b8f4eb4/analysis/PeakToXper.Rmd" target="_blank">90eefa7</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-11
+</td>
+<td>
+try UTR
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/8a6b54e054a49b181763f8fd740bac65a30919ed/docs/PeakToXper.html" target="_blank">8a6b54e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -865,11 +899,11 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto50perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto50perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 50%&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.png
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto50perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto50perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 50%&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.png
 
@@ -890,11 +924,11 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.png
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.png
 
@@ -926,13 +960,214 @@ module load Anaconda3
 source activate three-prime-env
 
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakTOP10perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakTOP10perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.png
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakTOP10perc_fixedStrand.bed -b 500 -a 500  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakTOP10perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.gz
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.png
+
+</code></pre>
+<p>Subset to genes with 5 peaks:</p>
+<pre class="r"><code>NucMeanPeakUsage_10perc_5peak= NucMeanPeakUsage_10perc %&gt;% filter(nPeaks&gt;=5)
+#write.table(NucMeanPeakUsage_10perc_5peak, file=&quot;../data/PeakUsage_noMP_GeneLocAnno/NucPeaksTo10perc_5peaks.txt&quot;, sep=&quot;\t&quot;, row.names = F, col.names = F,quote=F)</code></pre>
+<pre class="bash"><code>python subsetPeak_uptoXper.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/NucPeaksTo10perc_5peaks.txt /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_5peaks_fixedStrand.bed</code></pre>
+<p>DTPlot_Nuc10percCov_5peaks.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=DTPlot_Nuc10percCov_5peaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=DTPlot_Nuc10percCov_5peaks.out
+#SBATCH --error=DTPlot_Nuc10percCov_5peaks.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_5peaks_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc5peaks_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc5peaks_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 10%, 5 peaks&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc5peaks_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_5peaks_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaks_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaks_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 10%, 5 peaks&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaks_Nompfilt.png
+
+</code></pre>
+<div id="change-to-just-last-base-of-pas" class="section level2">
+<h2>Change to just last base of PAS</h2>
+<p>I am now centering on the PAS. I want to center on the end of the peak. I can make a script that will take these files and change the bedfile to just be the last base in the peak (PAS)</p>
+<p>Peak2PAS.py</p>
+<pre class="bash"><code>def main(InFile, outfile):
+  outF=open(outfile, &quot;w&quot;)
+  inF=open(InFile,&quot;r&quot;)
+  for ln in inF:
+      chrom, start, end, peak, score, strand = ln.split()
+      if strand==&quot;+&quot;:
+          start2=int(end)-1
+          end2=int(end)
+      else:
+          start2=int(start) - 1
+          end2=int(start)
+      outF.write(&quot;%s\t%d\t%d\t%s\t%s\t%s\n&quot;%(chrom, start2, end2, peak, score, strand))
+  outF.close()    
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    InFile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(InFile, outfile) </code></pre>
+<pre class="bash"><code>python Peak2PAS.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_fixedStrand.bed
+
+ 
+python Peak2PAS.py  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakTOP10perc_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakTOP10perc_fixedStrand.bed
+
+
+python Peak2PAS.py  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto10perc_5peaks_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_5peaks_fixedStrand.bed 
+
+python Peak2PAS.py  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_NucPeakto50perc_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto50perc_fixedStrand.bed </code></pre>
+<div id="subset-to-3-utr" class="section level3">
+<h3>Subset to 3’ utr</h3>
+<p>The UTR peaks are in: /project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5perc_3UTR.bed</p>
+<p>filterPAS_UTR.py</p>
+<pre class="bash"><code>def main(filterFile, outfile):
+  inBed=open(&quot;/project2/gilad/briana/threeprimeseq/data/mergedPeaks_noMP_GeneLoc_3UTR/Filtered_APApeaks_merged_allchrom_noMP.sort.named.noCHR_geneLocParsed_5perc_3UTR.bed&quot;, &quot;r&quot;)
+  outF=open(outfile, &quot;w&quot;)
+  filt=open(filterFile,&quot;r&quot;)
+  okDic={}
+  for ln in inBed: 
+    peak=ln.split()[3].split(&quot;:&quot;)[0]
+    okDic[peak]=&quot;&quot;
+  for ln in filt: 
+    peak=ln.split()[3].split(&quot;:&quot;)[0]
+    if peak in okDic.keys():
+        outF.write(ln)
+  outF.close()    
+
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    filterFile=sys.argv[1]
+    outfile=sys.argv[2]
+    main(filterFile, outfile) </code></pre>
+<pre class="bash"><code>python filterPAS_UTR.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_5peaks_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_5peaks_fixedStrand_UTR.bed
+
+python filterPAS_UTR.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_fixedStrand_UTR.bed
+
+python filterPAS_UTR.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto50perc_fixedStrand.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto50perc_fixedStrand_UTR.bed
+
+python filterPAS_UTR.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakTOP10perc_fixedStrand.bed  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakTOP10perc_fixedStrand_UTR.bed
+</code></pre>
+<p>allDTPlots_topXPerc_UTR.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=allDTPlots_topXPerc_UTR
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=allDTPlots_topXPerc_UTR.out
+#SBATCH --error=allDTPlots_topXPerc_UTR.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+###50 perc 
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto50perc_fixedStrand_UTR.bed -b 50 -a 50   -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50percUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50percUTR_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 50%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot;  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50percUTR_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto50perc_fixedStrand_UTR.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50percUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50percUTR_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 50%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50percUTR_Nompfilt.png
+
+##to 10perc
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_fixedStrand_UTR.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10percUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10percUTR_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10percUTR_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_fixedStrand_UTR.bed -b 50 -a 50   -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10percUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10percUTR_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10percUTR_Nompfilt.png
+
+##5 peaks 
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_5peaks_fixedStrand_UTR.bed -b 50 -a 50 -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc5peaksUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc5peaksUTR_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 10%, 5 peaks&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc5peaksUTR_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_5peaks_fixedStrand_UTR.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaksUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaksUTR_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 10%, 5 peaks&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaksUTR_Nompfilt.png
+
+##TOP10
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakTOP10perc_fixedStrand_UTR.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuctop10percUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuctop10percUTR_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS top 10%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuctop10percUTR_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakTOP10perc_fixedStrand_UTR.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuctop10percUTR_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuctop10percUTR_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS top 10%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuctop10percUTR_Nompfilt.png</code></pre>
+<p>allDTPlots_topXPerc.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=allDTPlots_topXPerc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=allDTPlots_topXPerc.out
+#SBATCH --error=allDTPlots_topXPerc.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+##50%
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto50perc_fixedStrand.bed -b 50 -a 50   -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 50%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc50perc_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto50perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 50%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc50perc_Nompfilt.png
+
+
+#10%  
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_fixedStrand.bed -b 50 -a 50 -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc_Nompfilt.png
+
+#top 10 
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakTOP10perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakTOP10perc_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 10%&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nucTop10perc_Nompfilt.png
+
+
+#5 peaks  
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_5peaks_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc5peaks_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nuc10perc5peaks_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;Combined Reads at PAS up to 10%, 5 peaks&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/BothFrac_nucTop10perc5peaks_Nompfilt.png
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/rnaseq_bw/RNAseqGeuvadis_STAR_6samp_MergedBams.sort.bw -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_NucPeakto10perc_5peaks_fixedStrand.bed -b 50 -a 50  -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaks_Nompfilt.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaks_Nompfilt.gz --refPointLabel &quot;PAS&quot; --plotTitle &quot;RNA seq at PAS up to 10%, 5 peaks&quot; --heatmapHeight 7 --colorMap YlGnBu --averageTypeSummaryPlot &quot;median&quot; -out /project2/gilad/briana/threeprimeseq/data/DT_up2Xperc/RNA_nuc10perc5peaks_Nompfilt.png
 
 </code></pre>
 <br> <br>
@@ -976,6 +1211,8 @@ loaded via a namespace (and not attached):
 [41] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.4-0
 [45] stringi_1.3.1    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1     
 [49] crayon_1.3.4    </code></pre>
+</div>
+</div>
 </div>
 
 <hr>
