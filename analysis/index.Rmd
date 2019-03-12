@@ -180,5 +180,7 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Look at enrichment in 3' and RNA seq up to x% usage peaks](PeakToXper.Rmd)  
 
+* [Specificity between fraction QTLs](NuclearSpecQTL.Rmd)  
+
 
 

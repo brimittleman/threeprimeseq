@@ -225,6 +225,7 @@ outfile.close()
 ```{r}
 library(tidyverse)
 library(data.table)
+library(cowplot)
 
 file=fread("../data/NucSpecQTL/TotNucRes_Permoverlapassociations.txt", col.names =c("ID","Total", "Nuclear"))
 
@@ -237,3 +238,207 @@ This is similar to what was happening in the nominal case.
 
 
 I think I need to plot just the total in nuclaer and nuclear in total. this way i can see the outliers. 
+
+
+```{r}
+names=c("SNP", "peak", "pval")
+NucQTLinTot=read.table("../data/QTL_overlap/NucQTLs_inTotFractionRes.txt", stringsAsFactors = F, col.names = names)
+TotQTLinNuc=read.table("../data/QTL_overlap/TotQTLs_inNucFractionRes.txt", stringsAsFactors = F, col.names = names)
+
+QTL_names= c("pid", "nvar", "shape1", "shape2", "dummy", "SNP", "dist", "npval", "slope", "ppval", "bpval", "bh")
+NucQTL=read.table("../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", col.names = QTL_names, stringsAsFactors = F) %>% separate(pid, into=c("chr", "start","end", "peakID"), sep=":") %>% separate(peakID, into=c("gene", "strand", "peak"), sep="_") %>% select(SNP, peak, ppval)
+
+TotQTL=read.table("../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", col.names = QTL_names, stringsAsFactors = F) %>% separate(pid, into=c("chr", "start","end", "peakID"), sep=":") %>% separate(peakID, into=c("gene", "strand", "peak"), sep="_") %>% select(SNP, peak, ppval)
+```
+
+
+Join these:
+
+```{r}
+TotQTL_bothfrac= TotQTL %>% inner_join(TotQTLinNuc, by=c("SNP", "peak"))
+colnames(TotQTL_bothfrac)= c("SNP", "peak", "Total", "Nuclear")
+```
+
+
+```{r}
+NucQTL_bothfrac= NucQTL %>% inner_join(NucQTLinTot, by=c("SNP", "peak"))
+colnames(NucQTL_bothfrac)= c("SNP", "peak", "Nuclear", "Total")
+```
+
+
+All qtls together:
+
+```{r}
+allQTL=TotQTL_bothfrac %>% bind_rows(NucQTL_bothfrac)
+```
+
+
+```{r}
+ggplot(allQTL, aes(x=Nuclear, y=Total)) + geom_point()
+```
+
+The pvalues are not consistent. I need to get the original pvalues from the nominal files.  
+
+
+nominal associations for each QTL:  
+
+getNominal4QTLs.py
+
+```{bash,eval=F}
+
+nucQTLs="/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclear.apaQTLs.sort.bed"  
+totQTLs="/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Total.apaQTLs.sort.bed"  
+
+nucNom="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"
+totNom="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"
+
+outtot="/project2/gilad/briana/threeprimeseq/data/NucSpecQTL/TotQTLs_inTotFractionRes.txt"
+outnuc="/project2/gilad/briana/threeprimeseq/data/NucSpecQTL/NucQTLs_inNucFractionRes.txt"
+
+
+def sameFract(inRes, inQTL, out):
+    fout=open(out, "w")
+    qtl_dic={}
+    #SNP is key, peak is value
+    for ln in open(inQTL,"r"):
+        snp=ln.split()[2]
+        chrom=ln.split()[0]
+        peak=ln.split()[3].split(":")[0]
+        qtl=str(chrom) + ":" + str(snp)
+        if qtl not in qtl_dic.keys():
+            qtl_dic[qtl]=[peak]
+        else: 
+            qtl_dic[qtl].append(peak)
+    #print(qtl_dic)
+    for ln in open(inRes, "r"):
+        pval=ln.split()[3]
+        snp=ln.split()[1]
+        peak=ln.split()[0].split(":")[3].split("_")[-1]
+        if snp in qtl_dic.keys():
+            if peak in qtl_dic[snp]:
+                fout.write("%s\t%s\t%s\n"%(snp, peak, pval))   
+    fout.close()
+    
+
+sameFract(nucNom, nucQTLs,outnuc)  
+sameFract(totNom, totQTLs, outtot)  
+                
+```
+
+
+run_getNominal4QTLs.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_getNominal4QTLs
+#SBATCH --account=pi-yangili1
+#SBATCH --time=5:00:00
+#SBATCH --output=run_getNominal4QTLs.out
+#SBATCH --error=run_getNominal4QTLs.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+python getNominal4QTLs.py
+```
+
+
+I now want to plot the total vs nuclear nominal pvalues for the nuclear QTLs.  
+
+```{r}
+colnames(NucQTLinTot)=c("SNP", "peak", "totalPval")
+
+NucQTLinNuc=read.table("../data/NucSpecQTL/NucQTLs_inNucFractionRes.txt", col.names = c("SNP", "peak","nuclearPval"), stringsAsFactors = F)
+
+
+NucQTL_all= NucQTLinTot %>% inner_join(NucQTLinNuc, by=c("SNP", "peak"))
+
+summary(lm(data=NucQTL_all,-log10(totalPval) ~ -log10(nuclearPval)))
+```
+
+
+```{r}
+bothPval_nucqtl=ggplot(NucQTL_all, aes(x=-log10(totalPval), y=-log10(nuclearPval))) + geom_point() + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_smooth(aes(x=-log10(totalPval),y=-log10(nuclearPval)),method = "lm") + labs(title="Nominal Pvalues for Nuclear APA qtls")
+#+geom_text(aes(label=SNP),hjust=0, vjust=0)
+
+bothPval_nucqtl
+
+
+
+```
+
+
+```{r}
+ggplot(NucQTL_all, aes(x=totalPval, y=nuclearPval)) + geom_point() + labs(title="Nominal Pval results for Nuclear QTLs") + geom_density2d(na.rm = TRUE, size = 1, colour = 'red')  +geom_vline(xintercept=.05)
+
+nNucQTLNotSigTot= NucQTL_all %>% filter(totalPval>.05) %>% nrow()
+nNucQTLNotSigTot
+```
+
+For Total QTLs:  
+
+```{r}
+colnames(TotQTLinNuc)=c("SNP", "peak", "nuclearPval")
+
+TotQTLinTot=read.table("../data/NucSpecQTL/TotQTLs_inTotFractionRes.txt", col.names = c("SNP", "peak","totalPval"), stringsAsFactors = F)
+
+
+TotQTL_all= TotQTLinNuc %>% inner_join(TotQTLinTot, by=c("SNP", "peak"))
+
+summary(lm(data=NucQTL_all,-log10(nuclearPval) ~ -log10(totalPval)))
+```
+
+
+
+```{r}
+bothPval_totqtl=ggplot(TotQTL_all, aes(x=-log10(nuclearPval), y=-log10(totalPval))) + geom_point() + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_smooth(aes(x=-log10(nuclearPval),y=-log10(totalPval)),method = "lm") + labs(title="Nominal Pvalues for Total APA qtls")
+#+geom_text(aes(label=SNP),hjust=0, vjust=0)
+
+bothPval_totqtl
+```
+
+
+```{r}
+bothFracPlots=plot_grid(bothPval_nucqtl,bothPval_totqtl)
+bothFracPlots
+
+ggsave(bothFracPlots, file="../output/plots/NominalPvalcondQTL.png", height=7, width=12 )
+```
+
+```{r}
+ggplot(TotQTL_all, aes(x=nuclearPval, y=totalPval)) + geom_point() + labs(title="Nominal Pval results for Total QTLs") + geom_density2d(na.rm = TRUE, size = 1, colour = 'red') 
+
+nTotQTLNotSigNuc= TotQTL_all %>% filter(nuclearPval>.05) %>% nrow()
+nTotQTLNotSigNuc
+```
+
+Is the difference significant. More likely to have nuclear specific qlts?
+
+```{r}
+phyper(118, 495, 272, 157, lower.tail = F)
+```
+
+
+
+Plot for this:
+
+```{r}
+compareSpecQTL=as.data.frame(cbind(fraction=c("Total QTL", "Total QTL","Nuclear QTL","Nuclear QTL"), SigInOther=c("No","Yes","No","Yes"),Value=c(.14,.86 ,.24,.76)))
+
+compareSpecQTL$Value=as.numeric(as.character(compareSpecQTL$Value))
+
+
+```
+
+```{r}
+qtls_oppfrac=ggplot(compareSpecQTL,aes(x=fraction, fill=SigInOther, y=Value))  + geom_bar(stat="identity") +scale_fill_manual(values=c("red","grey")) + labs(y="Proportion", title="QTLs by nominal significance in other fraction")  + annotate("text", label="p < .0005", y=1.2, x=1.5) + geom_segment(aes(x=1.1, xend=1.9, y=1.1, yend=1.1))
+
+qtls_oppfrac
+
+ggsave(qtls_oppfrac, file="../output/plots/QTLsSiginOppFraction.png")
+```
+
