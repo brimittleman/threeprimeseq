@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-10
+<strong>Last updated:</strong> 2019-03-12
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2ae4d1e4186b28938474c24a00f5ad3864137afdtargetblank2ae4d1ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/2ae4d1e4186b28938474c24a00f5ad3864137afd" target="_blank">2ae4d1e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee2c9e1aaf9aa842715e7659f1c4cf9da64c36e2ftargetblanke2c9e1aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e2c9e1aaf9aa842715e7659f1c4cf9da64c36e2f" target="_blank">e2c9e1a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree2ae4d1e4186b28938474c24a00f5ad3864137afdtargetblank2ae4d1ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee2c9e1aaf9aa842715e7659f1c4cf9da64c36e2ftargetblanke2c9e1aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -541,7 +541,6 @@ Untracked files:
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EmpDistforOverlaps.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
-    Untracked:  analysis/NuclearSpecQTL.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
     Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
@@ -560,6 +559,7 @@ Untracked files:
     Untracked:  data/FeatureoverlapPeaks/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/GWAS_overlap/
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
     Untracked:  data/LocusZoom_Unexp/
@@ -669,7 +669,8 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
-    Modified:   analysis/OverlapFullGWASCatelog.Rmd
+    Modified:   analysis/NuclearSpecQTL.Rmd
+    Modified:   analysis/PeakToXper.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
     Modified:   analysis/characterize_apaQTLs.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
@@ -733,6 +734,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e2c9e1aaf9aa842715e7659f1c4cf9da64c36e2f/analysis/SignalSiteLoc.Rmd" target="_blank">e2c9e1a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-12
+</td>
+<td>
+add prop of sites with signal
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/SignalSiteLoc.html" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1811,6 +1846,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-21-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/ca1a9f465d3821e9ca286c5f5b2feba428df179f/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-21-1.png" target="_blank">ca1a9f4</a>
 </td>
 <td>
@@ -1870,6 +1916,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-23-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-23-1.png" target="_blank">0917c2a</a>
 </td>
 <td>
@@ -1884,7 +1941,8 @@ Briana Mittleman
 </div>
 </div>
 <p>Do this as proportion:</p>
-<pre class="r"><code>AllsiteDF_to100_prop=AllsiteDF_to100 %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+<pre class="r"><code>allpeak=33432
+AllsiteDF_to100_prop=AllsiteDF_to100 %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/allpeak)
 
 #%&gt;% ungroup() %&gt;% group_by(Site) %&gt;% mutate(nType=sum(Count), prop=CountperPos/nType)</code></pre>
 <pre class="r"><code>annoationPAS_allpeak=ggplot(AllsiteDF_to100_prop, aes(fill=Site, y=prop, x=NegCount)) + geom_density(stat=&quot;identity&quot;) + facet_wrap(~Site) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites&quot;)
@@ -1913,6 +1971,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-25-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-25-1.png" target="_blank">0917c2a</a>
@@ -1956,6 +2025,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-26-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-26-1.png" target="_blank">0917c2a</a>
@@ -2347,6 +2427,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-34-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-34-1.png" target="_blank">0917c2a</a>
 </td>
 <td>
@@ -2406,6 +2497,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-36-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-36-1.png" target="_blank">0917c2a</a>
 </td>
 <td>
@@ -2431,7 +2533,8 @@ Briana Mittleman
 </div>
 </div>
 <p>Do this as proportion:</p>
-<pre class="r"><code>AllsiteDF_to100_prop_Nuc=AllsiteDF_to100_Nuc %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+<pre class="r"><code>nucmore=657
+AllsiteDF_to100_prop_Nuc=AllsiteDF_to100_Nuc %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/nucmore)
 
 #%&gt;% ungroup() %&gt;% group_by(Site) %&gt;% mutate(nType=sum(Count), prop=CountperPos/nType)</code></pre>
 <pre class="r"><code>annoationPAS_Nucpeak=ggplot(AllsiteDF_to100_prop_Nuc, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;) + facet_wrap(~Site) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites for PAS used more in Nuclear&quot;)</code></pre>
@@ -2460,6 +2563,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-38-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-38-1.png" target="_blank">0917c2a</a>
@@ -2503,6 +2617,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-39-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-39-1.png" target="_blank">0917c2a</a>
@@ -2592,6 +2717,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-40-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/0917c2ac7c7944df6f86d3af3fa226283fcddadf/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-40-1.png" target="_blank">0917c2a</a>
 </td>
 <td>
@@ -2651,6 +2787,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-42-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-42-1.png" target="_blank">04987b5</a>
 </td>
 <td>
@@ -2665,7 +2812,8 @@ Briana Mittleman
 </div>
 </div>
 <p>Do this as proportion:</p>
-<pre class="r"><code>AllsiteDF_to100_prop_NucInt=AllsiteDF_to100_NucInt %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+<pre class="r"><code>nucmore_int=449
+AllsiteDF_to100_prop_NucInt=AllsiteDF_to100_NucInt %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/nucmore_int)
 
 #%&gt;% ungroup() %&gt;% group_by(Site) %&gt;% mutate(nType=sum(Count), prop=CountperPos/nType)</code></pre>
 <pre class="r"><code>annoationPAS_NucIntpeak=ggplot(AllsiteDF_to100_prop_NucInt, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;) + facet_wrap(~Site) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites for Intronic PAS used more in Nuclear&quot;)</code></pre>
@@ -2694,6 +2842,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-44-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-44-1.png" target="_blank">04987b5</a>
@@ -2737,6 +2896,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-45-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-45-1.png" target="_blank">04987b5</a>
@@ -2992,6 +3162,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-51-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-51-1.png" target="_blank">04987b5</a>
 </td>
 <td>
@@ -3051,6 +3232,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-53-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/04987b5cb3310bce91cfbd20b02fea90ec6abb8e/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-53-1.png" target="_blank">04987b5</a>
 </td>
 <td>
@@ -3065,19 +3257,94 @@ Briana Mittleman
 </div>
 </div>
 <p>Do this as proportion:</p>
-<pre class="r"><code>AllsiteDF_to100_prop_NucAllInt=AllsiteDF_to100_NucAllInt %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+<pre class="r"><code>allIntron=12251 
+AllsiteDF_to100_prop_NucAllInt=AllsiteDF_to100_NucAllInt %&gt;% group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=sum(CountperPos),prop=CountperPos/allIntron)
 
 #%&gt;% ungroup() %&gt;% group_by(Site) %&gt;% mutate(nType=sum(Count), prop=CountperPos/nType)</code></pre>
 <pre class="r"><code>annoationPAS_NucAllIntpeak=ggplot(AllsiteDF_to100_prop_NucAllInt, aes(fill=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;) + facet_wrap(~Site) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites for all Intronic PAS&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>annoationPAS_NucAllIntpeak</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-55-1">
+Past versions of unnamed-chunk-55-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-55-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-55-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_NucAllIntpeak, file=&quot;../output/plots/annoationPAS_AllIntronicpeaksPropLocFacet.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <pre class="r"><code>annoationPAS_NucAllIntpeakProphist=ggplot(AllsiteDF_to100_prop_NucAllInt, aes(fill=Site, by=Site, y=prop, x=NegCount)) + geom_histogram(stat=&quot;identity&quot;, position=&quot;stack&quot;) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of Signal Site&quot;, title=&quot;Location of annotated signal sites for all Intronic PAS&quot;)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>annoationPAS_NucAllIntpeakProphist</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-56-1">
+Past versions of unnamed-chunk-56-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-56-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-56-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_NucAllIntpeakProphist, file=&quot;../output/plots/annoationPAS_AllIntronicpeakPropLocStackHist.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <p>Subsample from AllsiteDF_NucAllInt and look at it in comparison to the nuclear specific peaks:</p>
@@ -3092,6 +3359,43 @@ annoationPAS_NucAllIntpeak_samp=ggplot(AllsiteDF_to100_prop_NucAllInt_samp, aes(
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>annoationPAS_NucAllIntpeak_samp</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-57-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-57-1">
+Past versions of unnamed-chunk-57-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-57-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-57-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(annoationPAS_NucAllIntpeak_samp, file=&quot;../output/plots/annoationPAS_SampleofIntronicpeaksPropLocFacet.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
@@ -3103,6 +3407,43 @@ annoationPAS_NucAllIntpeak_samp=ggplot(AllsiteDF_to100_prop_NucAllInt_samp, aes(
 ggplot(AllsiteDF_to100_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat=&quot;identity&quot;, alpha=.5,bins=50) </code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-58-1">
+Past versions of unnamed-chunk-58-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-58-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-58-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#+ facet_grid(~Cononical)</code></pre>
 <p>Look in nuclear</p>
 <pre class="r"><code>AllsiteDF_to100_Nuc_con=AllsiteDF_to100_Nuc %&gt;% group_by(NegCount,Cononical) %&gt;% summarise(PerSite=n()) %&gt;% ungroup() %&gt;% group_by(Cononical) %&gt;% mutate(NCon=sum(PerSite), PropPerSite=PerSite/NCon)
@@ -3111,25 +3452,89 @@ ggplot(AllsiteDF_to100_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropP
 ggplot(AllsiteDF_to100_Nuc_con,aes(x=NegCount, by=Cononical, fill=Cononical, y=PropPerSite)) +geom_histogram(stat=&quot;identity&quot;,alpha=.5,bins=50)</code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-59-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-59-1">
+Past versions of unnamed-chunk-59-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-59-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e60daf6da56caa9c57ee5fe7c2aecebf53c2ba84/docs/figure/SignalSiteLoc.Rmd/unnamed-chunk-59-1.png" target="_blank">e60daf6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="make-plots-with-all-sites-as-demoniator" class="section level3">
 <h3>Make plots with all sites as demoniator</h3>
 <p>I want to look at percentages but for all sites:</p>
-<pre class="r"><code>AllsiteDF_to100_fuklprop=AllsiteDF_to100  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100),prop=CountperPos/TotCount)</code></pre>
+<pre class="r"><code>AllsiteDF_to100_fuklprop=AllsiteDF_to100  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100),prop=CountperPos/33432)</code></pre>
 <pre class="r"><code>allSite=ggplot(AllsiteDF_to100_fuklprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat=&quot;identity&quot;,position=&quot;stack&quot; ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of all annotated sites&quot;, title=&quot;Location of annotated signal sites&quot;) </code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
-<pre class="r"><code>AllsiteDF_to100_nuc_fullprop=AllsiteDF_to100_Nuc  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_Nuc),prop=CountperPos/TotCount)</code></pre>
+<pre class="r"><code>AllsiteDF_to100_nuc_fullprop=AllsiteDF_to100_Nuc  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_Nuc),prop=CountperPos/657)</code></pre>
 <pre class="r"><code>nucSite=ggplot(AllsiteDF_to100_nuc_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat=&quot;identity&quot;,position=&quot;stack&quot; ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of all annotated sites&quot;, title=&quot;Location of annotated signal sites- Nuclear&quot;) </code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
-<pre class="r"><code>AllsiteDF_to100_nucInt_fullprop=AllsiteDF_to100_NucInt  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_NucInt),prop=CountperPos/TotCount)</code></pre>
+<pre class="r"><code>AllsiteDF_to100_nucInt_fullprop=AllsiteDF_to100_NucInt  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_NucInt),prop=CountperPos/449)</code></pre>
 <pre class="r"><code>nucIntsite=ggplot(AllsiteDF_to100_nucInt_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat=&quot;identity&quot;,position=&quot;stack&quot; ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of all annotated sites&quot;, title=&quot;Location of annotated signal sites- Nuclear Intronic&quot;) </code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <p>AllsiteDF_to100_prop_NucAllInt</p>
-<pre class="r"><code>AllsiteDF_to100_nucAllInt_fullprop=AllsiteDF_to100_NucAllInt  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_NucAllInt),prop=CountperPos/TotCount)</code></pre>
+<pre class="r"><code>AllsiteDF_to100_nucAllInt_fullprop=AllsiteDF_to100_NucAllInt  %&gt;%  group_by(Site,NegCount) %&gt;% summarise(CountperPos=n()) %&gt;% mutate(TotCount=nrow(AllsiteDF_to100_NucAllInt),prop=CountperPos/12251)</code></pre>
 <pre class="r"><code>AllIntsite=ggplot(AllsiteDF_to100_nucAllInt_fullprop, aes(group=Site, x=NegCount, y=prop, fill=Site)) + geom_histogram(stat=&quot;identity&quot;,position=&quot;stack&quot; ) + labs(x=&quot;Distance from PAS&quot;, y=&quot;Proportion of all annotated sites&quot;, title=&quot;Location of annotated signal sites- All Intronic&quot;) </code></pre>
 <pre><code>Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code>PropSignalSite_ofall=plot_grid(allSite, AllIntsite, nucSite,nucIntsite)</code></pre>
-<pre class="r"><code>ggsave(PropSignalSite_ofall, file=&quot;../output/plots/PropofAllSigSite_bySet.png&quot;)</code></pre>
+<pre class="r"><code>ggsave(PropSignalSite_ofall, file=&quot;../output/plots/PropofAllSigSite_bySet.png&quot;, height = 10, width=10)</code></pre>
+</div>
+</div>
+<div id="total-pas" class="section level2">
+<h2>Total PAS</h2>
+<p>Now many motifs am I finding within -15 and -40.</p>
+<p>I can filter the AllsiteDF:</p>
+<pre class="r"><code>AllsiteDF_15.40= AllsiteDF_to100 %&gt;% filter(NegCount &lt;= -15, NegCount &gt;= -40)
+dim(AllsiteDF_15.40)</code></pre>
+<pre><code>[1] 19178     4</code></pre>
+<pre class="r"><code>AllsiteDF_10.50= AllsiteDF %&gt;% filter(NegCount &lt;= -10, NegCount &gt;= -50)
+dim(AllsiteDF_10.50)</code></pre>
+<pre><code>[1] 21169     4</code></pre>
+<p>Proprortion between -15 and -40 for each:</p>
+<pre class="r"><code>all15.40=AllsiteDF_to100 %&gt;% filter(NegCount &lt;= -15, NegCount &gt;= -50) %&gt;% nrow() /33432
+nuc15.40=AllsiteDF_to100_Nuc %&gt;%filter(NegCount &lt;= -15, NegCount &gt;= -50) %&gt;% nrow() /657
+nucint15.40=AllsiteDF_to100_NucInt%&gt;%filter(NegCount &lt;= -15, NegCount &gt;= -50) %&gt;% nrow() /449
+allnuc15.40 =AllsiteDF_to100_NucAllInt %&gt;% filter(NegCount &lt;= -15, NegCount &gt;= -50) %&gt;% nrow() / 12251
+  
+DF_1540=as.data.frame(cbind(Set=c(&quot;All PAS&quot;, &quot;Nuclear Specific&quot;, &quot;Nuclear Specific in Introns&quot;, &quot;All PAS in Introns&quot;), value=c(all15.40,nuc15.40,nucint15.40,allnuc15.40), location=c(&quot;Full Gene&quot;, &quot;Full Gene&quot;, &quot;Intronic&quot;, &quot;Intronic&quot;)))
+
+
+DF_1540$value=as.numeric(as.character(DF_1540$value))
+
+site15.40=ggplot(DF_1540,aes(x=Set, y=value,fill=location)) + geom_bar(stat=&quot;identity&quot;) + labs(y=&quot;Proportion with annotated site&quot;,title=&quot;Proportion of PAS with annoatated sites \n 15-40 basepairs upstream&quot;) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + scale_fill_brewer(palette = &quot;Set1&quot;)</code></pre>
+<pre class="r"><code>site15.40</code></pre>
+<p><img src="figure/SignalSiteLoc.Rmd/unnamed-chunk-73-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(site15.40, file=&quot;../output/plots/PropofPASwithSignalSite.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <br> <br>
 <p>
@@ -3170,40 +3575,40 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] nlme_3.1-137                bitops_1.0-6               
  [3] matrixStats_0.54.0          fs_1.2.6                   
- [5] lubridate_1.7.4             httr_1.4.0                 
- [7] rprojroot_1.3-2             tools_3.5.1                
- [9] backports_1.1.3             R6_2.4.0                   
-[11] KernSmooth_2.23-15          lazyeval_0.2.1             
-[13] colorspace_1.4-0            seqPattern_1.14.0          
-[15] withr_2.1.2                 tidyselect_0.2.5           
-[17] compiler_3.5.1              git2r_0.24.0               
-[19] cli_1.0.1                   rvest_0.3.2                
-[21] Biobase_2.42.0              xml2_1.2.0                 
-[23] DelayedArray_0.8.0          labeling_0.3               
-[25] scales_1.0.0                digest_0.6.18              
-[27] Rsamtools_1.34.1            rmarkdown_1.11             
-[29] pkgconfig_2.0.2             htmltools_0.3.6            
-[31] plotrix_3.7-4               rlang_0.3.1                
-[33] readxl_1.3.0                rstudioapi_0.9.0           
-[35] impute_1.56.0               generics_0.0.2             
-[37] jsonlite_1.6                BiocParallel_1.16.6        
-[39] RCurl_1.95-4.12             magrittr_1.5               
-[41] GenomeInfoDbData_1.2.0      Matrix_1.2-15              
-[43] Rcpp_1.0.0                  munsell_0.5.0              
-[45] reticulate_1.11.1           stringi_1.3.1              
-[47] whisker_0.3-2               yaml_2.2.0                 
-[49] SummarizedExperiment_1.12.0 zlibbioc_1.28.0            
-[51] plyr_1.8.4                  crayon_1.3.4               
-[53] lattice_0.20-38             haven_2.1.0                
-[55] hms_0.4.2                   knitr_1.21                 
-[57] pillar_1.3.1                reshape2_1.4.3             
-[59] XML_3.98-1.19               glue_1.3.0                 
-[61] evaluate_0.13               data.table_1.12.0          
-[63] modelr_0.1.4                cellranger_1.1.0           
-[65] gtable_0.2.0                assertthat_0.2.0           
-[67] xfun_0.5                    gridBase_0.4-7             
-[69] broom_0.5.1                 GenomicAlignments_1.18.1   </code></pre>
-</div>
+ [5] lubridate_1.7.4             RColorBrewer_1.1-2         
+ [7] httr_1.4.0                  rprojroot_1.3-2            
+ [9] tools_3.5.1                 backports_1.1.3            
+[11] R6_2.4.0                    KernSmooth_2.23-15         
+[13] lazyeval_0.2.1              colorspace_1.4-0           
+[15] seqPattern_1.14.0           withr_2.1.2                
+[17] tidyselect_0.2.5            compiler_3.5.1             
+[19] git2r_0.24.0                cli_1.0.1                  
+[21] rvest_0.3.2                 Biobase_2.42.0             
+[23] xml2_1.2.0                  DelayedArray_0.8.0         
+[25] labeling_0.3                scales_1.0.0               
+[27] digest_0.6.18               Rsamtools_1.34.1           
+[29] rmarkdown_1.11              pkgconfig_2.0.2            
+[31] htmltools_0.3.6             plotrix_3.7-4              
+[33] rlang_0.3.1                 readxl_1.3.0               
+[35] rstudioapi_0.9.0            impute_1.56.0              
+[37] generics_0.0.2              jsonlite_1.6               
+[39] BiocParallel_1.16.6         RCurl_1.95-4.12            
+[41] magrittr_1.5                GenomeInfoDbData_1.2.0     
+[43] Matrix_1.2-15               Rcpp_1.0.0                 
+[45] munsell_0.5.0               reticulate_1.11.1          
+[47] stringi_1.3.1               whisker_0.3-2              
+[49] yaml_2.2.0                  SummarizedExperiment_1.12.0
+[51] zlibbioc_1.28.0             plyr_1.8.4                 
+[53] crayon_1.3.4                lattice_0.20-38            
+[55] haven_2.1.0                 hms_0.4.2                  
+[57] knitr_1.21                  pillar_1.3.1               
+[59] reshape2_1.4.3              XML_3.98-1.19              
+[61] glue_1.3.0                  evaluate_0.13              
+[63] data.table_1.12.0           modelr_0.1.4               
+[65] cellranger_1.1.0            gtable_0.2.0               
+[67] assertthat_0.2.0            xfun_0.5                   
+[69] gridBase_0.4-7              broom_0.5.1                
+[71] GenomicAlignments_1.18.1   </code></pre>
 </div>
 </div>
 
