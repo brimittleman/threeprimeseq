@@ -639,7 +639,9 @@ ggplot(AllsiteDF_to100, aes(group=Site, x=NegCount, fill=Site)) + geom_histogram
 Do this as proportion: 
 
 ```{r}
-AllsiteDF_to100_prop=AllsiteDF_to100 %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+allpeak=33432
+AllsiteDF_to100_prop=AllsiteDF_to100 %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/allpeak)
 
 #%>% ungroup() %>% group_by(Site) %>% mutate(nType=sum(Count), prop=CountperPos/nType)
 ```
@@ -1082,7 +1084,8 @@ ggplot(AllsiteDF_to100_Nuc, aes(group=Site, x=NegCount, fill=Site)) + geom_histo
 Do this as proportion: 
 
 ```{r}
-AllsiteDF_to100_prop_Nuc=AllsiteDF_to100_Nuc %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+nucmore=657
+AllsiteDF_to100_prop_Nuc=AllsiteDF_to100_Nuc %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/nucmore)
 
 #%>% ungroup() %>% group_by(Site) %>% mutate(nType=sum(Count), prop=CountperPos/nType)
 ```
@@ -1190,7 +1193,8 @@ ggplot(AllsiteDF_to100_NucInt, aes(group=Site, x=NegCount, fill=Site)) + geom_hi
 Do this as proportion: 
 
 ```{r}
-AllsiteDF_to100_prop_NucInt=AllsiteDF_to100_NucInt %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+nucmore_int=449
+AllsiteDF_to100_prop_NucInt=AllsiteDF_to100_NucInt %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/nucmore_int)
 
 #%>% ungroup() %>% group_by(Site) %>% mutate(nType=sum(Count), prop=CountperPos/nType)
 ```
@@ -1490,7 +1494,9 @@ ggplot(AllsiteDF_to100_NucAllInt, aes(group=Site, x=NegCount, fill=Site)) + geom
 Do this as proportion: 
 
 ```{r}
-AllsiteDF_to100_prop_NucAllInt=AllsiteDF_to100_NucAllInt %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/TotCount)
+
+allIntron=12251 
+AllsiteDF_to100_prop_NucAllInt=AllsiteDF_to100_NucAllInt %>% group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=sum(CountperPos),prop=CountperPos/allIntron)
 
 #%>% ungroup() %>% group_by(Site) %>% mutate(nType=sum(Count), prop=CountperPos/nType)
 ```
@@ -1561,7 +1567,7 @@ I want to look at percentages but for all sites:
 
 
 ```{r}
-AllsiteDF_to100_fuklprop=AllsiteDF_to100  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100),prop=CountperPos/TotCount)
+AllsiteDF_to100_fuklprop=AllsiteDF_to100  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100),prop=CountperPos/33432)
 ```
 
 
@@ -1571,7 +1577,7 @@ allSite=ggplot(AllsiteDF_to100_fuklprop, aes(group=Site, x=NegCount, y=prop, fil
 
 
 ```{r}
-AllsiteDF_to100_nuc_fullprop=AllsiteDF_to100_Nuc  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_Nuc),prop=CountperPos/TotCount)
+AllsiteDF_to100_nuc_fullprop=AllsiteDF_to100_Nuc  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_Nuc),prop=CountperPos/657)
 ```
 
 
@@ -1582,7 +1588,7 @@ nucSite=ggplot(AllsiteDF_to100_nuc_fullprop, aes(group=Site, x=NegCount, y=prop,
 
 
 ```{r}
-AllsiteDF_to100_nucInt_fullprop=AllsiteDF_to100_NucInt  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_NucInt),prop=CountperPos/TotCount)
+AllsiteDF_to100_nucInt_fullprop=AllsiteDF_to100_NucInt  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_NucInt),prop=CountperPos/449)
 ```
 
 
@@ -1592,7 +1598,7 @@ nucIntsite=ggplot(AllsiteDF_to100_nucInt_fullprop, aes(group=Site, x=NegCount, y
 AllsiteDF_to100_prop_NucAllInt
 
 ```{r}
-AllsiteDF_to100_nucAllInt_fullprop=AllsiteDF_to100_NucAllInt  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_NucAllInt),prop=CountperPos/TotCount)
+AllsiteDF_to100_nucAllInt_fullprop=AllsiteDF_to100_NucAllInt  %>%  group_by(Site,NegCount) %>% summarise(CountperPos=n()) %>% mutate(TotCount=nrow(AllsiteDF_to100_NucAllInt),prop=CountperPos/12251)
 ```
 
 
@@ -1607,6 +1613,47 @@ PropSignalSite_ofall=plot_grid(allSite, AllIntsite, nucSite,nucIntsite)
 
 
 ```{r}
-ggsave(PropSignalSite_ofall, file="../output/plots/PropofAllSigSite_bySet.png")
+ggsave(PropSignalSite_ofall, file="../output/plots/PropofAllSigSite_bySet.png", height = 10, width=10)
+```
+
+
+##Total PAS  
+Now many motifs am I finding within -15 and -40. 
+
+
+I can filter the AllsiteDF:
+
+```{r}
+AllsiteDF_15.40= AllsiteDF_to100 %>% filter(NegCount <= -15, NegCount >= -40)
+dim(AllsiteDF_15.40)
+```
+
+```{r}
+AllsiteDF_10.50= AllsiteDF %>% filter(NegCount <= -10, NegCount >= -50)
+dim(AllsiteDF_10.50)
+```
+
+Proprortion between -15 and -40 for each: 
+ 
+```{r}
+all15.40=AllsiteDF_to100 %>% filter(NegCount <= -15, NegCount >= -50) %>% nrow() /33432
+nuc15.40=AllsiteDF_to100_Nuc %>%filter(NegCount <= -15, NegCount >= -50) %>% nrow() /657
+nucint15.40=AllsiteDF_to100_NucInt%>%filter(NegCount <= -15, NegCount >= -50) %>% nrow() /449
+allnuc15.40 =AllsiteDF_to100_NucAllInt %>% filter(NegCount <= -15, NegCount >= -50) %>% nrow() / 12251
+  
+DF_1540=as.data.frame(cbind(Set=c("All PAS", "Nuclear Specific", "Nuclear Specific in Introns", "All PAS in Introns"), value=c(all15.40,nuc15.40,nucint15.40,allnuc15.40), location=c("Full Gene", "Full Gene", "Intronic", "Intronic")))
+
+
+DF_1540$value=as.numeric(as.character(DF_1540$value))
+
+site15.40=ggplot(DF_1540,aes(x=Set, y=value,fill=location)) + geom_bar(stat="identity") + labs(y="Proportion with annotated site",title="Proportion of PAS with annoatated sites \n 15-40 basepairs upstream") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + scale_fill_brewer(palette = "Set1")
+```
+ 
+
+```{r}
+site15.40
+
+
+ggsave(site15.40, file="../output/plots/PropofPASwithSignalSite.png")
 ```
 
