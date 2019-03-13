@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-28
+<strong>Last updated:</strong> 2019-03-13
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeea34b3c08b0009f4c9790bf8592c262ababdfd6ctargetblankea34b3ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/ea34b3c08b0009f4c9790bf8592c262ababdfd6c" target="_blank">ea34b3c</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef9e94cfa5421b15c3786b50cd787034b7150203atargetblankf9e94cfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f9e94cfa5421b15c3786b50cd787034b7150203a" target="_blank">f9e94cf</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeea34b3c08b0009f4c9790bf8592c262ababdfd6ctargetblankea34b3ca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef9e94cfa5421b15c3786b50cd787034b7150203atargetblankf9e94cfa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -539,9 +539,9 @@ Untracked files:
     Untracked:  KalistoAbundance18486.txt
     Untracked:  analysis/4suDataIGV.Rmd
     Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/EmpDistforOverlaps.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
-    Untracked:  analysis/fixBWChromNames.Rmd
     Untracked:  analysis/groSeqAnalysis.Rmd
     Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
     Untracked:  analysis/snake.config.notes.Rmd
@@ -556,13 +556,17 @@ Untracked files:
     Untracked:  data/ApaQTLs_otherPhen/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
+    Untracked:  data/EmpiricalDists/
+    Untracked:  data/FeatureoverlapPeaks/
     Untracked:  data/GM12878.chromHMM.bed
     Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/GWAS_overlap/
     Untracked:  data/LianoglouLCL/
     Untracked:  data/LocusZoom/
     Untracked:  data/LocusZoom_Unexp/
     Untracked:  data/LocusZoom_proc/
     Untracked:  data/MatchedSnps/
+    Untracked:  data/NucSpecQTL/
     Untracked:  data/NuclearApaQTLs.txt
     Untracked:  data/PeakCounts/
     Untracked:  data/PeakCounts_noMP_5perc/
@@ -572,10 +576,12 @@ Untracked files:
     Untracked:  data/PeakUsage_noMP_GeneLocAnno/
     Untracked:  data/PeaksUsed/
     Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/PolyA_DB/
     Untracked:  data/QTL_overlap/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
     Untracked:  data/Replicates_usage/
+    Untracked:  data/Signal_Loc/
     Untracked:  data/TotalApaQTLs.txt
     Untracked:  data/Totalpeaks_filtered_clean.bed
     Untracked:  data/UnderstandPeaksQC/
@@ -664,22 +670,25 @@ Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
+    Modified:   analysis/NuclearSpecQTL.Rmd
+    Modified:   analysis/PeakToXper.Rmd
     Modified:   analysis/apaQTLoverlapGWAS.Rmd
+    Modified:   analysis/characterize_apaQTLs.Rmd
     Modified:   analysis/cleanupdtseq.internalpriming.Rmd
     Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
     Modified:   analysis/dif.iso.usage.leafcutter.Rmd
-    Modified:   analysis/diffIsoAnalysisNewMapping.Rmd
     Modified:   analysis/diff_iso_pipeline.Rmd
     Modified:   analysis/explainpQTLs.Rmd
     Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/fixBWChromNames.Rmd
     Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/initialPacBioQuant.Rmd
     Modified:   analysis/mispriming_approach.Rmd
     Modified:   analysis/overlapMolQTL.Rmd
     Modified:   analysis/overlapMolQTL.opposite.Rmd
     Modified:   analysis/overlap_qtls.Rmd
     Modified:   analysis/peakOverlap_oppstrand.Rmd
     Modified:   analysis/peakQCPPlots.Rmd
-    Modified:   analysis/peakQCplotsSTARprocessing.Rmd
     Modified:   analysis/pheno.leaf.comb.Rmd
     Modified:   analysis/pipeline_55Ind.Rmd
     Modified:   analysis/swarmPlots_QTLs.Rmd
@@ -728,6 +737,23 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/416ce2171cd5f703db02e07dfa1e208853a7d2c2/docs/NetSeqatPeaks.html" target="_blank">416ce21</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-02-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
@@ -751,13 +777,18 @@ add nuclear spec peaks
 </div>
 </div>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-<pre><code>✔ ggplot2 3.0.0     ✔ purrr   0.2.5
-✔ tibble  1.4.2     ✔ dplyr   0.7.6
-✔ tidyr   0.8.1     ✔ stringr 1.4.0
-✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.1.0       ✔ purrr   0.3.1  
+✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
+✔ tidyr   0.8.3       ✔ stringr 1.4.0  
+✔ readr   1.3.1       ✔ forcats 0.4.0  </code></pre>
+<pre><code>Warning: package &#39;tibble&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;tidyr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;purrr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
-<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>Warning: package &#39;forcats&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -995,23 +1026,24 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2  workflowr_1.2.0 forcats_0.3.0   stringr_1.4.0  
- [5] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
- [9] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+ [1] workflowr_1.2.0 forcats_0.4.0   stringr_1.4.0   dplyr_0.8.0.1  
+ [5] purrr_0.3.1     readr_1.3.1     tidyr_0.8.3     tibble_2.0.1   
+ [9] ggplot2_3.1.0   tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.19     cellranger_1.1.0 plyr_1.8.4       compiler_3.5.1  
- [5] pillar_1.3.0     git2r_0.24.0     bindr_0.1.1      tools_3.5.1     
- [9] digest_0.6.17    lubridate_1.7.4  jsonlite_1.6     evaluate_0.13   
-[13] nlme_3.1-137     gtable_0.2.0     lattice_0.20-35  pkgconfig_2.0.2 
-[17] rlang_0.2.2      cli_1.0.1        rstudioapi_0.9.0 yaml_2.2.0      
-[21] haven_1.1.2      withr_2.1.2      xml2_1.2.0       httr_1.3.1      
-[25] knitr_1.20       hms_0.4.2        fs_1.2.6         rprojroot_1.3-2 
-[29] grid_3.5.1       tidyselect_0.2.4 glue_1.3.0       R6_2.3.0        
-[33] readxl_1.1.0     rmarkdown_1.11   modelr_0.1.2     magrittr_1.5    
-[37] whisker_0.3-2    backports_1.1.2  scales_1.0.0     htmltools_0.3.6 
-[41] rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2 stringi_1.2.4   
-[45] lazyeval_0.2.1   munsell_0.5.0    broom_0.5.0      crayon_1.3.4    </code></pre>
+ [1] Rcpp_1.0.0       cellranger_1.1.0 plyr_1.8.4       pillar_1.3.1    
+ [5] compiler_3.5.1   git2r_0.24.0     tools_3.5.1      digest_0.6.18   
+ [9] lubridate_1.7.4  jsonlite_1.6     evaluate_0.13    nlme_3.1-137    
+[13] gtable_0.2.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.3.1     
+[17] cli_1.0.1        rstudioapi_0.9.0 yaml_2.2.0       haven_2.1.0     
+[21] xfun_0.5         withr_2.1.2      xml2_1.2.0       httr_1.4.0      
+[25] knitr_1.21       hms_0.4.2        generics_0.0.2   fs_1.2.6        
+[29] rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5 glue_1.3.0      
+[33] R6_2.4.0         readxl_1.3.0     rmarkdown_1.11   modelr_0.1.4    
+[37] magrittr_1.5     whisker_0.3-2    backports_1.1.3  scales_1.0.0    
+[41] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.4-0
+[45] stringi_1.3.1    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1     
+[49] crayon_1.3.4    </code></pre>
 </div>
 
 <hr>
