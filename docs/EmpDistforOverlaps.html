@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree01c22a6b794b2f5471ad28dd180485717e6b8c46targetblank01c22a6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/01c22a6b794b2f5471ad28dd180485717e6b8c46" target="_blank">01c22a6</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree068ae8936a56d4de81cce1c2dfcea8d278ac058ftargetblank068ae89a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/068ae8936a56d4de81cce1c2dfcea8d278ac058f" target="_blank">068ae89</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree01c22a6b794b2f5471ad28dd180485717e6b8c46targetblank01c22a6a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree068ae8936a56d4de81cce1c2dfcea8d278ac058ftargetblank068ae89a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -629,6 +629,7 @@ Untracked files:
     Untracked:  data/nuc6up/
     Untracked:  data/nuc_10up/
     Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_inAPA/
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/pacbio_cov/
     Untracked:  data/peakPerRefSeqGene/
@@ -740,6 +741,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/068ae8936a56d4de81cce1c2dfcea8d278ac058f/analysis/EmpDistforOverlaps.Rmd" target="_blank">068ae89</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-13
+</td>
+<td>
+add pqtl analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/f69638470a5d03a3c836d8356d741d8cf930aabf/docs/EmpDistforOverlaps.html" target="_blank">f696384</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/01c22a6b794b2f5471ad28dd180485717e6b8c46/analysis/EmpDistforOverlaps.Rmd" target="_blank">01c22a6</a>
 </td>
 <td>
@@ -797,7 +832,7 @@ eQTL and unexp eQTL res
 <pre><code>This is workflowr version 1.2.0
 Run ?workflowr for help getting started</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.1.0       ✔ purrr   0.3.1  
 ✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
 ✔ tidyr   0.8.3       ✔ stringr 1.4.0  
@@ -808,7 +843,7 @@ Run ?workflowr for help getting started</code></pre>
 <pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>Warning: package &#39;forcats&#39; was built under R version 3.5.2</code></pre>
-<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
@@ -1644,6 +1679,433 @@ nonSig=permRes %&gt;% filter(-log10(bh)&lt;1)
 write.table(permRes_sig, file=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_significantpQTLs.txt&quot;, col.names=F, row.names=F, quote=F, sep=&quot;\t&quot;)
 
 write.table(nonSig, file=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs.txt&quot;, col.names=F, row.names=F, quote=F, sep=&quot;\t&quot;)</code></pre>
+<p>Run for each file:</p>
+<pre class="bash"><code>python changeENSG2GeneName.py  /project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_significantpQTLs.txt  /project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_significantpQTLs_GeneNames.txt 
+
+python changeENSG2GeneName.py  /project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs.txt  /project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs_GeneNames.txt 
+
+python changeENSG2GeneName.py  /project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/fastqtl_qqnorm_prot_fixed.nominal.out  /project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/fastqtl_qqnorm_prot_fixed.nominal_GeneNames.out
+
+</code></pre>
+<p>Subset genes that were tested in apa.</p>
+<p>subsetpQTL_testinAPA.py</p>
+<pre class="bash"><code>totAPA=&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permRes.txt&quot;
+NucAPA=&quot;/project2/gilad/briana/threeprimeseq/data/perm_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permRes.txt&quot;
+
+
+nonPQTLs=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs_GeneNames.txt&quot;
+pQTLs=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_significantpQTLs_GeneNames.txt&quot;
+
+pQTLS_intot=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inTot.txt&quot;
+pQTLS_innuc=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inNuc.txt&quot;
+
+nonPQTL_intot=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs_GeneNames_inTot.txt&quot;
+
+nonPQTL_innuc=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs_GeneNames_inNuc.txt&quot;
+
+
+def check_names(inApa, inqtl, outFile):
+    gene_dic={}
+    
+    for ln in open(inApa, &quot;r&quot;):
+        gene=ln.split()[0].split(&quot;:&quot;)[-1].split(&quot;_&quot;)[0]
+        if gene not in gene_dic.keys():
+            gene_dic[gene]=&quot;&quot;
+        else:
+            continue
+    fileOut= open(outFile, &quot;w&quot;)
+    nnottested=0
+    for ln in open(inqtl, &quot;r&quot;):
+        gene=ln.split()[0]
+        if gene in gene_dic.keys():
+            fileOut.write(ln)
+        else:
+            nnottested += 1 
+    print(&quot;Number of genes not tested in apa = %s&quot;%(nnottested))
+    fileOut.close()
+    
+    
+print(&quot;total&quot;)
+check_names(totAPA,nonPQTLs, nonPQTL_intot)
+print(&quot;nuclear&quot;)
+check_names(NucAPA,nonPQTLs, nonPQTL_innuc)
+
+print(&quot;total&quot;)
+check_names(totAPA,pQTLs, pQTLS_intot)
+print(&quot;nuclear&quot;)
+check_names(NucAPA,pQTLs, pQTLS_innuc)</code></pre>
+<p>non PQTLS:<br />
+total Number of genes not tested in apa = 473 nuclear Number of genes not tested in apa = 444</p>
+<p>PQTLS:<br />
+total Number of genes not tested in apa = 8 nuclear Number of genes not tested in apa = 8</p>
+<p>Make distributions:</p>
+<p>getApaPval4pQTLs_secondtry.py</p>
+<pre class="bash"><code>def main(apa, pqtl, outFile):
+    fout=open(outFile,&quot;w&quot;)
+    use_dic={}
+    for ln in open(pQTL,&quot;r&quot;):
+        pgene=ln.split()[0]
+        pSNP=ln.split()[5]
+        use_dic[pgene]=pSNP
+    for ln in open(apa, &quot;r&quot;):
+        geneApa=ln.split()[0].split(&quot;:&quot;)[-1].split(&quot;_&quot;)[0]
+        snpApa =ln.split()[1]   
+        if geneApa in use_dic.keys():
+            if snpApa == use_dic[geneApa]:
+                fout.write(ln)
+    fout.close()
+                
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import random
+    fraction=sys.argv[1]
+    OutFile=sys.argv[2]
+    if fraction==&quot;Total&quot;:
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+        pQTL=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inTot.txt&quot;
+    else:
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+        pQTL=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inNuc.txt&quot;
+    main(nomFile, pQTL, OutFile) 
+    </code></pre>
+<p>run_getApaPval4pQTLs_second.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_getApaPval4pQTLs2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_getApaPval4pQTLs2.out
+#SBATCH --error=run_getApaPval4pQTLs2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python getApaPval4pQTLs_secondtry.py &quot;Total&quot; &quot;/project2/gilad/briana/threeprimeseq/data/pQTL_inAPA/pQTLinTotalApa_try2.txt&quot;
+
+python getApaPval4pQTLs_secondtry.py &quot;Nuclear&quot; &quot;/project2/gilad/briana/threeprimeseq/data/pQTL_inAPA/pQTLinNuclearApa_try2.txt&quot;</code></pre>
+<p>makepQTLEmpirical_secondtry.py</p>
+<pre class="bash"><code>def main(peaks, APA,nonP,pqtl, outF):
+    #dictionary of non egenes  
+    nonPgenes={}
+    for ln in open(nonP):
+        gene=ln.split()[0]
+        nonPgenes[gene]=&quot;&quot;
+        
+    # make dictionary- key= npeak, value=list of genes with same value (use this when i need to pull random from the values)
+    #only add genes in the non eqet
+    peaknum={}
+    for ln in open(peaks, &quot;r&quot;):
+        gene, npeak = ln.split()
+        if npeak not in peaknum.keys():
+            if gene in nonPgenes.keys():
+                peaknum[npeak]=[gene]
+        else:
+            if gene in nonPgenes.keys():
+                 peaknum[npeak].append(gene)
+    #make opposite dic- key =gene, value = npeaks (use this when i first get an EGENE to see how many peaks i will need)
+    #want all genes- e and no e genes 
+    GenePeak={}
+    for ln in open(peaks, &quot;r&quot;):
+        gene, npeak= ln.split()
+        GenePeak[gene]=npeak
+    pQTLs= open(pqtl, &quot;r&quot;)
+    gene_useDic={}
+    for ln in pQTLs:
+        gene= ln.split()[0]
+        peaks2use=GenePeak[gene]
+        posibleGenes=peaknum[peaks2use]
+        if len(posibleGenes) == 0:
+             print(&quot;No genes with peaknum&quot;)
+             posibleGenes=peaknum[str(int(peaks2use)+1)]
+             if len(posibleGenes) == 0:
+                 print(&quot;No genes with peaknum&quot;)
+                 continue
+        GeneUse=random.choice(posibleGenes)
+        gene_useDic[GeneUse]=&quot;&quot;
+        #print(GeneUse)
+        #find the snp that goes with this gene in the non egenes file- this gives me the lowest pval snp
+    for ln in open(nonP,&quot;r&quot;):
+        genenon=ln.split()[0]
+        #print(genenon)
+        if genenon in gene_useDic.keys():
+            snpUse=ln.split()[5]
+            gene_useDic[genenon]=snpUse
+        #now i have the gene and the snp, i can write out any of the nominal values from the apa file with these
+    fout=open(outF,&quot;w&quot;)
+    for ln in open(APA, &quot;r&quot;):
+        geneApa=ln.split()[0].split(&quot;:&quot;)[-1].split(&quot;_&quot;)[0]
+        snpApa =ln.split()[1]
+        if geneApa in gene_useDic.keys():
+            if snpApa == gene_useDic[geneApa]:
+                fout.write(ln)
+    fout.close()
+  
+  
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import random
+    fraction=sys.argv[1]
+    OutFile=sys.argv[2]
+    if fraction==&quot;Total&quot;:
+        npeaks=&quot;/project2/gilad/briana/threeprimeseq/data/EmpiricalDists/TotalQTL_nPeaks.txt&quot;
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+        nonPfile=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs_GeneNames_inTot.txt&quot;
+        pQTL=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inTot.txt&quot;
+    else:
+        npeaks=&quot;/project2/gilad/briana/threeprimeseq/data/EmpiricalDists/NuclearQTL_nPeaks.txt&quot;
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+        nonPfile=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs_GeneNames_inNuc.txt&quot;
+        pQTL=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inNuc.txt&quot;
+    main(npeaks, nomFile, nonPfile, pQTL, OutFile) </code></pre>
+<p>run_makepQTLEmpirical_secondtry.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_makepQTLEmpirical2
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_makepQTLEmpirical2.out
+#SBATCH --error=run_makepQTLEmpirical2.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python makepQTLEmpirical_secondtry.py &quot;Total&quot; &quot;/project2/gilad/briana/threeprimeseq/data/EmpiricalDists/pQTL_total_EmpiricalDist_secondtry.txt&quot;
+
+python makepQTLEmpirical_secondtry.py &quot;Nuclear&quot; &quot;/project2/gilad/briana/threeprimeseq/data/EmpiricalDists/pQTL_nuclear_EmpiricalDist_secondtry.txt&quot;
+</code></pre>
+<pre class="r"><code>pQTLinTotal=read.table(&quot;../data/pQTL_inAPA/pQTLinTotalApa_try2.txt&quot;, stringsAsFactors = F, col.names = nomnames)
+pQTLinNuclear=read.table(&quot;../data/pQTL_inAPA/pQTLinNuclearApa_try2.txt&quot;, stringsAsFactors = F, col.names = nomnames)
+
+PempTotal=read.table(&quot;../data/EmpiricalDists/pQTL_total_EmpiricalDist_secondtry.txt&quot;, col.names = nomnames,stringsAsFactors = F)
+PempNuclear=read.table(&quot;../data/EmpiricalDists/pQTL_nuclear_EmpiricalDist_secondtry.txt&quot;, col.names = nomnames, stringsAsFactors = F)</code></pre>
+<pre class="r"><code>ptoaddTotal=runif(nrow(pQTLinTotal)-nrow(PempTotal))
+PempTotalUse= c(as.vector(PempTotal$pval),ptoaddTotal)
+
+#For the nuclear I need to randomly remove 1: 
+PempNuclearUse=PempNuclear %&gt;% slice(1:130) </code></pre>
+<pre class="r"><code>png(&quot;../output/plots/pqtlsinTotAPAQQPlot.png&quot;)
+qqplot(-log10(PempTotalUse), -log10(pQTLinTotal$pval),ylab=&quot;-log10 Total APA pval&quot;, xlab=&quot;Empirical expectation&quot;, main=&quot;pQTLs in totalAPA analysis&quot;)
+abline(0,1)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<pre class="r"><code>png(&quot;../output/plots/pqtlsinNucAPAQQPlot.png&quot;)
+qqplot(-log10(PempNuclearUse$pval), -log10(pQTLinNuclear$pval),ylab=&quot;-log10 Total APA pval&quot;, xlab=&quot;Empirical expectation&quot;, main=&quot;pQTLs in totalAPA analysis&quot;)
+abline(0,1)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+</div>
+<div id="pqtls-that-are-not-eqtls" class="section level2">
+<h2>Pqtls that are not eQTLs</h2>
+<p>subset for pgenes that are not e genes</p>
+<p>subsetpQTLsnoteQTLs.py</p>
+<pre class="bash"><code>
+#pqtl 
+totP=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inTot.txt&quot;
+nucP=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inNuc.txt&quot;
+
+totPnotE=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inTot_notE.txt&quot;
+nucPnotE=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inNuc_notE.txt&quot;
+
+def subsetP(pqtl, pnote):
+    #eQTL genes
+    eQTLs=open(&quot;/project2/gilad/briana/threeprimeseq/data/eQTL_myanalysis/permRes_significanteQTLs_GeneNames.txt&quot;,&quot;r&quot;)
+    egenes={}
+    for ln in eQTLs:
+        gene=ln.split()[0]
+        egenes[gene]=&quot;&quot;
+    fout=open(pnote,&quot;w&quot;)
+    for ln in open(pqtl,&quot;r&quot;):
+        gene=ln.split()[0]
+        if gene not in egenes.keys():
+            fout.write(ln)
+    fout.close()
+    
+
+
+subsetP(totP, totPnotE)
+subsetP(nucP, nucPnotE)</code></pre>
+<p>getApaPval4pQTLs_secondtry_notE.py</p>
+<pre class="bash"><code>def main(apa, pqtl, outFile):
+    fout=open(outFile,&quot;w&quot;)
+    use_dic={}
+    for ln in open(pQTL,&quot;r&quot;):
+        pgene=ln.split()[0]
+        pSNP=ln.split()[5]
+        use_dic[pgene]=pSNP
+    for ln in open(apa, &quot;r&quot;):
+        geneApa=ln.split()[0].split(&quot;:&quot;)[-1].split(&quot;_&quot;)[0]
+        snpApa =ln.split()[1]   
+        if geneApa in use_dic.keys():
+            if snpApa == use_dic[geneApa]:
+                fout.write(ln)
+    fout.close()
+                
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import random
+    fraction=sys.argv[1]
+    OutFile=sys.argv[2]
+    if fraction==&quot;Total&quot;:
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+        pQTL=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inTot_notE.txt&quot;
+    else:
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+        pQTL=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inNuc_notE.txt&quot;
+    main(nomFile, pQTL, OutFile) 
+    </code></pre>
+<p>run_getApaPval4pQTLs_second_notE.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_getApaPval4pQTLs2_notE
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_getApaPval4pQTLs2_notE.out
+#SBATCH --error=run_getApaPval4pQTLs2_notE.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python getApaPval4pQTLs_secondtry_notE.py &quot;Total&quot; &quot;/project2/gilad/briana/threeprimeseq/data/pQTL_inAPA/pQTLinTotalApa_try2_notE.txt&quot;
+
+python getApaPval4pQTLs_secondtry_notE.py &quot;Nuclear&quot; &quot;/project2/gilad/briana/threeprimeseq/data/pQTL_inAPA/pQTLinNuclearApa_try2_notE.txt&quot;</code></pre>
+<p>makepQTLEmpirical_secondtry_notE.py</p>
+<pre class="bash"><code>def main(peaks, APA,nonP,pqtl, outF):
+    #dictionary of non egenes  
+    nonPgenes={}
+    for ln in open(nonP):
+        gene=ln.split()[0]
+        nonPgenes[gene]=&quot;&quot;
+        
+    # make dictionary- key= npeak, value=list of genes with same value (use this when i need to pull random from the values)
+    #only add genes in the non eqet
+    peaknum={}
+    for ln in open(peaks, &quot;r&quot;):
+        gene, npeak = ln.split()
+        if npeak not in peaknum.keys():
+            if gene in nonPgenes.keys():
+                peaknum[npeak]=[gene]
+        else:
+            if gene in nonPgenes.keys():
+                 peaknum[npeak].append(gene)
+    #make opposite dic- key =gene, value = npeaks (use this when i first get an EGENE to see how many peaks i will need)
+    #want all genes- e and no e genes 
+    GenePeak={}
+    for ln in open(peaks, &quot;r&quot;):
+        gene, npeak= ln.split()
+        GenePeak[gene]=npeak
+    pQTLs= open(pqtl, &quot;r&quot;)
+    gene_useDic={}
+    for ln in pQTLs:
+        gene= ln.split()[0]
+        peaks2use=GenePeak[gene]
+        posibleGenes=peaknum[peaks2use]
+        if len(posibleGenes) == 0:
+             print(&quot;No genes with peaknum&quot;)
+             posibleGenes=peaknum[str(int(peaks2use)+1)]
+             if len(posibleGenes) == 0:
+                 print(&quot;No genes with peaknum&quot;)
+                 continue
+        GeneUse=random.choice(posibleGenes)
+        gene_useDic[GeneUse]=&quot;&quot;
+        #print(GeneUse)
+        #find the snp that goes with this gene in the non egenes file- this gives me the lowest pval snp
+    for ln in open(nonP,&quot;r&quot;):
+        genenon=ln.split()[0]
+        #print(genenon)
+        if genenon in gene_useDic.keys():
+            snpUse=ln.split()[5]
+            gene_useDic[genenon]=snpUse
+        #now i have the gene and the snp, i can write out any of the nominal values from the apa file with these
+    fout=open(outF,&quot;w&quot;)
+    for ln in open(APA, &quot;r&quot;):
+        geneApa=ln.split()[0].split(&quot;:&quot;)[-1].split(&quot;_&quot;)[0]
+        snpApa =ln.split()[1]
+        if geneApa in gene_useDic.keys():
+            if snpApa == gene_useDic[geneApa]:
+                fout.write(ln)
+    fout.close()
+  
+  
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    import random
+    fraction=sys.argv[1]
+    OutFile=sys.argv[2]
+    if fraction==&quot;Total&quot;:
+        npeaks=&quot;/project2/gilad/briana/threeprimeseq/data/EmpiricalDists/TotalQTL_nPeaks.txt&quot;
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+        nonPfile=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs_GeneNames_inTot.txt&quot;
+        pQTL=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inTot_notE.txt&quot;
+    else:
+        npeaks=&quot;/project2/gilad/briana/threeprimeseq/data/EmpiricalDists/NuclearQTL_nPeaks.txt&quot;
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+        nonPfile=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs_GeneNames_inNuc.txt&quot;
+        pQTL=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_pQTLs_GeneNames_inNuc_notE.txt&quot;
+    main(npeaks, nomFile, nonPfile, pQTL, OutFile) </code></pre>
+<p>run_makepQTLEmpirical_secondtry_notE.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_makepQTLEmpirical2_notE
+#SBATCH --account=pi-yangili1
+#SBATCH --time=36:00:00
+#SBATCH --output=run_makepQTLEmpirical2_notE.out
+#SBATCH --error=run_makepQTLEmpirical2_notE.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+python makepQTLEmpirical_secondtry_notE.py &quot;Total&quot; &quot;/project2/gilad/briana/threeprimeseq/data/EmpiricalDists/pQTL_total_EmpiricalDist_secondtry_notE.txt&quot;
+
+python makepQTLEmpirical_secondtry_notE.py &quot;Nuclear&quot; &quot;/project2/gilad/briana/threeprimeseq/data/EmpiricalDists/pQTL_nuclear_EmpiricalDist_secondtry_notE.txt&quot;
+</code></pre>
+<pre class="r"><code>pQTLinTotal_notE=read.table(&quot;../data/pQTL_inAPA/pQTLinTotalApa_try2_notE.txt&quot;, stringsAsFactors = F, col.names = nomnames)
+pQTLinNuclear_notE=read.table(&quot;../data/pQTL_inAPA/pQTLinNuclearApa_try2_notE.txt&quot;, stringsAsFactors = F, col.names = nomnames)</code></pre>
+<pre class="r"><code>PempTotalnotE=read.table(&quot;../data/EmpiricalDists/pQTL_total_EmpiricalDist_secondtry_notE.txt&quot;, col.names = nomnames,stringsAsFactors = F)
+PempNuclearnotE=read.table(&quot;../data/EmpiricalDists/pQTL_nuclear_EmpiricalDist_secondtry_notE.txt&quot;, col.names = nomnames, stringsAsFactors = F)</code></pre>
+<pre class="r"><code>toaddTotalPnotE=runif(nrow(pQTLinTotal_notE)-nrow(PempTotalnotE))
+toaddNuclearPnotE=runif(nrow(pQTLinNuclear_notE)-nrow(PempNuclearnotE))
+
+PempNuclearUsenotE= c(as.vector(PempNuclearnotE$pval),toaddNuclearPnotE)
+
+PempTotalUsenotE= c(as.vector(PempTotalnotE$pval),toaddTotalPnotE)</code></pre>
+<pre class="r"><code>png(&quot;../output/plots/pqtlsinTotAPAQQPlot_withnonE.png&quot;)
+qqplot(-log10(PempTotalUse), -log10(pQTLinTotal$pval),ylab=&quot;-log10 Total APA pval&quot;, xlab=&quot;Empirical expectation&quot;, main=&quot;pQTLs in totalAPA analysis&quot;)
+points(sort(-log10(PempTotalUsenotE)), sort(-log10(pQTLinTotal_notE$pval)),col=alpha(&quot;Red&quot;))
+legend(&quot;topleft&quot;, legend=c(&quot;All pQTLs&quot;, &quot;non Egene pQTLs&quot;),col=c(&quot;black&quot;, &quot;red&quot;), pch=16,bty = &#39;n&#39;)
+abline(0,1)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+<pre class="r"><code>png(&quot;../output/plots/pqtlsinNucAPAQQPlot_withnonE.png&quot;)
+qqplot(-log10(PempNuclearUse$pval), -log10(pQTLinNuclear$pval),ylab=&quot;-log10 Nuclear APA pval&quot;, xlab=&quot;Empirical expectation&quot;, main=&quot;pQTLs in nuclearAPA analysis&quot;)
+points(sort(-log10(PempNuclearUsenotE)), sort(-log10(pQTLinNuclear_notE$pval)),col=alpha(&quot;Red&quot;))
+legend(&quot;topleft&quot;, legend=c(&quot;All pQTLs&quot;, &quot;non Egene pQTLs&quot;),col=c(&quot;black&quot;, &quot;red&quot;), pch=16,bty = &#39;n&#39;)
+abline(0,1)
+dev.off()</code></pre>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
