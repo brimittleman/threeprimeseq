@@ -999,3 +999,28 @@ abline(0,1)
 dev.off()
 ```
 
+
+##Same analysis starting with pQTLs  
+
+Make file with sig pQTLs: 
+
+Run this interactviely in R
+```{r,eval=F}
+library(dplyr)
+
+names=c('pid', 'nvar', 'shape1', 'shape2','dummy', 'sid', 'dist', 'npval' ,'slope', 'ppval', 'bpval' )
+permRes=read.table("/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/fastqtl_qqnorm_prot.fixed.perm.out",stringsAsFactors = F, col.names = names)
+
+permRes$bh=p.adjust(permRes$bpval, method="fdr")
+
+
+permRes_sig=permRes %>% filter(-log10(bh)>=1)
+nonSig=permRes %>% filter(-log10(bh)<1)
+
+
+write.table(permRes_sig, file="/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_significantpQTLs.txt", col.names=F, row.names=F, quote=F, sep="\t")
+
+write.table(nonSig, file="/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs.txt", col.names=F, row.names=F, quote=F, sep="\t")
+
+
+```

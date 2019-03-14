@@ -184,5 +184,7 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Explore relationships with peaks and net seq](NetSeqatPeaks.html)  
 
+* [Overlap molQTLs with apa associations](EmpDistforOverlaps.html)
+
 
 
