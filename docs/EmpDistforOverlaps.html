@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee556f63bffcadbe1332de30b52209876c3a50f8atargetblanke556f63a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e556f63bffcadbe1332de30b52209876c3a50f8a" target="_blank">e556f63</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree01c22a6b794b2f5471ad28dd180485717e6b8c46targetblank01c22a6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/01c22a6b794b2f5471ad28dd180485717e6b8c46" target="_blank">01c22a6</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee556f63bffcadbe1332de30b52209876c3a50f8atargetblanke556f63a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree01c22a6b794b2f5471ad28dd180485717e6b8c46targetblank01c22a6a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -735,6 +735,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/01c22a6b794b2f5471ad28dd180485717e6b8c46/analysis/EmpDistforOverlaps.Rmd" target="_blank">01c22a6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-13
+</td>
+<td>
+eQTL and unexp eQTL res
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/aa202363d29ae9709a7f0d378ffae110debde48f/docs/EmpDistforOverlaps.html" target="_blank">aa20236</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1590,6 +1624,26 @@ abline(0,1)
 dev.off()</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
+</div>
+<div id="same-analysis-starting-with-pqtls" class="section level2">
+<h2>Same analysis starting with pQTLs</h2>
+<p>Make file with sig pQTLs:</p>
+<p>Run this interactviely in R</p>
+<pre class="r"><code>library(dplyr)
+
+names=c(&#39;pid&#39;, &#39;nvar&#39;, &#39;shape1&#39;, &#39;shape2&#39;,&#39;dummy&#39;, &#39;sid&#39;, &#39;dist&#39;, &#39;npval&#39; ,&#39;slope&#39;, &#39;ppval&#39;, &#39;bpval&#39; )
+permRes=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/fastqtl_qqnorm_prot.fixed.perm.out&quot;,stringsAsFactors = F, col.names = names)
+
+permRes$bh=p.adjust(permRes$bpval, method=&quot;fdr&quot;)
+
+
+permRes_sig=permRes %&gt;% filter(-log10(bh)&gt;=1)
+nonSig=permRes %&gt;% filter(-log10(bh)&lt;1)
+
+
+write.table(permRes_sig, file=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_significantpQTLs.txt&quot;, col.names=F, row.names=F, quote=F, sep=&quot;\t&quot;)
+
+write.table(nonSig, file=&quot;/project2/gilad/briana/threeprimeseq/data/pQTL_myanalysis/permRes_NOTpQTLs.txt&quot;, col.names=F, row.names=F, quote=F, sep=&quot;\t&quot;)</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
