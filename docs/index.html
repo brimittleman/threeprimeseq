@@ -338,7 +338,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-13
+<strong>Last updated:</strong> 2019-03-15
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -369,10 +369,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree01c22a6b794b2f5471ad28dd180485717e6b8c46targetblank01c22a6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/01c22a6b794b2f5471ad28dd180485717e6b8c46" target="_blank">01c22a6</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree5d6ac937df2222499a1a0993bfc85b083557ccc0targetblank5d6ac93a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/5d6ac937df2222499a1a0993bfc85b083557ccc0" target="_blank">5d6ac93</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree01c22a6b794b2f5471ad28dd180485717e6b8c46targetblank01c22a6a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree5d6ac937df2222499a1a0993bfc85b083557ccc0targetblank5d6ac93a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -428,6 +428,7 @@ Untracked files:
     Untracked:  data/PeaksUsed_noMP_5percCov/
     Untracked:  data/PolyA_DB/
     Untracked:  data/QTL_overlap/
+    Untracked:  data/RNAdecay/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
     Untracked:  data/Replicates_usage/
@@ -480,6 +481,7 @@ Untracked files:
     Untracked:  data/nuc6up/
     Untracked:  data/nuc_10up/
     Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_inAPA/
     Untracked:  data/pQTL_otherphen/
     Untracked:  data/pacbio_cov/
     Untracked:  data/peakPerRefSeqGene/
@@ -520,6 +522,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/EmpDistforOverlaps.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
     Modified:   analysis/NuclearSpecQTL.Rmd
     Modified:   analysis/PeakToXper.Rmd
@@ -586,6 +589,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5d6ac937df2222499a1a0993bfc85b083557ccc0/analysis/index.Rmd" target="_blank">5d6ac93</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-15
+</td>
+<td>
+add decay analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/f69638470a5d03a3c836d8356d741d8cf930aabf/docs/index.html" target="_blank">f696384</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -3470,6 +3507,7 @@ Start workflowr project.
 <li><p><a href="NuclearSpecQTL.html">Specificity between fraction QTLs</a></p></li>
 <li><p><a href="NetSeqatPeaks.html">Explore relationships with peaks and net seq</a></p></li>
 <li><p><a href="EmpDistforOverlaps.html">Overlap molQTLs with apa associations</a></p></li>
+<li><p><a href="RNAdecayAndAPA.html">Relationship between APA and decay</a></p></li>
 </ul>
 </div>
 
