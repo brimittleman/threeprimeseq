@@ -1,0 +1,141 @@
+---
+title: "Connection between APA and RNA decay"
+author: "Briana Mittleman"
+date: "3/14/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to ask if more nuclear specific transcripts compared to total is associated with RNA decay.  
+
+```{r}
+library(tidyverse)
+library(reshape2)
+```
+
+
+```{r}
+decay=read.table(file = "../data/RNAdecay/tr_decay_table_norm.txt", header=T, stringsAsFactors = F) %>% select(gene_id,contains("RNAdecay"))
+```
+
+Change gene names:
+
+```{r}
+geneNames=read.table("../data/ensemble_to_genename.txt", sep="\t", col.names = c('gene_id', 'GeneName', 'source' ),stringsAsFactors = F)
+```
+
+```{r}
+decay_geneNames=decay %>% inner_join(geneNames, by="gene_id") %>% select(GeneName, contains("RNAdecay"))
+
+decay_geneNames_long=melt(decay_geneNames,id.vars = "GeneName", value.name = "RNA_Decay", variable.name = "Decay_Ind") %>% separate(Decay_Ind, into=c("type", "ind"), sep="_") %>% mutate(Individual=paste("X" , ind, sep="")) %>% select(GeneName, Individual, RNA_Decay)
+```
+
+##Prepare apa value:
+
+For each gene I need to get nuclear counts/nuclear + counts  
+
+
+
+I want to use the filtered 5% peak counts. 
+
+
+/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.5perc.fc
+
+/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc
+
+
+Make a dictionary from the individuals in the first line. I want them to have NA##### format 
+
+makepheno4decayComparison.py 
+```{bash,eval=F}
+nucCounts="/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.5perc.fc"
+
+totCounts="/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc"
+
+#top key is individual
+OutPutdic={}
+
+
+#problem keeping ind connected to column
+
+```
+
+
+Try in R
+
+Nuclear first:  
+```{r}
+NucAPA=read.table("../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.5perc.fc", stringsAsFactors = F, header = T) %>% select(-Chr, -Start, -End, -Strand, -Length) %>% separate(Geneid, into=c("peak", "chrom", "start", "end", "strand", "GeneName"), sep=":") %>% select(-chrom, -start, -end, -strand)
+
+NucApaMelt=melt(NucAPA, id.vars =c( "peak", "GeneName"), value.name="count", variable.name="Ind") %>% separate(Ind, into=c('Individual', 'fraction') ,sep="_") %>% select(peak, GeneName, Individual, count)
+
+
+NucAPA_bygene= NucApaMelt %>% group_by(GeneName,Individual) %>% summarise(NuclearSum=sum(count))
+```
+
+
+
+Total first:  
+```{r}
+TotAPA=read.table("../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc", stringsAsFactors = F, header = T) %>% select(-Chr, -Start, -End, -Strand, -Length) %>% separate(Geneid, into=c("peak", "chrom", "start", "end", "strand", "GeneName"), sep=":") %>% select(-chrom, -start, -end, -strand)
+
+TotApaMelt=melt(TotAPA, id.vars =c( "peak", "GeneName"), value.name="count", variable.name="Ind")  %>% separate(Ind, into=c('Individual', 'fraction') ,sep="_") %>% select(peak, GeneName, Individual, count)
+
+
+TotAPA_bygene=TotApaMelt %>% group_by(GeneName,Individual) %>% summarise(TotalSum=sum(count))
+```
+
+
+
+Sum these together: 
+
+```{r} 
+Apa_all=TotAPA_bygene %>% inner_join(NucAPA_bygene, by=c("GeneName", "Individual")) %>% filter(NuclearSum>0 |TotalSum>0 )  %>% mutate(APAvalue=NuclearSum/(NuclearSum+TotalSum)) %>% select(GeneName, Individual, APAvalue)
+```
+
+
+
+##Join ith decay
+
+```{r}
+APAandDecay=decay_geneNames_long %>% inner_join(Apa_all, by=c('GeneName', 'Individual'))
+
+
+ngenes=APAandDecay %>% select(GeneName) %>% unique() %>% nrow()
+ngenes
+```
+
+plot it:
+
+```{r}
+
+summary(lm(data=APAandDecay, APAvalue~RNA_Decay))
+APAdecalAllindplot=ggplot(APAandDecay, aes(y=APAvalue, x=RNA_Decay)) + geom_point(aes(col=Individual)) +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_smooth(method="lm") + annotate("text", label="Estimated Slope= -.026", y=1, x=-1) + labs(title="Relationship between RNA decay \nand APA fraction counts", x=" mRNA decay rate/h", y= "Nuclear/(Nuclear + Total)")
+
+APAdecalAllindplot
+
+
+ggsave(APAdecalAllindplot, file="../output/plots/APAandRNADecay_allInd.png", height = 7, width=15)
+```
+
+
+1 individual:
+
+```{r}
+APAandDecay_18498= APAandDecay %>% filter(Individual=="X18498")
+
+APAdecay_18498=ggplot(APAandDecay_18498, aes(y=APAvalue, x=RNA_Decay)) + geom_point() +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + annotate("text", label="Estimated Slope= -.133", y=0, x=-.8) + geom_smooth(method="lm")+ labs(title="Relationship between RNA decay \nand APA fraction counts", x=" mRNA decay rate/h", y= "Nuclear/(Nuclear + Total)")
+
+
+
+APAdecay_18498
+
+
+ggsave(APAdecay_18498, file="../output/plots/APAandRNADecay_18498.png")
+
+summary(lm(data=APAandDecay_18498, APAvalue~RNA_Decay))
+```
+
