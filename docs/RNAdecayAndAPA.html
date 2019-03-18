@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-15
+<strong>Last updated:</strong> 2019-03-18
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree5d6ac937df2222499a1a0993bfc85b083557ccc0targetblank5d6ac93a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/5d6ac937df2222499a1a0993bfc85b083557ccc0" target="_blank">5d6ac93</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree52ab38685cd8082a58948e6731e15f7d489b371etargetblank52ab386a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/52ab38685cd8082a58948e6731e15f7d489b371e" target="_blank">52ab386</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree5d6ac937df2222499a1a0993bfc85b083557ccc0targetblank5d6ac93a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree52ab38685cd8082a58948e6731e15f7d489b371etargetblank52ab386a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -743,6 +743,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/52ab38685cd8082a58948e6731e15f7d489b371e/analysis/RNAdecayAndAPA.Rmd" target="_blank">52ab386</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-18
+</td>
+<td>
+look at gene 1 SD outside mean decay
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/128366906da17e5b80b7abe6e206c98c8c124cef/docs/RNAdecayAndAPA.html" target="_blank">1283669</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/5d6ac937df2222499a1a0993bfc85b083557ccc0/analysis/RNAdecayAndAPA.Rmd" target="_blank">5d6ac93</a>
 </td>
 <td>
@@ -858,6 +892,43 @@ F-statistic: 179.1 on 1 and 398991 DF,  p-value: &lt; 2.2e-16</code></pre>
 
 APAdecalAllindplot</code></pre>
 <p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/128366906da17e5b80b7abe6e206c98c8c124cef/docs/figure/RNAdecayAndAPA.Rmd/unnamed-chunk-10-1.png" target="_blank">1283669</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(APAdecalAllindplot, file=&quot;../output/plots/APAandRNADecay_allInd.png&quot;, height = 7, width=15)</code></pre>
 <p>1 individual:</p>
 <pre class="r"><code>APAandDecay_18498= APAandDecay %&gt;% filter(Individual==&quot;X18498&quot;)
@@ -868,6 +939,43 @@ APAdecay_18498=ggplot(APAandDecay_18498, aes(y=APAvalue, x=RNA_Decay)) + geom_po
 
 APAdecay_18498</code></pre>
 <p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/128366906da17e5b80b7abe6e206c98c8c124cef/docs/figure/RNAdecayAndAPA.Rmd/unnamed-chunk-11-1.png" target="_blank">1283669</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(APAdecay_18498, file=&quot;../output/plots/APAandRNADecay_18498.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <pre class="r"><code>summary(lm(data=APAandDecay_18498, APAvalue~RNA_Decay))</code></pre>
@@ -889,6 +997,70 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 Residual standard error: 0.2324 on 7766 degrees of freedom
 Multiple R-squared:  0.007979,  Adjusted R-squared:  0.007851 
 F-statistic: 62.46 on 1 and 7766 DF,  p-value: 3.094e-15</code></pre>
+<div id="look-at-most-variable-decay-values" class="section level3">
+<h3>Look at most variable decay values</h3>
+<p>Most of the genes have a similar decay rate. To se if there is a trend I need to look at the genes with &gt;1sd outside of the mean.</p>
+<pre class="r"><code>decay_zscore=decay_geneNames_long  %&gt;% mutate(mean=mean(RNA_Decay), sd=sd(RNA_Decay)) %&gt;%  group_by(GeneName) %&gt;% mutate(geneMean=mean(RNA_Decay)) %&gt;% mutate(Zscore=(geneMean-mean)/sd) %&gt;% select(GeneName, Zscore) %&gt;% unique() 
+
+
+
+decay_1sd= decay_zscore %&gt;% filter(abs(Zscore)&gt;1) %&gt;% select(GeneName)</code></pre>
+<p>Filter the apa and decay for these genes.</p>
+<pre class="r"><code>APAandDecay_1sd= APAandDecay %&gt;% filter(GeneName %in% decay_1sd$GeneName)
+
+APAandDecay_1sd %&gt;% select(GeneName) %&gt;% unique() %&gt;% nrow()</code></pre>
+<pre><code>[1] 938</code></pre>
+<pre class="r"><code>summary(lm(data=APAandDecay_1sd, APAvalue~RNA_Decay))</code></pre>
+<pre><code>
+Call:
+lm(formula = APAvalue ~ RNA_Decay, data = APAandDecay_1sd)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.47225 -0.13964 -0.01415  0.12495  0.63026 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.396160   0.001103  359.08   &lt;2e-16 ***
+RNA_Decay   -0.072001   0.003283  -21.93   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.1868 on 47713 degrees of freedom
+Multiple R-squared:  0.009982,  Adjusted R-squared:  0.009962 
+F-statistic: 481.1 on 1 and 47713 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>APAdecalAllindplot_zgreat1=ggplot(APAandDecay_1sd, aes(y=APAvalue, x=RNA_Decay)) + geom_point() +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) + geom_smooth(method=&quot;lm&quot;)+ labs(title=&quot;Relationship between RNA decay \nand APA fraction counts&quot;, x=&quot; mRNA decay rate/h&quot;, y= &quot;Nuclear/(Nuclear + Total)&quot;)
+
+APAdecalAllindplot_zgreat1</code></pre>
+<p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(APAdecalAllindplot_zgreat1, file=&quot;../output/plots/APAandRNADecay1SD_allInd.png&quot;, height = 7, width=7)</code></pre>
+<pre class="r"><code>APAandDecay1SD_18498= APAandDecay_1sd %&gt;% filter(Individual==&quot;X18498&quot;)
+
+APAdecay1sqd_18498=ggplot(APAandDecay1SD_18498, aes(y=APAvalue, x=RNA_Decay)) + geom_point() +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;)+geom_smooth(method=&quot;lm&quot;)+ labs(title=&quot;Relationship between RNA decay \nand APA fraction counts&quot;, x=&quot; mRNA decay rate/h&quot;, y= &quot;Nuclear/(Nuclear + Total)&quot;)
+
+summary(lm(data=APAandDecay1SD_18498, APAvalue~RNA_Decay))</code></pre>
+<pre><code>
+Call:
+lm(formula = APAvalue ~ RNA_Decay, data = APAandDecay1SD_18498)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.55209 -0.15612  0.00324  0.15925  0.53943 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.527434   0.009106  57.923  &lt; 2e-16 ***
+RNA_Decay   -0.240981   0.029133  -8.272 4.56e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.2203 on 928 degrees of freedom
+Multiple R-squared:  0.06867,   Adjusted R-squared:  0.06766 
+F-statistic: 68.42 on 1 and 928 DF,  p-value: 4.556e-16</code></pre>
+<pre class="r"><code>APAdecay1sqd_18498</code></pre>
+<p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(APAdecay1sqd_18498, file=&quot;../output/plots/APAandRNADecay1SD_18498.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -930,6 +1102,7 @@ loaded via a namespace (and not attached):
 [41] backports_1.1.3  scales_1.0.0     htmltools_0.3.6  rvest_0.3.2     
 [45] assertthat_0.2.0 colorspace_1.4-0 labeling_0.3     stringi_1.3.1   
 [49] lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1      crayon_1.3.4    </code></pre>
+</div>
 </div>
 </div>
 
