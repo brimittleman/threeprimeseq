@@ -139,3 +139,52 @@ ggsave(APAdecay_18498, file="../output/plots/APAandRNADecay_18498.png")
 summary(lm(data=APAandDecay_18498, APAvalue~RNA_Decay))
 ```
 
+###Look at most variable decay values
+
+Most of the genes have a similar decay rate. To se if there is a trend I need to  look at the genes with >1sd outside of the mean.  
+
+```{r}
+decay_zscore=decay_geneNames_long  %>% mutate(mean=mean(RNA_Decay), sd=sd(RNA_Decay)) %>%  group_by(GeneName) %>% mutate(geneMean=mean(RNA_Decay)) %>% mutate(Zscore=(geneMean-mean)/sd) %>% select(GeneName, Zscore) %>% unique() 
+
+
+
+decay_1sd= decay_zscore %>% filter(abs(Zscore)>1) %>% select(GeneName)
+
+
+
+```
+
+Filter the apa and decay for these genes.
+
+```{r}
+APAandDecay_1sd= APAandDecay %>% filter(GeneName %in% decay_1sd$GeneName)
+
+APAandDecay_1sd %>% select(GeneName) %>% unique() %>% nrow()
+```
+
+```{r}
+summary(lm(data=APAandDecay_1sd, APAvalue~RNA_Decay))
+APAdecalAllindplot_zgreat1=ggplot(APAandDecay_1sd, aes(y=APAvalue, x=RNA_Decay)) + geom_point() +geom_density2d(na.rm = TRUE, size = 1, colour = 'red') + geom_smooth(method="lm")+ labs(title="Relationship between RNA decay \nand APA fraction counts", x=" mRNA decay rate/h", y= "Nuclear/(Nuclear + Total)")
+
+APAdecalAllindplot_zgreat1
+
+
+ggsave(APAdecalAllindplot_zgreat1, file="../output/plots/APAandRNADecay1SD_allInd.png", height = 7, width=7)
+```
+
+
+
+
+
+```{r}
+APAandDecay1SD_18498= APAandDecay_1sd %>% filter(Individual=="X18498")
+
+APAdecay1sqd_18498=ggplot(APAandDecay1SD_18498, aes(y=APAvalue, x=RNA_Decay)) + geom_point() +geom_density2d(na.rm = TRUE, size = 1, colour = 'red')+geom_smooth(method="lm")+ labs(title="Relationship between RNA decay \nand APA fraction counts", x=" mRNA decay rate/h", y= "Nuclear/(Nuclear + Total)")
+
+summary(lm(data=APAandDecay1SD_18498, APAvalue~RNA_Decay))
+
+APAdecay1sqd_18498
+
+ggsave(APAdecay1sqd_18498, file="../output/plots/APAandRNADecay1SD_18498.png")
+```
+
