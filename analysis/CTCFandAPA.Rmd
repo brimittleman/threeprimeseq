@@ -1,0 +1,276 @@
+---
+title: "Overlap APAqtls with CTCF qtls"
+author: "Briana Mittleman"
+date: "3/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I will look at ctcf data too see if this insulator element could act as a mechanism for apa qtls. This is in line with the kinetic model. We know CTCF binding slows polymerase. We are testing if this slow down is associated with APA as well.  
+
+The ctcf data I will use can be found at https://www.ncbi.nlm.nih.gov/pubmed/27010758  
+
+I will download the normalized phenotype file each row a binding region and each column a sample.  
+
+The regions are defined as chromosome, start, end in hg19. I will format this file so I have an ID like i do for the APA analysis.  
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(data.table)
+library(cowplot)
+```
+
+
+##PAS Enrichment at CTCF
+First, I will look at overlap between the PAS and these CTCF sites. I can do this with deep tools by making a bed file.  
+
+
+CTCF2bed.py
+```{bash,eval=F}
+CTCF=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.csv", "r")
+bedFile=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbindingLoc.bed", "w")
+
+for i,ln in enumerate(CTCF):
+    if i >0: 
+        chrm=ln.split(",")[0]
+        start=ln.split(",")[1]
+        end=ln.split(",")[2]
+        bedFile.write("%s\t%s\t%s\n"%(chrm, start, end))
+bedFile.close()
+```
+
+Deeptools plots:  
+
+TotandNucAtCTCF_DTPlot_noMPFilt.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=TotandNucAtCTCF_DTPlot_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=TotandNucAtCTCF_DTPlot_noMPFilt.out
+#SBATCH --error=TotandNucAtCTCF_DTPlot_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbindingLoc.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/CTCF/TotalandNucAtCTCF.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/CTCF/TotalandNucAtCTCF.gz --refPointLabel "CTCF" --plotTitle "Combined 3' at CTCF" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/CTCF/TotalandNucAtCTCF.png
+```
+
+No enrichemnt  
+
+##Call CTCF QTL
+
+I want to reformat the phenotypes, this is easiest in R.
+
+
+```{r}
+CTCF=read.csv("../data/CTCF/CTCFbinding.csv", header=T) %>% mutate(ID= paste(chrm,start, end, sep=":")) %>% select(chrm, start, end, ID, contains("NA"))
+
+
+write.table(CTCF, file="../data/CTCF/CTCFbinding.pheno.bed",col.names = T, row.names = F, quote = F, sep="\t" )
+```
+
+put on midway  
+
+```{bash,eval=F}
+#remove header
+sort -k1,1 -k2,2n CTCFbinding.pheno.bed > CTCFbinding.pheno.sort.bed
+#add header
+
+bgzip CTCFbinding.pheno.sort.bed
+tabix CTCFbinding.pheno.sort.bed.gz  
+
+#get the PCs 
+#midway1
+#export PATH=/project/gilad/software/midway1/qtltools-1.0:$PATH
+
+
+QTLtools pca --bed /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.pheno.sort.bed.gz  --scale --center --out /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.pheno.sort.bed.PC.out
+
+
+head -n 6 CTCFbinding.pheno.sort.bed.PC.out.pca > CTCFbinding.pheno.sort.bed.5PCs.out.pca
+```
+
+
+Make samples file: 
+
+
+smaplesCTCF.py
+```{bash,eval=F}
+ctcf=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.csv", "r")
+sampleFile=open("/project2/gilad/briana/threeprimeseq/data/CTCF/samples.txt", "w")
+
+samplesVCF=open("/project2/gilad/briana/YRI_geno_hg19/vcf.samples.txt", "r")
+
+samplesoK={}
+for ln in samplesVCF:
+  samList=ln.split()
+  for i in samList:
+      samplesoK[i]=""
+      
+print(samplesoK)
+for i, ln in enumerate(ctcf):
+    if i >0:
+        lnList=ln.split(",")
+        for each in lnList:
+            if each in samplesoK.keys():
+                sampleFile.write("%s\n"%(each))
+            else: 
+                print("notInvcf")
+                
+sampleFile.close()
+
+    
+```
+
+**VCF file does not have these samples. **
+
+
+CTCFqtl_nom.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=CTCFqtl_nom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=CTCFqtl_nom.out
+#SBATCH --error=CTCFqtl_nom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+  
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.pheno.sort.bed.5PCs.out.pca --bed /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.pheno.sort.bed.gz --out /project2/gilad/briana/threeprimeseq/data/CTCF/nom/fastqtl_CTCFbinding.nominal.out --chunk $i 30  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/CTCF/samples.txt
+done
+```
+
+
+
+##Use QTLs they called   
+
+Info from site:  
+This is the called QTLs 1% FDR threshold (q value <= 0.01) and kept only cluster variants defined as having P value within one order of magnitude to the P value of the lead variant for the same binding region.
+
+
+I can make a file with the snp positions and I will look for these in my nominal APA data  
+```{r}
+ctcfQTL=read.csv("../data/CTCF/CTCFQTLS.csv")
+
+ctcfQTL_snponly=ctcfQTL %>% select(VARIANT_CHRM, VARIANT_POS) %>% mutate(snp_loc=paste(VARIANT_CHRM,VARIANT_POS,sep= ":")) %>% select(snp_loc)
+
+
+write.table(ctcfQTL_snponly, file="../data/CTCF/CTCFqtl_snps.txt", col.names = F, row.names = F, quote = F)
+```
+
+
+Look for these snps in nominal data: 
+
+CTCFqtlinAPA.py
+
+```{bash,eval=F}
+def main(apa, ctcfQTL, outFile):
+    fout=open(outFile,"w")
+    ctcfdic={}
+    for ln in open(ctcfQTL,"r"):
+        snp=ln.split()[0]
+        ctcfdic[snp]=""
+    for ln in open(apa, "r"):
+            snpApa =ln.split()[1]   
+            if snpApa in ctcfdic.keys():
+                fout.write(ln)
+    fout.close()
+                
+
+if __name__ == "__main__":
+    import sys
+    fraction=sys.argv[1]
+    OutFile=sys.argv[2]
+    ctcfQTL="/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFqtl_snps.txt"
+    if fraction=="Total":
+        nomFile="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"
+    else:
+        nomFile="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"
+    main(nomFile, ctcfQTL, OutFile) 
+```
+
+
+Run:
+run_CTCFqtlinAPA.sh
+```{bash,eval=F}
+#!/bin/bash
+
+
+#SBATCH --job-name=run_CTCFqtlinAPA
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_CTCFqtlinAPA.out
+#SBATCH --error=run_CTCFqtlinAPA.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+module load Anaconda3
+source activate three-prime-env
+
+python CTCFqtlinAPA.py "Total" "/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinTotalAPA.txt"
+python CTCFqtlinAPA.py "Nuclear" "/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinNuclearAPA.txt"
+```
+
+
+Make empirical distribution: 
+
+I can do empirical distribution based on genes not in this set. I will make a list of the genes with] an overlap in total and in nuclear.  
+
+I can then find the matched peak numbers based on the genes that do have an overlap.
+
+
+getCTCFgenes.py
+```{bash,eval=F}
+
+
+apaNuc=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinNuclearAPA.txt", "r")
+apaTot=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinTotalAPA.txt","r")
+
+nucGenes=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinNuclearAPA_Genes.txt", "w")
+totGenes=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinTotalAPA_Genes.txt", "w")
+
+
+def overlapGenes(inFile, outFile):
+     #make dictionary with gene (this will have unique)
+     geneDic={}
+     for ln in inFile:
+          gene=ln.split()[0].split(":")[-1].split("_")[0]
+          if gene not in geneDic.keys():
+              geneDic[gene]=""
+     for k,v in geneDic.items():
+         outFile.write("%s\n"%(k))
+     outFile.close()
+     
+overlapGenes(apaTot, totGenes)
+overlapGenes(apaNuc,nucGenes)
+
+```
+
+
+
+
+
+Make the empirical dist:
+
+
+**Problem: which snp do i choose? CTCF not associated with a gene so i can pick the best snp for the non ctcf gene**
+

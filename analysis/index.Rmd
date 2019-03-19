@@ -188,5 +188,6 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Relationship between APA and decay](RNAdecayAndAPA.html)
 
+* [Overlap with CTCF data and QTLs](CTCFandAPA.html)
 
 
