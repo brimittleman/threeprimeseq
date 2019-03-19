@@ -76,7 +76,7 @@ I want to reformat the phenotypes, this is easiest in R.
 
 
 ```{r}
-CTCF=read.csv("../data/CTCF/CTCFbinding.csv", header=T) %>% mutate(ID= paste(chrm,start, end, sep=":")) %>% select(chrm, start, end, ID, contains("NA"))
+CTCF=read.csv("../data/CTCF/CTCFbinding.csv", header=T) %>% mutate(ID= paste(chrm,start, end, sep=":")) %>% dplyr::select(chrm, start, end, ID, contains("NA"))
 
 
 write.table(CTCF, file="../data/CTCF/CTCFbinding.pheno.bed",col.names = T, row.names = F, quote = F, sep="\t" )
@@ -171,7 +171,7 @@ I can make a file with the snp positions and I will look for these in my nominal
 ```{r}
 ctcfQTL=read.csv("../data/CTCF/CTCFQTLS.csv")
 
-ctcfQTL_snponly=ctcfQTL %>% select(VARIANT_CHRM, VARIANT_POS) %>% mutate(snp_loc=paste(VARIANT_CHRM,VARIANT_POS,sep= ":")) %>% select(snp_loc)
+ctcfQTL_snponly=ctcfQTL %>% dplyr::select(VARIANT_CHRM, VARIANT_POS) %>% mutate(snp_loc=paste(VARIANT_CHRM,VARIANT_POS,sep= ":")) %>% dplyr::select(snp_loc)
 
 
 write.table(ctcfQTL_snponly, file="../data/CTCF/CTCFqtl_snps.txt", col.names = F, row.names = F, quote = F)
@@ -266,6 +266,78 @@ overlapGenes(apaNuc,nucGenes)
 ```
 
 
+Plot these compared to the actuall apa QTLs.  
+```{r}
+ctcfinTot=read.table("../data/CTCF/CTCFQtlinTotalAPA.txt",stringsAsFactors = F,col.names = c("ID", "snp", "dist", "pval", "slope"))
+
+apaTot=read.table("../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt", header=T, stringsAsFactors=F)%>% drop_na()
+
+
+ctcfinNuc=read.table("../data/CTCF/CTCFQtlinNuclearAPA.txt",stringsAsFactors = F,col.names = c("ID", "snp", "dist", "pval", "slope"))
+
+apaNuc=read.table("../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt", header=T, stringsAsFactors=F) %>% drop_na()
+
+
+```
+
+
+I need the nominal association so i am making a fair comparison  
+
+
+nom4apaQTLSnps.py
+```{bash,eval=F}
+totQTL=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt","r")
+totNom=open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt", "r")
+totNomQTL=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Totalapa.NomPvalAssoc4allQTL.txt", "w")
+
+nucQTL=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt","r")
+nucNom=open("/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt","r")
+nucNomQTL=open("/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclearapa.NomPvalAssoc4allQTL.txt","w")
+
+
+def allAssocAPAqtl(QTL, nom, outFile):
+    snpdic={}
+    for ln in QTL:
+        snp =ln.split()[5]
+        if snp not in snpdic.keys():
+            snpdic[snp]=""
+    for ln in nom:
+        snp=ln.split()[1]
+        if snp in snpdic.keys():
+            outFile.write(ln)
+    outFile.close()
+    
+    
+allAssocAPAqtl(totQTL, totNom, totNomQTL)
+allAssocAPAqtl(nucQTL, nucNom, nucNomQTL)
+
+
+```
+
+```{r}
+totQTLnom=read.table("../data/CTCF/Totalapa.NomPvalAssoc4allQTL.txt", stringsAsFactors = F,  col.names = c("ID", "snp", "dist", "pval", "slope"))
+nucQTLnom=read.table("../data/CTCF/Nuclearapa.NomPvalAssoc4allQTL.txt", stringsAsFactors = F,  col.names = c("ID", "snp", "dist", "pval", "slope"))
+```
+
+
+```{r}
+
+
+
+qqplot(-log10(runif(nrow(totQTLnom))),-log10(totQTLnom$pval), ylab="-log10 Tota pval", xlab="Uniform expectation", main="Total pvalue association for CTCF qtls") 
+points(sort(-log10(runif(nrow(ctcfinTot)))), sort(-log10(ctcfinTot$pval)),col="blue")
+abline(0,1)
+legend("bottomright", legend=c("ApaQTLs", "CTCF qtls"),col=c("black", "blue"), pch=16,bty = 'n')
+```
+
+
+```{r}
+
+qqplot(-log10(runif(nrow(nucQTLnom))),-log10(nucQTLnom$pval), ylab="-log10 Nuclear pval", xlab="Uniform expectation", main="Nuclear pvalue association for CTCF qtls") 
+points(sort(-log10(runif(nrow(ctcfinNuc)))), sort(-log10(ctcfinNuc$pval)),col="blue")
+abline(0,1)
+legend("bottomright", legend=c("ApaQTLs", "CTCF qtls"),col=c("black", "blue"), pch=16,bty = 'n')
+```
 
 
 
@@ -274,3 +346,7 @@ Make the empirical dist:
 
 **Problem: which snp do i choose? CTCF not associated with a gene so i can pick the best snp for the non ctcf gene**
 
+
+
+
+##ApaQTLs condition on 
