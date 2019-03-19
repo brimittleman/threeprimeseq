@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed924da6d7a394ab66063c7872534805d7a4f8202targetblankd924da6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d924da6d7a394ab66063c7872534805d7a4f8202" target="_blank">d924da6</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeb562a7e092b2c6289fa182e5012127f93b13fe93targetblankb562a7ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/b562a7e092b2c6289fa182e5012127f93b13fe93" target="_blank">b562a7e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed924da6d7a394ab66063c7872534805d7a4f8202targetblankd924da6a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreeb562a7e092b2c6289fa182e5012127f93b13fe93targetblankb562a7ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -744,6 +744,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/b562a7e092b2c6289fa182e5012127f93b13fe93/analysis/CTCFandAPA.Rmd" target="_blank">b562a7e</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+<td>
+add qqplots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/9aa10032efaf24eaa48170105df1b94ecd45e80e/docs/CTCFandAPA.html" target="_blank">9aa1003</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/d924da6d7a394ab66063c7872534805d7a4f8202/analysis/CTCFandAPA.Rmd" target="_blank">d924da6</a>
 </td>
 <td>
@@ -841,7 +875,7 @@ plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/C
 <div id="call-ctcf-qtl" class="section level2">
 <h2>Call CTCF QTL</h2>
 <p>I want to reformat the phenotypes, this is easiest in R.</p>
-<pre class="r"><code>CTCF=read.csv(&quot;../data/CTCF/CTCFbinding.csv&quot;, header=T) %&gt;% mutate(ID= paste(chrm,start, end, sep=&quot;:&quot;)) %&gt;% select(chrm, start, end, ID, contains(&quot;NA&quot;))
+<pre class="r"><code>CTCF=read.csv(&quot;../data/CTCF/CTCFbinding.csv&quot;, header=T) %&gt;% mutate(ID= paste(chrm,start, end, sep=&quot;:&quot;)) %&gt;% dplyr::select(chrm, start, end, ID, contains(&quot;NA&quot;))
 
 
 write.table(CTCF, file=&quot;../data/CTCF/CTCFbinding.pheno.bed&quot;,col.names = T, row.names = F, quote = F, sep=&quot;\t&quot; )</code></pre>
@@ -914,7 +948,7 @@ This is the called QTLs 1% FDR threshold (q value &lt;= 0.01) and kept only clus
 <p>I can make a file with the snp positions and I will look for these in my nominal APA data</p>
 <pre class="r"><code>ctcfQTL=read.csv(&quot;../data/CTCF/CTCFQTLS.csv&quot;)
 
-ctcfQTL_snponly=ctcfQTL %&gt;% select(VARIANT_CHRM, VARIANT_POS) %&gt;% mutate(snp_loc=paste(VARIANT_CHRM,VARIANT_POS,sep= &quot;:&quot;)) %&gt;% select(snp_loc)
+ctcfQTL_snponly=ctcfQTL %&gt;% dplyr::select(VARIANT_CHRM, VARIANT_POS) %&gt;% mutate(snp_loc=paste(VARIANT_CHRM,VARIANT_POS,sep= &quot;:&quot;)) %&gt;% dplyr::select(snp_loc)
 
 
 write.table(ctcfQTL_snponly, file=&quot;../data/CTCF/CTCFqtl_snps.txt&quot;, col.names = F, row.names = F, quote = F)</code></pre>
@@ -987,8 +1021,60 @@ def overlapGenes(inFile, outFile):
 overlapGenes(apaTot, totGenes)
 overlapGenes(apaNuc,nucGenes)
 </code></pre>
+<p>Plot these compared to the actuall apa QTLs.</p>
+<pre class="r"><code>ctcfinTot=read.table(&quot;../data/CTCF/CTCFQtlinTotalAPA.txt&quot;,stringsAsFactors = F,col.names = c(&quot;ID&quot;, &quot;snp&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;))
+
+apaTot=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total.fixed.pheno_5perc_permResBH.txt&quot;, header=T, stringsAsFactors=F)%&gt;% drop_na()
+
+
+ctcfinNuc=read.table(&quot;../data/CTCF/CTCFQtlinNuclearAPA.txt&quot;,stringsAsFactors = F,col.names = c(&quot;ID&quot;, &quot;snp&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;))
+
+apaNuc=read.table(&quot;../data/perm_QTL_GeneLocAnno_noMP_5percov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear.fixed.pheno_5perc_permResBH.txt&quot;, header=T, stringsAsFactors=F) %&gt;% drop_na()</code></pre>
+<p>I need the nominal association so i am making a fair comparison</p>
+<p>nom4apaQTLSnps.py</p>
+<pre class="bash"><code>totQTL=open(&quot;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;,&quot;r&quot;)
+totNom=open(&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;, &quot;r&quot;)
+totNomQTL=open(&quot;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Totalapa.NomPvalAssoc4allQTL.txt&quot;, &quot;w&quot;)
+
+nucQTL=open(&quot;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;,&quot;r&quot;)
+nucNom=open(&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;,&quot;r&quot;)
+nucNomQTL=open(&quot;/project2/gilad/briana/threeprimeseq/data/ApaQTLs/Nuclearapa.NomPvalAssoc4allQTL.txt&quot;,&quot;w&quot;)
+
+
+def allAssocAPAqtl(QTL, nom, outFile):
+    snpdic={}
+    for ln in QTL:
+        snp =ln.split()[5]
+        if snp not in snpdic.keys():
+            snpdic[snp]=&quot;&quot;
+    for ln in nom:
+        snp=ln.split()[1]
+        if snp in snpdic.keys():
+            outFile.write(ln)
+    outFile.close()
+    
+    
+allAssocAPAqtl(totQTL, totNom, totNomQTL)
+allAssocAPAqtl(nucQTL, nucNom, nucNomQTL)
+
+</code></pre>
+<pre class="r"><code>totQTLnom=read.table(&quot;../data/CTCF/Totalapa.NomPvalAssoc4allQTL.txt&quot;, stringsAsFactors = F,  col.names = c(&quot;ID&quot;, &quot;snp&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;))
+nucQTLnom=read.table(&quot;../data/CTCF/Nuclearapa.NomPvalAssoc4allQTL.txt&quot;, stringsAsFactors = F,  col.names = c(&quot;ID&quot;, &quot;snp&quot;, &quot;dist&quot;, &quot;pval&quot;, &quot;slope&quot;))</code></pre>
+<pre class="r"><code>qqplot(-log10(runif(nrow(totQTLnom))),-log10(totQTLnom$pval), ylab=&quot;-log10 Tota pval&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Total pvalue association for CTCF qtls&quot;) 
+points(sort(-log10(runif(nrow(ctcfinTot)))), sort(-log10(ctcfinTot$pval)),col=&quot;blue&quot;)
+abline(0,1)
+legend(&quot;bottomright&quot;, legend=c(&quot;ApaQTLs&quot;, &quot;CTCF qtls&quot;),col=c(&quot;black&quot;, &quot;blue&quot;), pch=16,bty = &#39;n&#39;)</code></pre>
+<p><img src="figure/CTCFandAPA.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>qqplot(-log10(runif(nrow(nucQTLnom))),-log10(nucQTLnom$pval), ylab=&quot;-log10 Nuclear pval&quot;, xlab=&quot;Uniform expectation&quot;, main=&quot;Nuclear pvalue association for CTCF qtls&quot;) 
+points(sort(-log10(runif(nrow(ctcfinNuc)))), sort(-log10(ctcfinNuc$pval)),col=&quot;blue&quot;)
+abline(0,1)
+legend(&quot;bottomright&quot;, legend=c(&quot;ApaQTLs&quot;, &quot;CTCF qtls&quot;),col=c(&quot;black&quot;, &quot;blue&quot;), pch=16,bty = &#39;n&#39;)</code></pre>
+<p><img src="figure/CTCFandAPA.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Make the empirical dist:</p>
 <p><strong>Problem: which snp do i choose? CTCF not associated with a gene so i can pick the best snp for the non ctcf gene</strong></p>
+</div>
+<div id="apaqtls-condition-on" class="section level2">
+<h2>ApaQTLs condition on</h2>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
