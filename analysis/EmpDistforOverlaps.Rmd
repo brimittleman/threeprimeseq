@@ -1294,7 +1294,7 @@ dev.off()
 
 ```{r}
 png("../output/plots/pqtlsinNucAPAQQPlot.png")
-qqplot(-log10(PempNuclearUse$pval), -log10(pQTLinNuclear$pval),ylab="-log10 Total APA pval", xlab="Empirical expectation", main="pQTLs in totalAPA analysis")
+qqplot(-log10(PempNuclearUse$pval), -log10(pQTLinNuclear$pval),ylab="-log10 Nuclear APA pval", xlab="Empirical expectation", main="pQTLs in nuclearAPA analysis")
 abline(0,1)
 dev.off()
 ```
@@ -1537,3 +1537,39 @@ abline(0,1)
 dev.off()
 
 ```
+
+
+##Investigate top p not e  
+
+```{r}
+pQTLinTotal_notE %>% mutate(fixedPval=-log10(pval)) %>% arrange(desc(fixedPval))  %>% filter(fixedPval>2)
+```
+
+```{r}
+pQTLinNuclear_notE %>% mutate(fixedPval=-log10(pval)) %>% arrange(desc(fixedPval))  %>% filter(fixedPval>2)
+```
+
+
+Join these and look at the difference:  
+
+```{r}
+pQTLinTotal_notE_format= pQTLinTotal_notE %>% mutate(TotalfixedPval=-log10(pval)) %>% select(peakID, snp, TotalfixedPval)
+
+pQTLinNuclear_notE_format= pQTLinNuclear_notE %>% mutate(NuclearfixedPval=-log10(pval)) %>% select(peakID, snp, NuclearfixedPval)
+
+
+
+pQTLBoth_notE=pQTLinTotal_notE_format %>% inner_join(pQTLinNuclear_notE_format, by=c("peakID", "snp")) %>% separate(peakID, into=c("chr", "start", "end", "peak"), sep=":") %>%  separate(peak, into = c("gene", "strand", "peakNum"),sep="_")
+```
+Plot  
+
+```{r}
+ggplot(pQTLBoth_notE,aes(x=TotalfixedPval,y=NuclearfixedPval)) + geom_point() + geom_abline(slope=1) + labs(x="-log10(Total Pval)",y="-log10(Nuclear Pval)", title="apa association pvalue for pQTLs in non E genes") + geom_text(aes(label=gene),nudge_x = .35) + geom_vline(xintercept =1)
+
+
+ggplot(pQTLBoth_notE,aes(x=TotalfixedPval,y=NuclearfixedPval)) + geom_point() + geom_abline(slope=1) + labs(x="-log10(Total Pval)",y="-log10(Nuclear Pval)", title="apa association pvalue for pQTLs in non E genes") + geom_vline(xintercept =1)
+
+#+ geom_text(aes(label=gene),nudge_x = .35)
+```
+
+This shows a trend toward significance in total. This mean the p not e qtls are more likely to be significant in total than nuclear. 
