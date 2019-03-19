@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-13
+<strong>Last updated:</strong> 2019-03-19
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree068ae8936a56d4de81cce1c2dfcea8d278ac058ftargetblank068ae89a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/068ae8936a56d4de81cce1c2dfcea8d278ac058f" target="_blank">068ae89</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee83b47b1bacae9b2870d9077593bf47fe5ef950atargetblanke83b47ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e83b47b1bacae9b2870d9077593bf47fe5ef950a" target="_blank">e83b47b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree068ae8936a56d4de81cce1c2dfcea8d278ac058ftargetblank068ae89a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee83b47b1bacae9b2870d9077593bf47fe5ef950atargetblanke83b47ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -577,6 +577,7 @@ Untracked files:
     Untracked:  data/PeaksUsed_noMP_5percCov/
     Untracked:  data/PolyA_DB/
     Untracked:  data/QTL_overlap/
+    Untracked:  data/RNAdecay/
     Untracked:  data/RNAkalisto/
     Untracked:  data/RefSeq_annotations/
     Untracked:  data/Replicates_usage/
@@ -661,6 +662,7 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
+    Untracked:  manuscript/
     Untracked:  output/LZ/
     Untracked:  output/deeptools_plots/
     Untracked:  output/picard/
@@ -736,6 +738,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e83b47b1bacae9b2870d9077593bf47fe5ef950a/analysis/EmpDistforOverlaps.Rmd" target="_blank">e83b47b</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+<td>
+add total vs nuclear p not e
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/57f22b199417a64ee823574a8cd22740c15cfaa2/docs/EmpDistforOverlaps.html" target="_blank">57f22b1</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1900,7 +1936,7 @@ dev.off()</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
 <pre class="r"><code>png(&quot;../output/plots/pqtlsinNucAPAQQPlot.png&quot;)
-qqplot(-log10(PempNuclearUse$pval), -log10(pQTLinNuclear$pval),ylab=&quot;-log10 Total APA pval&quot;, xlab=&quot;Empirical expectation&quot;, main=&quot;pQTLs in totalAPA analysis&quot;)
+qqplot(-log10(PempNuclearUse$pval), -log10(pQTLinNuclear$pval),ylab=&quot;-log10 Nuclear APA pval&quot;, xlab=&quot;Empirical expectation&quot;, main=&quot;pQTLs in nuclearAPA analysis&quot;)
 abline(0,1)
 dev.off()</code></pre>
 <pre><code>quartz_off_screen 
@@ -2106,7 +2142,54 @@ abline(0,1)
 dev.off()</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
-<br> <br>
+</div>
+<div id="investigate-top-p-not-e" class="section level2">
+<h2>Investigate top p not e</h2>
+<pre class="r"><code>pQTLinTotal_notE %&gt;% mutate(fixedPval=-log10(pval)) %&gt;% arrange(desc(fixedPval))  %&gt;% filter(fixedPval&gt;2)</code></pre>
+<pre><code>                                   peakID         snp  dist        pval
+1 22:36622669:36622752:APOL2_+_peak104256 22:36614412 -8258 6.65193e-07
+2 2:191074768:191074850:HIBCH_+_peak93667 2:191148347 73578 1.51247e-04
+3  8:87484579:87484661:RMDN1_+_peak160108  8:87515611 31031 2.24485e-03
+4 22:36622255:36622339:APOL2_+_peak104255 22:36614412 -7844 3.92721e-03
+5  8:87486452:87486566:RMDN1_+_peak160112  8:87515611 29158 4.13078e-03
+6 1:233105742:233105826:NTPCR_-_peak15557 1:233113196  7453 4.14054e-03
+      slope fixedPval
+1 -0.770876  6.177052
+2 -0.679005  3.820313
+3  0.820206  2.648813
+4  0.564080  2.405916
+5 -0.670974  2.383968
+6 -0.296659  2.382943</code></pre>
+<pre class="r"><code>pQTLinNuclear_notE %&gt;% mutate(fixedPval=-log10(pval)) %&gt;% arrange(desc(fixedPval))  %&gt;% filter(fixedPval&gt;2)</code></pre>
+<pre><code>                                   peakID         snp   dist        pval
+1 2:191074768:191074850:HIBCH_+_peak93667 2:191148347  73578 4.44406e-12
+2 22:36622669:36622752:APOL2_+_peak104256 22:36614412  -8258 1.48711e-06
+3 22:36622255:36622339:APOL2_+_peak104255 22:36614412  -7844 6.88375e-06
+4  8:87484579:87484661:RMDN1_+_peak160108  8:87515611  31031 4.09927e-03
+5 16:50134231:50134323:HEATR3_-_peak62683 16:50089070 -45162 6.05304e-03
+6 2:191069361:191069449:HIBCH_+_peak93659 2:191148347  78985 8.61873e-03
+      slope fixedPval
+1 -1.217860 11.352220
+2 -0.783432  5.827657
+3  0.741472  5.162175
+4  0.850781  2.387293
+5 -0.482404  2.218026
+6  0.240519  2.064557</code></pre>
+<p>Join these and look at the difference:</p>
+<pre class="r"><code>pQTLinTotal_notE_format= pQTLinTotal_notE %&gt;% mutate(TotalfixedPval=-log10(pval)) %&gt;% select(peakID, snp, TotalfixedPval)
+
+pQTLinNuclear_notE_format= pQTLinNuclear_notE %&gt;% mutate(NuclearfixedPval=-log10(pval)) %&gt;% select(peakID, snp, NuclearfixedPval)
+
+
+
+pQTLBoth_notE=pQTLinTotal_notE_format %&gt;% inner_join(pQTLinNuclear_notE_format, by=c(&quot;peakID&quot;, &quot;snp&quot;)) %&gt;% separate(peakID, into=c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;peak&quot;), sep=&quot;:&quot;) %&gt;%  separate(peak, into = c(&quot;gene&quot;, &quot;strand&quot;, &quot;peakNum&quot;),sep=&quot;_&quot;)</code></pre>
+<p>Plot</p>
+<pre class="r"><code>ggplot(pQTLBoth_notE,aes(x=TotalfixedPval,y=NuclearfixedPval)) + geom_point() + geom_abline(slope=1) + labs(x=&quot;-log10(Total Pval)&quot;,y=&quot;-log10(Nuclear Pval)&quot;, title=&quot;apa association pvalue for pQTLs in non E genes&quot;) + geom_text(aes(label=gene),nudge_x = .35) + geom_vline(xintercept =1)</code></pre>
+<p><img src="figure/EmpDistforOverlaps.Rmd/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(pQTLBoth_notE,aes(x=TotalfixedPval,y=NuclearfixedPval)) + geom_point() + geom_abline(slope=1) + labs(x=&quot;-log10(Total Pval)&quot;,y=&quot;-log10(Nuclear Pval)&quot;, title=&quot;apa association pvalue for pQTLs in non E genes&quot;) + geom_vline(xintercept =1)</code></pre>
+<p><img src="figure/EmpDistforOverlaps.Rmd/unnamed-chunk-62-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#+ geom_text(aes(label=gene),nudge_x = .35)</code></pre>
+This shows a trend toward significance in total. This mean the p not e qtls are more likely to be significant in total than nuclear. <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -2145,8 +2228,8 @@ loaded via a namespace (and not attached):
 [33] R6_2.4.0         readxl_1.3.0     rmarkdown_1.11   modelr_0.1.4    
 [37] magrittr_1.5     whisker_0.3-2    backports_1.1.3  scales_1.0.0    
 [41] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.4-0
-[45] stringi_1.3.1    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1     
-[49] crayon_1.3.4    </code></pre>
+[45] labeling_0.3     stringi_1.3.1    lazyeval_0.2.1   munsell_0.5.0   
+[49] broom_0.5.1      crayon_1.3.4    </code></pre>
 </div>
 </div>
 
