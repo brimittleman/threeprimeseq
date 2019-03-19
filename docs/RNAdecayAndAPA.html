@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-18
+<strong>Last updated:</strong> 2019-03-19
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree52ab38685cd8082a58948e6731e15f7d489b371etargetblank52ab386a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/52ab38685cd8082a58948e6731e15f7d489b371e" target="_blank">52ab386</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree6e940ea6c45c7aa3ea089bc9a36e7973d11d743ctargetblank6e940eaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6e940ea6c45c7aa3ea089bc9a36e7973d11d743c" target="_blank">6e940ea</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree52ab38685cd8082a58948e6731e15f7d489b371etargetblank52ab386a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree6e940ea6c45c7aa3ea089bc9a36e7973d11d743ctargetblank6e940eaa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -553,6 +553,7 @@ Untracked files:
     Untracked:  data/AllPeak_counts/
     Untracked:  data/ApaQTLs/
     Untracked:  data/ApaQTLs_otherPhen/
+    Untracked:  data/CTCF/
     Untracked:  data/ChromHmmOverlap/
     Untracked:  data/DistTXN2Peak_genelocAnno/
     Untracked:  data/EmpiricalDists/
@@ -662,6 +663,7 @@ Untracked files:
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
     Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
+    Untracked:  manuscript/
     Untracked:  output/LZ/
     Untracked:  output/deeptools_plots/
     Untracked:  output/picard/
@@ -671,7 +673,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
-    Modified:   analysis/EmpDistforOverlaps.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
     Modified:   analysis/NuclearSpecQTL.Rmd
     Modified:   analysis/PeakToXper.Rmd
@@ -738,6 +739,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/6e940ea6c45c7aa3ea089bc9a36e7973d11d743c/analysis/RNAdecayAndAPA.Rmd" target="_blank">6e940ea</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+<td>
+change color by density
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/7fc93c8e38e183a6ba976ec5cb1e09b57ffc4842/docs/RNAdecayAndAPA.html" target="_blank">7fc93c8</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -818,12 +853,20 @@ Attaching package: &#39;reshape2&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:tidyr&#39;:
 
     smiths</code></pre>
-<pre class="r"><code>decay=read.table(file = &quot;../data/RNAdecay/tr_decay_table_norm.txt&quot;, header=T, stringsAsFactors = F) %&gt;% select(gene_id,contains(&quot;RNAdecay&quot;))</code></pre>
+<pre class="r"><code>library(MASS)</code></pre>
+<pre><code>
+Attaching package: &#39;MASS&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:dplyr&#39;:
+
+    select</code></pre>
+<pre class="r"><code>library(viridis)</code></pre>
+<pre><code>Loading required package: viridisLite</code></pre>
+<pre class="r"><code>decay=read.table(file = &quot;../data/RNAdecay/tr_decay_table_norm.txt&quot;, header=T, stringsAsFactors = F) %&gt;% dplyr::select(gene_id,contains(&quot;RNAdecay&quot;))</code></pre>
 <p>Change gene names:</p>
 <pre class="r"><code>geneNames=read.table(&quot;../data/ensemble_to_genename.txt&quot;, sep=&quot;\t&quot;, col.names = c(&#39;gene_id&#39;, &#39;GeneName&#39;, &#39;source&#39; ),stringsAsFactors = F)</code></pre>
-<pre class="r"><code>decay_geneNames=decay %&gt;% inner_join(geneNames, by=&quot;gene_id&quot;) %&gt;% select(GeneName, contains(&quot;RNAdecay&quot;))
+<pre class="r"><code>decay_geneNames=decay %&gt;% inner_join(geneNames, by=&quot;gene_id&quot;) %&gt;% dplyr::select(GeneName, contains(&quot;RNAdecay&quot;))
 
-decay_geneNames_long=melt(decay_geneNames,id.vars = &quot;GeneName&quot;, value.name = &quot;RNA_Decay&quot;, variable.name = &quot;Decay_Ind&quot;) %&gt;% separate(Decay_Ind, into=c(&quot;type&quot;, &quot;ind&quot;), sep=&quot;_&quot;) %&gt;% mutate(Individual=paste(&quot;X&quot; , ind, sep=&quot;&quot;)) %&gt;% select(GeneName, Individual, RNA_Decay)</code></pre>
+decay_geneNames_long=melt(decay_geneNames,id.vars = &quot;GeneName&quot;, value.name = &quot;RNA_Decay&quot;, variable.name = &quot;Decay_Ind&quot;) %&gt;% separate(Decay_Ind, into=c(&quot;type&quot;, &quot;ind&quot;), sep=&quot;_&quot;) %&gt;% mutate(Individual=paste(&quot;X&quot; , ind, sep=&quot;&quot;)) %&gt;% dplyr::select(GeneName, Individual, RNA_Decay)</code></pre>
 <div id="prepare-apa-value" class="section level2">
 <h2>Prepare apa value:</h2>
 <p>For each gene I need to get nuclear counts/nuclear + counts</p>
@@ -844,28 +887,28 @@ OutPutdic={}
 </code></pre>
 <p>Try in R</p>
 <p>Nuclear first:</p>
-<pre class="r"><code>NucAPA=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.5perc.fc&quot;, stringsAsFactors = F, header = T) %&gt;% select(-Chr, -Start, -End, -Strand, -Length) %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;GeneName&quot;), sep=&quot;:&quot;) %&gt;% select(-chrom, -start, -end, -strand)
+<pre class="r"><code>NucAPA=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.5perc.fc&quot;, stringsAsFactors = F, header = T) %&gt;% dplyr::select(-Chr, -Start, -End, -Strand, -Length) %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;GeneName&quot;), sep=&quot;:&quot;) %&gt;% dplyr::select(-chrom, -start, -end, -strand)
 
-NucApaMelt=melt(NucAPA, id.vars =c( &quot;peak&quot;, &quot;GeneName&quot;), value.name=&quot;count&quot;, variable.name=&quot;Ind&quot;) %&gt;% separate(Ind, into=c(&#39;Individual&#39;, &#39;fraction&#39;) ,sep=&quot;_&quot;) %&gt;% select(peak, GeneName, Individual, count)
+NucApaMelt=melt(NucAPA, id.vars =c( &quot;peak&quot;, &quot;GeneName&quot;), value.name=&quot;count&quot;, variable.name=&quot;Ind&quot;) %&gt;% separate(Ind, into=c(&#39;Individual&#39;, &#39;fraction&#39;) ,sep=&quot;_&quot;) %&gt;% dplyr::select(peak, GeneName, Individual, count)
 
 
 NucAPA_bygene= NucApaMelt %&gt;% group_by(GeneName,Individual) %&gt;% summarise(NuclearSum=sum(count))</code></pre>
 <p>Total first:</p>
-<pre class="r"><code>TotAPA=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, stringsAsFactors = F, header = T) %&gt;% select(-Chr, -Start, -End, -Strand, -Length) %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;GeneName&quot;), sep=&quot;:&quot;) %&gt;% select(-chrom, -start, -end, -strand)
+<pre class="r"><code>TotAPA=read.table(&quot;../data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.5perc.fc&quot;, stringsAsFactors = F, header = T) %&gt;% dplyr::select(-Chr, -Start, -End, -Strand, -Length) %&gt;% separate(Geneid, into=c(&quot;peak&quot;, &quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;, &quot;strand&quot;, &quot;GeneName&quot;), sep=&quot;:&quot;) %&gt;% dplyr::select(-chrom, -start, -end, -strand)
 
-TotApaMelt=melt(TotAPA, id.vars =c( &quot;peak&quot;, &quot;GeneName&quot;), value.name=&quot;count&quot;, variable.name=&quot;Ind&quot;)  %&gt;% separate(Ind, into=c(&#39;Individual&#39;, &#39;fraction&#39;) ,sep=&quot;_&quot;) %&gt;% select(peak, GeneName, Individual, count)
+TotApaMelt=melt(TotAPA, id.vars =c( &quot;peak&quot;, &quot;GeneName&quot;), value.name=&quot;count&quot;, variable.name=&quot;Ind&quot;)  %&gt;% separate(Ind, into=c(&#39;Individual&#39;, &#39;fraction&#39;) ,sep=&quot;_&quot;) %&gt;% dplyr::select(peak, GeneName, Individual, count)
 
 
 TotAPA_bygene=TotApaMelt %&gt;% group_by(GeneName,Individual) %&gt;% summarise(TotalSum=sum(count))</code></pre>
 <p>Sum these together:</p>
-<pre class="r"><code>Apa_all=TotAPA_bygene %&gt;% inner_join(NucAPA_bygene, by=c(&quot;GeneName&quot;, &quot;Individual&quot;)) %&gt;% filter(NuclearSum&gt;0 |TotalSum&gt;0 )  %&gt;% mutate(APAvalue=NuclearSum/(NuclearSum+TotalSum)) %&gt;% select(GeneName, Individual, APAvalue)</code></pre>
+<pre class="r"><code>Apa_all=TotAPA_bygene %&gt;% inner_join(NucAPA_bygene, by=c(&quot;GeneName&quot;, &quot;Individual&quot;)) %&gt;% filter(NuclearSum&gt;0 |TotalSum&gt;0 )  %&gt;% mutate(APAvalue=NuclearSum/(NuclearSum+TotalSum)) %&gt;% dplyr::select(GeneName, Individual, APAvalue)</code></pre>
 </div>
 <div id="join-ith-decay" class="section level2">
 <h2>Join ith decay</h2>
 <pre class="r"><code>APAandDecay=decay_geneNames_long %&gt;% inner_join(Apa_all, by=c(&#39;GeneName&#39;, &#39;Individual&#39;))
 
 
-ngenes=APAandDecay %&gt;% select(GeneName) %&gt;% unique() %&gt;% nrow()
+ngenes=APAandDecay %&gt;% dplyr::select(GeneName) %&gt;% unique() %&gt;% nrow()
 ngenes</code></pre>
 <pre><code>[1] 7888</code></pre>
 <p>plot it:</p>
@@ -1000,15 +1043,15 @@ F-statistic: 62.46 on 1 and 7766 DF,  p-value: 3.094e-15</code></pre>
 <div id="look-at-most-variable-decay-values" class="section level3">
 <h3>Look at most variable decay values</h3>
 <p>Most of the genes have a similar decay rate. To se if there is a trend I need to look at the genes with &gt;1sd outside of the mean.</p>
-<pre class="r"><code>decay_zscore=decay_geneNames_long  %&gt;% mutate(mean=mean(RNA_Decay), sd=sd(RNA_Decay)) %&gt;%  group_by(GeneName) %&gt;% mutate(geneMean=mean(RNA_Decay)) %&gt;% mutate(Zscore=(geneMean-mean)/sd) %&gt;% select(GeneName, Zscore) %&gt;% unique() 
+<pre class="r"><code>decay_zscore=decay_geneNames_long  %&gt;% mutate(mean=mean(RNA_Decay), sd=sd(RNA_Decay)) %&gt;%  group_by(GeneName) %&gt;% mutate(geneMean=mean(RNA_Decay)) %&gt;% mutate(Zscore=(geneMean-mean)/sd) %&gt;% dplyr::select(GeneName, Zscore) %&gt;% unique() 
 
 
 
-decay_1sd= decay_zscore %&gt;% filter(abs(Zscore)&gt;1) %&gt;% select(GeneName)</code></pre>
+decay_1sd= decay_zscore %&gt;% filter(abs(Zscore)&gt;1) %&gt;% dplyr::select(GeneName)</code></pre>
 <p>Filter the apa and decay for these genes.</p>
 <pre class="r"><code>APAandDecay_1sd= APAandDecay %&gt;% filter(GeneName %in% decay_1sd$GeneName)
 
-APAandDecay_1sd %&gt;% select(GeneName) %&gt;% unique() %&gt;% nrow()</code></pre>
+APAandDecay_1sd %&gt;% dplyr::select(GeneName) %&gt;% unique() %&gt;% nrow()</code></pre>
 <pre><code>[1] 938</code></pre>
 <pre class="r"><code>summary(lm(data=APAandDecay_1sd, APAvalue~RNA_Decay))</code></pre>
 <pre><code>
@@ -1029,14 +1072,79 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 Residual standard error: 0.1868 on 47713 degrees of freedom
 Multiple R-squared:  0.009982,  Adjusted R-squared:  0.009962 
 F-statistic: 481.1 on 1 and 47713 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>APAdecalAllindplot_zgreat1=ggplot(APAandDecay_1sd, aes(y=APAvalue, x=RNA_Decay)) + geom_point() +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;) + geom_smooth(method=&quot;lm&quot;)+ labs(title=&quot;Relationship between RNA decay \nand APA fraction counts&quot;, x=&quot; mRNA decay rate/h&quot;, y= &quot;Nuclear/(Nuclear + Total)&quot;)
+<pre class="r"><code>get_density &lt;- function(x, y, ...) {
+  dens &lt;- MASS::kde2d(x, y, ...)
+  ix &lt;- findInterval(x, dens$x)
+  iy &lt;- findInterval(y, dens$y)
+  ii &lt;- cbind(ix, iy)
+  return(dens$z[ii])
+}
+
+set.seed(1)
+dat &lt;- data.frame(
+  x = c(
+    rnorm(1e4, mean = 0, sd = 0.1),
+    rnorm(1e3, mean = 0, sd = 0.1)
+  ),
+  y = c(
+    rnorm(1e4, mean = 0, sd = 0.1),
+    rnorm(1e3, mean = 0.1, sd = 0.2)
+  )
+)
+
+APAandDecay_1sd$density &lt;- get_density(APAandDecay_1sd$APAvalue, APAandDecay_1sd$RNA_Decay, n = 100)
+
+
+APAdecalAllindplot_zgreat1=ggplot(APAandDecay_1sd, aes(y=APAvalue, x=RNA_Decay)) + geom_point(aes(color=density))+ geom_smooth(method=&quot;lm&quot;)+ labs(title=&quot;Relationship between RNA decay \nand APA fraction counts&quot;, x=&quot; mRNA decay rate/h&quot;, y= &quot;Nuclear/(Nuclear + Total)&quot;)  + scale_color_viridis()
+
 
 APAdecalAllindplot_zgreat1</code></pre>
 <p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7fc93c8e38e183a6ba976ec5cb1e09b57ffc4842/docs/figure/RNAdecayAndAPA.Rmd/unnamed-chunk-14-1.png" target="_blank">7fc93c8</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(APAdecalAllindplot_zgreat1, file=&quot;../output/plots/APAandRNADecay1SD_allInd.png&quot;, height = 7, width=7)</code></pre>
 <pre class="r"><code>APAandDecay1SD_18498= APAandDecay_1sd %&gt;% filter(Individual==&quot;X18498&quot;)
 
-APAdecay1sqd_18498=ggplot(APAandDecay1SD_18498, aes(y=APAvalue, x=RNA_Decay)) + geom_point() +geom_density2d(na.rm = TRUE, size = 1, colour = &#39;red&#39;)+geom_smooth(method=&quot;lm&quot;)+ labs(title=&quot;Relationship between RNA decay \nand APA fraction counts&quot;, x=&quot; mRNA decay rate/h&quot;, y= &quot;Nuclear/(Nuclear + Total)&quot;)
+
+
+APAandDecay1SD_18498$density &lt;- get_density(APAandDecay1SD_18498$APAvalue, APAandDecay1SD_18498$RNA_Decay, n = 100)
+
+APAdecay1sqd_18498=ggplot(APAandDecay1SD_18498, aes(y=APAvalue, x=RNA_Decay)) + geom_point(aes(color=density)) +geom_smooth(method=&quot;lm&quot;)+ labs(title=&quot;Relationship between RNA decay \nand APA fraction counts&quot;, x=&quot; mRNA decay rate/h&quot;, y= &quot;Nuclear/(Nuclear + Total)&quot;) + scale_color_viridis()
 
 summary(lm(data=APAandDecay1SD_18498, APAvalue~RNA_Decay))</code></pre>
 <pre><code>
@@ -1059,6 +1167,43 @@ Multiple R-squared:  0.06867,   Adjusted R-squared:  0.06766
 F-statistic: 68.42 on 1 and 928 DF,  p-value: 4.556e-16</code></pre>
 <pre class="r"><code>APAdecay1sqd_18498</code></pre>
 <p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7fc93c8e38e183a6ba976ec5cb1e09b57ffc4842/docs/figure/RNAdecayAndAPA.Rmd/unnamed-chunk-15-1.png" target="_blank">7fc93c8</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(APAdecay1sqd_18498, file=&quot;../output/plots/APAandRNADecay1SD_18498.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <br> <br>
@@ -1084,24 +1229,26 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] reshape2_1.4.3  forcats_0.4.0   stringr_1.4.0   dplyr_0.8.0.1  
- [5] purrr_0.3.1     readr_1.3.1     tidyr_0.8.3     tibble_2.0.1   
- [9] ggplot2_3.1.0   tidyverse_1.2.1
+ [1] viridis_0.5.1     viridisLite_0.3.0 MASS_7.3-51.1    
+ [4] reshape2_1.4.3    forcats_0.4.0     stringr_1.4.0    
+ [7] dplyr_0.8.0.1     purrr_0.3.1       readr_1.3.1      
+[10] tidyr_0.8.3       tibble_2.0.1      ggplot2_3.1.0    
+[13] tidyverse_1.2.1  
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.0       cellranger_1.1.0 plyr_1.8.4       pillar_1.3.1    
- [5] compiler_3.5.1   git2r_0.24.0     workflowr_1.2.0  tools_3.5.1     
- [9] digest_0.6.18    lubridate_1.7.4  jsonlite_1.6     evaluate_0.13   
-[13] nlme_3.1-137     gtable_0.2.0     lattice_0.20-38  pkgconfig_2.0.2 
-[17] rlang_0.3.1      cli_1.0.1        rstudioapi_0.9.0 yaml_2.2.0      
-[21] haven_2.1.0      xfun_0.5         withr_2.1.2      xml2_1.2.0      
-[25] httr_1.4.0       knitr_1.21       hms_0.4.2        generics_0.0.2  
-[29] fs_1.2.6         rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5
-[33] glue_1.3.0       R6_2.4.0         readxl_1.3.0     rmarkdown_1.11  
-[37] modelr_0.1.4     magrittr_1.5     whisker_0.3-2    MASS_7.3-51.1   
-[41] backports_1.1.3  scales_1.0.0     htmltools_0.3.6  rvest_0.3.2     
-[45] assertthat_0.2.0 colorspace_1.4-0 labeling_0.3     stringi_1.3.1   
-[49] lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1      crayon_1.3.4    </code></pre>
+ [1] tidyselect_0.2.5 xfun_0.5         haven_2.1.0      lattice_0.20-38 
+ [5] colorspace_1.4-0 generics_0.0.2   htmltools_0.3.6  yaml_2.2.0      
+ [9] rlang_0.3.1      pillar_1.3.1     glue_1.3.0       withr_2.1.2     
+[13] modelr_0.1.4     readxl_1.3.0     plyr_1.8.4       munsell_0.5.0   
+[17] gtable_0.2.0     workflowr_1.2.0  cellranger_1.1.0 rvest_0.3.2     
+[21] evaluate_0.13    labeling_0.3     knitr_1.21       broom_0.5.1     
+[25] Rcpp_1.0.0       scales_1.0.0     backports_1.1.3  jsonlite_1.6    
+[29] fs_1.2.6         gridExtra_2.3    hms_0.4.2        digest_0.6.18   
+[33] stringi_1.3.1    grid_3.5.1       rprojroot_1.3-2  cli_1.0.1       
+[37] tools_3.5.1      magrittr_1.5     lazyeval_0.2.1   crayon_1.3.4    
+[41] whisker_0.3-2    pkgconfig_2.0.2  xml2_1.2.0       lubridate_1.7.4 
+[45] assertthat_0.2.0 rmarkdown_1.11   httr_1.4.0       rstudioapi_0.9.0
+[49] R6_2.4.0         nlme_3.1-137     git2r_0.24.0     compiler_3.5.1  </code></pre>
 </div>
 </div>
 </div>
