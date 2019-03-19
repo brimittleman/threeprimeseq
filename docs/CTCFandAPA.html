@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Briana Mittleman" />
+
+
+<title>Overlap APAqtls with CTCF qtls</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Three Prime Sequencing in Human LCLs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brimittleman/threeprimeseq">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Overlap APAqtls with CTCF qtls</h1>
+<h4 class="author"><em>Briana Mittleman</em></h4>
+<h4 class="date"><em>3/19/2019</em></h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-03-19
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>threeprimeseq/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed924da6d7a394ab66063c7872534805d7a4f8202targetblankd924da6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/d924da6d7a394ab66063c7872534805d7a4f8202" target="_blank">d924da6</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreed924da6d7a394ab66063c7872534805d7a4f8202targetblankd924da6a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
+    Ignored:    data/perm_QTL_trans_noMP_5percov/
+    Ignored:    output/.DS_Store
+
+Untracked files:
+    Untracked:  KalistoAbundance18486.txt
+    Untracked:  analysis/4suDataIGV.Rmd
+    Untracked:  analysis/DirectionapaQTL.Rmd
+    Untracked:  analysis/EvaleQTLs.Rmd
+    Untracked:  analysis/YL_QTL_test.Rmd
+    Untracked:  analysis/groSeqAnalysis.Rmd
+    Untracked:  analysis/ncbiRefSeq_sm.sort.mRNA.bed
+    Untracked:  analysis/snake.config.notes.Rmd
+    Untracked:  analysis/verifyBAM.Rmd
+    Untracked:  analysis/verifybam_dubs.Rmd
+    Untracked:  code/PeaksToCoverPerReads.py
+    Untracked:  code/strober_pc_pve_heatmap_func.R
+    Untracked:  data/18486.genecov.txt
+    Untracked:  data/APApeaksYL.total.inbrain.bed
+    Untracked:  data/AllPeak_counts/
+    Untracked:  data/ApaQTLs/
+    Untracked:  data/ApaQTLs_otherPhen/
+    Untracked:  data/CTCF/
+    Untracked:  data/ChromHmmOverlap/
+    Untracked:  data/DistTXN2Peak_genelocAnno/
+    Untracked:  data/EmpiricalDists/
+    Untracked:  data/FeatureoverlapPeaks/
+    Untracked:  data/GM12878.chromHMM.bed
+    Untracked:  data/GM12878.chromHMM.txt
+    Untracked:  data/GWAS_overlap/
+    Untracked:  data/LianoglouLCL/
+    Untracked:  data/LocusZoom/
+    Untracked:  data/LocusZoom_Unexp/
+    Untracked:  data/LocusZoom_proc/
+    Untracked:  data/MatchedSnps/
+    Untracked:  data/NucSpecQTL/
+    Untracked:  data/NuclearApaQTLs.txt
+    Untracked:  data/PeakCounts/
+    Untracked:  data/PeakCounts_noMP_5perc/
+    Untracked:  data/PeakCounts_noMP_genelocanno/
+    Untracked:  data/PeakUsage/
+    Untracked:  data/PeakUsage_noMP/
+    Untracked:  data/PeakUsage_noMP_GeneLocAnno/
+    Untracked:  data/PeaksUsed/
+    Untracked:  data/PeaksUsed_noMP_5percCov/
+    Untracked:  data/PolyA_DB/
+    Untracked:  data/QTL_overlap/
+    Untracked:  data/RNAdecay/
+    Untracked:  data/RNAkalisto/
+    Untracked:  data/RefSeq_annotations/
+    Untracked:  data/Replicates_usage/
+    Untracked:  data/Signal_Loc/
+    Untracked:  data/TotalApaQTLs.txt
+    Untracked:  data/Totalpeaks_filtered_clean.bed
+    Untracked:  data/UnderstandPeaksQC/
+    Untracked:  data/WASP_STAT/
+    Untracked:  data/YL-SP-18486-T-combined-genecov.txt
+    Untracked:  data/YL-SP-18486-T_S9_R1_001-genecov.txt
+    Untracked:  data/YL_QTL_test/
+    Untracked:  data/apaExamp/
+    Untracked:  data/apaExamp_proc/
+    Untracked:  data/apaQTL_examp_noMP/
+    Untracked:  data/bedgraph_peaks/
+    Untracked:  data/bin200.5.T.nuccov.bed
+    Untracked:  data/bin200.Anuccov.bed
+    Untracked:  data/bin200.nuccov.bed
+    Untracked:  data/clean_peaks/
+    Untracked:  data/comb_map_stats.csv
+    Untracked:  data/comb_map_stats.xlsx
+    Untracked:  data/comb_map_stats_39ind.csv
+    Untracked:  data/combined_reads_mapped_three_prime_seq.csv
+    Untracked:  data/diff_iso_GeneLocAnno/
+    Untracked:  data/diff_iso_proc/
+    Untracked:  data/diff_iso_trans/
+    Untracked:  data/eQTL_inAPA/
+    Untracked:  data/eQTLs_Lietal/
+    Untracked:  data/ensemble_to_genename.txt
+    Untracked:  data/example_gene_peakQuant/
+    Untracked:  data/explainProtVar/
+    Untracked:  data/filtPeakOppstrand_cov_noMP_GeneLocAnno_5perc/
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.bed
+    Untracked:  data/filtered_APApeaks_merged_allchrom_refseqTrans.closest2End.noties.bed
+    Untracked:  data/first50lines_closest.txt
+    Untracked:  data/gencov.test.csv
+    Untracked:  data/gencov.test.txt
+    Untracked:  data/gencov_zero.test.csv
+    Untracked:  data/gencov_zero.test.txt
+    Untracked:  data/gene_cov/
+    Untracked:  data/joined
+    Untracked:  data/leafcutter/
+    Untracked:  data/merged_combined_YL-SP-threeprimeseq.bg
+    Untracked:  data/molPheno_noMP/
+    Untracked:  data/mol_overlap/
+    Untracked:  data/mol_pheno/
+    Untracked:  data/nom_QTL/
+    Untracked:  data/nom_QTL_opp/
+    Untracked:  data/nom_QTL_trans/
+    Untracked:  data/nuc6up/
+    Untracked:  data/nuc_10up/
+    Untracked:  data/other_qtls/
+    Untracked:  data/pQTL_inAPA/
+    Untracked:  data/pQTL_otherphen/
+    Untracked:  data/pacbio_cov/
+    Untracked:  data/peakPerRefSeqGene/
+    Untracked:  data/peaks4DT/
+    Untracked:  data/perm_QTL/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov/
+    Untracked:  data/perm_QTL_GeneLocAnno_noMP_5percov_3UTR/
+    Untracked:  data/perm_QTL_diffWindow/
+    Untracked:  data/perm_QTL_opp/
+    Untracked:  data/perm_QTL_trans/
+    Untracked:  data/perm_QTL_trans_filt/
+    Untracked:  data/protAndAPAAndExplmRes.Rda
+    Untracked:  data/protAndAPAlmRes.Rda
+    Untracked:  data/protAndExpressionlmRes.Rda
+    Untracked:  data/reads_mapped_three_prime_seq.csv
+    Untracked:  data/smash.cov.results.bed
+    Untracked:  data/smash.cov.results.csv
+    Untracked:  data/smash.cov.results.txt
+    Untracked:  data/smash_testregion/
+    Untracked:  data/ssFC200.cov.bed
+    Untracked:  data/temp.file1
+    Untracked:  data/temp.file2
+    Untracked:  data/temp.gencov.test.txt
+    Untracked:  data/temp.gencov_zero.test.txt
+    Untracked:  data/threePrimeSeqMetaData.csv
+    Untracked:  data/threePrimeSeqMetaData55Ind.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup.xlsx
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt
+    Untracked:  data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.xlsx
+    Untracked:  manuscript/
+    Untracked:  output/LZ/
+    Untracked:  output/deeptools_plots/
+    Untracked:  output/picard/
+    Untracked:  output/plots/
+    Untracked:  output/qual.fig2.pdf
+
+Unstaged changes:
+    Modified:   analysis/28ind.peak.explore.Rmd
+    Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/NewPeakPostMP.Rmd
+    Modified:   analysis/NuclearSpecQTL.Rmd
+    Modified:   analysis/PeakToXper.Rmd
+    Modified:   analysis/apaQTLoverlapGWAS.Rmd
+    Modified:   analysis/characterize_apaQTLs.Rmd
+    Modified:   analysis/cleanupdtseq.internalpriming.Rmd
+    Modified:   analysis/coloc_apaQTLs_protQTLs.Rmd
+    Modified:   analysis/dif.iso.usage.leafcutter.Rmd
+    Modified:   analysis/diff_iso_pipeline.Rmd
+    Modified:   analysis/explainpQTLs.Rmd
+    Modified:   analysis/explore.filters.Rmd
+    Modified:   analysis/fixBWChromNames.Rmd
+    Modified:   analysis/flash2mash.Rmd
+    Modified:   analysis/initialPacBioQuant.Rmd
+    Modified:   analysis/mispriming_approach.Rmd
+    Modified:   analysis/overlapMolQTL.Rmd
+    Modified:   analysis/overlapMolQTL.opposite.Rmd
+    Modified:   analysis/overlap_qtls.Rmd
+    Modified:   analysis/peakOverlap_oppstrand.Rmd
+    Modified:   analysis/peakQCPPlots.Rmd
+    Modified:   analysis/pheno.leaf.comb.Rmd
+    Modified:   analysis/pipeline_55Ind.Rmd
+    Modified:   analysis/swarmPlots_QTLs.Rmd
+    Modified:   analysis/test.max2.Rmd
+    Modified:   analysis/test.smash.Rmd
+    Modified:   analysis/understandPeaks.Rmd
+    Modified:   analysis/unexplainedeQTL_analysis.Rmd
+    Modified:   code/Snakefile
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/d924da6d7a394ab66063c7872534805d7a4f8202/analysis/CTCFandAPA.Rmd" target="_blank">d924da6</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+<td>
+add ctcf analysis
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>I will look at ctcf data too see if this insulator element could act as a mechanism for apa qtls. This is in line with the kinetic model. We know CTCF binding slows polymerase. We are testing if this slow down is associated with APA as well.</p>
+<p>The ctcf data I will use can be found at <a href="https://www.ncbi.nlm.nih.gov/pubmed/27010758" class="uri">https://www.ncbi.nlm.nih.gov/pubmed/27010758</a></p>
+<p>I will download the normalized phenotype file each row a binding region and each column a sample.</p>
+<p>The regions are defined as chromosome, start, end in hg19. I will format this file so I have an ID like i do for the APA analysis.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.1.0       ✔ purrr   0.3.1  
+✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
+✔ tidyr   0.8.3       ✔ stringr 1.4.0  
+✔ readr   1.3.1       ✔ forcats 0.4.0  </code></pre>
+<pre><code>Warning: package &#39;tibble&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;tidyr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;purrr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;forcats&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.2.0
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(data.table)</code></pre>
+<pre><code>Warning: package &#39;data.table&#39; was built under R version 3.5.2</code></pre>
+<pre><code>
+Attaching package: &#39;data.table&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:dplyr&#39;:
+
+    between, first, last</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    transpose</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>Warning: package &#39;cowplot&#39; was built under R version 3.5.2</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
+<div id="pas-enrichment-at-ctcf" class="section level2">
+<h2>PAS Enrichment at CTCF</h2>
+<p>First, I will look at overlap between the PAS and these CTCF sites. I can do this with deep tools by making a bed file.</p>
+<p>CTCF2bed.py</p>
+<pre class="bash"><code>CTCF=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.csv&quot;, &quot;r&quot;)
+bedFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbindingLoc.bed&quot;, &quot;w&quot;)
+
+for i,ln in enumerate(CTCF):
+    if i &gt;0: 
+        chrm=ln.split(&quot;,&quot;)[0]
+        start=ln.split(&quot;,&quot;)[1]
+        end=ln.split(&quot;,&quot;)[2]
+        bedFile.write(&quot;%s\t%s\t%s\n&quot;%(chrm, start, end))
+bedFile.close()</code></pre>
+<p>Deeptools plots:</p>
+<p>TotandNucAtCTCF_DTPlot_noMPFilt.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=TotandNucAtCTCF_DTPlot_noMPFilt
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=TotandNucAtCTCF_DTPlot_noMPFilt.out
+#SBATCH --error=TotandNucAtCTCF_DTPlot_noMPFilt.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/mergedBW/Total_MergedBamCoverage.bw /project2/gilad/briana/threeprimeseq/data/mergedBW/Nuclear_MergedBamCoverage.bw -R /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbindingLoc.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/CTCF/TotalandNucAtCTCF.gz
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/CTCF/TotalandNucAtCTCF.gz --refPointLabel &quot;CTCF&quot; --plotTitle &quot;Combined 3&#39; at CTCF&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/CTCF/TotalandNucAtCTCF.png</code></pre>
+<p>No enrichemnt</p>
+</div>
+<div id="call-ctcf-qtl" class="section level2">
+<h2>Call CTCF QTL</h2>
+<p>I want to reformat the phenotypes, this is easiest in R.</p>
+<pre class="r"><code>CTCF=read.csv(&quot;../data/CTCF/CTCFbinding.csv&quot;, header=T) %&gt;% mutate(ID= paste(chrm,start, end, sep=&quot;:&quot;)) %&gt;% select(chrm, start, end, ID, contains(&quot;NA&quot;))
+
+
+write.table(CTCF, file=&quot;../data/CTCF/CTCFbinding.pheno.bed&quot;,col.names = T, row.names = F, quote = F, sep=&quot;\t&quot; )</code></pre>
+<p>put on midway</p>
+<pre class="bash"><code>#remove header
+sort -k1,1 -k2,2n CTCFbinding.pheno.bed &gt; CTCFbinding.pheno.sort.bed
+#add header
+
+bgzip CTCFbinding.pheno.sort.bed
+tabix CTCFbinding.pheno.sort.bed.gz  
+
+#get the PCs 
+#midway1
+#export PATH=/project/gilad/software/midway1/qtltools-1.0:$PATH
+
+
+QTLtools pca --bed /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.pheno.sort.bed.gz  --scale --center --out /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.pheno.sort.bed.PC.out
+
+
+head -n 6 CTCFbinding.pheno.sort.bed.PC.out.pca &gt; CTCFbinding.pheno.sort.bed.5PCs.out.pca</code></pre>
+<p>Make samples file:</p>
+<p>smaplesCTCF.py</p>
+<pre class="bash"><code>ctcf=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.csv&quot;, &quot;r&quot;)
+sampleFile=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/samples.txt&quot;, &quot;w&quot;)
+
+samplesVCF=open(&quot;/project2/gilad/briana/YRI_geno_hg19/vcf.samples.txt&quot;, &quot;r&quot;)
+
+samplesoK={}
+for ln in samplesVCF:
+  samList=ln.split()
+  for i in samList:
+      samplesoK[i]=&quot;&quot;
+      
+print(samplesoK)
+for i, ln in enumerate(ctcf):
+    if i &gt;0:
+        lnList=ln.split(&quot;,&quot;)
+        for each in lnList:
+            if each in samplesoK.keys():
+                sampleFile.write(&quot;%s\n&quot;%(each))
+            else: 
+                print(&quot;notInvcf&quot;)
+                
+sampleFile.close()
+
+    </code></pre>
+<p><strong>VCF file does not have these samples. </strong></p>
+<p>CTCFqtl_nom.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=CTCFqtl_nom
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=CTCFqtl_nom.out
+#SBATCH --error=CTCFqtl_nom.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=12G
+#SBATCH --mail-type=END
+  
+for i in $(seq 1 30)
+do
+/home/brimittleman/software/bin/FastQTL/bin/fastQTL.static --vcf /project2/gilad/briana/YRI_geno_hg19/allChrom.dose.filt.vcf.gz  --cov /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.pheno.sort.bed.5PCs.out.pca --bed /project2/gilad/briana/threeprimeseq/data/CTCF/CTCFbinding.pheno.sort.bed.gz --out /project2/gilad/briana/threeprimeseq/data/CTCF/nom/fastqtl_CTCFbinding.nominal.out --chunk $i 30  --window 5e5 --include-samples /project2/gilad/briana/threeprimeseq/data/CTCF/samples.txt
+done</code></pre>
+</div>
+<div id="use-qtls-they-called" class="section level2">
+<h2>Use QTLs they called</h2>
+<p>Info from site:<br />
+This is the called QTLs 1% FDR threshold (q value &lt;= 0.01) and kept only cluster variants defined as having P value within one order of magnitude to the P value of the lead variant for the same binding region.</p>
+<p>I can make a file with the snp positions and I will look for these in my nominal APA data</p>
+<pre class="r"><code>ctcfQTL=read.csv(&quot;../data/CTCF/CTCFQTLS.csv&quot;)
+
+ctcfQTL_snponly=ctcfQTL %&gt;% select(VARIANT_CHRM, VARIANT_POS) %&gt;% mutate(snp_loc=paste(VARIANT_CHRM,VARIANT_POS,sep= &quot;:&quot;)) %&gt;% select(snp_loc)
+
+
+write.table(ctcfQTL_snponly, file=&quot;../data/CTCF/CTCFqtl_snps.txt&quot;, col.names = F, row.names = F, quote = F)</code></pre>
+<p>Look for these snps in nominal data:</p>
+<p>CTCFqtlinAPA.py</p>
+<pre class="bash"><code>def main(apa, ctcfQTL, outFile):
+    fout=open(outFile,&quot;w&quot;)
+    ctcfdic={}
+    for ln in open(ctcfQTL,&quot;r&quot;):
+        snp=ln.split()[0]
+        ctcfdic[snp]=&quot;&quot;
+    for ln in open(apa, &quot;r&quot;):
+            snpApa =ln.split()[1]   
+            if snpApa in ctcfdic.keys():
+                fout.write(ln)
+    fout.close()
+                
+
+if __name__ == &quot;__main__&quot;:
+    import sys
+    fraction=sys.argv[1]
+    OutFile=sys.argv[2]
+    ctcfQTL=&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFqtl_snps.txt&quot;
+    if fraction==&quot;Total&quot;:
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+    else:
+        nomFile=&quot;/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt&quot;
+    main(nomFile, ctcfQTL, OutFile) </code></pre>
+<p>Run: run_CTCFqtlinAPA.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+
+#SBATCH --job-name=run_CTCFqtlinAPA
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_CTCFqtlinAPA.out
+#SBATCH --error=run_CTCFqtlinAPA.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+module load Anaconda3
+source activate three-prime-env
+
+python CTCFqtlinAPA.py &quot;Total&quot; &quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinTotalAPA.txt&quot;
+python CTCFqtlinAPA.py &quot;Nuclear&quot; &quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinNuclearAPA.txt&quot;</code></pre>
+<p>Make empirical distribution:</p>
+<p>I can do empirical distribution based on genes not in this set. I will make a list of the genes with] an overlap in total and in nuclear.</p>
+<p>I can then find the matched peak numbers based on the genes that do have an overlap.</p>
+<p>getCTCFgenes.py</p>
+<pre class="bash"><code>
+
+apaNuc=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinNuclearAPA.txt&quot;, &quot;r&quot;)
+apaTot=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinTotalAPA.txt&quot;,&quot;r&quot;)
+
+nucGenes=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinNuclearAPA_Genes.txt&quot;, &quot;w&quot;)
+totGenes=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQtlinTotalAPA_Genes.txt&quot;, &quot;w&quot;)
+
+
+def overlapGenes(inFile, outFile):
+     #make dictionary with gene (this will have unique)
+     geneDic={}
+     for ln in inFile:
+          gene=ln.split()[0].split(&quot;:&quot;)[-1].split(&quot;_&quot;)[0]
+          if gene not in geneDic.keys():
+              geneDic[gene]=&quot;&quot;
+     for k,v in geneDic.items():
+         outFile.write(&quot;%s\n&quot;%(k))
+     outFile.close()
+     
+overlapGenes(apaTot, totGenes)
+overlapGenes(apaNuc,nucGenes)
+</code></pre>
+<p>Make the empirical dist:</p>
+<p><strong>Problem: which snp do i choose? CTCF not associated with a gene so i can pick the best snp for the non ctcf gene</strong></p>
+<br> <br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.14.1
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] cowplot_0.9.4     data.table_1.12.0 workflowr_1.2.0  
+ [4] forcats_0.4.0     stringr_1.4.0     dplyr_0.8.0.1    
+ [7] purrr_0.3.1       readr_1.3.1       tidyr_0.8.3      
+[10] tibble_2.0.1      ggplot2_3.1.0     tidyverse_1.2.1  
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.0       cellranger_1.1.0 plyr_1.8.4       pillar_1.3.1    
+ [5] compiler_3.5.1   git2r_0.24.0     tools_3.5.1      digest_0.6.18   
+ [9] lubridate_1.7.4  jsonlite_1.6     evaluate_0.13    nlme_3.1-137    
+[13] gtable_0.2.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.3.1     
+[17] cli_1.0.1        rstudioapi_0.9.0 yaml_2.2.0       haven_2.1.0     
+[21] xfun_0.5         withr_2.1.2      xml2_1.2.0       httr_1.4.0      
+[25] knitr_1.21       hms_0.4.2        generics_0.0.2   fs_1.2.6        
+[29] rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5 glue_1.3.0      
+[33] R6_2.4.0         readxl_1.3.0     rmarkdown_1.11   modelr_0.1.4    
+[37] magrittr_1.5     whisker_0.3-2    backports_1.1.3  scales_1.0.0    
+[41] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.4-0
+[45] stringi_1.3.1    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1     
+[49] crayon_1.3.4    </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
