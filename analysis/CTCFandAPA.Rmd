@@ -390,12 +390,122 @@ legend("bottomright", legend=c("1/100 Apa SNPs", "CTCF qtls"),col=c("black", "bl
 ```
 
 
+###Look at some examples  
+
+Look at the points in the nuclear fraction that are -log10(pval)>5.
+
+```{r}
+ctcfinNuc %>% filter(-log10(pval)>5) %>% arrange(pval)
+```
+Top genes with effects:
+
+* CHD1L
+
+* DHRS7  
+
+* DDI2
+
+* TAB1
+
+* CCDC18  (CCDC18-AS1)
+
+* B4GALt7  
+
+* TMSF4
+
+* ERVK13-1
+
+* DEK 
+
+* RGS14
+
+* KLF12
+
+I will see if any of these have a called apaQTL  
+
+```{r}
+qtlNames=c("ID")
+apaQTLsNuc=read.table("../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", stringsAsFactors = F,  col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval","bh"))
+apaQTLsTot=read.table("../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt", stringsAsFactors = F,  col.names = c("pid", "nvar", "shape1", "shape2", "dummy", "sid", "dist", "npval", "slope", "ppval", "bpval","bh"))
+```
+
+CHD1l:
+
+1:146735002:146735080:CHD1L_-_peak9190- 1:146728013
 
 
-Make the empirical dist:
+1:146767359:146767443:CHD1L_-_peak9202 1:146748962 
+
+DHRS7:  
+
+14:60611650:60611732:DHRS7_+_peak48511
 
 
-**Problem: which snp do i choose? CTCF not associated with a gene so i can pick the best snp for the non ctcf gene**
+
+I should add the ctcfQTLs as a bedfile:
+
+
+ctcfQTL2bed.py
+```{bash,eval=F}
+inQTL=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQTLS.csv"."r")
+outBed=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQTL.bed","w")
+
+for i, ln in enumerate(inQTL):
+    if i >0:
+        chrom=ln.split(",")[0]
+        start=ln.split(",")[1]
+        end=ln.split(",")[2]
+        id=chrom + ":" + start + ":" + end  
+        varEnd=int(ln.split(",")[4])
+        varStart=varEnd-1
+        varChrom=ln.split(",")[3]
+        outBed.write("%s\t%d\t%d\t%s\n"%(varChrom, varStart, varEnd, id))
+    
+outBed.close()  
+```
 
 
 
+Intersect this with out QTLs and all of those in LD with ours:  
+
+interactively
+
+
+```{bash,eval=F}
+
+
+allOverlapQTL='/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllOverlapSnps.bed'
+
+
+import pybedtools as pybedtools
+
+ctcf_file=open("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQTL.bed","r")
+ctcf=pybedtools.BedTool(ctcf_file)
+snps_file=open(allOverlapQTL, "r")
+snps=pybedtools.BedTool(snps_file)
+snpOverctcf=snps.intersect(ctcf, wa=True,wb=True)
+snpOverctcf.saveas("/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFqtlOverlapAPAqtls.txt")
+    
+    
+```
+
+
+
+One interesting exaple 
+
+ERVK13-1 chr16:2,709,806-2,712,090
+
+CTCF site between 2 peaks. overlap with CTCF qtl and nuclear qtl associated with downstream QTL  
+
+
+16	2710797	2710798
+
+the qtl is snp_16_2710771
+
+TAB1  
+chr22:39,792,017-39,826,801
+22,39795500,39795832,22,39822116,rs5757667,A,G,AA=G;AN=102;AC=73;VT=SNP,0.871868708751,3.54445306103e-09,-1.2411307501,0.715823195148,0.121500443991,2.055844e-06
+
+
+
+Overall does not look to be a big driver  
