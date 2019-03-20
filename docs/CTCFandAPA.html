@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-19
+<strong>Last updated:</strong> 2019-03-20
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee15a531fb7cced7011629f430fdc85bb27c7942ctargetblanke15a531a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/e15a531fb7cced7011629f430fdc85bb27c7942c" target="_blank">e15a531</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree888e7f0ca8d79b7114393801e310ad779b87bc7ctargetblank888e7f0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/888e7f0ca8d79b7114393801e310ad779b87bc7c" target="_blank">888e7f0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreee15a531fb7cced7011629f430fdc85bb27c7942ctargetblanke15a531a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree888e7f0ca8d79b7114393801e310ad779b87bc7ctargetblank888e7f0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -744,6 +744,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/888e7f0ca8d79b7114393801e310ad779b87bc7c/analysis/CTCFandAPA.Rmd" target="_blank">888e7f0</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-20
+</td>
+<td>
+add examples
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/7b9f73af86858bea749ed533da5009f07046d891/docs/CTCFandAPA.html" target="_blank">7b9f73a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/e15a531fb7cced7011629f430fdc85bb27c7942c/analysis/CTCFandAPA.Rmd" target="_blank">e15a531</a>
 </td>
 <td>
@@ -836,7 +870,7 @@ add ctcf analysis
 <p>I will download the normalized phenotype file each row a binding region and each column a sample.</p>
 <p>The regions are defined as chromosome, start, end in hg19. I will format this file so I have an ID like i do for the APA analysis.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.1.0       ✔ purrr   0.3.1  
 ✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
 ✔ tidyr   0.8.3       ✔ stringr 1.4.0  
@@ -847,7 +881,7 @@ add ctcf analysis
 <pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>Warning: package &#39;forcats&#39; was built under R version 3.5.2</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(workflowr)</code></pre>
@@ -1209,6 +1243,43 @@ points(sort(-log10(runif(nrow(ctcfinTot)))), sort(-log10(ctcfinTot$pval)),col=&q
 abline(0,1)
 legend(&quot;bottomright&quot;, legend=c(&quot;1/100 Apa SNPs&quot;, &quot;CTCF qtls&quot;),col=c(&quot;black&quot;, &quot;blue&quot;), pch=16,bty = &#39;n&#39;)</code></pre>
 <p><img src="figure/CTCFandAPA.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7b9f73af86858bea749ed533da5009f07046d891/docs/figure/CTCFandAPA.Rmd/unnamed-chunk-18-1.png" target="_blank">7b9f73a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>nucnomPvalsmall=read.table(&quot;../data/CTCF/NucNomPvalsOneHund.out&quot;, header = F, stringsAsFactors = F, col.names = c(&quot;pval&quot;))
 
 
@@ -1217,8 +1288,336 @@ points(sort(-log10(runif(nrow(ctcfinNuc)))), sort(-log10(ctcfinNuc$pval)),col=&q
 abline(0,1)
 legend(&quot;bottomright&quot;, legend=c(&quot;1/100 Apa SNPs&quot;, &quot;CTCF qtls&quot;),col=c(&quot;black&quot;, &quot;blue&quot;), pch=16,bty = &#39;n&#39;)</code></pre>
 <p><img src="figure/CTCFandAPA.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Make the empirical dist:</p>
-<p><strong>Problem: which snp do i choose? CTCF not associated with a gene so i can pick the best snp for the non ctcf gene</strong></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/7b9f73af86858bea749ed533da5009f07046d891/docs/figure/CTCFandAPA.Rmd/unnamed-chunk-19-1.png" target="_blank">7b9f73a</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="look-at-some-examples" class="section level3">
+<h3>Look at some examples</h3>
+<p>Look at the points in the nuclear fraction that are -log10(pval)&gt;5.</p>
+<pre class="r"><code>ctcfinNuc %&gt;% filter(-log10(pval)&gt;5) %&gt;% arrange(pval)</code></pre>
+<pre><code>                                            ID         snp    dist
+1       1:146735002:146735080:CHD1L_-_peak9190 1:146699958  -35045
+2       14:60611650:60611732:DHRS7_+_peak48511 14:60641082   29431
+3       14:60611650:60611732:DHRS7_+_peak48511 14:60612714    1063
+4       14:60611650:60611732:DHRS7_+_peak48511 14:60612766    1115
+5       14:60611650:60611732:DHRS7_+_peak48511 14:60612963    1312
+6       14:60611650:60611732:DHRS7_+_peak48511 14:60613891    2240
+7       14:60611650:60611732:DHRS7_+_peak48511 14:60614011    2360
+8       14:60611650:60611732:DHRS7_+_peak48511 14:60614176    2525
+9       14:60611650:60611732:DHRS7_+_peak48511 14:60615215    3564
+10      14:60611650:60611732:DHRS7_+_peak48511 14:60615616    3965
+11      14:60611650:60611732:DHRS7_+_peak48511 14:60615625    3974
+12      14:60611650:60611732:DHRS7_+_peak48511 14:60615722    4071
+13      14:60611650:60611732:DHRS7_+_peak48511 14:60615914    4263
+14      14:60611650:60611732:DHRS7_+_peak48511 14:60617198    5547
+15      14:60611650:60611732:DHRS7_+_peak48511 14:60617238    5587
+16      14:60611650:60611732:DHRS7_+_peak48511 14:60617333    5682
+17      14:60611650:60611732:DHRS7_+_peak48511 14:60617639    5988
+18      14:60611650:60611732:DHRS7_+_peak48511 14:60617640    5989
+19      14:60611650:60611732:DHRS7_+_peak48511 14:60618745    7094
+20      14:60611650:60611732:DHRS7_+_peak48511 14:60618812    7161
+21      14:60611650:60611732:DHRS7_+_peak48511 14:60619111    7460
+22      14:60611650:60611732:DHRS7_+_peak48511 14:60620050    8399
+23      14:60611650:60611732:DHRS7_+_peak48511 14:60620259    8608
+24      14:60611650:60611732:DHRS7_+_peak48511 14:60622082   10431
+25      14:60611650:60611732:DHRS7_+_peak48511 14:60625039   13388
+26      14:60611650:60611732:DHRS7_+_peak48511 14:60628608   16957
+27      14:60611650:60611732:DHRS7_+_peak48511 14:60634111   22460
+28      14:60611650:60611732:DHRS7_+_peak48511 14:60638815   27164
+29      14:60611650:60611732:DHRS7_+_peak48511 14:60638926   27275
+30      14:60611650:60611732:DHRS7_+_peak48511 14:60619317    7666
+31      14:60611650:60611732:DHRS7_+_peak48511 14:60617696    6045
+32      22:39800489:39800565:TAB1_-_peak104641 22:39822116   21626
+33      14:60611650:60611732:DHRS7_+_peak48511 14:60607059   -4592
+34      14:60611650:60611732:DHRS7_+_peak48511 14:60607765   -3886
+35      14:60611650:60611732:DHRS7_+_peak48511 14:60607985   -3666
+36      14:60611650:60611732:DHRS7_+_peak48511 14:60608457   -3194
+37      14:60611650:60611732:DHRS7_+_peak48511 14:60613564    1913
+38      14:60611650:60611732:DHRS7_+_peak48511 14:60614038    2387
+39      14:60611650:60611732:DHRS7_+_peak48511 14:60616042    4391
+40      14:60611650:60611732:DHRS7_+_peak48511 14:60619179    7528
+41      14:60611650:60611732:DHRS7_+_peak48511 14:60619356    7705
+42      14:60611650:60611732:DHRS7_+_peak48511 14:60623676   12025
+43      14:60611650:60611732:DHRS7_+_peak48511 14:60623741   12090
+44      14:60611650:60611732:DHRS7_+_peak48511 14:60634585   22934
+45         1:15981871:15981942:DDI2_-_peak1257  1:15920821  -61051
+46      22:39800489:39800565:TAB1_-_peak104641 22:39793766   -6724
+47      22:39800489:39800565:TAB1_-_peak104641 22:39794124   -6366
+48      22:39800489:39800565:TAB1_-_peak104641 22:39793079   -7411
+49      22:39800489:39800565:TAB1_-_peak104641 22:39797987   -2503
+50      22:39800489:39800565:TAB1_-_peak104641 22:39798429   -2061
+51       1:93672606:93672687:CCDC18_-_peak6813  1:93752982   80375
+52       1:93672606:93672687:CCDC18_-_peak6813  1:93753932   81325
+53       1:93672606:93672687:CCDC18_-_peak6813  1:93756886   84279
+54       1:93672606:93672687:CCDC18_-_peak6813  1:93750571   77964
+55       1:93672606:93672687:CCDC18_-_peak6813  1:93749072   76465
+56       1:93672606:93672687:CCDC18_-_peak6813  1:93720597   47990
+57      22:39800489:39800565:TAB1_-_peak104641 22:39823015   22525
+58         1:15980902:15980984:DDI2_-_peak1256  1:15923726  -57177
+59      22:39800489:39800565:TAB1_-_peak104641 22:39810379    9889
+60         1:15981871:15981942:DDI2_-_peak1257  1:15923726  -58146
+61  5:177037192:177037330:B4GALT7_-_peak135486 5:176798306 -238887
+62      22:39800489:39800565:TAB1_-_peak104641 22:39829736   29246
+63      22:39800489:39800565:TAB1_-_peak104641 22:39826788   26298
+64      22:39800489:39800565:TAB1_-_peak104641 22:39827553   27063
+65      22:39800489:39800565:TAB1_-_peak104641 22:39794241   -6249
+66      1:146767359:146767443:CHD1L_-_peak9202 1:146699958  -67402
+67      22:39800489:39800565:TAB1_-_peak104641 22:39797178   -3312
+68      22:39800489:39800565:TAB1_-_peak104641 22:39784845  -15645
+69     20:30753271:30753353:TM9SF4_-_peak98455 20:31037635  284363
+70     20:30753271:30753353:TM9SF4_-_peak98455 20:31028127  274855
+71     16:2710351:2710433:ERVK13-1_+_peak59006  16:2710798     446
+72     20:30753271:30753353:TM9SF4_-_peak98455 20:31002352  249080
+73     20:30753271:30753353:TM9SF4_-_peak98455 20:30995118  241846
+74     20:30753271:30753353:TM9SF4_-_peak98455 20:31012361  259089
+75     20:30753271:30753353:TM9SF4_-_peak98455 20:31029615  276343
+76        6:18249913:18250027:DEK_+_peak137339  6:18707766  457852
+77        6:18249913:18250027:DEK_+_peak137339  6:18707584  457670
+78        6:18249913:18250027:DEK_+_peak137339  6:18704706  454792
+79        6:18249913:18250027:DEK_+_peak137339  6:18702517  452603
+80        6:18249913:18250027:DEK_+_peak137339  6:18702152  452238
+81        6:18249913:18250027:DEK_+_peak137339  6:18701468  451554
+82       1:93672606:93672687:CCDC18_-_peak6813  1:93770372   97765
+83       1:93672606:93672687:CCDC18_-_peak6813  1:93790645  118038
+84       1:93672606:93672687:CCDC18_-_peak6813  1:93780618  108011
+85       1:93672606:93672687:CCDC18_-_peak6813  1:93798391  125784
+86       1:93672606:93672687:CCDC18_-_peak6813  1:93799644  127037
+87       1:93672606:93672687:CCDC18_-_peak6813  1:93807262  134655
+88       1:93672606:93672687:CCDC18_-_peak6813  1:93809710  137103
+89       1:93672606:93672687:CCDC18_-_peak6813  1:93814825  142218
+90     20:30753271:30753353:TM9SF4_-_peak98455 20:31042169  288897
+91     20:30753271:30753353:TM9SF4_-_peak98455 20:31033574  280302
+92     20:30753271:30753353:TM9SF4_-_peak98455 20:31036873  283601
+93     20:30753271:30753353:TM9SF4_-_peak98455 20:31039688  286416
+94     16:2710351:2710433:ERVK13-1_+_peak59006  16:2711014     662
+95     16:2710351:2710433:ERVK13-1_+_peak59006  16:2710153    -199
+96     16:2710351:2710433:ERVK13-1_+_peak59006  16:2711316     964
+97     16:2710351:2710433:ERVK13-1_+_peak59006  16:2711368    1016
+98   1:93803671:93803804:CCDC18-AS1_+_peak6890  1:93809710    6038
+99   1:93803671:93803804:CCDC18-AS1_+_peak6890  1:93814825   11153
+100  1:93803671:93803804:CCDC18-AS1_+_peak6890  1:93807262    3590
+101  1:93803671:93803804:CCDC18-AS1_+_peak6890  1:93799644   -4028
+102  1:93803671:93803804:CCDC18-AS1_+_peak6890  1:93798391   -5281
+103  1:93803671:93803804:CCDC18-AS1_+_peak6890  1:93790645  -13027
+104   5:176799516:176799598:RGS14_-_peak135435 5:176798306   -1211
+105  1:93803671:93803804:CCDC18-AS1_+_peak6890  1:93780618  -23054
+106  1:93803671:93803804:CCDC18-AS1_+_peak6890  1:93770372  -33300
+107    16:2710351:2710433:ERVK13-1_+_peak59006  16:2714986    4634
+108    16:2710351:2710433:ERVK13-1_+_peak59006  16:2717023    6671
+109    16:2710351:2710433:ERVK13-1_+_peak59006  16:2717497    7145
+110     13:74326901:74326981:KLF12_+_peak44717 13:74318612   -8290
+111     13:74326901:74326981:KLF12_+_peak44717 13:74318497   -8405
+           pval     slope
+1   3.62229e-10  1.393670
+2   3.52920e-09  0.692925
+3   3.53939e-09  0.692823
+4   3.53939e-09  0.692823
+5   3.53939e-09  0.692823
+6   3.53939e-09  0.692823
+7   3.53939e-09  0.692823
+8   3.53939e-09  0.692823
+9   3.53939e-09  0.692823
+10  3.53939e-09  0.692823
+11  3.53939e-09  0.692823
+12  3.53939e-09  0.692823
+13  3.53939e-09  0.692823
+14  3.53939e-09  0.692823
+15  3.53939e-09  0.692823
+16  3.53939e-09  0.692823
+17  3.53939e-09  0.692823
+18  3.53939e-09  0.692823
+19  3.53939e-09  0.692823
+20  3.53939e-09  0.692823
+21  3.53939e-09  0.692823
+22  3.53939e-09  0.692823
+23  3.53939e-09  0.692823
+24  3.53939e-09  0.692823
+25  3.53939e-09  0.692823
+26  3.53939e-09  0.692823
+27  3.53939e-09  0.692823
+28  3.53939e-09  0.692823
+29  3.53939e-09  0.692823
+30  3.55694e-09  0.692890
+31  4.45865e-09  0.699921
+32  1.04389e-08  1.079260
+33  1.98846e-08  0.677083
+34  1.98846e-08  0.677083
+35  1.98846e-08  0.677083
+36  1.98846e-08  0.677083
+37  1.98846e-08  0.677083
+38  1.98846e-08  0.677083
+39  1.98846e-08  0.677083
+40  1.98846e-08  0.677083
+41  1.98846e-08  0.677083
+42  1.98846e-08  0.677083
+43  1.98846e-08  0.677083
+44  1.98846e-08  0.677083
+45  2.35186e-08  1.061530
+46  2.35643e-08  1.073150
+47  2.35643e-08  1.073150
+48  2.36045e-08  1.073150
+49  2.36341e-08  1.072740
+50  2.36341e-08  1.072740
+51  5.24348e-08  0.871191
+52  5.24348e-08  0.871191
+53  5.24410e-08  0.871272
+54  5.25659e-08  0.871105
+55  5.26536e-08  0.870951
+56  5.30592e-08  0.869408
+57  5.93198e-08  1.077070
+58  6.09364e-08 -0.786164
+59  9.32737e-08  1.121110
+60  1.01204e-07  1.132390
+61  1.31721e-07 -1.522240
+62  1.82782e-07  1.011320
+63  3.08979e-07  1.041260
+64  3.08979e-07  1.041260
+65  3.15015e-07  1.025880
+66  1.08955e-06 -1.037160
+67  1.42563e-06  1.068450
+68  1.43352e-06  1.068570
+69  1.77267e-06 -1.286020
+70  1.86739e-06 -1.274550
+71  1.93581e-06 -0.630680
+72  1.93724e-06 -1.283520
+73  2.01512e-06 -1.275480
+74  2.06938e-06 -1.273500
+75  2.09949e-06 -1.260120
+76  2.79112e-06  1.170140
+77  2.82922e-06  1.169430
+78  3.33811e-06  1.159070
+79  3.95584e-06  1.147640
+80  4.24786e-06  1.142700
+81  4.37666e-06  1.140620
+82  4.93437e-06  0.695754
+83  4.93964e-06  0.694792
+84  4.93966e-06  0.695253
+85  4.95487e-06  0.694673
+86  4.96110e-06  0.694656
+87  4.97752e-06  0.694586
+88  4.98380e-06  0.694569
+89  4.98624e-06  0.694585
+90  5.42251e-06 -1.168040
+91  5.43783e-06 -1.166330
+92  5.49858e-06 -1.166060
+93  5.49858e-06 -1.166060
+94  6.39555e-06 -0.608443
+95  6.41954e-06 -0.608339
+96  6.42862e-06 -0.608311
+97  6.42862e-06 -0.608311
+98  7.13540e-06  0.668228
+99  7.13642e-06  0.668253
+100 7.13879e-06  0.668202
+101 7.15348e-06  0.668135
+102 7.15691e-06  0.668109
+103 7.18001e-06  0.668065
+104 7.19651e-06 -1.343850
+105 7.28212e-06  0.668147
+106 7.39875e-06  0.668195
+107 8.83098e-06 -0.603066
+108 8.90845e-06 -0.603693
+109 8.99811e-06 -0.604063
+110 9.91263e-06  1.064890
+111 9.97338e-06  1.061920</code></pre>
+<p>Top genes with effects:</p>
+<ul>
+<li><p>CHD1L</p></li>
+<li><p>DHRS7</p></li>
+<li><p>DDI2</p></li>
+<li><p>TAB1</p></li>
+<li><p>CCDC18 (CCDC18-AS1)</p></li>
+<li><p>B4GALt7</p></li>
+<li><p>TMSF4</p></li>
+<li><p>ERVK13-1</p></li>
+<li><p>DEK</p></li>
+<li><p>RGS14</p></li>
+<li><p>KLF12</p></li>
+</ul>
+<p>I will see if any of these have a called apaQTL</p>
+<pre class="r"><code>qtlNames=c(&quot;ID&quot;)
+apaQTLsNuc=read.table(&quot;../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;, stringsAsFactors = F,  col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;,&quot;bh&quot;))
+apaQTLsTot=read.table(&quot;../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;, stringsAsFactors = F,  col.names = c(&quot;pid&quot;, &quot;nvar&quot;, &quot;shape1&quot;, &quot;shape2&quot;, &quot;dummy&quot;, &quot;sid&quot;, &quot;dist&quot;, &quot;npval&quot;, &quot;slope&quot;, &quot;ppval&quot;, &quot;bpval&quot;,&quot;bh&quot;))</code></pre>
+<p>CHD1l:</p>
+<p>1:146735002:146735080:CHD1L_-_peak9190- 1:146728013</p>
+<p>1:146767359:146767443:CHD1L_-_peak9202 1:146748962</p>
+<p>DHRS7:</p>
+<p>14:60611650:60611732:DHRS7_+_peak48511</p>
+<p>I should add the ctcfQTLs as a bedfile:</p>
+<p>ctcfQTL2bed.py</p>
+<pre class="bash"><code>inQTL=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQTLS.csv&quot;.&quot;r&quot;)
+outBed=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQTL.bed&quot;,&quot;w&quot;)
+
+for i, ln in enumerate(inQTL):
+    if i &gt;0:
+        chrom=ln.split(&quot;,&quot;)[0]
+        start=ln.split(&quot;,&quot;)[1]
+        end=ln.split(&quot;,&quot;)[2]
+        id=chrom + &quot;:&quot; + start + &quot;:&quot; + end  
+        varEnd=int(ln.split(&quot;,&quot;)[4])
+        varStart=varEnd-1
+        varChrom=ln.split(&quot;,&quot;)[3]
+        outBed.write(&quot;%s\t%d\t%d\t%s\n&quot;%(varChrom, varStart, varEnd, id))
+    
+outBed.close()  </code></pre>
+<p>Intersect this with out QTLs and all of those in LD with ours:</p>
+<p>interactively</p>
+<pre class="bash"><code>
+
+allOverlapQTL=&#39;/project2/gilad/briana/threeprimeseq/data/GWAS_overlap_processed/AllOverlapSnps.bed&#39;
+
+
+import pybedtools as pybedtools
+
+ctcf_file=open(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFQTL.bed&quot;,&quot;r&quot;)
+ctcf=pybedtools.BedTool(ctcf_file)
+snps_file=open(allOverlapQTL, &quot;r&quot;)
+snps=pybedtools.BedTool(snps_file)
+snpOverctcf=snps.intersect(ctcf, wa=True,wb=True)
+snpOverctcf.saveas(&quot;/project2/gilad/briana/threeprimeseq/data/CTCF/CTCFqtlOverlapAPAqtls.txt&quot;)
+    
+    </code></pre>
+<p>One interesting exaple</p>
+<p>ERVK13-1 chr16:2,709,806-2,712,090</p>
+<p>CTCF site between 2 peaks. overlap with CTCF qtl and nuclear qtl associated with downstream QTL</p>
+<p>16 2710797 2710798</p>
+<p>the qtl is snp_16_2710771</p>
+<p>TAB1<br />
+chr22:39,792,017-39,826,801 22,39795500,39795832,22,39822116,rs5757667,A,G,AA=G;AN=102;AC=73;VT=SNP,0.871868708751,3.54445306103e-09,-1.2411307501,0.715823195148,0.121500443991,2.055844e-06</p>
+Overall does not look to be a big driver<br />
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1261,6 +1660,7 @@ loaded via a namespace (and not attached):
 [41] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.4-0
 [45] stringi_1.3.1    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1     
 [49] crayon_1.3.4    </code></pre>
+</div>
 </div>
 </div>
 
