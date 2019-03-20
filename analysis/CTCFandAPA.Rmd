@@ -339,6 +339,57 @@ abline(0,1)
 legend("bottomright", legend=c("ApaQTLs", "CTCF qtls"),col=c("black", "blue"), pch=16,bty = 'n')
 ```
 
+Use different black line, dont condition on apaQTLs look at every tested snp. I can sort the pvalues in the nominal file then sample every 100th value to deal wilth how large the vector is:
+
+
+Python interactively 
+```{bash,eval=F}
+totNom="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"
+nucNom="/project2/gilad/briana/threeprimeseq/data/nominal_APAqtl_GeneLocAnno_noMP_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz.qqnorm_allNomRes.txt"
+
+import numpy as np
+import pandas as pd
+
+Nomnames=["ID", "snp", "dist", "pval", "slope"]
+nomDF=pd.read_table(totNom, sep=" ", names=Nomnames, header=None)
+a=nomDF.iloc[:,3]
+sorted=np.sort(a)
+final=sorted[0::100]
+
+np.savetxt('/project2/gilad/briana/threeprimeseq/data/CTCF/TotNomPvalsOneHund.out', final) 
+
+
+nomNucDF=pd.read_table(nucNom, sep=" ", names=Nomnames, header=None)
+b=nomNucDF.iloc[:,3]
+sortedNuc=np.sort(b)
+finalNuc=sortedNuc[0::100]
+np.savetxt('/project2/gilad/briana/threeprimeseq/data/CTCF/NucNomPvalsOneHund.out', finalNuc) 
+```
+
+
+use this:
+
+```{r}
+totnomPvalsmall=read.table("../data/CTCF/TotNomPvalsOneHund.out", header = F, stringsAsFactors = F, col.names = c("pval"))
+
+
+qqplot(-log10(runif(nrow(totnomPvalsmall))),-log10(totnomPvalsmall$pval), ylab="-log10 Total pval", xlab="Uniform expectation", main="Total pvalue association for CTCF qtls") 
+points(sort(-log10(runif(nrow(ctcfinTot)))), sort(-log10(ctcfinTot$pval)),col="blue")
+abline(0,1)
+legend("bottomright", legend=c("1/100 Apa SNPs", "CTCF qtls"),col=c("black", "blue"), pch=16,bty = 'n')
+```
+
+```{r}
+nucnomPvalsmall=read.table("../data/CTCF/NucNomPvalsOneHund.out", header = F, stringsAsFactors = F, col.names = c("pval"))
+
+
+qqplot(-log10(runif(nrow(nucnomPvalsmall))),-log10(nucnomPvalsmall$pval), ylab="-log10 Nuclear pval", xlab="Uniform expectation", main="Nuclear pvalue association for CTCF qtls") 
+points(sort(-log10(runif(nrow(ctcfinNuc)))), sort(-log10(ctcfinNuc$pval)),col="blue")
+abline(0,1)
+legend("bottomright", legend=c("1/100 Apa SNPs", "CTCF qtls"),col=c("black", "blue"), pch=16,bty = 'n')
+```
+
+
 
 
 Make the empirical dist:
@@ -348,5 +399,3 @@ Make the empirical dist:
 
 
 
-
-##ApaQTLs condition on 
