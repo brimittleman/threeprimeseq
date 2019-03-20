@@ -182,12 +182,19 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Specificity between fraction QTLs](NuclearSpecQTL.html)  
 
-* [Explore relationships with peaks and net seq](NetSeqatPeaks.html)  
-
 * [Overlap molQTLs with apa associations](EmpDistforOverlaps.html)
+
+
+
+
+###Explore other molecular phenotypes and the relationship with APA 
 
 * [Relationship between APA and decay](RNAdecayAndAPA.html)
 
 * [Overlap with CTCF data and QTLs](CTCFandAPA.html)
+
+* [Explore relationships with peaks and net seq](NetSeqatPeaks.html)  
+
+* [Explore models for chromatin and APA](HistoneModandPAS.html)
 
 

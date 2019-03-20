@@ -1,0 +1,77 @@
+---
+title: "Chromatin marks and PAS"
+author: "Briana Mittleman"
+date: "3/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+http://science.sciencemag.org/content/352/6291/aad9926.full?ijkey=fkp/DIzVNS9RY&keytype=ref&siteid=sci
+
+
+This article talks about chromatin modifications for heterochromatin downstream of PAS. I will look at enrichment for repressive histone marks downstream of my called PAS.  
+
+
+Repressive marks H3K27me3, H3K9me3
+
+
+http://hgdownload.soe.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeUwHistone/
+
+H3k27me3
+H3k36me3
+H3k4me3
+H3k36me3
+
+Deeptools plot  
+
+
+h3k27me3DTmypeaks.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=h3k27me3DTmypeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=h3k27me3DTmypeaks.out
+#SBATCH --error=h3k27me3DTmypeaks.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k27me3StdRawRep1.bigWig -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3K27me3_myPeaksNompfilt.gz
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3K27me3_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "H3K27me3 at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3K27me3_myPeaksNompfilt.png
+```
+
+
+Put all of the marks on one plot:  
+
+I also want to just use the last base of the peak  APAPAS_5percCov_fixedStrand.bed
+histonemarksDTmypeaks.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=histonemarksDTmypeaks
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=histonemarksDTmypeaks.out
+#SBATCH --error=histonemarksDTmypeaks.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k27me3StdRawRep1.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k36me3StdRawRep1.bigWig  /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k4me3StdRawRep1.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm12878H3k36me3StdRawRep1.bigWig -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/HistMarks_myPeaksNompfilt.gz
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/HistMarks_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Histone marks at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/HistMarks_myPeaksNompfilt.png
+```
