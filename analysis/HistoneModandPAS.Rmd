@@ -23,7 +23,7 @@ http://hgdownload.soe.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeUwHistone/
 H3k27me3
 H3k36me3
 H3k4me3
-H3k36me3
+
 
 Deeptools plot  
 
@@ -70,8 +70,193 @@ histonemarksDTmypeaks.sh
 module load Anaconda3
 source activate three-prime-env
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k27me3StdRawRep1.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k36me3StdRawRep1.bigWig  /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k4me3StdRawRep1.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm12878H3k36me3StdRawRep1.bigWig -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/HistMarks_myPeaksNompfilt.gz
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k27me3StdRawRep1.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k36me3StdRawRep1.bigWig  /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k4me3StdRawRep1.bigWig -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/HistMarks_myPeaksNompfilt.gz
 
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/HistMarks_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "Histone marks at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/HistMarks_myPeaksNompfilt.png
 ```
+
+
+Scales are too different to put these on the same spot:  
+
+H3k27me3DTmyPAS.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=H3k27me3DTmypeaks.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=H3k27me3DTmypeaks.out
+#SBATCH --error=H3k27me3DTmypeaks.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k27me3.bw  -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 5000 -a 5000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k27me3_myPeaksNompfilt.gz --outFileNameMatrix /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k27me3_myPeaksNompfilt_matrix.txt --outFileSortedRegions /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k27me3_myPeaksNompfilt_SortedRegions.txt 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k27me3_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "H3k27me3 at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k27me3_myPeaksNompfilt.png
+```
+
+
+H3k36me3DTmyPAS.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=H3k27me3DTmypeaks.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=H3k36me3DTmypeaks.out
+#SBATCH --error=H3k36me3DTmypeaks.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k36me3.bw   -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 5000 -a 5000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k36me3_myPeaksNompfilt.gz --outFileNameMatrix /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k36me3_myPeaksNompfilt_matrix.txt --outFileSortedRegions /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k36me3_myPeaksNompfilt_SortedRegions.txt 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k36me3_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "H3k36me3 at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k36me3_myPeaksNompfilt.png
+```
+
+
+
+H3k4me3DTmyPAS.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=H3k4me3DTmypeaks.sh
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=H3k36me3DTmypeaks.out
+#SBATCH --error=H3k36me3DTmypeaks.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k4me3.bw  -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 5000 -a 5000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k4me3_myPeaksNompfilt.gz --outFileNameMatrix project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k4me3_myPeaksNompfilt_matrix.txt --outFileSortedRegions /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k4me3_myPeaksNompfilt_SortedRegions.txt 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k4me3_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "H3k4me3 at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/H3k4me3_myPeaksNompfilt.png
+```
+
+##Download both replicates for these and merge:
+mergeH3k27me3.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=mergeH3k27me3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeH3k27me3.out
+#SBATCH --error=mergeH3k27me3.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+module load Anaconda3
+source activate three-prime-env
+
+
+bigWigMerge /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k27me3StdRawRep1.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k27me3StdRawRep2.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k27me3.bedGraph
+
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k27me3.bedGraph /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k27me3.sort.bedGraph
+
+bedGraphToBigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k27me3.sort.bedGraph /project2/gilad/briana/genome_anotation_data/chrom.length.chr.txt  /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k27me3.bw
+
+
+
+```
+
+mergeH3k36me3.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=mergeH3k36me3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeH3k36me3.out
+#SBATCH --error=mergeH3k36me3.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+module load Anaconda3
+source activate three-prime-env
+
+
+bigWigMerge /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k36me3StdRawRep1.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k36me3StdRawRep2.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k36me3.bedGraph
+
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k36me3.bedGraph > /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k36me3.sort.bedGraph
+
+bedGraphToBigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k36me3.sort.bedGraph /project2/gilad/briana/genome_anotation_data/chrom.length.chr.txt  /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k36me3.bw
+
+
+
+```
+
+mergeH3k4me3.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=mergeH3k4me3
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeH3k4me3.out
+#SBATCH --error=mergeH3k4me3.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=36G
+#SBATCH --mail-type=END
+module load Anaconda3
+source activate three-prime-env
+
+
+bigWigMerge /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k4me3StdRawRep1.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeUwHistoneGm06990H3k4me3StdRawRep2.bigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k4me3.bedGraph
+
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k4me3.bedGraph >/project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k4me3.sort.bedGraph
+
+bedGraphToBigWig /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k4me3.sort.bedGraph /project2/gilad/briana/genome_anotation_data/chrom.length.chr.txt  /project2/gilad/briana/threeprimeseq/data/ChipSeq/MergedGm06990H3k4me3.bw
+
+
+
+```
+
+
+
+##MNASE:
+
+
+MNASEmyPAS.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPAS
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPAS.out
+#SBATCH --error=MNASEmyPAS.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 5000 -a 5000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNompfilt.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "MNASE at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNompfilt.png
+```
+
