@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-19
+<strong>Last updated:</strong> 2019-03-21
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree6e940ea6c45c7aa3ea089bc9a36e7973d11d743ctargetblank6e940eaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/6e940ea6c45c7aa3ea089bc9a36e7973d11d743c" target="_blank">6e940ea</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebe9dbbfaf7968c0f3bf54cc8773ed44682f853e8targetblankbe9dbbfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/be9dbbfaf7968c0f3bf54cc8773ed44682f853e8" target="_blank">be9dbbf</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree6e940ea6c45c7aa3ea089bc9a36e7973d11d743ctargetblank6e940eaa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreebe9dbbfaf7968c0f3bf54cc8773ed44682f853e8targetblankbe9dbbfa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -538,6 +538,7 @@ Ignored files:
 Untracked files:
     Untracked:  KalistoAbundance18486.txt
     Untracked:  analysis/4suDataIGV.Rmd
+    Untracked:  analysis/AdaptTonyExampleplots.Rmd
     Untracked:  analysis/DirectionapaQTL.Rmd
     Untracked:  analysis/EvaleQTLs.Rmd
     Untracked:  analysis/YL_QTL_test.Rmd
@@ -673,6 +674,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/HistoneModandPAS.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
     Modified:   analysis/NuclearSpecQTL.Rmd
     Modified:   analysis/PeakToXper.Rmd
@@ -739,6 +741,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/be9dbbfaf7968c0f3bf54cc8773ed44682f853e8/analysis/RNAdecayAndAPA.Rmd" target="_blank">be9dbbf</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-21
+</td>
+<td>
+add 4su ratio plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/e1baddd73e57c61d48f3f6cfa146c3a214d2ac28/docs/RNAdecayAndAPA.html" target="_blank">e1baddd</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -833,7 +869,7 @@ add decay analysis
 </div>
 <p>I want to ask if more nuclear specific transcripts compared to total is associated with RNA decay.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>✔ ggplot2 3.1.0       ✔ purrr   0.3.1  
 ✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
 ✔ tidyr   0.8.3       ✔ stringr 1.4.0  
@@ -844,7 +880,7 @@ add decay analysis
 <pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>Warning: package &#39;forcats&#39; was built under R version 3.5.2</code></pre>
-<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(reshape2)</code></pre>
@@ -1124,6 +1160,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e1baddd73e57c61d48f3f6cfa146c3a214d2ac28/docs/figure/RNAdecayAndAPA.Rmd/unnamed-chunk-14-1.png" target="_blank">e1baddd</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/7fc93c8e38e183a6ba976ec5cb1e09b57ffc4842/docs/figure/RNAdecayAndAPA.Rmd/unnamed-chunk-14-1.png" target="_blank">7fc93c8</a>
 </td>
 <td>
@@ -1191,6 +1238,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/e1baddd73e57c61d48f3f6cfa146c3a214d2ac28/docs/figure/RNAdecayAndAPA.Rmd/unnamed-chunk-15-1.png" target="_blank">e1baddd</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/7fc93c8e38e183a6ba976ec5cb1e09b57ffc4842/docs/figure/RNAdecayAndAPA.Rmd/unnamed-chunk-15-1.png" target="_blank">7fc93c8</a>
 </td>
 <td>
@@ -1205,6 +1263,144 @@ Briana Mittleman
 </div>
 </div>
 <pre class="r"><code>ggsave(APAdecay1sqd_18498, file=&quot;../output/plots/APAandRNADecay1SD_18498.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+<div id="update-plots-1-per-gene-standardize" class="section level3">
+<h3>Update plots, 1 per gene, standardize</h3>
+<p>I need to full join the mapped read sizes to the APA data.</p>
+<pre class="r"><code>ApaBothFrac=TotAPA_bygene %&gt;% inner_join(NucAPA_bygene, by=c(&quot;GeneName&quot;, &quot;Individual&quot;))
+
+ApaBothFrac_melt=melt(ApaBothFrac, id.vars=c(&quot;GeneName&quot;, &quot;Individual&quot;),value.name=&quot;APA_val&quot; ) %&gt;% mutate(fraction=ifelse(variable==&quot;TotalSum&quot;, &quot;total&quot;, &quot;nuclear&quot;), line=substring(Individual, 2)) %&gt;% dplyr::select(GeneName, fraction, line, APA_val)</code></pre>
+<p>I need the mapped read stats:</p>
+<pre class="r"><code>metadata=read.table(&quot;../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt&quot;, header = T,stringsAsFactors = F) %&gt;% dplyr::select(line, fraction, Mapped_noMP)
+
+metadata$line= as.character(metadata$line)</code></pre>
+<p>Join these:</p>
+<pre class="r"><code>ApaBothFracStand=ApaBothFrac_melt %&gt;% full_join(metadata, by=c(&quot;line&quot;, &quot;fraction&quot;)) %&gt;% mutate(StandApa=APA_val/Mapped_noMP)</code></pre>
+<p>Group by the fraction, gene and get the mean of the standard. I can then divide the nuclear mean by the total mean for each gene</p>
+<pre class="r"><code>ApaBothFracStand_geneMean=ApaBothFracStand %&gt;% group_by(fraction, GeneName) %&gt;% summarise(meanAPA=mean(StandApa, na.rm=T))</code></pre>
+<p>I want to spread this by fraction.</p>
+<pre class="r"><code>ApaBothFracStand_geneMean_spread= spread(ApaBothFracStand_geneMean,fraction,meanAPA ) %&gt;% mutate(APAVal=nuclear/(total+ nuclear)) </code></pre>
+</div>
+<div id="join-with-decay" class="section level3">
+<h3>Join with decay</h3>
+<pre class="r"><code>decay_byGene= decay_geneNames_long %&gt;% group_by(GeneName) %&gt;% summarise(MeanDecay=mean(RNA_Decay))
+
+
+
+decay_byGene_1d= decay_byGene %&gt;% mutate(Mean=mean(MeanDecay), SD=sd(MeanDecay), Zscore=(MeanDecay-Mean)/SD) %&gt;% filter(abs(Zscore)&gt;1) %&gt;% dplyr::select(GeneName,MeanDecay)</code></pre>
+<pre class="r"><code>ApaAndDecaySt= ApaBothFracStand_geneMean_spread %&gt;% inner_join(decay_byGene_1d, by=&quot;GeneName&quot;)
+
+ApaAndDecaySt$density &lt;- get_density(ApaAndDecaySt$APAVal, ApaAndDecaySt$MeanDecay, n = 100)</code></pre>
+<pre class="r"><code>apaanddecay1sd=ggplot(ApaAndDecaySt, aes(x=MeanDecay, y=APAVal)) + geom_point(aes(color=density)) + geom_smooth(method=&quot;lm&quot;) + labs(x=&quot;relative Decay&quot;, y=&quot;Nuclear/(Total+Nuclear)&quot;, title=&quot;Relationship between Nuclear proportion and RNA decay\n for decay gene 1SD outside mean&quot;)+ scale_color_viridis()
+
+apaanddecay1sd</code></pre>
+<p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(apaanddecay1sd, file=&quot;../output/plots/ApaRationVDecy1SD.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>summary(lm(data=ApaAndDecaySt, APAVal~MeanDecay))</code></pre>
+<pre><code>
+Call:
+lm(formula = APAVal ~ MeanDecay, data = ApaAndDecaySt)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.3383 -0.1112 -0.0005  0.1085  0.3710 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.48523    0.00359 135.158  &lt; 2e-16 ***
+MeanDecay   -0.10327    0.01489  -6.936 5.62e-12 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.138 on 1788 degrees of freedom
+Multiple R-squared:  0.0262,    Adjusted R-squared:  0.02566 
+F-statistic: 48.11 on 1 and 1788 DF,  p-value: 5.621e-12</code></pre>
+<p>Try all of the value:</p>
+<pre class="r"><code>ApaAndDecayStall= ApaBothFracStand_geneMean_spread %&gt;% inner_join(decay_byGene, by=&quot;GeneName&quot;)
+
+
+ApaAndDecayStall$density &lt;- get_density(ApaAndDecayStall$APAVal, ApaAndDecayStall$MeanDecay, n = 100)
+
+apaanddecayallplot=ggplot(ApaAndDecayStall, aes(x=MeanDecay, y=APAVal)) + geom_point(aes(color=density)) + geom_smooth(method=&quot;lm&quot;) +labs(x=&quot;relative Decay&quot;, y=&quot;Nuclear/(Total+Nuclear)&quot;, title=&quot;Relationship between Nuclear proportion and RNA decay&quot;)+ scale_color_viridis()
+
+apaanddecayallplot</code></pre>
+<p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(apaanddecayallplot, file=&quot;../output/plots/ApaRationVDecyAllGenes.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>summary(lm(data=ApaAndDecayStall, APAVal~MeanDecay))</code></pre>
+<pre><code>
+Call:
+lm(formula = APAVal ~ MeanDecay, data = ApaAndDecayStall)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.39756 -0.10362  0.01145  0.11371  0.39458 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.520235   0.001582 328.887  &lt; 2e-16 ***
+MeanDecay   -0.069035   0.012646  -5.459 4.93e-08 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.1379 on 7886 degrees of freedom
+Multiple R-squared:  0.003765,  Adjusted R-squared:  0.003639 
+F-statistic:  29.8 on 1 and 7886 DF,  p-value: 4.928e-08</code></pre>
+</div>
+</div>
+<div id="make-the-same-plot-with-transcription-on-the-x-4su4surna" class="section level2">
+<h2>Make the same plot with transcription on the X (4su/4su+RNA)</h2>
+<p>4su data</p>
+<pre class="r"><code>FourSU=read.table(file = &quot;../data/RNAdecay/tr_decay_table_norm.txt&quot;, header=T, stringsAsFactors = F) %&gt;%  dplyr::select(gene_id,contains(&quot;4su_30&quot;))
+
+
+FourSU_geneNames=FourSU %&gt;% inner_join(geneNames, by=&quot;gene_id&quot;) %&gt;% dplyr::select(GeneName, contains(&quot;4su_30&quot;))
+
+FourgeneNames_long=melt(FourSU_geneNames,id.vars = &quot;GeneName&quot;, value.name = &quot;FourSU&quot;, variable.name = &quot;FourSU_ind&quot;) %&gt;% separate(FourSU_ind, into=c(&quot;type&quot;,&quot;time&quot;, &quot;1400&quot;, &quot;MAf&quot;, &quot;Individual&quot;), sep=&quot;_&quot;) %&gt;% dplyr::select(GeneName, Individual, FourSU) 
+
+FourSU_geneMean=FourgeneNames_long %&gt;% group_by(GeneName) %&gt;%summarise(Mean_4su=mean(FourSU))</code></pre>
+<p>Gene expression data:</p>
+<pre class="r"><code>RNA=read.table(file = &quot;../data/RNAdecay/tr_decay_table_norm.txt&quot;, header=T, stringsAsFactors = F) %&gt;%  dplyr::select(gene_id,contains(&quot;RNAseq_14000&quot;))
+
+
+RNA_geneNames=RNA %&gt;% inner_join(geneNames, by=&quot;gene_id&quot;) %&gt;% dplyr::select(GeneName, contains(&quot;RNA&quot;))
+
+RNAgeneNames_long=melt(RNA_geneNames,id.vars = &quot;GeneName&quot;, value.name = &quot;RNA&quot;, variable.name = &quot;RNA_ind&quot;) %&gt;%   separate(RNA_ind, into=c(&quot;type&quot;, &quot;1400&quot;, &quot;MAf&quot;, &quot;Individual&quot;), sep=&quot;_&quot;) %&gt;% dplyr::select(GeneName, Individual, RNA) 
+
+RNA_geneMean=RNAgeneNames_long %&gt;% group_by(GeneName) %&gt;%summarise(Mean_RNA=mean(RNA))</code></pre>
+<p>Join these and make the transcription phenotype</p>
+<pre class="r"><code>Transcription=FourSU_geneMean %&gt;% inner_join(RNA_geneMean, by=&quot;GeneName&quot;) %&gt;% mutate(Transcription=Mean_4su/(Mean_4su + Mean_RNA)) %&gt;% dplyr::select(GeneName, Transcription)</code></pre>
+<p>Join with APA:</p>
+<pre class="r"><code>APAandTranscrption= Transcription %&gt;% inner_join(ApaBothFracStand_geneMean_spread, by=&quot;GeneName&quot;)
+APAandTranscrption$density &lt;- get_density(APAandTranscrption$APAVal, APAandTranscrption$Transcription, n = 100)
+
+apaand4uplot=ggplot(APAandTranscrption, aes(x=Transcription, y=APAVal))+ geom_point(aes(color=density)) + geom_smooth(method = &quot;lm&quot;) + labs(x=&quot;4su/4su+RNA&quot;, y=&quot;Nuclear/Nuclear+Total&quot;, title=&quot;Relationship between APA fraction and transcription&quot;) + scale_color_viridis()
+
+
+summary(lm(data=APAandTranscrption, APAVal~Transcription))</code></pre>
+<pre><code>
+Call:
+lm(formula = APAVal ~ Transcription, data = APAandTranscrption)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.45569 -0.09980  0.00815  0.10627  0.38149 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   0.354663   0.007229   49.06   &lt;2e-16 ***
+Transcription 0.319004   0.013488   23.65   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.1335 on 7886 degrees of freedom
+Multiple R-squared:  0.06623,   Adjusted R-squared:  0.06612 
+F-statistic: 559.4 on 1 and 7886 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>apaand4uplot</code></pre>
+<p><img src="figure/RNAdecayAndAPA.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(apaand4uplot, file=&quot;../output/plots/NuclearTotalRatiov4suRNARatio.png&quot;)</code></pre>
 <pre><code>Saving 7 x 5 in image</code></pre>
 <br> <br>
 <p>
@@ -1249,7 +1445,6 @@ loaded via a namespace (and not attached):
 [41] whisker_0.3-2    pkgconfig_2.0.2  xml2_1.2.0       lubridate_1.7.4 
 [45] assertthat_0.2.0 rmarkdown_1.11   httr_1.4.0       rstudioapi_0.9.0
 [49] R6_2.4.0         nlme_3.1-137     git2r_0.24.0     compiler_3.5.1  </code></pre>
-</div>
 </div>
 </div>
 
