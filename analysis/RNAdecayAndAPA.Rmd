@@ -220,3 +220,156 @@ APAdecay1sqd_18498
 ggsave(APAdecay1sqd_18498, file="../output/plots/APAandRNADecay1SD_18498.png")
 ```
 
+###Update plots, 1 per gene, standardize  
+
+I need to full join the mapped read sizes to the APA data. 
+
+```{r}
+ApaBothFrac=TotAPA_bygene %>% inner_join(NucAPA_bygene, by=c("GeneName", "Individual"))
+
+ApaBothFrac_melt=melt(ApaBothFrac, id.vars=c("GeneName", "Individual"),value.name="APA_val" ) %>% mutate(fraction=ifelse(variable=="TotalSum", "total", "nuclear"), line=substring(Individual, 2)) %>% dplyr::select(GeneName, fraction, line, APA_val)
+```
+
+I need the mapped read stats:  
+
+```{r}
+metadata=read.table("../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt", header = T,stringsAsFactors = F) %>% dplyr::select(line, fraction, Mapped_noMP)
+
+metadata$line= as.character(metadata$line)
+```
+
+
+Join these: 
+
+
+```{r}
+ApaBothFracStand=ApaBothFrac_melt %>% full_join(metadata, by=c("line", "fraction")) %>% mutate(StandApa=APA_val/Mapped_noMP)
+```
+
+
+Group by the fraction, gene and get the mean of the standard. I can then divide the nuclear mean by the total mean for each gene
+
+```{r}
+ApaBothFracStand_geneMean=ApaBothFracStand %>% group_by(fraction, GeneName) %>% summarise(meanAPA=mean(StandApa, na.rm=T))
+```
+I want to spread this by fraction.
+
+
+```{r}
+ApaBothFracStand_geneMean_spread= spread(ApaBothFracStand_geneMean,fraction,meanAPA ) %>% mutate(APAVal=nuclear/(total+ nuclear)) 
+```
+
+
+###Join with decay  
+
+
+```{r}
+decay_byGene= decay_geneNames_long %>% group_by(GeneName) %>% summarise(MeanDecay=mean(RNA_Decay))
+
+
+
+decay_byGene_1d= decay_byGene %>% mutate(Mean=mean(MeanDecay), SD=sd(MeanDecay), Zscore=(MeanDecay-Mean)/SD) %>% filter(abs(Zscore)>1) %>% dplyr::select(GeneName,MeanDecay)
+
+```
+
+```{r}
+ApaAndDecaySt= ApaBothFracStand_geneMean_spread %>% inner_join(decay_byGene_1d, by="GeneName")
+
+ApaAndDecaySt$density <- get_density(ApaAndDecaySt$APAVal, ApaAndDecaySt$MeanDecay, n = 100)
+```
+
+
+```{r}
+apaanddecay1sd=ggplot(ApaAndDecaySt, aes(x=MeanDecay, y=APAVal)) + geom_point(aes(color=density)) + geom_smooth(method="lm") + labs(x="relative Decay", y="Nuclear/(Total+Nuclear)", title="Relationship between Nuclear proportion and RNA decay\n for decay gene 1SD outside mean")+ scale_color_viridis()
+
+apaanddecay1sd
+
+ggsave(apaanddecay1sd, file="../output/plots/ApaRationVDecy1SD.png")
+
+```
+```{r}
+summary(lm(data=ApaAndDecaySt, APAVal~MeanDecay))
+```
+
+
+
+Try all of the value: 
+
+
+```{r}
+ApaAndDecayStall= ApaBothFracStand_geneMean_spread %>% inner_join(decay_byGene, by="GeneName")
+
+
+ApaAndDecayStall$density <- get_density(ApaAndDecayStall$APAVal, ApaAndDecayStall$MeanDecay, n = 100)
+
+apaanddecayallplot=ggplot(ApaAndDecayStall, aes(x=MeanDecay, y=APAVal)) + geom_point(aes(color=density)) + geom_smooth(method="lm") +labs(x="relative Decay", y="Nuclear/(Total+Nuclear)", title="Relationship between Nuclear proportion and RNA decay")+ scale_color_viridis()
+
+apaanddecayallplot
+
+ggsave(apaanddecayallplot, file="../output/plots/ApaRationVDecyAllGenes.png")
+```
+
+```{r}
+summary(lm(data=ApaAndDecayStall, APAVal~MeanDecay))
+```
+
+##Make the same plot with transcription on the X (4su/4su+RNA)
+
+4su data
+```{r}
+FourSU=read.table(file = "../data/RNAdecay/tr_decay_table_norm.txt", header=T, stringsAsFactors = F) %>%  dplyr::select(gene_id,contains("4su_30"))
+
+
+FourSU_geneNames=FourSU %>% inner_join(geneNames, by="gene_id") %>% dplyr::select(GeneName, contains("4su_30"))
+
+FourgeneNames_long=melt(FourSU_geneNames,id.vars = "GeneName", value.name = "FourSU", variable.name = "FourSU_ind") %>% separate(FourSU_ind, into=c("type","time", "1400", "MAf", "Individual"), sep="_") %>% dplyr::select(GeneName, Individual, FourSU) 
+
+FourSU_geneMean=FourgeneNames_long %>% group_by(GeneName) %>%summarise(Mean_4su=mean(FourSU))
+
+
+
+```
+
+
+Gene expression data:
+
+```{r}
+RNA=read.table(file = "../data/RNAdecay/tr_decay_table_norm.txt", header=T, stringsAsFactors = F) %>%  dplyr::select(gene_id,contains("RNAseq_14000"))
+
+
+RNA_geneNames=RNA %>% inner_join(geneNames, by="gene_id") %>% dplyr::select(GeneName, contains("RNA"))
+
+RNAgeneNames_long=melt(RNA_geneNames,id.vars = "GeneName", value.name = "RNA", variable.name = "RNA_ind") %>%   separate(RNA_ind, into=c("type", "1400", "MAf", "Individual"), sep="_") %>% dplyr::select(GeneName, Individual, RNA) 
+
+RNA_geneMean=RNAgeneNames_long %>% group_by(GeneName) %>%summarise(Mean_RNA=mean(RNA))
+
+
+```
+
+Join these and make the transcription phenotype
+
+```{r}
+Transcription=FourSU_geneMean %>% inner_join(RNA_geneMean, by="GeneName") %>% mutate(Transcription=Mean_4su/(Mean_4su + Mean_RNA)) %>% dplyr::select(GeneName, Transcription)
+```
+
+
+Join with APA:  
+
+```{r}
+APAandTranscrption= Transcription %>% inner_join(ApaBothFracStand_geneMean_spread, by="GeneName")
+APAandTranscrption$density <- get_density(APAandTranscrption$APAVal, APAandTranscrption$Transcription, n = 100)
+
+apaand4uplot=ggplot(APAandTranscrption, aes(x=Transcription, y=APAVal))+ geom_point(aes(color=density)) + geom_smooth(method = "lm") + labs(x="4su/4su+RNA", y="Nuclear/Nuclear+Total", title="Relationship between APA fraction and transcription") + scale_color_viridis()
+
+
+summary(lm(data=APAandTranscrption, APAVal~Transcription))
+
+```
+
+
+```{r}
+
+apaand4uplot
+ggsave(apaand4uplot, file="../output/plots/NuclearTotalRatiov4suRNARatio.png")
+```
+
