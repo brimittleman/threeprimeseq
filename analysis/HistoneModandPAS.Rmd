@@ -254,9 +254,131 @@ MNASEmyPAS.sh
 module load Anaconda3
 source activate three-prime-env
 
-computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 5000 -a 5000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNompfilt.gz 
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNompfilt.gz 
 
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "MNASE at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNompfilt.png
+```
+
+Try second mnase track.  
+
+MNASEmyPAS_secondfile.sh
+```{bash,eval=F}
+
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPAS_secondfile
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPAS_secondfile.out
+#SBATCH --error=MNASEmyPAS_secondfile.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/wgEncodeSydhNsomeGm12878Sig.bigWig  -R /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase2_myPeaksNompfilt.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase2_myPeaksNompfilt.gz --refPointLabel "Called PAS" --plotTitle "MNASE at All Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase2_myPeaksNompfilt.png
+
+```
+
+
+
+
+Convert to PAS ratehr than peak:
+APAPeaks_5percCov_fixedStrand_INTRON.bed
+
+```{bash,eval=F}
+python Peak2PAS.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_INTRON.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_INTRON.bed
+```
+
+
+Run this with intronic vs utr  
+MNASEmyPASIntron.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPASIntron
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPASIntron.out
+#SBATCH --error=MNASEmyPASIntron.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_INTRON.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksIntronNompfilt.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksIntronNompfilt.gz --refPointLabel "Called PAS" --plotTitle "MNASE at Intronic Called PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksIntronNompfilt.png
+```
+
+Nuclear specific:  
+```{bash,eval=F}
+python Peak2PAS.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_SigUsageNuc.bed
+
+```
+
+
+MNASEmyPASNuclear.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPASNuclear
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPASNuclear.out
+#SBATCH --error=MNASEmyPASNuclear.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_SigUsageNuc.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearNompfilt.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearNompfilt.gz --refPointLabel "Called PAS" --plotTitle "MNASE at Nuclear specific PAS" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearNompfilt.png
+```
+
+
+Nuclear Intronic:  
+
+APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed
+
+```{bash,eval=F}
+python Peak2PAS.py /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand_SigUsageNuc_Intron.bed /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_SigUsageNuc_Intron.bed
+
+```
+
+
+MNASEmyPASNuclearIntronic.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPASNuclearIntronic
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPASNuclearIntronic.out
+#SBATCH --error=MNASEmyPASNuclearIntronic.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_SigUsageNuc_Intron.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearIntronNompfilt.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearIntronNompfilt.gz --refPointLabel "Called PAS" --plotTitle "MNASE at Nuclear specific PAS in Intron" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearIntronNompfilt.png
 ```
 
