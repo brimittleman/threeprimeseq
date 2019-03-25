@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-23
+<strong>Last updated:</strong> 2019-03-25
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree4939dfe6fc6695823f2828c8b07d127241cd90d5targetblank4939dfea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4939dfe6fc6695823f2828c8b07d127241cd90d5" target="_blank">4939dfe</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef3740ea146d6ce93131363aa0579cbd2f08ae054targetblankf3740eaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/f3740ea146d6ce93131363aa0579cbd2f08ae054" target="_blank">f3740ea</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree4939dfe6fc6695823f2828c8b07d127241cd90d5targetblank4939dfea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreef3740ea146d6ce93131363aa0579cbd2f08ae054targetblankf3740eaa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -750,6 +750,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/f3740ea146d6ce93131363aa0579cbd2f08ae054/analysis/HistoneModandPAS.Rmd" target="_blank">f3740ea</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-25
+</td>
+<td>
+add top and bottom dnase
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/3eac46483466f9e52a552878598dabc4f9f107c2/docs/HistoneModandPAS.html" target="_blank">3eac464</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/4939dfe6fc6695823f2828c8b07d127241cd90d5/analysis/HistoneModandPAS.Rmd" target="_blank">4939dfe</a>
 </td>
 <td>
@@ -837,6 +871,41 @@ add histone mod analysis
 </div>
 </div>
 </div>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.1.0       ✔ purrr   0.3.1  
+✔ tibble  2.0.1       ✔ dplyr   0.8.0.1
+✔ tidyr   0.8.3       ✔ stringr 1.4.0  
+✔ readr   1.3.1       ✔ forcats 0.4.0  </code></pre>
+<pre><code>Warning: package &#39;tibble&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;tidyr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;purrr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;stringr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>Warning: package &#39;forcats&#39; was built under R version 3.5.2</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.2.0
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(data.table)</code></pre>
+<pre><code>Warning: package &#39;data.table&#39; was built under R version 3.5.2</code></pre>
+<pre><code>
+Attaching package: &#39;data.table&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:dplyr&#39;:
+
+    between, first, last</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    transpose</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>Warning: package &#39;cowplot&#39; was built under R version 3.5.2</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    ggsave</code></pre>
 <p><a href="http://science.sciencemag.org/content/352/6291/aad9926.full?ijkey=fkp/DIzVNS9RY&amp;keytype=ref&amp;siteid=sci" class="uri">http://science.sciencemag.org/content/352/6291/aad9926.full?ijkey=fkp/DIzVNS9RY&amp;keytype=ref&amp;siteid=sci</a></p>
 <p>This article talks about chromatin modifications for heterochromatin downstream of PAS. I will look at enrichment for repressive histone marks downstream of my called PAS.</p>
 <p>Repressive marks H3K27me3, H3K9me3</p>
@@ -1128,6 +1197,223 @@ computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipS
 
 
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearIntronNompfilt.gz --refPointLabel &quot;Called PAS&quot; --plotTitle &quot;MNASE at Nuclear specific PAS in Intron&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearIntronNompfilt.png</code></pre>
+<div id="sepatate-by-mean-usage-strongweak" class="section level3">
+<h3>Sepatate by mean usage (strong/weak)</h3>
+<div id="total" class="section level4">
+<h4>Total</h4>
+<p>Mean usage:</p>
+<p>top 20% and bottom 20%. by mean usage</p>
+<pre class="r"><code>meanUsageTot=read.table(&quot;../data/PeaksUsed_noMP_5percCov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt&quot;, col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;,&quot;gene&quot;, &quot;strand&quot;, &quot;name&quot;, &quot;meanUsage&quot;)) %&gt;% mutate(perc=ntile(meanUsage,n=100)) 
+
+
+meanUsageTot_bot20=meanUsageTot %&gt;% filter(perc &lt;20) %&gt;% dplyr::select(name)
+meanUsageTot_top20=meanUsageTot %&gt;% filter(perc &gt;80)%&gt;% dplyr::select(name)</code></pre>
+<p>Write out the peaks:</p>
+<pre class="r"><code>write.table(meanUsageTot_bot20, file=&quot;../data/PeaksUsed_noMP_5percCov/TotalPeaksBottom20Usage.txt&quot;, quote=F, row.names = F, col.names = F, sep=&quot;\t&quot;)
+
+write.table(meanUsageTot_top20, file=&quot;../data/PeaksUsed_noMP_5percCov/TotalPeaksTop20Usage.txt&quot;, quote=F, row.names = F, col.names = F, sep=&quot;\t&quot;)</code></pre>
+<p>Copy to /project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/</p>
+<p>Subset PAS file:</p>
+<p>subsetPAStottop20perc.py</p>
+<pre class="bash"><code>top20=open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/TotalPeaksTop20Usage.txt&quot;, &quot;r&quot;)
+
+
+AllPas=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed&quot;, &quot;r&quot;)
+
+Top20PAS=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_top20inTotal.bed&quot;, &quot;w&quot;)
+
+
+
+
+
+def subsetPAS(use, outpas, PAS):
+    okPAS={}
+    for ln in use:
+        peak=ln.strip()
+        okPAS[peak]=&quot;&quot;
+    for ln in PAS:
+        peaknum=ln.split()[3].split(&quot;:&quot;)[-1]
+        print
+        if peaknum in okPAS.keys():
+            outpas.write(ln)
+    outpas.close()
+
+
+subsetPAS(top20, Top20PAS, AllPas)</code></pre>
+<p>subsetPAStotbottom20perc.py</p>
+<pre class="bash"><code>
+bottom20=open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/TotalPeaksBottom20Usage.txt&quot;, &quot;r&quot;)
+
+AllPas=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed&quot;, &quot;r&quot;)
+
+
+Bottom20PAS=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_bottom20inTotal.bed&quot;, &quot;w&quot;)
+
+
+
+
+def subsetPAS(use, outpas, PAS):
+    okPAS={}
+    for ln in use:
+        peak=ln.strip()
+        okPAS[peak]=&quot;&quot;
+    for ln in PAS:
+        peaknum=ln.split()[3].split(&quot;:&quot;)[-1]
+        print
+        if peaknum in okPAS.keys():
+            outpas.write(ln)
+    outpas.close()
+
+
+subsetPAS(bottom20, Bottom20PAS, AllPas)
+</code></pre>
+<p>Deeptools plots for these:</p>
+<p>MNASEmyPAStop20tot.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPAStop20tot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPAStop20tot.out
+#SBATCH --error=MNASEmyPAStop20tot.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_top20inTotal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20tot.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20tot.gz --refPointLabel &quot;Called PAS&quot; --plotTitle &quot;MNASE at Top 20% Total Usage&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20tot.png</code></pre>
+<p>MNASEmyPASbottom20tot.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPASbottom20tot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPASbottom20tot.out
+#SBATCH --error=MNASEmyPASbottom20tot.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_bottom20inTotal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20tot.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20tot.gz --refPointLabel &quot;Called PAS&quot; --plotTitle &quot;MNASE at Bottom 20% Total Usage&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20tot.png</code></pre>
+</div>
+<div id="nuclear" class="section level4">
+<h4>Nuclear</h4>
+<p>Mean usage:</p>
+<p>top 20% and bottom 20%. by mean usage</p>
+<pre class="r"><code>meanUsageNuc=read.table(&quot;../data/PeaksUsed_noMP_5percCov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt&quot;, col.names = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;,&quot;gene&quot;, &quot;strand&quot;, &quot;name&quot;, &quot;meanUsage&quot;)) %&gt;% mutate(perc=ntile(meanUsage,n=100)) 
+
+
+meanUsageNuc_bot20=meanUsageNuc %&gt;% filter(perc &lt;20) %&gt;% dplyr::select(name)
+meanUsageNuc_top20=meanUsageNuc %&gt;% filter(perc &gt;80)%&gt;% dplyr::select(name)</code></pre>
+<p>Write out the peaks:</p>
+<pre class="r"><code>write.table(meanUsageNuc_bot20, file=&quot;../data/PeaksUsed_noMP_5percCov/NuclearPeaksBottom20Usage.txt&quot;, quote=F, row.names = F, col.names = F, sep=&quot;\t&quot;)
+
+write.table(meanUsageNuc_top20, file=&quot;../data/PeaksUsed_noMP_5percCov/NuclearPeaksTop20Usage.txt&quot;, quote=F, row.names = F, col.names = F, sep=&quot;\t&quot;)</code></pre>
+<p>Copy to /project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/</p>
+<p>Subset PAS file:</p>
+<p>subsetPASnuctop20perc.py</p>
+<pre class="bash"><code>top20=open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/NuclearPeaksTop20Usage.txt&quot;, &quot;r&quot;)
+
+
+AllPas=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed&quot;, &quot;r&quot;)
+
+Top20PAS=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_top20inNuclear.bed&quot;, &quot;w&quot;)
+
+
+
+
+
+def subsetPAS(use, outpas, PAS):
+    okPAS={}
+    for ln in use:
+        peak=ln.strip()
+        okPAS[peak]=&quot;&quot;
+    for ln in PAS:
+        peaknum=ln.split()[3].split(&quot;:&quot;)[-1]
+        print
+        if peaknum in okPAS.keys():
+            outpas.write(ln)
+    outpas.close()
+
+
+subsetPAS(top20, Top20PAS, AllPas)</code></pre>
+<p>subsetPASnucbottom20perc.py</p>
+<pre class="bash"><code>
+bottom20=open(&quot;/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/NuclearPeaksBottom20Usage.txt&quot;, &quot;r&quot;)
+
+AllPas=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed&quot;, &quot;r&quot;)
+
+
+Bottom20PAS=open(&quot;/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_bottom20inNuclear.bed&quot;, &quot;w&quot;)
+
+
+
+
+def subsetPAS(use, outpas, PAS):
+    okPAS={}
+    for ln in use:
+        peak=ln.strip()
+        okPAS[peak]=&quot;&quot;
+    for ln in PAS:
+        peaknum=ln.split()[3].split(&quot;:&quot;)[-1]
+        print
+        if peaknum in okPAS.keys():
+            outpas.write(ln)
+    outpas.close()
+
+
+subsetPAS(bottom20, Bottom20PAS, AllPas)
+</code></pre>
+<p>Deeptools plots for these:</p>
+<p>MNASEmyPAStop20nuc.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPAStop20nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPAStop20nuc.out
+#SBATCH --error=MNASEmyPAStop20nuc.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_top20inNuclear.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20nuc.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20nuc.gz --refPointLabel &quot;Called PAS&quot; --plotTitle &quot;MNASE at Top 20% Nuclear Usage&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20nuc.png</code></pre>
+<p>MNASEmyPASbottom20nuc.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPASbottom20nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPASbottom20nuc.out
+#SBATCH --error=MNASEmyPASbottom20nuc.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_bottom20inNuclear.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20nuc.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20nuc.gz --refPointLabel &quot;Called PAS&quot; --plotTitle &quot;MNASE at Bottom 20% Nuclear Usage&quot; --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20nuc.png</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1150,12 +1436,28 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] cowplot_0.9.4     data.table_1.12.0 workflowr_1.2.0  
+ [4] forcats_0.4.0     stringr_1.4.0     dplyr_0.8.0.1    
+ [7] purrr_0.3.1       readr_1.3.1       tidyr_0.8.3      
+[10] tibble_2.0.1      ggplot2_3.1.0     tidyverse_1.2.1  
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0 Rcpp_1.0.0      digest_0.6.18   rprojroot_1.3-2
- [5] backports_1.1.3 git2r_0.24.0    magrittr_1.5    evaluate_0.13  
- [9] stringi_1.3.1   fs_1.2.6        whisker_0.3-2   rmarkdown_1.11 
-[13] tools_3.5.1     stringr_1.4.0   glue_1.3.0      xfun_0.5       
-[17] yaml_2.2.0      compiler_3.5.1  htmltools_0.3.6 knitr_1.21     </code></pre>
+ [1] Rcpp_1.0.0       cellranger_1.1.0 plyr_1.8.4       pillar_1.3.1    
+ [5] compiler_3.5.1   git2r_0.24.0     tools_3.5.1      digest_0.6.18   
+ [9] lubridate_1.7.4  jsonlite_1.6     evaluate_0.13    nlme_3.1-137    
+[13] gtable_0.2.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.3.1     
+[17] cli_1.0.1        rstudioapi_0.9.0 yaml_2.2.0       haven_2.1.0     
+[21] xfun_0.5         withr_2.1.2      xml2_1.2.0       httr_1.4.0      
+[25] knitr_1.21       hms_0.4.2        generics_0.0.2   fs_1.2.6        
+[29] rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5 glue_1.3.0      
+[33] R6_2.4.0         readxl_1.3.0     rmarkdown_1.11   modelr_0.1.4    
+[37] magrittr_1.5     whisker_0.3-2    backports_1.1.3  scales_1.0.0    
+[41] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.4-0
+[45] stringi_1.3.1    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1     
+[49] crayon_1.3.4    </code></pre>
+</div>
+</div>
 </div>
 </div>
 
