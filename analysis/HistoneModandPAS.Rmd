@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(data.table)
+library(cowplot)
+```
+
 http://science.sciencemag.org/content/352/6291/aad9926.full?ijkey=fkp/DIzVNS9RY&keytype=ref&siteid=sci
 
 
@@ -382,3 +390,289 @@ computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipS
 plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearIntronNompfilt.gz --refPointLabel "Called PAS" --plotTitle "MNASE at Nuclear specific PAS in Intron" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksNuclearIntronNompfilt.png
 ```
 
+
+###Sepatate by mean usage (strong/weak)
+
+####Total  
+Mean usage: 
+
+top 20% and bottom 20%. by mean usage  
+
+```{r}
+meanUsageTot=read.table("../data/PeaksUsed_noMP_5percCov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt", col.names = c("chr", "start", "end","gene", "strand", "name", "meanUsage")) %>% mutate(perc=ntile(meanUsage,n=100)) 
+
+
+meanUsageTot_bot20=meanUsageTot %>% filter(perc <20) %>% dplyr::select(name)
+meanUsageTot_top20=meanUsageTot %>% filter(perc >80)%>% dplyr::select(name)
+```
+
+
+Write out the peaks:
+
+```{r}
+write.table(meanUsageTot_bot20, file="../data/PeaksUsed_noMP_5percCov/TotalPeaksBottom20Usage.txt", quote=F, row.names = F, col.names = F, sep="\t")
+
+write.table(meanUsageTot_top20, file="../data/PeaksUsed_noMP_5percCov/TotalPeaksTop20Usage.txt", quote=F, row.names = F, col.names = F, sep="\t")
+```
+
+Copy to 
+/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/
+
+
+Subset PAS file: 
+
+subsetPAStottop20perc.py
+
+```{bash,eval=F}
+top20=open("/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/TotalPeaksTop20Usage.txt", "r")
+
+
+AllPas=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed", "r")
+
+Top20PAS=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_top20inTotal.bed", "w")
+
+
+
+
+
+def subsetPAS(use, outpas, PAS):
+    okPAS={}
+    for ln in use:
+        peak=ln.strip()
+        okPAS[peak]=""
+    for ln in PAS:
+        peaknum=ln.split()[3].split(":")[-1]
+        print
+        if peaknum in okPAS.keys():
+            outpas.write(ln)
+    outpas.close()
+
+
+subsetPAS(top20, Top20PAS, AllPas)
+```
+
+subsetPAStotbottom20perc.py
+
+```{bash,eval=F}
+
+bottom20=open("/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/TotalPeaksBottom20Usage.txt", "r")
+
+AllPas=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed", "r")
+
+
+Bottom20PAS=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_bottom20inTotal.bed", "w")
+
+
+
+
+def subsetPAS(use, outpas, PAS):
+    okPAS={}
+    for ln in use:
+        peak=ln.strip()
+        okPAS[peak]=""
+    for ln in PAS:
+        peaknum=ln.split()[3].split(":")[-1]
+        print
+        if peaknum in okPAS.keys():
+            outpas.write(ln)
+    outpas.close()
+
+
+subsetPAS(bottom20, Bottom20PAS, AllPas)
+
+```
+
+
+Deeptools plots for these:
+
+MNASEmyPAStop20tot.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPAStop20tot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPAStop20tot.out
+#SBATCH --error=MNASEmyPAStop20tot.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_top20inTotal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20tot.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20tot.gz --refPointLabel "Called PAS" --plotTitle "MNASE at Top 20% Total Usage" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20tot.png
+```
+
+
+
+
+MNASEmyPASbottom20tot.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPASbottom20tot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPASbottom20tot.out
+#SBATCH --error=MNASEmyPASbottom20tot.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_bottom20inTotal.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20tot.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20tot.gz --refPointLabel "Called PAS" --plotTitle "MNASE at Bottom 20% Total Usage" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20tot.png
+```
+
+
+####Nuclear  
+
+
+Mean usage: 
+
+top 20% and bottom 20%. by mean usage  
+
+```{r}
+meanUsageNuc=read.table("../data/PeaksUsed_noMP_5percCov/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt", col.names = c("chr", "start", "end","gene", "strand", "name", "meanUsage")) %>% mutate(perc=ntile(meanUsage,n=100)) 
+
+
+meanUsageNuc_bot20=meanUsageNuc %>% filter(perc <20) %>% dplyr::select(name)
+meanUsageNuc_top20=meanUsageNuc %>% filter(perc >80)%>% dplyr::select(name)
+```
+
+
+Write out the peaks:
+
+```{r}
+write.table(meanUsageNuc_bot20, file="../data/PeaksUsed_noMP_5percCov/NuclearPeaksBottom20Usage.txt", quote=F, row.names = F, col.names = F, sep="\t")
+
+write.table(meanUsageNuc_top20, file="../data/PeaksUsed_noMP_5percCov/NuclearPeaksTop20Usage.txt", quote=F, row.names = F, col.names = F, sep="\t")
+```
+
+Copy to 
+/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/
+
+
+Subset PAS file: 
+
+subsetPASnuctop20perc.py
+
+```{bash,eval=F}
+top20=open("/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/NuclearPeaksTop20Usage.txt", "r")
+
+
+AllPas=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed", "r")
+
+Top20PAS=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_top20inNuclear.bed", "w")
+
+
+
+
+
+def subsetPAS(use, outpas, PAS):
+    okPAS={}
+    for ln in use:
+        peak=ln.strip()
+        okPAS[peak]=""
+    for ln in PAS:
+        peaknum=ln.split()[3].split(":")[-1]
+        print
+        if peaknum in okPAS.keys():
+            outpas.write(ln)
+    outpas.close()
+
+
+subsetPAS(top20, Top20PAS, AllPas)
+```
+
+
+
+subsetPASnucbottom20perc.py
+
+```{bash,eval=F}
+
+bottom20=open("/project2/gilad/briana/threeprimeseq/data/PeakUsage_noMP_GeneLocAnno/NuclearPeaksBottom20Usage.txt", "r")
+
+AllPas=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand.bed", "r")
+
+
+Bottom20PAS=open("/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_bottom20inNuclear.bed", "w")
+
+
+
+
+def subsetPAS(use, outpas, PAS):
+    okPAS={}
+    for ln in use:
+        peak=ln.strip()
+        okPAS[peak]=""
+    for ln in PAS:
+        peaknum=ln.split()[3].split(":")[-1]
+        print
+        if peaknum in okPAS.keys():
+            outpas.write(ln)
+    outpas.close()
+
+
+subsetPAS(bottom20, Bottom20PAS, AllPas)
+
+```
+
+
+
+Deeptools plots for these:
+
+MNASEmyPAStop20nuc.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPAStop20nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPAStop20nuc.out
+#SBATCH --error=MNASEmyPAStop20nuc.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_top20inNuclear.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20nuc.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20nuc.gz --refPointLabel "Called PAS" --plotTitle "MNASE at Top 20% Nuclear Usage" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeakstop20nuc.png
+```
+
+
+
+
+MNASEmyPASbottom20nuc.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=MNASEmyPASbottom20nuc
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=MNASEmyPASbottom20nuc.out
+#SBATCH --error=MNASEmyPASbottom20nuc.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+computeMatrix reference-point -S /project2/gilad/briana/threeprimeseq/data/ChipSeq/ENCFF000VME.bigWig  -R  /project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPAS_5percCov_fixedStrand_bottom20inNuclear.bed -b 1000 -a 1000  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20nuc.gz 
+
+
+plotHeatmap --sortRegions descend -m /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20nuc.gz --refPointLabel "Called PAS" --plotTitle "MNASE at Bottom 20% Nuclear Usage" --heatmapHeight 7 --colorMap YlGnBu  -out /project2/gilad/briana/threeprimeseq/data/ChipSeq/mnase_myPeaksbottom20nuc.png
+```
