@@ -1,0 +1,81 @@
+---
+title: "APA QTL example Heatmap"
+author: "Briana Mittleman"
+date: "3/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(reshape2)
+library(cowplot)
+```
+
+
+Start with EIF2a example:
+
+3	150302009	150302010	peak114357:EIF2A	5.39078186842105e-07	+
+
+
+Get the phenotype
+
+```{bash,eval=F}
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz | grep EIF2A_ > /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/EIF2a_TotalPeaksPheno.txt
+
+less chr3.dose.filt.vcf.gz | grep 3:150302010 > /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/EIF2a_TotalPeaksGenotype.txt
+
+less chr3.dose.filt.vcf.gz | head -n14 | tail -n1 > /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/genotypeHeader.txt
+```
+
+
+```{r}
+phenohead=read.table("../data/ExampleQTLplot2/Phenotypeheader.txt", header = T,stringsAsFactors = F)
+phenoEIF=read.table("../data/ExampleQTLplot2/EIF2a_TotalPeaksPheno.txt", col.names =colnames(phenohead),stringsAsFactors = F)
+
+
+meltpheno=melt(phenoEIF, id.vars = "chrom", value.name = "Ratio", variable.name = "Individual") %>% separate(Ratio, into=c("num", "denom"), sep="/") 
+
+meltpheno$Individual= as.character(meltpheno$Individual)
+meltpheno$num= as.numeric(meltpheno$num)
+meltpheno$denom=as.numeric(meltpheno$denom)
+```
+
+I want to join the genotype.  
+
+```{r}
+genoHead=read.table("../data/ExampleQTLplot2/genotypeHeader.txt", header = T,stringsAsFactors = F)
+genoEIF=read.table("../data/ExampleQTLplot2/EIF2a_TotalPeaksGenotype.txt", col.names =colnames(genoHead),stringsAsFactors = F ) %>% select(ID,contains("NA")) 
+
+genoMelt=melt(genoEIF, id.vars = "ID", value.name = "FullGeno", variable.name = "Individual" ) %>% separate(FullGeno, into=c("geno","dose","extra1"), sep=":") %>% select(Individual, dose) 
+genoMelt$Individual= as.character(genoMelt$Individual)
+
+```
+
+
+Join these:
+```{r}
+PhenandGene= meltpheno %>% inner_join(genoMelt, by="Individual")  %>% group_by(chrom, dose) %>% summarise(SumNum=sum(num), SumDenom=sum(denom)) %>% mutate(PAU=SumNum/SumDenom) %>% separate(chrom, into=c("chr","start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_")
+```
+
+Check sums
+
+```{r}
+Groupsumscheck = PhenandGene %>% group_by(dose) %>% summarise(SUM=sum(PAU))
+
+```
+
+
+```{r}
+
+my_palette <- colorRampPalette(c("white", "khaki1", "orange", "red", "darkred", "black"))
+
+
+
+ggplot(PhenandGene, aes(peak, dose)) + geom_tile(aes(fill = PAU)) + scale_fill_gradientn(colors =my_palette(100)) + labs(title="EIF2A peaks", y="3:150302010" )
+```
+

@@ -184,6 +184,7 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Overlap molQTLs with apa associations](EmpDistforOverlaps.html)
 
+* [Heatmaps to look at qtls](AdaptTonyExampleplots.html)
 
 
 
@@ -196,5 +197,6 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 * [Explore relationships with peaks and net seq](NetSeqatPeaks.html)  
 
 * [Explore models for chromatin and APA](HistoneModandPAS.html)
+
 
 
