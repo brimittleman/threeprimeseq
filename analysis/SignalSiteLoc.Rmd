@@ -545,7 +545,11 @@ python DistPAS2Sig.py AATACA
 python DistPAS2Sig.py AATAGA
 python DistPAS2Sig.py AAAAAG
 python DistPAS2Sig.py ACTAAA
+python DistPAS2Sig.py AAAAAA
 ```
+
+
+HEREEE
 
 ###Make histograms:
 
@@ -580,7 +584,7 @@ Loc_GATAAA= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end.txt", header=
 
 Loc_TATAAA= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end.txt", header=T) %>% mutate(Site="TATAAA")
 
-
+Loc_AAAAAA= read.table("../data/Signal_Loc/Loc_AAAAAA_Distance2end.txt", header=T) %>% mutate(Site="AAAAAA")
 ```
 
 
@@ -598,7 +602,7 @@ dist_Loc= ggplot(Loc_AATAAA, aes(x=AATAAA)) +
   geom_histogram(bins=100,data=Loc_CATAAA, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
   geom_histogram(bins=100,data=Loc_GATAAA, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
   geom_histogram(bins=100,data=Loc_TATAAA, aes(x=TATAAA), fill="lightcyan1", alpha=.3) 
-  
+  geom_histogram(bins=100,data=Loc_AAAAAA, aes(x=AAAAAA), fill="black", alpha=.3)
   
 dist_Loc
 
@@ -618,10 +622,10 @@ colnames(Loc_CATAAA)=c("Count", "Site")
 colnames(Loc_ATTAAA)=c("Count", "Site")
 colnames(Loc_GATAAA)=c("Count", "Site")
 colnames(Loc_TATAAA)=c("Count", "Site")
+colnames(Loc_AAAAAA)=c("Count", "Site")
 
 
-
-AllsiteDF=as.data.frame(rbind(Loc_AATAAA,Loc_AAAAAG,Loc_AATACA,Loc_AATAGA,Loc_AATATA,Loc_ACTAAA,Loc_AGTAAA,Loc_ATTAAA, Loc_GATAAA,Loc_TATAAA,Loc_CATAAA)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
+AllsiteDF=as.data.frame(rbind(Loc_AATAAA,Loc_AAAAAG,Loc_AATACA,Loc_AATAGA,Loc_AATATA,Loc_ACTAAA,Loc_AGTAAA,Loc_ATTAAA, Loc_GATAAA,Loc_TATAAA,Loc_CATAAA, Loc_AAAAAA)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
 
 
  AllsiteDF_to100= AllsiteDF %>% filter(Count < 100)
@@ -978,6 +982,7 @@ python DistPAS2Sig_nucIntron.py AATACA
 python DistPAS2Sig_nucIntron.py AATAGA
 python DistPAS2Sig_nucIntron.py AAAAAG
 python DistPAS2Sig_nucIntron.py ACTAAA
+python DistPAS2Sig_nucIntron.py AAAAAA
 
 
 python DistPAS2Sig_nuclear.py AATAAA
@@ -991,7 +996,7 @@ python DistPAS2Sig_nuclear.py AATACA
 python DistPAS2Sig_nuclear.py AATAGA
 python DistPAS2Sig_nuclear.py AAAAAG
 python DistPAS2Sig_nuclear.py ACTAAA
-
+python DistPAS2Sig_nuclear.py AAAAAA
 ```
 
 
@@ -1025,7 +1030,7 @@ Loc_CATAAA_Nuc= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclear.t
 Loc_GATAAA_Nuc= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="GATAAA")
 
 Loc_TATAAA_Nuc= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="TATAAA")
-
+Loc_AAAAAA_Nuc= read.table("../data/Signal_Loc/Loc_AAAAAA_Distance2end_nuclear.txt", header=T) %>% mutate(Site="AAAAAA")
 
 
 dist_Loc_Nuc= ggplot(Loc_AATAAA_Nuc, aes(x=AATAAA)) + 
@@ -1040,7 +1045,8 @@ dist_Loc_Nuc= ggplot(Loc_AATAAA_Nuc, aes(x=AATAAA)) +
   geom_histogram(bins=100,data=Loc_AGTAAA_Nuc, aes(x=AGTAAA), fill="darksalmon", alpha=.3) +
   geom_histogram(bins=100,data=Loc_CATAAA_Nuc, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
   geom_histogram(bins=100,data=Loc_GATAAA_Nuc, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
-  geom_histogram(bins=100,data=Loc_TATAAA_Nuc, aes(x=TATAAA), fill="lightcyan1", alpha=.3) 
+  geom_histogram(bins=100,data=Loc_TATAAA_Nuc, aes(x=TATAAA), fill="lightcyan1", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AAAAAA_Nuc, aes(x=AAAAAA), fill="black", alpha=.3) 
   
   
 dist_Loc_Nuc
@@ -1063,10 +1069,10 @@ colnames(Loc_CATAAA_Nuc)=c("Count", "Site")
 colnames(Loc_ATTAAA_Nuc)=c("Count", "Site")
 colnames(Loc_GATAAA_Nuc)=c("Count", "Site")
 colnames(Loc_TATAAA_Nuc)=c("Count", "Site")
+colnames(Loc_AAAAAA_Nuc)=c("Count", "Site")
 
 
-
-AllsiteDF_Nuc=as.data.frame(rbind(Loc_AATAAA_Nuc,Loc_AAAAAG_Nuc,Loc_AATACA_Nuc,Loc_AATAGA_Nuc,Loc_AATATA_Nuc,Loc_ACTAAA_Nuc,Loc_AGTAAA_Nuc,Loc_ATTAAA_Nuc, Loc_GATAAA_Nuc,Loc_TATAAA_Nuc,Loc_CATAAA_Nuc)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
+AllsiteDF_Nuc=as.data.frame(rbind(Loc_AATAAA_Nuc,Loc_AAAAAG_Nuc,Loc_AATACA_Nuc,Loc_AATAGA_Nuc,Loc_AATATA_Nuc,Loc_ACTAAA_Nuc,Loc_AGTAAA_Nuc,Loc_ATTAAA_Nuc, Loc_GATAAA_Nuc,Loc_TATAAA_Nuc,Loc_CATAAA_Nuc,Loc_AAAAAA_Nuc)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
 
 
  AllsiteDF_to100_Nuc= AllsiteDF_Nuc %>% filter(Count < 100)
@@ -1135,7 +1141,7 @@ Loc_CATAAA_Int= read.table("../data/Signal_Loc/Loc_CATAAA_Distance2end_nuclearIn
 Loc_GATAAA_Int= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="GATAAA")
 
 Loc_TATAAA_Int= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="TATAAA")
-
+Loc_AAAAAA_Int= read.table("../data/Signal_Loc/Loc_AAAAAA_Distance2end_nuclearIntron.txt", header=T)%>% mutate(Site="AAAAAA")
 
 
 dist_Loc_Int= ggplot(Loc_AATAAA_Int, aes(x=AATAAA)) + 
@@ -1150,7 +1156,8 @@ dist_Loc_Int= ggplot(Loc_AATAAA_Int, aes(x=AATAAA)) +
   geom_histogram(bins=100,data=Loc_AGTAAA_Int, aes(x=AGTAAA), fill="darksalmon", alpha=.3) +
   geom_histogram(bins=100,data=Loc_CATAAA_Int, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
   geom_histogram(bins=100,data=Loc_GATAAA_Int, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
-  geom_histogram(bins=100,data=Loc_TATAAA_Int, aes(x=TATAAA), fill="lightcyan1", alpha=.3) 
+  geom_histogram(bins=100,data=Loc_TATAAA_Int, aes(x=TATAAA), fill="lightcyan1", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AAAAAA_Int, aes(x=AAAAAA), fill="black", alpha=.3) 
   
   
 dist_Loc_Int
@@ -1172,10 +1179,10 @@ colnames(Loc_CATAAA_Int)=c("Count", "Site")
 colnames(Loc_ATTAAA_Int)=c("Count", "Site")
 colnames(Loc_GATAAA_Int)=c("Count", "Site")
 colnames(Loc_TATAAA_Int)=c("Count", "Site")
+colnames(Loc_AAAAAA_Int)=c("Count", "Site")
 
 
-
-AllsiteDF_NucInt=as.data.frame(rbind(Loc_AATAAA_Int,Loc_AAAAAG_Int,Loc_AATACA_Int,Loc_AATAGA_Int,Loc_AATATA_Int,Loc_ACTAAA_Int,Loc_AGTAAA_Int,Loc_ATTAAA_Int, Loc_GATAAA_Int,Loc_TATAAA_Int,Loc_CATAAA_Int)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
+AllsiteDF_NucInt=as.data.frame(rbind(Loc_AATAAA_Int,Loc_AAAAAG_Int,Loc_AATACA_Int,Loc_AATAGA_Int,Loc_AATATA_Int,Loc_ACTAAA_Int,Loc_AGTAAA_Int,Loc_ATTAAA_Int, Loc_GATAAA_Int,Loc_TATAAA_Int,Loc_CATAAA_Int,Loc_AAAAAA_Int)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
 
 
  AllsiteDF_to100_NucInt= AllsiteDF_NucInt %>% filter(Count < 100)
@@ -1397,6 +1404,7 @@ python DistPAS2Sig_Intron.py AATACA
 python DistPAS2Sig_Intron.py AATAGA
 python DistPAS2Sig_Intron.py AAAAAG
 python DistPAS2Sig_Intron.py ACTAAA
+python DistPAS2Sig_Intron.py AAAAAA
 ```
 
 
@@ -1435,7 +1443,7 @@ Loc_GATAAA_AllInt= read.table("../data/Signal_Loc/Loc_GATAAA_Distance2end_Intron
 
 Loc_TATAAA_AllInt= read.table("../data/Signal_Loc/Loc_TATAAA_Distance2end_Intronic.txt", header=T)%>% mutate(Site="TATAAA")
 
-
+Loc_AAAAAA_AllInt= read.table("../data/Signal_Loc/Loc_AAAAAA_Distance2end_Intronic.txt", header=T)%>% mutate(Site="AAAAAA")
 
 dist_Loc_AllInt= ggplot(Loc_AATAAA_AllInt, aes(x=AATAAA)) + 
   geom_histogram(bins=100, fill="red", alpha=.3) + 
@@ -1449,7 +1457,8 @@ dist_Loc_AllInt= ggplot(Loc_AATAAA_AllInt, aes(x=AATAAA)) +
   geom_histogram(bins=100,data=Loc_AGTAAA_AllInt, aes(x=AGTAAA), fill="darksalmon", alpha=.3) +
   geom_histogram(bins=100,data=Loc_CATAAA_AllInt, aes(x=CATAAA), fill="darkslategray", alpha=.3) +
   geom_histogram(bins=100,data=Loc_GATAAA_AllInt, aes(x=GATAAA), fill="deeppink1", alpha=.3) +
-  geom_histogram(bins=100,data=Loc_TATAAA_AllInt, aes(x=TATAAA), fill="lightcyan1", alpha=.3)
+  geom_histogram(bins=100,data=Loc_TATAAA_AllInt, aes(x=TATAAA), fill="lightcyan1", alpha=.3) +
+  geom_histogram(bins=100,data=Loc_AAAAAA_AllInt, aes(x=AAAAAA), fill="black", alpha=.3) 
   
   
 dist_Loc_AllInt
@@ -1473,10 +1482,10 @@ colnames(Loc_CATAAA_AllInt)=c("Count", "Site")
 colnames(Loc_ATTAAA_AllInt)=c("Count", "Site")
 colnames(Loc_GATAAA_AllInt)=c("Count", "Site")
 colnames(Loc_TATAAA_AllInt)=c("Count", "Site")
+colnames(Loc_AAAAAA_AllInt)=c("Count", "Site")
 
 
-
-AllsiteDF_NucAllInt=as.data.frame(rbind(Loc_AATAAA_AllInt,Loc_AAAAAG_AllInt,Loc_AATACA_AllInt,Loc_AATAGA_AllInt,Loc_AATATA_AllInt,Loc_ACTAAA_AllInt,Loc_AGTAAA_AllInt,Loc_ATTAAA_AllInt, Loc_GATAAA_AllInt,Loc_TATAAA_AllInt,Loc_CATAAA_AllInt)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
+AllsiteDF_NucAllInt=as.data.frame(rbind(Loc_AATAAA_AllInt,Loc_AAAAAG_AllInt,Loc_AATACA_AllInt,Loc_AATAGA_AllInt,Loc_AATATA_AllInt,Loc_ACTAAA_AllInt,Loc_AGTAAA_AllInt,Loc_ATTAAA_AllInt, Loc_GATAAA_AllInt,Loc_TATAAA_AllInt,Loc_CATAAA_AllInt,Loc_AAAAAA_AllInt)) %>% mutate(NegCount=-1*as.integer(as.character(Count)), Cononical=ifelse(Site=="AATAAA", "Yes","No"))
 
 
  AllsiteDF_to100_NucAllInt= AllsiteDF_NucAllInt %>% filter(Count < 100)
