@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-26
+<strong>Last updated:</strong> 2019-04-02
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree01af963ea69ae5a9314074571e8073c018ac03eftargetblank01af963a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/01af963ea69ae5a9314074571e8073c018ac03ef" target="_blank">01af963</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreec4062e5b7ea7027ba52dfb160bbf9e818422bc17targetblankc4062e5a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/c4062e5b7ea7027ba52dfb160bbf9e818422bc17" target="_blank">c4062e5</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree01af963ea69ae5a9314074571e8073c018ac03eftargetblank01af963a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreec4062e5b7ea7027ba52dfb160bbf9e818422bc17targetblankc4062e5a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -753,6 +753,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/c4062e5b7ea7027ba52dfb160bbf9e818422bc17/analysis/ExampleQTLPlot2.Rmd" target="_blank">c4062e5</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-04-02
+</td>
+<td>
+add general script
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/5244c0fda391b0e74a73e9cd89c3434dd4761e5e/docs/ExampleQTLPlot2.html" target="_blank">5244c0f</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/brimittleman/threeprimeseq/blob/01af963ea69ae5a9314074571e8073c018ac03ef/analysis/ExampleQTLPlot2.Rmd" target="_blank">01af963</a>
 </td>
 <td>
@@ -821,18 +855,170 @@ meltpheno$denom=as.numeric(meltpheno$denom)</code></pre>
 <pre class="r"><code>genoHead=read.table(&quot;../data/ExampleQTLplot2/genotypeHeader.txt&quot;, header = T,stringsAsFactors = F)
 genoEIF=read.table(&quot;../data/ExampleQTLplot2/EIF2a_TotalPeaksGenotype.txt&quot;, col.names =colnames(genoHead),stringsAsFactors = F ) %&gt;% select(ID,contains(&quot;NA&quot;)) 
 
-genoMelt=melt(genoEIF, id.vars = &quot;ID&quot;, value.name = &quot;FullGeno&quot;, variable.name = &quot;Individual&quot; ) %&gt;% separate(FullGeno, into=c(&quot;geno&quot;,&quot;dose&quot;,&quot;extra1&quot;), sep=&quot;:&quot;) %&gt;% select(Individual, dose) 
+lettersGeno=read.table(&quot;../data/ExampleQTLplot2/EIF2a_TotalPeaksGenotype.txt&quot;, col.names =colnames(genoHead),stringsAsFactors = F, colClasses = c(&quot;character&quot;) ) %&gt;% select(REF, ALT)
+
+refAllele=as.character(lettersGeno$REF)
+altAllele=as.character(lettersGeno$ALT)
+
+genoMelt=melt(genoEIF, id.vars = &quot;ID&quot;, value.name = &quot;FullGeno&quot;, variable.name = &quot;Individual&quot; ) %&gt;% separate(FullGeno, into=c(&quot;geno&quot;,&quot;dose&quot;,&quot;extra1&quot;), sep=&quot;:&quot;) %&gt;% select(Individual, dose) %&gt;% mutate(genotype=ifelse(round(as.integer(dose))==0, paste(refAllele, refAllele, sep=&quot;&quot;), ifelse(round(as.integer(dose))==1, paste(refAllele,altAllele, sep=&quot;&quot;), paste(altAllele,altAllele,sep=&quot;&quot;))))
 genoMelt$Individual= as.character(genoMelt$Individual)</code></pre>
 <p>Join these:</p>
-<pre class="r"><code>PhenandGene= meltpheno %&gt;% inner_join(genoMelt, by=&quot;Individual&quot;)  %&gt;% group_by(chrom, dose) %&gt;% summarise(SumNum=sum(num), SumDenom=sum(denom)) %&gt;% mutate(PAU=SumNum/SumDenom) %&gt;% separate(chrom, into=c(&quot;chr&quot;,&quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;)</code></pre>
+<pre class="r"><code>PhenandGene= meltpheno %&gt;% inner_join(genoMelt, by=&quot;Individual&quot;)  %&gt;% group_by(chrom, genotype) %&gt;% summarise(SumNum=sum(num), SumDenom=sum(denom)) %&gt;% mutate(PAU=SumNum/SumDenom) %&gt;% separate(chrom, into=c(&quot;chr&quot;,&quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;)</code></pre>
 <p>Check sums</p>
-<pre class="r"><code>Groupsumscheck = PhenandGene %&gt;% group_by(dose) %&gt;% summarise(SUM=sum(PAU))</code></pre>
+<pre class="r"><code>Groupsumscheck = PhenandGene %&gt;% group_by(genotype) %&gt;% summarise(SUM=sum(PAU))</code></pre>
 <pre class="r"><code>my_palette &lt;- colorRampPalette(c(&quot;white&quot;, &quot;khaki1&quot;, &quot;orange&quot;, &quot;red&quot;, &quot;darkred&quot;, &quot;black&quot;))
 
 
 
-ggplot(PhenandGene, aes(peak, dose)) + geom_tile(aes(fill = PAU)) + scale_fill_gradientn(colors =my_palette(100)) + labs(title=&quot;EIF2A peaks&quot;, y=&quot;3:150302010&quot; )</code></pre>
+eif2aplot=ggplot(PhenandGene, aes(peak, genotype)) + geom_tile(aes(fill = PAU))+ scale_fill_gradientn(colors =my_palette(100)) + labs(title=&quot;EIF2A&quot;, y=&quot;Genotype&quot;,x=&quot;PAS&quot;)
+
+eif2aplot</code></pre>
 <p><img src="figure/ExampleQTLPlot2.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/5244c0fda391b0e74a73e9cd89c3434dd4761e5e/docs/figure/ExampleQTLPlot2.Rmd/unnamed-chunk-7-1.png" target="_blank">5244c0f</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-03-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggsave(eif2aplot, file=&quot;../output/plots/testEIF2A.png&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<div id="make-plot-reproducible-on-midway" class="section level3">
+<h3>Make plot reproducible on midway</h3>
+<p>I want the script to take a fraction, gene, chr, a snp (chr:loc)</p>
+<p>steps: * get phenotypes from /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Total.fixed.pheno_5perc.fc.gz and /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.Nuclear.fixed.pheno_5perc.fc.gz * get genotype from /project2/gilad/briana/YRI_geno_hg19/chrX.dose.filt.vcf.gz *rscript for making plot</p>
+<p>I will write the rscript first:</p>
+<p>makeQTLheatmap.R</p>
+<pre class="r"><code>library(tidyverse)
+library(reshape2)
+library(optparse)
+library(cowplot)
+
+
+option_list = list(
+  make_option(c(&quot;-P&quot;, &quot;--pheno&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;input pheno file&quot;),
+  make_option(c(&quot;-G&quot;, &quot;--geno&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;input genotype&quot;),
+  make_option(c(&quot;-g&quot;, &quot;--gene&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;gene&quot;),
+  make_option(c(&quot;-o&quot;, &quot;--output&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;output file for plot&quot;)
+)
+
+opt_parser &lt;- OptionParser(option_list=option_list)
+opt &lt;- parse_args(opt_parser)
+
+
+phenohead=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/Phenotypeheader.txt&quot;, header = T,stringsAsFactors = F)
+pheno=read.table(opt$pheno, col.names =colnames(phenohead),stringsAsFactors = F)
+
+
+meltpheno=melt(pheno, id.vars = &quot;chrom&quot;, value.name = &quot;Ratio&quot;, variable.name = &quot;Individual&quot;) %&gt;% separate(Ratio, into=c(&quot;num&quot;, &quot;denom&quot;), sep=&quot;/&quot;) 
+
+meltpheno$Individual= as.character(meltpheno$Individual)
+meltpheno$num= as.numeric(meltpheno$num)
+meltpheno$denom=as.numeric(meltpheno$denom)
+
+
+genoHead=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/genotypeHeader.txt&quot;, header = T,stringsAsFactors = F)
+geno=read.table(opt$geno, col.names =colnames(genoHead),stringsAsFactors = F ) %&gt;% select(ID,contains(&quot;NA&quot;)) 
+
+
+lettersGeno=read.table(opt$geno, col.names =colnames(genoHead),stringsAsFactors = F,colClasses = c(&quot;character&quot;)) %&gt;% select(REF, ALT)
+
+refAllele=lettersGeno$REF
+altAllele=lettersGeno$ALT
+
+
+genoMelt=melt(geno, id.vars = &quot;ID&quot;, value.name = &quot;FullGeno&quot;, variable.name = &quot;Individual&quot; ) %&gt;% separate(FullGeno, into=c(&quot;geno&quot;,&quot;dose&quot;,&quot;extra1&quot;), sep=&quot;:&quot;) %&gt;% select(Individual, dose) %&gt;% mutate(genotype=ifelse(round(as.integer(dose))==0, paste(refAllele, refAllele, sep=&quot;&quot;), ifelse(round(as.integer(dose))==1, paste(refAllele,altAllele, sep=&quot;&quot;), paste(altAllele,altAllele,sep=&quot;&quot;))))
+genoMelt$Individual= as.character(genoMelt$Individual)
+
+PhenandGene= meltpheno %&gt;% inner_join(genoMelt, by=&quot;Individual&quot;)  %&gt;% group_by(chrom, genotype) %&gt;% summarise(SumNum=sum(num), SumDenom=sum(denom)) %&gt;% mutate(PAU=SumNum/SumDenom) %&gt;% separate(chrom, into=c(&quot;chr&quot;,&quot;start&quot;, &quot;end&quot;, &quot;id&quot;), sep=&quot;:&quot;) %&gt;% separate(id, into=c(&quot;gene&quot;, &quot;strand&quot;, &quot;peak&quot;), sep=&quot;_&quot;)
+
+
+
+my_palette &lt;- colorRampPalette(c(&quot;white&quot;, &quot;khaki1&quot;, &quot;orange&quot;, &quot;red&quot;, &quot;darkred&quot;, &quot;black&quot;))
+
+
+
+heatplot=ggplot(PhenandGene, aes(peak, genotype)) + geom_tile(aes(fill = PAU))+ scale_fill_gradientn(colors =my_palette(100)) + labs(title=opt$gene, y=&quot;Genotype&quot; , x= &quot;PAS&quot;)
+
+
+
+ggsave(heatplot, filename=opt$output, device=png, height=10, width=10)</code></pre>
+<p>qtlHeatmap.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=qtlHeatmap
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=qtlHeatmap.out
+#SBATCH --error=qtlHeatmap.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+Fraction=$1
+gene=$2
+chrom=$3
+snp=$4
+
+
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.${Fraction}.fixed.pheno_5perc.fc.gz | grep ${gene}_ &gt; /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt
+
+
+less /project2/gilad/briana/YRI_geno_hg19/chr${chrom}.dose.filt.vcf.gz | grep ${snp} &gt; /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksGenotype.txt
+
+
+Rscript makeQTLheatmap.R -P /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt -G  /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksGenotype.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}_${SNP}.png</code></pre>
+<pre class="r"><code>totalQTLs=read.table(&quot;../data/ApaQTLs/TotalapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;, header=F)</code></pre>
+<p>14:65401627:65401711:CHURC1_-_peak48994</p>
+<p>14:65389250</p>
+<pre class="bash"><code>sbatch qtlHeatmap.sh &quot;Total&quot; &quot;CHURC1&quot; &quot;14&quot; &quot;14:65389250&quot;</code></pre>
+<p>12:57489617:57489715:STAT6_+_peak36983 12:57489648</p>
+<pre class="bash"><code>sbatch qtlHeatmap.sh &quot;Total&quot; &quot;STAT6&quot; &quot;12&quot; &quot;12:57489648&quot;</code></pre>
+<p>Try a nuclear one:</p>
+<pre class="r"><code>nucQTLs=read.table(&quot;../data/ApaQTLs/NuclearapaQTLs.GeneLocAnno.noMP.5perc.10FDR.txt&quot;, header=F)</code></pre>
+<p>19:4688114:4688228:DPP9_+_peak77244</p>
+<p>19:4680128</p>
+<pre class="bash"><code>sbatch qtlHeatmap.sh &quot;Nuclear&quot; &quot;DPP9&quot; &quot;19&quot; &quot;19:4680128&quot;</code></pre>
+<p>4:83355978:83356052:ENOPH1_-_peak121076 4:83352186</p>
+<pre class="bash"><code>sbatch qtlHeatmap.sh &quot;Nuclear&quot; &quot;ENOPH1&quot; &quot;4&quot; &quot;4:83352186&quot;</code></pre>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -874,6 +1060,7 @@ loaded via a namespace (and not attached):
 [41] scales_1.0.0     htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0
 [45] colorspace_1.4-0 labeling_0.3     stringi_1.3.1    lazyeval_0.2.1  
 [49] munsell_0.5.0    broom_0.5.1      crayon_1.3.4    </code></pre>
+</div>
 </div>
 
 <hr>
