@@ -38,7 +38,8 @@ phenohead=read.table("../data/ExampleQTLplot2/Phenotypeheader.txt", header = T,s
 phenoEIF=read.table("../data/ExampleQTLplot2/EIF2a_TotalPeaksPheno.txt", col.names =colnames(phenohead),stringsAsFactors = F)
 
 
-meltpheno=melt(phenoEIF, id.vars = "chrom", value.name = "Ratio", variable.name = "Individual") %>% separate(Ratio, into=c("num", "denom"), sep="/") 
+meltpheno=melt(phenoEIF, id.vars = "chrom", value.name = "Ratio", variable.name = "Individual") %>% separate(Ratio, into=c("num", "denom"), sep="/") %>%   separate(chrom, into=c("chrom", "start", "end", "peakID"),sep=":") %>% mutate(PeakLoc=paste(start, end, sep=":"))
+
 
 meltpheno$Individual= as.character(meltpheno$Individual)
 meltpheno$num= as.numeric(meltpheno$num)
@@ -53,6 +54,8 @@ genoEIF=read.table("../data/ExampleQTLplot2/EIF2a_TotalPeaksGenotype.txt", col.n
 
 lettersGeno=read.table("../data/ExampleQTLplot2/EIF2a_TotalPeaksGenotype.txt", col.names =colnames(genoHead),stringsAsFactors = F, colClasses = c("character") ) %>% select(REF, ALT)
 
+
+
 refAllele=as.character(lettersGeno$REF)
 altAllele=as.character(lettersGeno$ALT)
 
@@ -66,7 +69,7 @@ genoMelt$Individual= as.character(genoMelt$Individual)
 
 Join these:
 ```{r}
-PhenandGene= meltpheno %>% inner_join(genoMelt, by="Individual")  %>% group_by(chrom, genotype) %>% summarise(SumNum=sum(num), SumDenom=sum(denom)) %>% mutate(PAU=SumNum/SumDenom) %>% separate(chrom, into=c("chr","start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_")
+PhenandGene= meltpheno %>% inner_join(genoMelt, by="Individual")  %>% group_by(PeakLoc, genotype) %>% summarise(SumNum=sum(num), SumDenom=sum(denom)) %>% mutate(PAU=SumNum/SumDenom)
 ```
 
 Check sums
@@ -83,12 +86,12 @@ my_palette <- colorRampPalette(c("white", "khaki1", "orange", "red", "darkred", 
 
 
 
-eif2aplot=ggplot(PhenandGene, aes(peak, genotype)) + geom_tile(aes(fill = PAU))+ scale_fill_gradientn(colors =my_palette(100)) + labs(title="EIF2A", y="Genotype",x="PAS")
+eif2aplot=ggplot(PhenandGene, aes(PeakLoc, genotype)) + geom_tile(aes(fill = PAU))+ scale_fill_gradientn(colors =my_palette(100)) + labs(title="EIF2A", y="Genotype",x="PAS")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 eif2aplot
 
 
-ggsave(eif2aplot, file="../output/plots/testEIF2A.png")
+ggsave(eif2aplot, file="../output/plots/testEIF2A.png",height = 10, width = 10)
 
 ```
 
@@ -135,7 +138,7 @@ phenohead=read.table("/project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2
 pheno=read.table(opt$pheno, col.names =colnames(phenohead),stringsAsFactors = F)
 
 
-meltpheno=melt(pheno, id.vars = "chrom", value.name = "Ratio", variable.name = "Individual") %>% separate(Ratio, into=c("num", "denom"), sep="/") 
+meltpheno=melt(pheno, id.vars = "chrom", value.name = "Ratio", variable.name = "Individual") %>% separate(Ratio, into=c("num", "denom"), sep="/")  %>%   separate(chrom, into=c("chrom", "start", "end", "peakID"),sep=":") %>% mutate(PeakLoc=paste(start, end, sep=":"))
 
 meltpheno$Individual= as.character(meltpheno$Individual)
 meltpheno$num= as.numeric(meltpheno$num)
@@ -155,7 +158,7 @@ altAllele=lettersGeno$ALT
 genoMelt=melt(geno, id.vars = "ID", value.name = "FullGeno", variable.name = "Individual" ) %>% separate(FullGeno, into=c("geno","dose","extra1"), sep=":") %>% select(Individual, dose) %>% mutate(genotype=ifelse(round(as.integer(dose))==0, paste(refAllele, refAllele, sep=""), ifelse(round(as.integer(dose))==1, paste(refAllele,altAllele, sep=""), paste(altAllele,altAllele,sep=""))))
 genoMelt$Individual= as.character(genoMelt$Individual)
 
-PhenandGene= meltpheno %>% inner_join(genoMelt, by="Individual")  %>% group_by(chrom, genotype) %>% summarise(SumNum=sum(num), SumDenom=sum(denom)) %>% mutate(PAU=SumNum/SumDenom) %>% separate(chrom, into=c("chr","start", "end", "id"), sep=":") %>% separate(id, into=c("gene", "strand", "peak"), sep="_")
+PhenandGene= meltpheno %>% inner_join(genoMelt, by="Individual")  %>% group_by(PeakLoc, genotype) %>% summarise(SumNum=sum(num), SumDenom=sum(denom)) %>% mutate(PAU=SumNum/SumDenom)
 
 
 
@@ -163,11 +166,11 @@ my_palette <- colorRampPalette(c("white", "khaki1", "orange", "red", "darkred", 
 
 
 
-heatplot=ggplot(PhenandGene, aes(peak, genotype)) + geom_tile(aes(fill = PAU))+ scale_fill_gradientn(colors =my_palette(100)) + labs(title=opt$gene, y="Genotype" , x= "PAS")
+heatplot=ggplot(PhenandGene, aes(PeakLoc, genotype)) + geom_tile(aes(fill = PAU))+ scale_fill_gradientn(colors =my_palette(100)) + labs(title=opt$gene, y="Genotype" , x= "PAS") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
 
-ggsave(heatplot, filename=opt$output, device=png, height=10, width=10)
+ggsave(plot=heatplot, filename=opt$output, height=10, width=10)
 ```
 
 
@@ -192,6 +195,7 @@ Fraction=$1
 gene=$2
 chrom=$3
 snp=$4
+
 
 
 less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.${Fraction}.fixed.pheno_5perc.fc.gz | grep ${gene}_ > /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt
@@ -237,4 +241,147 @@ sbatch qtlHeatmap.sh "Nuclear" "DPP9" "19" "19:4680128"
 sbatch qtlHeatmap.sh "Nuclear" "ENOPH1" "4" "4:83352186"
 ```
 
+##Create box plots for the figure:  
 
+```{r}
+pheno_qtlpeak=meltpheno %>% filter(grepl("peak114357", peakID)) %>% mutate(PAU=num/denom) %>% select(Individual, PeakLoc,PAU)
+PhenandGene_qtl= pheno_qtlpeak %>% inner_join(genoMelt, by="Individual")  
+
+eif2aqtlplot=ggplot(PhenandGene_qtl, aes(x=genotype, y=PAU, fill=genotype)) + geom_boxplot(width=.45) + geom_jitter() + scale_fill_brewer(palette = "YlOrRd")
+
+ggsave(eif2aqtlplot, file="../output/APAqtlExamp/eif2aboxplot.png", height = 10, width=10)
+
+```
+
+
+###make a script for this:  
+
+
+Make an R script that will be added to the make the heatmap too  
+
+apaqtlboxplot.R
+```{r,eval=F}
+library(tidyverse)
+library(reshape2)
+library(optparse)
+library(cowplot)
+
+
+option_list = list(
+  make_option(c("-P", "--pheno"), action="store", default=NA, type='character',
+              help="input pheno file"),
+  make_option(c("-G", "--geno"), action="store", default=NA, type='character',
+              help="input genotype"),
+  make_option(c("-g", "--gene"), action="store", default=NA, type='character',
+              help="gene"),
+  make_option(c("-p", "--peakID"), action="store", default=NA, type='character',
+              help="peakID"),
+  make_option(c("-o", "--output"), action="store", default=NA, type='character',
+              help="output file for plot")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+phenohead=read.table("/project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/Phenotypeheader.txt", header = T,stringsAsFactors = F)
+pheno=read.table(opt$pheno, col.names =colnames(phenohead),stringsAsFactors = F)
+
+
+meltpheno=melt(pheno, id.vars = "chrom", value.name = "Ratio", variable.name = "Individual") %>% separate(Ratio, into=c("num", "denom"), sep="/")  %>%   separate(chrom, into=c("chrom", "start", "end", "peakID"),sep=":") %>% mutate(PeakLoc=paste(start, end, sep=":"))
+
+meltpheno$Individual= as.character(meltpheno$Individual)
+meltpheno$num= as.numeric(meltpheno$num)
+meltpheno$denom=as.numeric(meltpheno$denom)
+
+
+genoHead=read.table("/project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/genotypeHeader.txt", header = T,stringsAsFactors = F)
+geno=read.table(opt$geno, col.names =colnames(genoHead),stringsAsFactors = F ) %>% select(ID,contains("NA")) 
+
+
+lettersGeno=read.table(opt$geno, col.names =colnames(genoHead),stringsAsFactors = F,colClasses = c("character")) %>% select(REF, ALT)
+
+refAllele=lettersGeno$REF
+altAllele=lettersGeno$ALT
+
+
+genoMelt=melt(geno, id.vars = "ID", value.name = "FullGeno", variable.name = "Individual" ) %>% separate(FullGeno, into=c("geno","dose","extra1"), sep=":") %>% select(Individual, dose) %>% mutate(genotype=ifelse(round(as.integer(dose))==0, paste(refAllele, refAllele, sep=""), ifelse(round(as.integer(dose))==1, paste(refAllele,altAllele, sep=""), paste(altAllele,altAllele,sep=""))))
+genoMelt$Individual= as.character(genoMelt$Individual)
+
+
+pheno_qtlpeak=meltpheno %>% filter(grepl(opt$peakID, peakID)) %>% mutate(PAU=num/denom) %>% select(Individual, PeakLoc,PAU)
+PhenandGene_qtl= pheno_qtlpeak %>% inner_join(genoMelt, by="Individual")  
+
+qtlplot=ggplot(PhenandGene_qtl, aes(x=genotype, y=PAU, fill=genotype)) + geom_boxplot(width=.45) + geom_jitter() + scale_fill_brewer(palette = "YlOrRd")
+
+ggsave(plot=qtlplot, filename=opt$output, height=10, width=10)
+```
+
+
+qtlHeatmapandBoxplot.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=qtlHeatmapandBoxplot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=qtlHeatmapandBoxplot.out
+#SBATCH --error=qtlHeatmapandBoxplot.err
+#SBATCH --partition=bigmem2
+#SBATCH --mem=100G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+Fraction=$1
+gene=$2
+chrom=$3
+snp=$4
+peakID=$5
+
+
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.${Fraction}.fixed.pheno_5perc.fc.gz | grep ${gene}_ > /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt
+
+
+less /project2/gilad/briana/YRI_geno_hg19/chr${chrom}.dose.filt.vcf.gz | grep ${snp} > /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksGenotype.txt
+
+
+Rscript makeQTLheatmap.R -P /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt -G  /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksGenotype.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}${SNP}${peakID}_heatmap.png
+
+
+Rscript apaqtlboxplot.R -P /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt -G  /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksGenotype.txt -g ${gene} -p ${peakID}  -o /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}${SNP}${peakID}_boxplot.png
+```
+
+
+14:65401627:65401711:CHURC1_-_peak48994
+
+14:65389250
+```{bash,eval=F}
+sbatch qtlHeatmapandBoxplot.sh "Total" "CHURC1" "14" "14:65389250" "peak48994"
+```
+12:57489617:57489715:STAT6_+_peak36983 12:57489648
+```{bash,eval=F}
+sbatch qtlHeatmapandBoxplot.sh "Total" "STAT6" "12" "12:57489648" "peak36983"
+```
+
+
+Try a nuclear one: 
+
+19:4688114:4688228:DPP9_+_peak77244
+
+19:4680128
+
+```{bash,eval=F}
+sbatch qtlHeatmapandBoxplot.sh "Nuclear" "DPP9" "19" "19:4680128" "peak77244"
+```
+
+4:83355978:83356052:ENOPH1_-_peak121076 4:83352186
+```{bash,eval=F}
+sbatch qtlHeatmapandBoxplot.sh "Nuclear" "ENOPH1" "4" "4:83352186" "peak121076"
+```
