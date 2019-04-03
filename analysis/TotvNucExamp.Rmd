@@ -1,0 +1,80 @@
+---
+title: "Total vs Nuclear Example plots"
+author: "Briana Mittleman"
+date: "4/3/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(reshape2)
+```
+
+##Heatmap in one gene  
+I want to make an example heatmap for the total vs nuclear difference similar to the ones I did for the qtls. 
+
+I will take a similar approach where I make one then create a script to make it for all examples
+
+chr21:43762910:43762982:TFF2
+
+
+Count data is in:  
+
+/project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc 
+
+
+```{bash,eval=F}
+grep TFF2 /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc > /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_TFF2.txt
+```
+
+
+I will need to divide by the mapped read counts for the library:  
+
+```{r}
+metadata=read.table("../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt",header = T) %>% select(Sample_ID,Mapped_noMP )
+
+metadata_melt=melt(metadata, id.vars = c("Sample_ID"), value.name = "MappedRead") %>% mutate(MappPM=MappedRead/10^6)
+```
+
+
+Header file: 
+
+```{r}
+TNhead=read.table("../data/TNcompExamp/TNCountheader.txt", header = T,stringsAsFactors = F)
+```
+
+read in data and melt it:
+
+```{r}
+TN_TFF2=read.table("../data/TNcompExamp/TNcomp_TFF2.txt", col.names =colnames(TNhead),stringsAsFactors = F) %>% select(-Chr,-Geneid,-Strand, -Length)
+
+TN_TFF2$Start=as.character(TN_TFF2$Start)
+TN_TFF2$End=as.character(TN_TFF2$End)
+
+TN_TFF2= TN_TFF2 %>% mutate(PeakLoc= paste(Start,End,sep="_")) %>% select(-Start, -End)
+
+TN_TFF2_melt=melt(TN_TFF2, id.vars =c("PeakLoc"), variable.name = "ID", value.name = "PeakCount" ) %>% mutate(Sample_ID=substr(ID, 2, length(ID))) 
+```
+
+Join:
+
+```{r}
+TN_TFF2_withMeta=TN_TFF2_melt %>% inner_join(metadata_melt, by=c("Sample_ID")) %>% mutate(Fraction=ifelse(grepl("T",Sample_ID), "Total","Nuclear")) %>%  mutate(NormCount=PeakCount/MappPM) %>% group_by(PeakLoc,Fraction) %>% summarise(meanCPM=mean(NormCount))
+```
+
+
+```{r}
+my_palette <- colorRampPalette(c("white", "khaki1", "orange", "red", "darkred", "black"))
+
+ggplot(TN_TFF2_withMeta, aes(x=PeakLoc, y=Fraction)) + geom_tile(aes(fill = meanCPM))+ scale_fill_gradientn(colors =my_palette(100)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x="PAS", title="TFF2")
+```
+Super low expression of this gene. Better example when it is 
+
+##Generalize: 
+
+
+

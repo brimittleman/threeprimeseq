@@ -186,6 +186,8 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 
 * [Heatmaps to look at qtls](ExampleQTLPlot2.html)
 
+* [Heatmap to look at fraction differences](TotvNucExamp.html)
+
 
 
 ###Explore other molecular phenotypes and the relationship with APA 
