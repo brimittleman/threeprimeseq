@@ -439,7 +439,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-04-03
+<strong>Last updated:</strong> 2019-04-08
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -518,10 +518,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreea79791b96d06e58cd6c843eea29e8521fe5231cetargetblanka79791ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/a79791b96d06e58cd6c843eea29e8521fe5231ce" target="_blank">a79791b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree4568d1fb4450ba17a666d4f4c40dab645aa47564targetblank4568d1fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brimittleman/threeprimeseq/tree/4568d1fb4450ba17a666d4f4c40dab645aa47564" target="_blank">4568d1f</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtreea79791b96d06e58cd6c843eea29e8521fe5231cetargetblanka79791ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrimittlemanthreeprimeseqtree4568d1fb4450ba17a666d4f4c40dab645aa47564targetblank4568d1fa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -531,6 +531,7 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    data/perm_QTL_trans_noMP_5percov/
     Ignored:    output/.DS_Store
@@ -680,6 +681,7 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/28ind.peak.explore.Rmd
     Modified:   analysis/CompareLianoglouData.Rmd
+    Modified:   analysis/ExampleQTLPlot2.Rmd
     Modified:   analysis/HistoneModandPAS.Rmd
     Modified:   analysis/NewPeakPostMP.Rmd
     Modified:   analysis/NuclearSpecQTL.Rmd
@@ -749,6 +751,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/4568d1fb4450ba17a666d4f4c40dab645aa47564/analysis/TotvNucExamp.Rmd" target="_blank">4568d1f</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-04-08
+</td>
+<td>
+add boxplot and genometrack
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brimittleman/threeprimeseq/0ff28d4957bd5a0d80d0028a4bcd44637de65da9/docs/TotvNucExamp.html" target="_blank">0ff28d4</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-04-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -824,11 +860,355 @@ into character vector</code></pre>
 <pre class="r"><code>my_palette &lt;- colorRampPalette(c(&quot;white&quot;, &quot;khaki1&quot;, &quot;orange&quot;, &quot;red&quot;, &quot;darkred&quot;, &quot;black&quot;))
 
 ggplot(TN_TFF2_withMeta, aes(x=PeakLoc, y=Fraction)) + geom_tile(aes(fill = meanCPM))+ scale_fill_gradientn(colors =my_palette(100)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x=&quot;PAS&quot;, title=&quot;TFF2&quot;)</code></pre>
-<p><img src="figure/TotvNucExamp.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /> Super low expression of this gene. Better example when it is</p>
+<p><img src="figure/TotvNucExamp.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/brimittleman/threeprimeseq/blob/0ff28d4957bd5a0d80d0028a4bcd44637de65da9/docs/figure/TotvNucExamp.Rmd/unnamed-chunk-7-1.png" target="_blank">0ff28d4</a>
+</td>
+<td>
+Briana Mittleman
+</td>
+<td>
+2019-04-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Super low expression of this gene. Better example when it is</p>
 </div>
 <div id="generalize" class="section level2">
 <h2>Generalize:</h2>
-<br> <br>
+<p>TvNHeatmap.R</p>
+<pre class="r"><code>library(tidyverse)
+library(reshape2)
+library(optparse)
+library(cowplot)
+
+
+option_list = list(
+  make_option(c(&quot;-P&quot;, &quot;--pheno&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;input pheno file&quot;),
+  make_option(c(&quot;-g&quot;, &quot;--gene&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;gene&quot;),
+  make_option(c(&quot;-o&quot;, &quot;--output&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;output file for plot&quot;)
+)
+
+opt_parser &lt;- OptionParser(option_list=option_list)
+opt &lt;- parse_args(opt_parser)
+
+metadata=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/TNcompExamp/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt&quot;,header=T, stringsAsFactors = F) %&gt;% select(Sample_ID,Mapped_noMP )
+
+
+metadata_melt=melt(metadata, id.vars = c(&quot;Sample_ID&quot;), value.name = &quot;MappedRead&quot;) %&gt;% mutate(MappPM=MappedRead/10^6)
+
+
+TNhead=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNCountheader.txt&quot;, header = T,stringsAsFactors = F)
+
+
+TN=read.table(opt$pheno, col.names =colnames(TNhead),stringsAsFactors = F) %&gt;% select(-Chr,-Geneid,-Strand, -Length)
+
+TN$Start=as.character(TN$Start)
+TN$End=as.character(TN$End)
+
+TN= TN%&gt;% mutate(PeakLoc= paste(Start,End,sep=&quot;-&quot;)) %&gt;% select(-Start, -End)
+
+TN_melt=melt(TN, id.vars =c(&quot;PeakLoc&quot;), variable.name = &quot;ID&quot;, value.name = &quot;PeakCount&quot; ) %&gt;% mutate(Sample_ID=substr(ID, 2, length(ID))) 
+
+TN_withMeta=TN_melt %&gt;% inner_join(metadata_melt, by=c(&quot;Sample_ID&quot;)) %&gt;% mutate(Fraction=ifelse(grepl(&quot;T&quot;,Sample_ID), &quot;Total&quot;,&quot;Nuclear&quot;)) %&gt;%  mutate(NormCount=PeakCount/MappPM) %&gt;% group_by(PeakLoc,Fraction) %&gt;% summarise(meanCPM=mean(NormCount))
+
+my_palette &lt;- colorRampPalette(c(&quot;white&quot;, &quot;khaki1&quot;, &quot;orange&quot;, &quot;red&quot;, &quot;darkred&quot;, &quot;black&quot;))
+
+outplot=ggplot(TN_withMeta, aes(x=PeakLoc, y=Fraction)) + geom_tile(aes(fill = meanCPM))+ scale_fill_gradientn(colors =my_palette(100)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x=&quot;PAS&quot;, title=opt$gene)
+
+
+
+ggsave(plot=outplot, filename=opt$output, height=10, width=10)</code></pre>
+<p>Script to make phenotype file and run R script:</p>
+<p>TvNMakeHeatmap.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=TvNMakeHeatmap
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=TvNMakeHeatmap.out
+#SBATCH --error=TvNMakeHeatmap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=18G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+gene=$1
+
+
+grep ${gene} /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc &gt; /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt
+
+
+Rscript TvNHeatmap.R -P /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}_heatmap.png
+
+</code></pre>
+</div>
+<div id="examples-to-test" class="section level2">
+<h2>Examples to test</h2>
+<pre class="r"><code>diffIso=read.table(file=&quot;../data/diff_iso_GeneLocAnno/SigPeaksHigherInNuc.txt&quot;, header = T) %&gt;% arrange(deltapsi)</code></pre>
+<pre class="r"><code>head(diffIso)</code></pre>
+<pre><code>                              intron     logef   Nuclear     Total
+1 chr1:151134497:151134579:TNFAIP8L2 -1.531127 0.7805416 0.1426529
+2       chr21:43762910:43762982:TFF2 -1.292723 0.7517177 0.1857824
+3      chr3:23306502:23306675:UBE2E2 -1.576854 0.6895186 0.1527728
+4       chr14:67029307:67029417:GPHN -1.178720 0.7952505 0.2688294
+5         chr6:84007319:84007404:ME1 -1.941535 0.6378959 0.1158490
+6    chr7:73885912:73885994:GTF2IRD1 -1.094156 0.8030045 0.3136450
+    deltapsi
+1 -0.6378887
+2 -0.5659353
+3 -0.5367458
+4 -0.5264211
+5 -0.5220469
+6 -0.4893595</code></pre>
+<pre class="bash"><code>sbatch TvNMakeHeatmap.sh GPHN
+
+sbatch TvNMakeHeatmap.sh ME1
+
+
+sbatch TvNMakeHeatmap.sh GTF2IRD1
+
+sbatch TvNMakeHeatmap.sh DOCK9
+
+
+sbatch TvNMakeHeatmap.sh UNQ6494</code></pre>
+</div>
+<div id="track-image-with-pygenome" class="section level2">
+<h2>Track image with pygenome</h2>
+<p>I want to make normalized BW to plot on tracks. This will be easier to show for this. I can use bamCoverage in deeptools and normalize to cpm.</p>
+<p>normbam2BW.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=normbam2BW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=normbam2BW.out
+#SBATCH --error=normbam2BW.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=18G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+i=$1
+
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-$i-sort.bam -o /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-$i-norm.bw \
+--normalizeUsingRPKM</code></pre>
+<p>Run on all file is /project2/gilad/briana/threeprimeseq/data/sort/</p>
+<p>(need to move these)</p>
+<p>run_normbam2BW.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=run_normbam2BW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_normbam2BW.out
+#SBATCH --error=run_normbam2BW.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/sort/*.bam)
+do 
+describer=$(echo ${i} | sed -e &#39;s/.*YL-SP-//&#39; | sed -e &quot;s/-sort.bam//&quot;)
+sbatch normbam2BW.sh $describer
+done</code></pre>
+<p>Make a merged version.</p>
+<p>/project2/gilad/briana/threeprimeseq/data/normalizedBW_merged</p>
+<p>mergeNormBW.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=mergeNormBW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeNormBW.out
+#SBATCH --error=mergeNormBW.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+ls -d -1 /project2/gilad/briana/threeprimeseq/data/normalizedBW/*T* | tail -n +2 &gt; /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_TotNorombigwig.txt
+
+ls -d -1 /project2/gilad/briana/threeprimeseq/data/normalizedBW/*N* | tail -n +2 &gt; /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_NucNorombigwig.txt
+
+
+bigWigMerge -inList /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_TotNorombigwig.txt /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.bg
+
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.bg &gt; /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.sort.bg
+
+
+bedGraphToBigWig /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.sort.bg /project2/gilad/briana/genome_anotation_data/chrom.length.txt /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.bw
+
+
+bigWigMerge -inList /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_NucNorombigwig.txt /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.bg
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.bg &gt; /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.sort.bg
+
+bedGraphToBigWig /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.sort.bg /project2/gilad/briana/genome_anotation_data/chrom.length.txt /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.bw</code></pre>
+<p>Use pygenome tracks:</p>
+<p>makeTNcompINIfile.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=makeTNcompINIfile
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=makeTNcompINIfile.out
+#SBATCH --error=makeTNcompINIfile.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+
+make_tracks_file --trackFiles /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18499-N-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18499-T-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-19128-N-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-19128-T-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18516-N-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18516-T-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18912-N-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18912-T-combined-norm.bw /project2/gilad/briana/genome_anotation_data/NCBI_refseq_forPyGenTrack_sort.bed  -o /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TotalvNuc_exmple.ini
+
+#/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed </code></pre>
+<p>Can add</p>
+<ul>
+<li><p>/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt</p></li>
+<li><p>/project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt</p></li>
+</ul>
+<p>Would need to convert to bed</p>
+<p>try on a region:</p>
+<p>DOCK9</p>
+<p>get region from iGV for now</p>
+<pre class="bash"><code>pyGenomeTracks --tracks TotalvNuc_exmple.ini --region 13:99,439,464-99,736,383 -out testDock9.png
+
+pyGenomeTracks --tracks TotalvNuc_exmple.ini --region 14:66,968,548-67,658,985 -out testGPHN.png
+
+
+pyGenomeTracks --tracks TotalvNuc_exmple.ini --region 21:43,766,162-43,772,074 -out testTFF2.png
+
+pyGenomeTracks --tracks TotalvNuc_exmple.ini --region 9:92,252,698-92,336,674 -out testUNQ6495.png
+</code></pre>
+<p>chr14:66,968,548-67,658,985</p>
+</div>
+<div id="create-boxplots" class="section level2">
+<h2>Create boxplots</h2>
+<pre class="r"><code>TN_TFF2_withMetaBox=TN_TFF2_melt %&gt;% inner_join(metadata_melt, by=c(&quot;Sample_ID&quot;)) %&gt;% mutate(Fraction=ifelse(grepl(&quot;T&quot;,Sample_ID), &quot;Total&quot;,&quot;Nuclear&quot;))</code></pre>
+<pre><code>Warning: Column `Sample_ID` joining character vector and factor, coercing
+into character vector</code></pre>
+<pre class="r"><code>ggplot(TN_TFF2_withMetaBox,  aes(x=Fraction, y=MappPM, fill=Fraction)) + geom_boxplot(width=.45) + geom_jitter() + scale_fill_brewer(palette = &quot;YlOrRd&quot;) + labs(y=&quot;CPM&quot;, title=&quot;TFF2&quot;)</code></pre>
+<p><img src="figure/TotvNucExamp.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>R script:<br />
+TvNBoxplot.R</p>
+<pre class="r"><code>library(tidyverse)
+library(reshape2)
+library(optparse)
+library(cowplot)
+
+
+option_list = list(
+  make_option(c(&quot;-P&quot;, &quot;--pheno&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;input pheno file&quot;),
+  make_option(c(&quot;-g&quot;, &quot;--gene&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;gene&quot;),
+  make_option(c(&quot;-o&quot;, &quot;--output&quot;), action=&quot;store&quot;, default=NA, type=&#39;character&#39;,
+              help=&quot;output file for plot&quot;)
+)
+
+opt_parser &lt;- OptionParser(option_list=option_list)
+opt &lt;- parse_args(opt_parser)
+
+metadata=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/TNcompExamp/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt&quot;,header=T, stringsAsFactors = F) %&gt;% select(Sample_ID,Mapped_noMP )
+
+
+metadata_melt=melt(metadata, id.vars = c(&quot;Sample_ID&quot;), value.name = &quot;MappedRead&quot;) %&gt;% mutate(MappPM=MappedRead/10^6)
+
+
+TNhead=read.table(&quot;/project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNCountheader.txt&quot;, header = T,stringsAsFactors = F)
+
+
+TN=read.table(opt$pheno, col.names =colnames(TNhead),stringsAsFactors = F) %&gt;% select(-Chr,-Geneid,-Strand, -Length)
+
+TN$Start=as.character(TN$Start)
+TN$End=as.character(TN$End)
+
+TN= TN%&gt;% mutate(PeakLoc= paste(Start,End,sep=&quot;-&quot;)) %&gt;% select(-Start, -End)
+
+TN_melt=melt(TN, id.vars =c(&quot;PeakLoc&quot;), variable.name = &quot;ID&quot;, value.name = &quot;PeakCount&quot; ) %&gt;% mutate(Sample_ID=substr(ID, 2, length(ID))) 
+
+TN_withMetaBox=TN_melt %&gt;% inner_join(metadata_melt, by=c(&quot;Sample_ID&quot;)) %&gt;% inner_join(metadata_melt, by=c(&quot;Sample_ID&quot;)) %&gt;% mutate(Fraction=ifelse(grepl(&quot;T&quot;,Sample_ID), &quot;Total&quot;,&quot;Nuclear&quot;))
+
+
+
+outplot=ggplot(TN_TFF2_withMetaBox,  aes(x=Fraction, y=MappPM, fill=Fraction)) + geom_boxplot(width=.45) + geom_jitter() + scale_fill_brewer(palette = &quot;YlOrRd&quot;) + labs(y=&quot;CPM&quot;, title=opt$gene)
+
+
+
+ggsave(plot=outplot, filename=opt$output, height=10, width=10)</code></pre>
+<p>TvNMakeHeatmapandBoxplot.sh</p>
+<pre class="bash"><code>#!/bin/bash
+
+#SBATCH --job-name=TvNMakeHeatmapandBoxplot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=TvNMakeHeatmapandBoxplot.out
+#SBATCH --error=TvNMakeHeatmapandBoxplot.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=18G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+gene=$1
+
+
+grep ${gene} /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc &gt; /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt
+
+
+Rscript TvNHeatmap.R -P /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}_heatmap.png
+
+Rscript  TvNBoxplot.R -P /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}_boxplot.png
+</code></pre>
+sbatch TvNMakeHeatmapandBoxplot.sh UNQ6494 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -856,19 +1236,24 @@ other attached packages:
  [9] ggplot2_3.1.0   tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.0       cellranger_1.1.0 plyr_1.8.4       pillar_1.3.1    
- [5] compiler_3.5.1   git2r_0.24.0     workflowr_1.2.0  tools_3.5.1     
- [9] digest_0.6.18    lubridate_1.7.4  jsonlite_1.6     evaluate_0.13   
-[13] nlme_3.1-137     gtable_0.2.0     lattice_0.20-38  pkgconfig_2.0.2 
-[17] rlang_0.3.1      cli_1.0.1        rstudioapi_0.9.0 yaml_2.2.0      
-[21] haven_2.1.0      xfun_0.5         withr_2.1.2      xml2_1.2.0      
-[25] httr_1.4.0       knitr_1.21       hms_0.4.2        generics_0.0.2  
-[29] fs_1.2.6         rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5
-[33] glue_1.3.0       R6_2.4.0         readxl_1.3.0     rmarkdown_1.11  
-[37] modelr_0.1.4     magrittr_1.5     whisker_0.3-2    backports_1.1.3 
-[41] scales_1.0.0     htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0
-[45] colorspace_1.4-0 labeling_0.3     stringi_1.3.1    lazyeval_0.2.1  
-[49] munsell_0.5.0    broom_0.5.1      crayon_1.3.4    </code></pre>
+ [1] Rcpp_1.0.0         RColorBrewer_1.1-2 cellranger_1.1.0  
+ [4] plyr_1.8.4         pillar_1.3.1       compiler_3.5.1    
+ [7] git2r_0.24.0       workflowr_1.2.0    tools_3.5.1       
+[10] digest_0.6.18      lubridate_1.7.4    jsonlite_1.6      
+[13] evaluate_0.13      nlme_3.1-137       gtable_0.2.0      
+[16] lattice_0.20-38    pkgconfig_2.0.2    rlang_0.3.1       
+[19] cli_1.0.1          rstudioapi_0.9.0   yaml_2.2.0        
+[22] haven_2.1.0        xfun_0.5           withr_2.1.2       
+[25] xml2_1.2.0         httr_1.4.0         knitr_1.21        
+[28] hms_0.4.2          generics_0.0.2     fs_1.2.6          
+[31] rprojroot_1.3-2    grid_3.5.1         tidyselect_0.2.5  
+[34] glue_1.3.0         R6_2.4.0           readxl_1.3.0      
+[37] rmarkdown_1.11     modelr_0.1.4       magrittr_1.5      
+[40] whisker_0.3-2      backports_1.1.3    scales_1.0.0      
+[43] htmltools_0.3.6    rvest_0.3.2        assertthat_0.2.0  
+[46] colorspace_1.4-0   labeling_0.3       stringi_1.3.1     
+[49] lazyeval_0.2.1     munsell_0.5.0      broom_0.5.1       
+[52] crayon_1.3.4      </code></pre>
 </div>
 </div>
 
