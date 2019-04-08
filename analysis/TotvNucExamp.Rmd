@@ -76,5 +76,363 @@ Super low expression of this gene. Better example when it is
 
 ##Generalize: 
 
+TvNHeatmap.R  
+
+```{r,eval=F}
+library(tidyverse)
+library(reshape2)
+library(optparse)
+library(cowplot)
 
 
+option_list = list(
+  make_option(c("-P", "--pheno"), action="store", default=NA, type='character',
+              help="input pheno file"),
+  make_option(c("-g", "--gene"), action="store", default=NA, type='character',
+              help="gene"),
+  make_option(c("-o", "--output"), action="store", default=NA, type='character',
+              help="output file for plot")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+metadata=read.table("/project2/gilad/briana/threeprimeseq/data/TNcompExamp/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt",header=T, stringsAsFactors = F) %>% select(Sample_ID,Mapped_noMP )
+
+
+metadata_melt=melt(metadata, id.vars = c("Sample_ID"), value.name = "MappedRead") %>% mutate(MappPM=MappedRead/10^6)
+
+
+TNhead=read.table("/project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNCountheader.txt", header = T,stringsAsFactors = F)
+
+
+TN=read.table(opt$pheno, col.names =colnames(TNhead),stringsAsFactors = F) %>% select(-Chr,-Geneid,-Strand, -Length)
+
+TN$Start=as.character(TN$Start)
+TN$End=as.character(TN$End)
+
+TN= TN%>% mutate(PeakLoc= paste(Start,End,sep="-")) %>% select(-Start, -End)
+
+TN_melt=melt(TN, id.vars =c("PeakLoc"), variable.name = "ID", value.name = "PeakCount" ) %>% mutate(Sample_ID=substr(ID, 2, length(ID))) 
+
+TN_withMeta=TN_melt %>% inner_join(metadata_melt, by=c("Sample_ID")) %>% mutate(Fraction=ifelse(grepl("T",Sample_ID), "Total","Nuclear")) %>%  mutate(NormCount=PeakCount/MappPM) %>% group_by(PeakLoc,Fraction) %>% summarise(meanCPM=mean(NormCount))
+
+my_palette <- colorRampPalette(c("white", "khaki1", "orange", "red", "darkred", "black"))
+
+outplot=ggplot(TN_withMeta, aes(x=PeakLoc, y=Fraction)) + geom_tile(aes(fill = meanCPM))+ scale_fill_gradientn(colors =my_palette(100)) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x="PAS", title=opt$gene)
+
+
+
+ggsave(plot=outplot, filename=opt$output, height=10, width=10)
+```
+
+Script to make phenotype file and run R script:
+
+TvNMakeHeatmap.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=TvNMakeHeatmap
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=TvNMakeHeatmap.out
+#SBATCH --error=TvNMakeHeatmap.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=18G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+gene=$1
+
+
+grep ${gene} /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc > /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt
+
+
+Rscript TvNHeatmap.R -P /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}_heatmap.png
+
+
+```
+
+
+
+
+##Examples to test  
+
+```{r}
+diffIso=read.table(file="../data/diff_iso_GeneLocAnno/SigPeaksHigherInNuc.txt", header = T) %>% arrange(deltapsi)
+```
+
+
+```{r}
+head(diffIso)
+```
+
+```{bash,eval=F}
+sbatch TvNMakeHeatmap.sh GPHN
+
+sbatch TvNMakeHeatmap.sh ME1
+
+
+sbatch TvNMakeHeatmap.sh GTF2IRD1
+
+sbatch TvNMakeHeatmap.sh DOCK9
+
+
+sbatch TvNMakeHeatmap.sh UNQ6494
+```
+
+##Track image with pygenome
+I want to make normalized BW to plot on tracks. This will be easier to show for this. I can use bamCoverage in deeptools and normalize to cpm. 
+
+normbam2BW.sh
+
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=normbam2BW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=normbam2BW.out
+#SBATCH --error=normbam2BW.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=18G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+i=$1
+
+bamCoverage -b /project2/gilad/briana/threeprimeseq/data/sort/YL-SP-$i-sort.bam -o /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-$i-norm.bw \
+--normalizeUsingRPKM
+```
+
+Run on all file is /project2/gilad/briana/threeprimeseq/data/sort/
+
+(need to move these)
+
+run_normbam2BW.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=run_normbam2BW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=run_normbam2BW.out
+#SBATCH --error=run_normbam2BW.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+for i in $(ls /project2/gilad/briana/threeprimeseq/data/sort/*.bam)
+do 
+describer=$(echo ${i} | sed -e 's/.*YL-SP-//' | sed -e "s/-sort.bam//")
+sbatch normbam2BW.sh $describer
+done
+```
+
+Make a merged version.
+
+
+/project2/gilad/briana/threeprimeseq/data/normalizedBW_merged
+
+mergeNormBW.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=mergeNormBW
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=mergeNormBW.out
+#SBATCH --error=mergeNormBW.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+ls -d -1 /project2/gilad/briana/threeprimeseq/data/normalizedBW/*T* | tail -n +2 > /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_TotNorombigwig.txt
+
+ls -d -1 /project2/gilad/briana/threeprimeseq/data/normalizedBW/*N* | tail -n +2 > /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_NucNorombigwig.txt
+
+
+bigWigMerge -inList /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_TotNorombigwig.txt /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.bg
+
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.bg > /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.sort.bg
+
+
+bedGraphToBigWig /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.sort.bg /project2/gilad/briana/genome_anotation_data/chrom.length.txt /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.bw
+
+
+bigWigMerge -inList /project2/gilad/briana/threeprimeseq/data/list_bw/list_of_NucNorombigwig.txt /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.bg
+
+sort -k1,1 -k2,2n /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.bg > /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.sort.bg
+
+bedGraphToBigWig /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.sort.bg /project2/gilad/briana/genome_anotation_data/chrom.length.txt /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.bw
+```
+
+
+
+
+
+
+Use pygenome tracks: 
+
+
+makeTNcompINIfile.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=makeTNcompINIfile
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=makeTNcompINIfile.out
+#SBATCH --error=makeTNcompINIfile.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=10G
+#SBATCH --mail-type=END
+
+module load Anaconda3
+source activate three-prime-env
+
+
+
+make_tracks_file --trackFiles /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Nuclear_NormalizedMerged.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW_merged/Total_NormalizedMerged.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18499-N-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18499-T-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-19128-N-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-19128-T-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18516-N-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18516-T-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18912-N-combined-norm.bw /project2/gilad/briana/threeprimeseq/data/normalizedBW/YL-SP-18912-T-combined-norm.bw /project2/gilad/briana/genome_anotation_data/NCBI_refseq_forPyGenTrack_sort.bed  -o /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TotalvNuc_exmple.ini
+
+#/project2/gilad/briana/threeprimeseq/data/peaks4DT/APAPeaks_5percCov_fixedStrand.bed 
+```
+
+
+Can add 
+
+* /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Total_fixed.pheno.5percPeaks.txt
+
+* /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno.NoMP_sm_quant.Nuclear_fixed.pheno.5percPeaks.txt
+
+Would need to convert to bed 
+
+
+
+try on a region:  
+
+
+DOCK9
+
+get region from iGV for now
+```{bash,eval=F}
+pyGenomeTracks --tracks TotalvNuc_exmple.ini --region 13:99,439,464-99,736,383 -out testDock9.png
+
+pyGenomeTracks --tracks TotalvNuc_exmple.ini --region 14:66,968,548-67,658,985 -out testGPHN.png
+
+
+pyGenomeTracks --tracks TotalvNuc_exmple.ini --region 21:43,766,162-43,772,074 -out testTFF2.png
+
+pyGenomeTracks --tracks TotalvNuc_exmple.ini --region 9:92,252,698-92,336,674 -out testUNQ6495.png
+
+```
+chr14:66,968,548-67,658,985 
+
+
+##Create boxplots 
+
+```{r}
+TN_TFF2_withMetaBox=TN_TFF2_melt %>% inner_join(metadata_melt, by=c("Sample_ID")) %>% mutate(Fraction=ifelse(grepl("T",Sample_ID), "Total","Nuclear"))
+
+
+ggplot(TN_TFF2_withMetaBox,  aes(x=Fraction, y=MappPM, fill=Fraction)) + geom_boxplot(width=.45) + geom_jitter() + scale_fill_brewer(palette = "YlOrRd") + labs(y="CPM", title="TFF2")
+```
+
+R script:  
+TvNBoxplot.R  
+
+```{r,eval=F}
+library(tidyverse)
+library(reshape2)
+library(optparse)
+library(cowplot)
+
+
+option_list = list(
+  make_option(c("-P", "--pheno"), action="store", default=NA, type='character',
+              help="input pheno file"),
+  make_option(c("-g", "--gene"), action="store", default=NA, type='character',
+              help="gene"),
+  make_option(c("-o", "--output"), action="store", default=NA, type='character',
+              help="output file for plot")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+metadata=read.table("/project2/gilad/briana/threeprimeseq/data/TNcompExamp/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt",header=T, stringsAsFactors = F) %>% select(Sample_ID,Mapped_noMP )
+
+
+metadata_melt=melt(metadata, id.vars = c("Sample_ID"), value.name = "MappedRead") %>% mutate(MappPM=MappedRead/10^6)
+
+
+TNhead=read.table("/project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNCountheader.txt", header = T,stringsAsFactors = F)
+
+
+TN=read.table(opt$pheno, col.names =colnames(TNhead),stringsAsFactors = F) %>% select(-Chr,-Geneid,-Strand, -Length)
+
+TN$Start=as.character(TN$Start)
+TN$End=as.character(TN$End)
+
+TN= TN%>% mutate(PeakLoc= paste(Start,End,sep="-")) %>% select(-Start, -End)
+
+TN_melt=melt(TN, id.vars =c("PeakLoc"), variable.name = "ID", value.name = "PeakCount" ) %>% mutate(Sample_ID=substr(ID, 2, length(ID))) 
+
+TN_withMetaBox=TN_melt %>% inner_join(metadata_melt, by=c("Sample_ID")) %>% inner_join(metadata_melt, by=c("Sample_ID")) %>% mutate(Fraction=ifelse(grepl("T",Sample_ID), "Total","Nuclear"))
+
+
+
+outplot=ggplot(TN_TFF2_withMetaBox,  aes(x=Fraction, y=MappPM, fill=Fraction)) + geom_boxplot(width=.45) + geom_jitter() + scale_fill_brewer(palette = "YlOrRd") + labs(y="CPM", title=opt$gene)
+
+
+
+ggsave(plot=outplot, filename=opt$output, height=10, width=10)
+```
+
+
+
+TvNMakeHeatmapandBoxplot.sh  
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=TvNMakeHeatmapandBoxplot
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=TvNMakeHeatmapandBoxplot.out
+#SBATCH --error=TvNMakeHeatmapandBoxplot.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=18G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+gene=$1
+
+
+grep ${gene} /project2/gilad/briana/threeprimeseq/data/filtPeakOppstrand_cov_processed_GeneLocAnno_bothFrac/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc > /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt
+
+
+Rscript TvNHeatmap.R -P /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}_heatmap.png
+
+Rscript  TvNBoxplot.R -P /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/TNcompExamp/TNcomp_${gene}_boxplot.png
+
+```
+
+
+sbatch TvNMakeHeatmapandBoxplot.sh UNQ6494
