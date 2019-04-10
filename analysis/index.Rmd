@@ -201,4 +201,7 @@ I now have 55 individuals. I am going to call peaks and QTLs in this data.
 * [Explore models for chromatin and APA](HistoneModandPAS.html)
 
 
+###Reprocess after resequencing  
+After resequencing I am going to start using a new data folder to differentiate the new processing. This will be data_reseq. I will also create a new snakefile for the new pipeline.  
 
+* [Helper scripts for new snakefile](helpScripts_newsnake.html)

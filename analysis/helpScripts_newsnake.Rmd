@@ -1,0 +1,182 @@
+---
+title: "Helper scripts for processed snakefile"
+author: "Briana Mittleman"
+date: "4/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I need to make general scripts for the new processed snakefile:
+
+
+filterBamBasedonWasp_general.py
+```{bash,eval=F}
+def main(Bamin, out):
+    okRead={}
+    #pysam to read in bam allignments
+    bamfile = pysam.AlignmentFile(Bamin, "rb")
+    finalBam =  pysam.AlignmentFile(out, "wb", template=bamfile)
+    n=0
+    k=0
+    #read name is the first col in each bam file
+    for read in bamfile.fetch():
+        #last piece is always the right piece  
+        #vw=read.split(\t)[-1]
+        if read.has_tag('vW'):
+            x= read.get_tag('vW')
+            print(x)
+            if x == 1:
+                k+=1
+                finalBam.write(read)
+            else:
+                n+=1
+                continue
+        else:
+          finalBam.write(read)
+  
+    print("with wv" + n)
+    print("pass filter" + k)
+    bamfile.close()
+    finalBam.close()
+    
+    
+    
+if __name__ == "__main__":
+    import sys, pysam
+    inBam=sys.argv[1]
+    outBam=sys.argv[2]
+    main(inBam, outBam)
+    
+```
+
+Upstream10Bases_general.py
+```{bash,eval=F}
+#python  
+def main(Fin, Fout):
+  outBed=open(Fout, "w")
+  chrom_lengths=open("/project2/gilad/briana/genome_anotation_data/chrom_lengths2.sort.bed","r")
+  #make a dictionary with chrom lengths
+  length_dic={}
+  for i in chrom_lengths:
+    chrom, start, end = i.split()
+    length_dic[str(chrom)]=int(end)  
+
+#write file 
+  for ln in open(Fin):
+    chrom, start, end, name, score, strand = ln.split()
+    chrom=str(chrom)
+    if strand=="+":
+      start_new=int(start)-10
+      if start_new <= 1:
+        start_new = 0 
+      end_new= int(start)
+      if end_new == 0:
+        end_new=1
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+    if strand == "-":
+      start_new=int(end)
+      end_new=int(end) + 10
+      if end_new >= length_dic[chrom]:
+        end_new = length_dic[chrom] 
+        start_new=end_new-1 
+      outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new, name, score, strand))
+  outBed.close()  
+
+if __name__ == "__main__":
+    import sys
+    inFile = sys.argv[1]
+    outFile = sys.argv[2]
+    main(inFile, outFile)
+```
+
+filterMissprimingInNuc10_gen.py
+```{bash,eval=F}
+def main(Fin, Fout):
+  outBed=open(Fout, "w")
+  inBed=open(Fin, "r")
+  for ind, ln in enumerate(inBed):
+    if ind >=1:
+      chrom,start, end, name, score, strand, pctAT, pctGC, A, C, G, T, N, Other, Length, Sequence = ln.split()
+      Tperc= float(T) / float(Length)
+      if Tperc < .7:
+          if "TTTTTT" not in Sequence:
+              start_new=int(start)
+              end_new=int(end)
+              outBed.write("%s\t%d\t%d\t%s\t%s\t%s\n"%(chrom, start_new, end_new , name, score, strand))
+  outBed.close()
+
+if __name__ == "__main__":
+    import sys
+    inFile = sys.argv[1]
+    outFile=sys.argv[2]
+    main(inFile, outFile)
+```
+
+filterSortBedbyCleanedBed_gen.R
+```{r,eval=F}
+#!/bin/rscripts
+
+# usage: Rscirpt --vanilla  filterSortBedbyCleanedBed_gen.R bedfile cleannuc outfile
+
+#this script takes in the sorted bed file and the clean reads, it will clean the bed file   
+
+
+library(dplyr)
+library(tidyr)
+library(data.table)
+
+
+args = commandArgs(trailingOnly=TRUE)
+bed=args[1]
+clean= args[2]
+output=args[3]
+
+
+bedFile=fread(bed, col.names = c("Chrom", "start", "end", "name", "score", "strand"))
+
+cleanFile=fread(clean, col.names = c("Chrom", "start", "end", "name", "score", "strand"))
+
+intersection=bedFile %>% semi_join(cleanFile, by="name")
+
+fwrite(intersection, file=output,quote = F, col.names = F, row.names = F, sep="\t")
+```
+
+filterBamforMP.pysam2_gen.py
+
+```{bash,eval=F}
+#!/usr/bin/env python
+
+
+def main(Bin, Bamin, out):
+    okRead={}
+    for ln in open(Bin, "r"):
+        chrom, start_new , end_new , name, score, strand = ln.split()
+        okRead[name] = ""
+    #pysam to read in bam allignments
+    bamfile = pysam.AlignmentFile(Bamin, "rb")
+    finalBam =  pysam.AlignmentFile(out, "wb", template=bamfile)
+    #read name is the first col in each bam file
+    n=0
+    for read in bamfile.fetch():
+        read_name=read.query_name
+        #if statement about name  
+        if read_name in okRead.keys():
+            finalBam.write(read)
+        if n % 1000==0 : print(n)
+        n+=1 
+    bamfile.close()
+    finalBam.close()
+
+    
+if __name__ == "__main__":
+    import sys, pysam
+    inBed= sys.argv[1]
+    inBam=sys.argv[2]
+    outBam=sys.argv[3]
+    main(inBed, inBam, outBam)
+```
+
+
