@@ -1,0 +1,187 @@
+---
+title: "Example facet boxplots"
+author: "Briana Mittleman"
+date: "4/15/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Yoav did not understand the heatmap plots. I want to try another mothod to demonstrate QTLs. I will use blox plots faceted by peak in the gene. 
+
+
+```{r}
+library(tidyverse)
+library(reshape2)
+library(cowplot)
+```
+
+```{r}
+phenohead=read.table("../data/ExampleQTLplot2/Phenotypeheader.txt", header = T,stringsAsFactors = F)
+phenoEIF=read.table("../data/ExampleQTLplot2/EIF2a_TotalPeaksPheno.txt", col.names =colnames(phenohead),stringsAsFactors = F)
+
+
+meltpheno=melt(phenoEIF, id.vars = "chrom", value.name = "Ratio", variable.name = "Individual") %>% separate(Ratio, into=c("num", "denom"), sep="/") %>%   separate(chrom, into=c("chrom", "start", "end", "peakID"),sep=":") %>% mutate(PeakLoc=paste(start, end, sep=":"))
+
+
+meltpheno$Individual= as.character(meltpheno$Individual)
+meltpheno$num= as.numeric(meltpheno$num)
+meltpheno$denom=as.numeric(meltpheno$denom)
+```
+
+
+
+
+```{r}
+genoHead=read.table("../data/ExampleQTLplot2/genotypeHeader.txt", header = T,stringsAsFactors = F)
+genoEIF=read.table("../data/ExampleQTLplot2/EIF2a_TotalPeaksGenotype.txt", col.names =colnames(genoHead),stringsAsFactors = F ) %>% select(ID,contains("NA")) 
+
+lettersGeno=read.table("../data/ExampleQTLplot2/EIF2a_TotalPeaksGenotype.txt", col.names =colnames(genoHead),stringsAsFactors = F, colClasses = c("character") ) %>% select(REF, ALT)
+
+
+
+refAllele=as.character(lettersGeno$REF)
+altAllele=as.character(lettersGeno$ALT)
+
+genoMelt=melt(genoEIF, id.vars = "ID", value.name = "FullGeno", variable.name = "Individual" ) %>% separate(FullGeno, into=c("geno","dose","extra1"), sep=":") %>% select(Individual, dose) %>% mutate(genotype=ifelse(round(as.integer(dose))==0, paste(refAllele, refAllele, sep=""), ifelse(round(as.integer(dose))==1, paste(refAllele,altAllele, sep=""), paste(altAllele,altAllele,sep=""))))
+genoMelt$Individual= as.character(genoMelt$Individual)
+```
+
+
+
+Join these by individual:  
+
+```{r}
+PhenandGene= meltpheno %>% inner_join(genoMelt, by="Individual") %>%  mutate(PAU=num/denom) 
+
+
+```
+
+
+```{r}
+eif_facetBP=ggplot(PhenandGene, aes(x=genotype, y=PAU, fill=genotype)) + geom_boxplot(width=.5)+ geom_jitter(alpha=1) + facet_grid(~PeakLoc) +scale_fill_brewer(palette = "YlOrRd")
+                                                                                                                        eif_facetBP                                                                                                                                                                                         
+```
+
+
+```{r}
+ggsave(eif_facetBP, file="../data/ExampleQTLplot2/eif_facetBPexample.png", height = 7, width = 12)
+```
+
+Try this verticle:
+
+```{r}
+eif_facetBP_vert=ggplot(PhenandGene, aes(x=genotype, y=PAU, fill=genotype)) + geom_boxplot(width=.5)+ geom_jitter(alpha=1) + facet_wrap(~PeakLoc, ncol=1) +scale_fill_brewer(palette = "YlOrRd")
+
+ggsave(eif_facetBP_vert, file="../data/ExampleQTLplot2/eif_facetBPexampleVERT.png", height = 20, width = 7)
+```
+
+
+Make this a reproduciple plot:  
+
+
+apaqtlfacetboxplots.R
+```{r,eval=F}
+library(tidyverse)
+library(reshape2)
+library(optparse)
+library(cowplot)
+
+
+option_list = list(
+  make_option(c("-P", "--pheno"), action="store", default=NA, type='character',
+              help="input pheno file"),
+  make_option(c("-G", "--geno"), action="store", default=NA, type='character',
+              help="input genotype"),
+  make_option(c("-g", "--gene"), action="store", default=NA, type='character',
+              help="gene"),
+  make_option(c("-p", "--peakID"), action="store", default=NA, type='character',
+              help="peakID"),
+  make_option(c("-o", "--output"), action="store", default=NA, type='character',
+              help="output file for plot")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+
+phenohead=read.table("/project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/Phenotypeheader.txt", header = T,stringsAsFactors = F)
+pheno=read.table(opt$pheno, col.names =colnames(phenohead),stringsAsFactors = F)
+
+
+meltpheno=melt(pheno, id.vars = "chrom", value.name = "Ratio", variable.name = "Individual") %>% separate(Ratio, into=c("num", "denom"), sep="/")  %>%   separate(chrom, into=c("chrom", "start", "end", "peakID"),sep=":") %>% mutate(PeakLoc=paste(start, end, sep=":"))
+
+meltpheno$Individual= as.character(meltpheno$Individual)
+meltpheno$num= as.numeric(meltpheno$num)
+meltpheno$denom=as.numeric(meltpheno$denom)
+
+
+genoHead=read.table("/project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/genotypeHeader.txt", header = T,stringsAsFactors = F)
+geno=read.table(opt$geno, col.names =colnames(genoHead),stringsAsFactors = F ) %>% select(ID,contains("NA")) 
+
+
+lettersGeno=read.table(opt$geno, col.names =colnames(genoHead),stringsAsFactors = F,colClasses = c("character")) %>% select(REF, ALT)
+
+refAllele=lettersGeno$REF
+altAllele=lettersGeno$ALT
+
+
+genoMelt=melt(geno, id.vars = "ID", value.name = "FullGeno", variable.name = "Individual" ) %>% separate(FullGeno, into=c("geno","dose","extra1"), sep=":") %>% select(Individual, dose) %>% mutate(genotype=ifelse(round(as.integer(dose))==0, paste(refAllele, refAllele, sep=""), ifelse(round(as.integer(dose))==1, paste(refAllele,altAllele, sep=""), paste(altAllele,altAllele,sep=""))))
+genoMelt$Individual= as.character(genoMelt$Individual)
+
+
+pheno_qtlpeak=meltpheno %>% inner_join(genoMelt, by="Individual") %>%  mutate(PAU=num/denom) 
+
+qtlplot=ggplot(pheno_qtlpeak, aes(x=genotype, y=PAU, fill=genotype)) + geom_boxplot(width=.5)+ geom_jitter(alpha=1) + facet_grid(~PeakLoc) +scale_fill_brewer(palette = "YlOrRd")
+
+ggsave(plot=qtlplot, filename=opt$output, height=10, width=10)
+```
+
+
+qtlHeatmapandFacetBoxplots.sh
+```{bash,eval=F}
+#!/bin/bash
+
+#SBATCH --job-name=qtlHeatmapandFacetBoxplots
+#SBATCH --account=pi-yangili1
+#SBATCH --time=24:00:00
+#SBATCH --output=qtlHeatmapandFacetBoxplots.out
+#SBATCH --error=qtlHeatmapandFacetBoxplots.err
+#SBATCH --partition=broadwl
+#SBATCH --mem=18G
+#SBATCH --mail-type=END
+
+
+module load Anaconda3
+source activate three-prime-env
+
+Fraction=$1
+gene=$2
+chrom=$3
+snp=$4
+peakID=$5
+
+
+less /project2/gilad/briana/threeprimeseq/data/phenotypes_filtPeakTranscript_noMP_GeneLocAnno_5percUs/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_NoMP_sm_quant.${Fraction}.fixed.pheno_5perc.fc.gz | grep ${gene}_ > /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt
+
+
+less /project2/gilad/briana/YRI_geno_hg19/chr${chrom}.dose.filt.vcf.gz | grep ${snp} > /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksGenotype.txt
+
+
+Rscript makeQTLheatmap.R -P /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt -G  /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksGenotype.txt -g ${gene} -o /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}${SNP}${peakID}_heatmap.png
+
+
+Rscript apaqtlfacetboxplots.R -P /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksPheno.txt -G  /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}PeaksGenotype.txt --gene ${gene} -p ${peakID}  -o /project2/gilad/briana/threeprimeseq/data/ExampleQTLPlots2/${gene}_${Fraction}${SNP}${peakID}_boxplot.png
+```
+
+
+```{bash,eval=F}
+sbatch qtlHeatmapandFacetBoxplots.sh "Nuclear" "DPP9" "19" "19:4680128" "peak77244"
+```
+
