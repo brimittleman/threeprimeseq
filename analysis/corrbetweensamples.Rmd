@@ -1,0 +1,73 @@
+---
+title: "Correlation between samples"
+author: "Briana Mittleman"
+date: "4/25/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+In this analyisis I want to look at the correlation between counts.  
+
+```{r}
+library(tidyverse)
+library(workflowr)
+library(reshape2)
+library(gplots)
+library(gdata)
+```
+##Metadata  
+
+```{r}
+metadata=read.table("../data/threePrimeSeqMetaData55Ind_noDup_WASPMAP.txt", header = T, stringsAsFactors = F)
+meta_T=metadata %>% filter(grepl("T", Sample_ID)) %>% mutate(samp=paste("X", Sample_ID, sep=""))
+meta_N=metadata %>% filter(grepl("N", Sample_ID)) %>%  mutate(samp=paste("X", Sample_ID, sep=""))
+```
+
+
+
+##Total  
+```{r}
+
+
+totalCounts=read.table("../data/PeakCounts_noMP_genelocanno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc", header = T, stringsAsFactors = F) %>% select(contains("T"),-Geneid, -Chr, -Start, -End, -Strand, -Length,-X19099_T)
+
+totCount_corr= round(cor(totalCounts),2)
+
+
+meta_TBatch=meta_T %>% select(samp,batch)
+
+target=colnames(totCount_corr)
+meta_TBatch$samp <- reorder.factor(meta_TBatch$samp, new.order=target)
+meta_TBatch_order=meta_TBatch %>% arrange(samp)
+
+
+meta_TBatch_order = meta_TBatch_order %>% mutate(color=ifelse(batch=="1", "green", ifelse(batch=="2", "blue", ifelse(batch=="3", "purple", "pink"))))
+
+heatmap.2(as.matrix(totCount_corr),trace="none", dendrogram =c("col"), key=T, ColSideColors=meta_TBatch_order$color)
+```
+
+##Nuclear   
+
+```{r}
+nucCounts=read.table("../data/PeakCounts_noMP_genelocanno/filtered_APApeaks_merged_allchrom_refseqGenes.GeneLocAnno_sm_quant_processed_fixed.fc", header = T, stringsAsFactors = F) %>% select(contains("N"),-Geneid, -Chr, -Start, -End, -Strand, -Length,-X19099_N)
+
+nucCounts_corr= round(cor(nucCounts),2)
+
+
+meta_NBatch=meta_N %>% select(samp,batch)
+
+target=colnames(nucCounts_corr)
+meta_NBatch$samp <- reorder.factor(meta_NBatch$samp, new.order=target)
+meta_NBatch_order=meta_NBatch %>% arrange(samp)
+
+
+meta_NBatch_order = meta_NBatch_order %>% mutate(color=ifelse(batch=="1", "green", ifelse(batch=="2", "blue", ifelse(batch=="3", "purple", "pink"))))
+
+heatmap.2(as.matrix(nucCounts_corr),trace="none", dendrogram =c("col"), key=T, ColSideColors=meta_NBatch_order$color)
+```
+
+
